@@ -15,3 +15,4 @@
 *.tsx text eol=lf
 # Вендоровані шрифти й ліцензія звіряються за SHA-256: байти не змінюємо.
 packages/design-tokens/fonts/** -text
+*.sql text eol=lf
