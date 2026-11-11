@@ -1,0 +1,6 @@
+node_modules/
+dist/
+apps/web/public/dist/
+.env
+.env.*
+!.env.example

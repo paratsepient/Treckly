@@ -1,0 +1,15 @@
+{
+  "name": "dsp-orders",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @dsp/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "check": "pnpm -r check"
+  },
+  "packageManager": "pnpm@11.23.0",
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,16 @@
+/* Сторінка-перевірка: лише семантичні токени набору. */
+.check-section {
+  margin-bottom: var(--ix-space-4);
+}
+
+.check-heading {
+  margin: 0 0 var(--ix-space-2);
+  font: var(--ix-font-heading-md);
+}
+
+.check-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
+  align-items: center;
+}
