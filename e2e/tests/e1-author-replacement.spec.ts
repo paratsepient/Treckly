@@ -12,11 +12,11 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   await page.getByLabel("Позиція, рядок 1").selectOption("pos-006") // Антена всеспрямована 2,4 ГГц, КЕКВ 2210;
   await page.getByLabel("Замінити на, рядок 1").selectOption("item-104") // Антенна система мобільна, КЕКВ 3110;
 
-  // Автоперевірки й бюджет: новий КЕКВ витрачається, старий вивільняється.
+  // Автоперевірки й бюджет: новий КЕКВ витрачається, старий не змінюється (вивільнення немає).
   const budget = page.getByRole("table", { name: /Залишок бюджету за КЕКВ/ });
   const row3110 = budget.getByRole("row", { name: /^3110/ });
   await expect(row3110).toContainText("+48 000");
-  await expect(budget.getByRole("row", { name: /^2210/ })).toContainText("−900");
+  await expect(budget.getByRole("row", { name: /^2210/ })).not.toContainText("−");
   await expect(page.getByText("Перевірки пройдено")).toBeVisible();
   await expect(page.getByText(/Інший КЕКВ: списується з ліміту 3110/)).toBeVisible();
 

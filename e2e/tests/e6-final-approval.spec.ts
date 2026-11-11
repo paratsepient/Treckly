@@ -7,7 +7,7 @@ import { AUTHOR_C, openAs, row, switchTo, toast } from "../support.ts";
 test("E6: затвердження Головою — резерв бюджету, витяг із «Заміна погоджена», оновлене зведення", async ({ page }) => {
   await openAs(page, "appr-5-vor", "/registry");
   const budget = page.getByRole("table", { name: "Бюджет напрямку за КЕКВ" });
-  await expect(budget.getByRole("row", { name: /^2210/ })).toContainText(/221[\s ]100,00/);
+  await expect(budget.getByRole("row", { name: /^2210/ })).toContainText(/222[\s ]000,00/);
   await expect(page.locator(".kpi-row")).toContainText("Затверджено");
 
   // Відділ формує остаточний перелік із ЗМ-0007, Голова затверджує.
@@ -34,7 +34,7 @@ test("E6: затвердження Головою — резерв бюджет�
 
   // Бюджет зарезервовано (+37 200 грн у КЕКВ 2210; заміна в межах КЕКВ ліміт не витрачає); зведення оновилось.
   await page.goto("/#/registry");
-  await expect(budget.getByRole("row", { name: /^2210/ })).toContainText(/258[\s ]300,00/);
+  await expect(budget.getByRole("row", { name: /^2210/ })).toContainText(/259[\s ]200,00/);
 
   // Автор в/ч А0003 бачить власний витяг, а чужих — ні.
   await switchTo(page, AUTHOR_C, "/final");

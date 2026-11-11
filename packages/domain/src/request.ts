@@ -30,6 +30,17 @@ function notify(
   return { kind, audience, requestId: request.id, listId: extra.listId ?? null, note: extra.note ?? null, at: stamp(ctx).at };
 }
 
+/** Кожен рядок заявки має власний id: за ним зберігаються рядки й будуються витяги (інакше — збій на базі). */
+function assertUniqueLineIds(lines: readonly RequestLine[]): void {
+  const seen = new Set<string>();
+  for (const line of lines) {
+    if (seen.has(line.id)) {
+      throw invalid("Ідентифікатори рядків заявки мають бути унікальними.", { reason: "DUPLICATE_LINE_ID", lineId: line.id });
+    }
+    seen.add(line.id);
+  }
+}
+
 export interface CreateDraftInput {
   readonly route: Route;
   readonly lines: readonly RequestLine[];
@@ -41,6 +52,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
   if (actor.role.kind !== "author" || actor.role.unitId !== input.route[0]) {
     throw new DomainError("FORBIDDEN_ROLE", "Заявку створює автор у своїй в/ч.");
   }
+  assertUniqueLineIds(input.lines);
   const { today } = stamp(ctx);
   const request: Request = {
     id: ctx.ids.next("req"),
@@ -72,6 +84,7 @@ export function editLines(ctx: DomainContext, meta: Meta, input: { request: Requ
   if (request.status !== "draft" && request.status !== "returned") {
     throw invalid("Заявку можна редагувати лише в чернетці або після повернення.", { status: request.status });
   }
+  assertUniqueLineIds(input.lines);
   const next = bumped(request, { lines: input.lines });
   return {
     requests: [next],

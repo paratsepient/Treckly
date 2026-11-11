@@ -1033,13 +1033,13 @@
  ],
  "budget": {
   "total": {
-   "limitMinor": 138720000,
-   "approvedMinor": 42960000
+   "limitMinor": 138810000,
+   "approvedMinor": 43050000
   },
   "perKekv": {
    "2210": {
-    "limitMinor": 57870000,
-    "approvedMinor": 22110000
+    "limitMinor": 57960000,
+    "approvedMinor": 22200000
    },
    "2220": {
     "limitMinor": 57650000,
@@ -6177,12 +6177,12 @@
    "budget": {
     "total": {
      "limitMinor": 10000000000000,
-     "approvedMinor": 42960000
+     "approvedMinor": 43050000
     },
     "perKekv": {
      "2210": {
       "limitMinor": 10000000000000,
-      "approvedMinor": 22110000
+      "approvedMinor": 22200000
      },
      "2220": {
       "limitMinor": 10000000000000,

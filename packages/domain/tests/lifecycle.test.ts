@@ -204,3 +204,18 @@ test("відкликана заявка вдруге не відкликаєть
   apply(world, withdraw(world.ctx, meta(author), { request: get(world, id) }));
   throwsCode(() => withdraw(world.ctx, meta(author), { request: get(world, id) }), "INVALID_TRANSITION");
 });
+
+test("дублікат id рядків відхиляється при створенні й редагуванні, нічого не змінюючи", () => {
+  const world = createWorld();
+  const twice = [byList("same", "p1", 1), byList("same", "p2", 1)];
+  const error = throwsCode(() => createDraft(world.ctx, meta(author), { route: ROUTE, lines: twice }), "INVALID_TRANSITION");
+  assert.equal(error.details["reason"], "DUPLICATE_LINE_ID");
+  assert.equal(error.details["lineId"], "same");
+
+  const id = draftOf(world);
+  const before = get(world, id);
+  throwsCode(() => editLines(world.ctx, meta(author), { request: before, lines: twice }), "INVALID_TRANSITION");
+  assert.equal(get(world, id), before, "заявка не змінилась");
+  apply(world, editLines(world.ctx, meta(author), { request: before, lines: [byList("a", "p1", 1), byList("b", "p1", 1)] }));
+  assert.equal(get(world, id).lines.length, 2, "різні id приймаються, навіть для однієї позиції");
+});

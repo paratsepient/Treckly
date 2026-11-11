@@ -70,8 +70,8 @@ test("заміна на інший КЕКВ витрачає ліміт ново
   const { world, ids } = atFinal([[replacement("l1", "p1", 2, "3110", 150_00)]]);
   approveAt(world, formAt(world, 5, ids), 8);
   assert.equal(world.budget.perKekv["3110"]?.approvedMinor, 300_00);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, -200_00, "старий КЕКВ вивільнено (припущення документа)");
-  assert.equal(world.budget.total.approvedMinor, 100_00);
+  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 0, "старий КЕКВ не змінюється: вивільнення немає");
+  assert.equal(world.budget.total.approvedMinor, 300_00);
 });
 
 test("«Заміна погоджена» лише після витягу; до того рядок заміни очікує", () => {

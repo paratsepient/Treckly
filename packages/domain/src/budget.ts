@@ -1,6 +1,6 @@
 import type { Budget, BudgetLine, Kekv, Money, Position, Positions, Request, RequestLine } from "./types.ts";
 
-/** Вплив на бюджет: зміна по кожному КЕКВ і загальна зміна. Від'ємне — вивільнення. */
+/** Вплив на бюджет: зміна по кожному КЕКВ і загальна зміна (витрата). */
 export interface BudgetImpact {
   readonly perKekv: Readonly<Record<Kekv, Money>>;
   readonly total: Money;
@@ -9,19 +9,17 @@ export interface BudgetImpact {
 export const EMPTY_IMPACT: BudgetImpact = { perKekv: {}, total: 0 };
 
 /**
- * Правило 9: заміна в межах одного КЕКВ ліміт не витрачає; на інший КЕКВ —
- * сума нового списується з нового КЕКВ, а сума старого вивільняється в старому
- * (припущення з документа розробки, потребує підтвердження).
+ * Правило 9: заміна в межах одного КЕКВ ліміт не витрачає; на інший КЕКВ — сума нового
+ * предмета списується з ліміту нового КЕКВ. Старий КЕКВ не змінюється: бюджет резервується
+ * лише за затвердженими заявками (правило 8), а позиція переліку, яку замінюють, у резерві
+ * не була, тож вивільняти нічого (рішення користувача; документ мав це лише як припущення).
  */
 export function lineEffect(line: RequestLine, position: Position): Record<Kekv, Money> {
   if (line.kind === "by_list") {
     return { [line.kekv]: line.qty * position.priceMinor };
   }
   if (position.kekv === line.newItem.kekv) return {};
-  return {
-    [line.newItem.kekv]: line.qty * line.newItem.priceMinor,
-    [position.kekv]: -(line.qty * position.priceMinor),
-  };
+  return { [line.newItem.kekv]: line.qty * line.newItem.priceMinor };
 }
 
 function addInto(target: Record<Kekv, Money>, delta: Readonly<Record<Kekv, Money>>): void {

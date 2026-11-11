@@ -29,8 +29,8 @@ test("E1: заміна на інший КЕКВ — автоперевірка �
 
   const { report } = await h.call("checkRequest", AUTHOR_A, { body: { lines: [line] } });
   assert.equal(report.ok, true);
-  assert.deepEqual(report.impact.perKekv, { "3110": 48_000_00, "2210": -900_00 }, "новий КЕКВ витрачається, старий вивільняється");
-  assert.equal(report.impact.total, 48_000_00 - 900_00);
+  assert.deepEqual(report.impact.perKekv, { "3110": 48_000_00 }, "новий КЕКВ витрачається; старий не змінюється");
+  assert.equal(report.impact.total, 48_000_00);
   assert.ok(report.warnings.some((w) => w.details["scope"] === "3110"), "разом із заявками «у роботі» перевищено залишок 3110");
 
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line] } });

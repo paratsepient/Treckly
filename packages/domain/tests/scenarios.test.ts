@@ -53,7 +53,7 @@ test("E6: Голова затверджує — резерв бюджету, в�
   const id = submitted(world, [byList("l1", "p2", 2), replacement("l2", "p1", 1, "3110", 120_00)]);
   advanceTo(world, [id], 5);
   approveAt(world, formAt(world, 5, [id]), 9001);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 2 * 50_00 - 100_00);
+  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 2 * 50_00, "старий КЕКВ заміни не вивільняється");
   assert.equal(world.budget.perKekv["3110"]?.approvedMinor, 120_00);
   apply(world, issueExtracts(world.ctx, meta(system), { requests: [get(world, id)] }));
   assert.equal(get(world, id).status, "extract_issued");

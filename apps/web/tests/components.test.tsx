@@ -117,7 +117,7 @@ const budget = {
     { scope: "3110", limitMinor: 400_00, approvedMinor: 100_00, inWorkMinor: 200_00, remainingMinor: 300_00 },
   ],
 };
-const okReport = { ok: true, errors: [], warnings: [], impact: { perKekv: { "3110": 100_00, "2210": -20_00 }, total: 80_00 }, inWork: { perKekv: {}, total: 0 } };
+const okReport = { ok: true, errors: [], warnings: [], impact: { perKekv: { "3110": 100_00 }, total: 100_00 }, inWork: { perKekv: {}, total: 0 } };
 
 test("панель перевірок: порожній стан, поки немає рядків", () => {
   const { container, unmount } = render(<CheckPanel report={null} budget={budget} rowOf={new Map()} />);
@@ -130,7 +130,7 @@ test("панель перевірок: усе гаразд — позначка 
   assert.match(text(container), /Перевірки пройдено/);
   const cells = (scope: string) => [...container.querySelectorAll("tbody tr")].find((tr) => text(tr.querySelector("th")) === scope)!.querySelectorAll("td");
   assert.match(text(cells("3110")[1]!), /\+100/, "витрата на новому КЕКВ");
-  assert.match(text(cells("2210")[1]!), /−20/, "вивільнення на старому КЕКВ");
+  assert.equal(text(cells("2210")[1]!), "—", "старий КЕКВ заміни не змінюється: вивільнення немає");
   assert.equal(text(cells("3110")[2]!).replace(/\s/g, ""), "200");
   assert.match(text(container.querySelector("tbody tr th")), /Усього/);
   unmount();

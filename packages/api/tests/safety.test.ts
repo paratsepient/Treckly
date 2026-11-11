@@ -70,17 +70,35 @@ test("відкат: збій під час запису скасовує й по
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)] }, key: "create" });
   const journalBefore = await h.count("journal");
 
-  // Два рядки з одним id: оновлення заявки вже виконано, а вставка рядків порушує ключ таблиці.
-  const line = lineOf(battery.id, "2210", 1);
-  const error = await h.fail("editLines", AUTHOR_A, 500, { params: { id: request.id }, body: { lines: [line, line], expectedRevision: request.revision }, key: "broken" });
+  // Кількість поза діапазоном цілого типу бази: домен і контракт її приймають, а вставка рядків падає —
+  // уже після оновлення самої заявки. Усе, що команда встигла записати, має відкотитися.
+  const huge = lineOf(battery.id, "2210", 3_000_000_000);
+  const error = await h.fail("editLines", AUTHOR_A, 500, { params: { id: request.id }, body: { lines: [huge], expectedRevision: request.revision }, key: "broken" });
   assert.equal(error.code, "INTERNAL");
 
   assert.equal(await h.count("journal"), journalBefore, "журнал не змінився");
   const stored = (await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request;
   assert.equal(stored.revision, request.revision, "версія заявки відкотилась");
-  assert.equal(stored.lines.length, 1, "рядки лишились попередніми");
+  assert.equal(stored.lines[0]?.qty, 1, "рядки лишились попередніми");
   const keys = (await h.db.select().from(idempotencyKeys)).map((k) => k.key);
   assert.ok(keys.includes("create") && !keys.includes("broken"), "ключ невдалої команди не збережено — її можна повторити");
+});
+
+test("дублікат id рядків відхиляється доменом як 409, а не падає на базі; заявка не змінюється", async () => {
+  const h = await boot();
+  const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
+  const line = lineOf(battery.id, "2210", 1);
+  const [requests, journal] = [await h.count("requests"), await h.count("journal")];
+  const created = await h.fail("createRequest", AUTHOR_A, 409, { body: { lines: [line, line] } });
+  assert.equal(created.code, "INVALID_TRANSITION");
+  assert.equal(created.details?.["reason"], "DUPLICATE_LINE_ID");
+  assert.equal(await h.count("requests"), requests);
+
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line] } });
+  const edited = await h.fail("editLines", AUTHOR_A, 409, { params: { id: request.id }, body: { lines: [line, line], expectedRevision: request.revision } });
+  assert.equal(edited.details?.["reason"], "DUPLICATE_LINE_ID");
+  assert.equal((await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request.revision, request.revision);
+  assert.equal(await h.count("journal"), journal + 1, "записано лише створення першої заявки");
 });
 
 test("журнал через API змінити неможливо, а база його захищає", async () => {
