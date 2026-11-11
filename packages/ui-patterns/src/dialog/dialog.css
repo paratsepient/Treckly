@@ -1,0 +1,86 @@
+/*
+ * Діалог: рівень 3 (modal) — плаваюча поверхня, радіус dialog, тінь modal над backdrop.
+ * Анімація — лише прозорість (як у Drawer): transform створив би containing block
+ * для fixed-підказок усередині.
+ */
+.ixp-dialog {
+  box-sizing: border-box;
+  display: none;
+  width: min(calc(var(--ix-layout-inspector-width) * 1.25), calc(100vw - var(--ix-space-8)));
+  max-width: none;
+  max-height: calc(100dvh - var(--ix-space-16));
+  margin: auto;
+  padding: 0;
+  background: var(--ix-surface-overlay);
+  border: 0;
+  border-radius: var(--ix-radius-dialog);
+  /* Межа для forced-colors: без неї діалог зливається з backdrop. */
+  outline: 1px solid transparent;
+  box-shadow: var(--ix-shadow-modal);
+  color: var(--ix-foreground);
+}
+
+.ixp-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: ixp-dialog-in var(--ix-duration-normal) var(--ix-easing-enter);
+}
+
+.ixp-dialog[data-size="medium"] {
+  width: min(calc(var(--ix-layout-inspector-width) * 2), calc(100vw - var(--ix-space-8)));
+}
+
+.ixp-dialog::backdrop {
+  background: var(--ix-backdrop);
+}
+
+.ixp-dialog__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-2);
+  padding: var(--ix-space-4) var(--ix-space-4) var(--ix-space-2) var(--ix-space-6);
+}
+
+.ixp-dialog__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font: var(--ix-font-heading-md);
+}
+
+.ixp-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.ixp-dialog__content {
+  display: grid;
+  gap: var(--ix-space-4);
+  padding: var(--ix-space-2) var(--ix-space-6) var(--ix-space-4);
+}
+
+.ixp-dialog__description {
+  margin: 0;
+  color: var(--ix-foreground-secondary);
+}
+
+.ixp-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--ix-space-2);
+  padding: var(--ix-space-4) var(--ix-space-6);
+  border-top: 1px solid var(--ix-border);
+}
+
+@keyframes ixp-dialog-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ixp-dialog[open] {
+    animation: none;
+  }
+}

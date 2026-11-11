@@ -1,0 +1,28 @@
+/*
+ * Стилі @index/ui. Підключаються один раз у застосунку: `@import "@index/ui/styles.css";`.
+ * Токени (і локальний Inter) імпортуються тут, тому окремо їх підключати не потрібно.
+ *
+ * Правила для всіх файлів компонентів:
+ * - лише семантичні токени `--ix-*`; примітиви `--ix-color-*` і літерали кольорів заборонені тестом;
+ * - `data-ix-preview="hover|active|focus"` — лише для Playground і візуальних перевірок:
+ *   дозволяє показати стан без реальної взаємодії. У продукті цей атрибут не використовується.
+ */
+@import "@index/design-tokens/tokens.css";
+@import "./internal/base.css";
+@import "./internal/focus.css";
+@import "./button/button.css";
+@import "./input/field.css";
+@import "./choice/choice.css";
+@import "./select/select.css";
+@import "./scroll-area/scroll-area.css";
+@import "./tabs/tabs.css";
+@import "./segmented/segmented.css";
+@import "./tooltip/tooltip.css";
+@import "./brand/brand.css";
+@import "./chart/chart.css";
+@import "./icon/icon.css";
+@import "./card/card.css";
+@import "./feedback/feedback.css";
+@import "./table/table.css";
+@import "./popover/popover.css";
+@import "./graph/graph.css";

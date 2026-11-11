@@ -1,0 +1,142 @@
+/*
+ * SegmentedControl: заглиблений трек і піднятий активний сегмент.
+ * Індикатор рухається transform — композитна анімація без перерахунку layout.
+ * --segment-count / --segment-index — локальна геометрія компонента, не токени.
+ */
+.ix-segmented {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: var(--ix-space-1);
+  justify-items: start;
+}
+
+.ix-segmented__legend {
+  padding: 0;
+  margin-bottom: var(--ix-space-1);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body-strong);
+}
+
+/*
+ * Ширина max-content + колонки 1fr: усі сегменти дорівнюють найширшому, тож індикатор
+ * позиціонується лише transform, без вимірювання DOM. Компонент розрахований на кілька
+ * коротких значень; довгий перелік — це Select або RadioGroup.
+ */
+.ix-segmented__track {
+  position: relative;
+  display: grid;
+  width: max-content;
+  grid-template-columns: repeat(var(--segment-count), 1fr);
+  padding: var(--ix-space-1);
+  background: var(--ix-surface-inset);
+  border-radius: var(--ix-radius-round);
+  box-shadow: var(--ix-shadow-inset);
+}
+
+.ix-segmented__indicator {
+  position: absolute;
+  top: var(--ix-space-1);
+  bottom: var(--ix-space-1);
+  left: var(--ix-space-1);
+  width: calc((100% - 2 * var(--ix-space-1)) / var(--segment-count));
+  background-color: var(--ix-surface-raised);
+  background-image: var(--ix-tonal-raised);
+  /* У v1.2 без рамки: форму дає опукла тінь (обідок рамки читався як обводка). */
+  border: var(--ix-control-border-width) solid var(--ix-raised-border);
+  border-radius: var(--ix-radius-round);
+  /* Індикатор усередині треку: коротка тінь не виходить за його межі. */
+  box-shadow: var(--ix-shadow-control-nested);
+  transform: translateX(calc(100% * var(--segment-index)));
+  transition: transform var(--ix-duration-normal) var(--ix-easing-soft);
+}
+
+.ix-segmented__indicator[hidden] {
+  display: none;
+}
+
+.ix-segmented__option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ix-space-2);
+  /* Без min-width: 0 — автоматичний мінімум grid не дає сегменту стати вужчим за підпис. */
+  min-height: var(--ix-space-6);
+  padding: 0 var(--ix-space-4);
+  border-radius: var(--ix-radius-round);
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-body-strong);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-segmented[data-icon-only] .ix-segmented__option {
+  padding: 0 var(--ix-space-3);
+}
+
+/*
+ * Вузький екран (нижче межі компактного режиму layout, 768 px): чотири сегменти з
+ * відступами 16 px не вміщалися в 375 px. Колонки лишаються рівними — індикатор і далі
+ * зсувається лише transform.
+ */
+@media (max-width: 767px) {
+  .ix-segmented__option {
+    padding: 0 var(--ix-space-2);
+  }
+}
+
+.ix-segmented__option:hover:not([data-disabled]),
+.ix-segmented__option[data-ix-preview="hover"],
+.ix-segmented__option[data-checked] {
+  color: var(--ix-foreground);
+}
+
+.ix-segmented__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+/* Фокус на сегменті, а не на прихованому input; трек не обрізає, тому світіння зовнішнє. */
+.ix-segmented__option:has(.ix-segmented__input:focus-visible),
+.ix-segmented__option[data-ix-preview="focus"] {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-steady-shadow);
+}
+
+.ix-segmented__option[data-disabled],
+.ix-segmented:disabled .ix-segmented__option {
+  color: var(--ix-disabled-foreground);
+  cursor: not-allowed;
+}
+
+.ix-segmented__icon {
+  display: inline-flex;
+}
+
+.ix-segmented__icon > svg {
+  width: var(--ix-space-4);
+  height: var(--ix-space-4);
+}
+
+/*
+ * Режим високої контрастності (Windows): браузер прибирає тіні й перефарбовує тло,
+ * тож стан, переданий лише ними, зникає. Тут його дублює системний колір Highlight
+ * (контур або межа), який forced-colors не змінює.
+ */
+@media (forced-colors: active) {
+  /* Індикатор — окремий елемент із тлом і тінню: без них лишається лише контур. */
+  .ix-segmented__indicator {
+    outline: var(--ix-focus-width) solid Highlight;
+    outline-offset: calc(var(--ix-focus-width) * -1);
+  }
+}

@@ -1,0 +1,113 @@
+/*
+ * Плаваючі панелі біля тригера (Popover, Menu): рівень 2 — плаваюча поверхня,
+ * тонкий контур контейнера (--ix-border) і тінь floating. Рендеряться порталом
+ * з position: fixed; до першого розрахунку позиції невидимі, щоб не блимати в куті.
+ */
+.ix-popover-anchor {
+  display: inline-flex;
+}
+
+.ix-popover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 900;
+  box-sizing: border-box;
+  min-width: var(--ix-layout-panel-min-width);
+  max-width: min(var(--ix-layout-inspector-width), calc(100vw - var(--ix-space-4)));
+  padding: var(--ix-space-3);
+  background: var(--ix-surface-overlay);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-floating);
+  box-shadow: var(--ix-shadow-floating);
+  outline: var(--ix-focus-width) solid transparent;
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+  visibility: hidden;
+}
+
+.ix-popover[data-positioned] {
+  visibility: visible;
+  animation: ix-popover-in var(--ix-duration-normal) var(--ix-easing-enter);
+}
+
+/* Сама панель фокусується лише як запасна ціль; власного світіння не потребує. */
+.ix-popover:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow), var(--ix-shadow-floating);
+}
+
+@keyframes ix-popover-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ix-popover[data-positioned] {
+    animation: none;
+  }
+}
+
+/* ---------- Menu ---------- */
+.ix-menu {
+  display: grid;
+  min-width: calc(var(--ix-layout-panel-min-width) * 0.75);
+  padding: var(--ix-space-1);
+}
+
+.ix-menu__item {
+  --icon-accent: currentColor;
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-2);
+  min-height: var(--ix-space-8);
+  margin: 0;
+  padding: 0 var(--ix-space-2);
+  background: transparent;
+  border: 0;
+  border-radius: var(--ix-radius-compact);
+  outline: var(--ix-focus-width) solid transparent;
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ix-menu__item:hover:not(:disabled),
+.ix-menu__item:focus-visible {
+  background: var(--ix-surface-hover);
+}
+
+.ix-menu__item:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow-inset);
+}
+
+/* Текст знищувальної дії — токен error: він перевірений на 4.5:1 як текст на поверхнях. */
+.ix-menu__item[data-destructive] {
+  color: var(--ix-error);
+}
+
+.ix-menu__item:disabled {
+  color: var(--ix-disabled-foreground);
+  cursor: not-allowed;
+}
+
+.ix-menu__icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.ix-menu__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ix-menu__separator {
+  height: 1px;
+  margin: var(--ix-space-1) 0;
+  background: var(--ix-border);
+}

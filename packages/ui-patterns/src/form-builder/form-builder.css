@@ -1,0 +1,59 @@
+/*
+ * Form Builder: таблиця полів займає поверхню, кнопка «Додати поле» — під нею,
+ * завжди видима (не прокручується разом із рядками).
+ */
+.ixp-field-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+  min-width: 0;
+  min-height: 0;
+}
+
+.ixp-field-table__table {
+  flex: 0 1 auto;
+}
+
+/* Кнопка стоїть на одній вертикалі з текстом клітинок (відступ клітинки — space-3). */
+.ixp-field-table__footer {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ix-space-2) var(--ix-space-4);
+  padding: 0 var(--ix-space-3) var(--ix-space-3);
+}
+
+/* Пояснення вимкненого типу: другорядний текст, іконка замка — та сама, що в позначці шаблону. */
+.ixp-field-table__hint {
+  --icon-accent: currentColor;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  margin: 0;
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+.ixp-field-table__name {
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-2);
+  min-width: 0;
+}
+
+.ixp-field-table__name > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Позначка не стискається: поле назви віддає місце першим. */
+.ixp-field-table__name > :not(:first-child) {
+  flex: none;
+}
+
+.ixp-field-table__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+}

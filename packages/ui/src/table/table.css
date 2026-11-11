@@ -1,0 +1,162 @@
+/*
+ * DataTable: плоский рівень 0 — тло поверхні, волосяні лінії-роздільники (--ix-border),
+ * без тіні. Заголовок липне до верху області прокрутки.
+ */
+.ix-table-scroll {
+  min-height: 0;
+}
+
+.ix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--ix-surface);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+}
+
+/* У лунці тло дає сама лунка (--ix-surface-inset): суцільна заливка таблиці закрила б заглиблення. */
+.ix-table[data-variant="well"] {
+  background: transparent;
+}
+
+.ix-table__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--ix-space-2) var(--ix-space-3);
+  background: var(--ix-surface-muted);
+  border-bottom: 1px solid var(--ix-border);
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-overline);
+  letter-spacing: var(--ix-font-overline-letter-spacing);
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ix-table__header[data-numeric] {
+  text-align: right;
+}
+
+.ix-table__cell {
+  padding: var(--ix-space-2) var(--ix-space-3);
+  border-bottom: 1px solid var(--ix-border);
+  font: var(--ix-font-body);
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.ix-table[data-density="compact"] .ix-table__cell {
+  padding-block: var(--ix-space-1);
+}
+
+.ix-table__cell[data-wrap] {
+  min-width: var(--ix-layout-panel-min-width);
+  white-space: normal;
+}
+
+/* Числа — табличні цифри й вирівнювання до кінця: розряди стоять один під одним. */
+.ix-table__cell[data-numeric] {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ix-table__cell[data-mono] {
+  font: var(--ix-font-mono);
+}
+
+.ix-table__row[data-selectable] {
+  cursor: pointer;
+}
+
+.ix-table__row:hover > .ix-table__cell {
+  background: var(--ix-surface-hover);
+}
+
+/* Поточний рядок: тло вибору і смуга 4 px на першій клітинці — стан не лише кольором. */
+.ix-table__row[aria-current="true"] > .ix-table__cell {
+  background: var(--ix-selection-background);
+  color: var(--ix-selection-foreground);
+}
+
+.ix-table__row[aria-current="true"] > .ix-table__cell:first-child {
+  box-shadow: inset var(--ix-space-1) 0 0 var(--ix-selection-indicator);
+}
+
+/* Кнопки в заголовках (сортування, вибір рядка) виглядають як текст клітинки. */
+.ix-table__sort,
+.ix-table__row-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--ix-radius-compact);
+  outline: var(--ix-focus-width) solid transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.ix-table__row-action {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: var(--ix-space-1);
+  transition: text-decoration-color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-table__row-action:hover {
+  text-decoration-color: currentColor;
+}
+
+.ix-table__sort:hover {
+  color: var(--ix-foreground);
+}
+
+.ix-table__sort:focus-visible,
+.ix-table__row-action:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow);
+}
+
+/* Одноколірна, як текст заголовка: акцент поруч із overline відволікав би від назви стовпця. */
+.ix-table__sort-mark {
+  --icon-accent: currentColor;
+  display: inline-flex;
+  flex: none;
+}
+
+.ix-table__sort-mark[data-direction="none"] {
+  opacity: 0.6;
+}
+
+/* Рядок стану займає всю ширину; лінія під ним не потрібна. */
+.ix-table__state-row > td {
+  padding: 0;
+  border-bottom: 0;
+}
+
+/*
+ * Режим високої контрастності (Windows): браузер прибирає тіні й перефарбовує тло,
+ * тож стан, переданий лише ними, зникає. Тут його дублює системний колір Highlight
+ * (контур або межа), який forced-colors не змінює.
+ */
+@media (forced-colors: active) {
+  /* Смуга поточного рядка — межа першої клітинки замість inset-тіні; ширина та сама. */
+  .ix-table__row[aria-current="true"] > .ix-table__cell:first-child {
+    border-left: var(--ix-space-1) solid Highlight;
+    padding-left: calc(var(--ix-space-3) - var(--ix-space-1));
+  }
+
+  .ix-table__row[aria-current="true"] > .ix-table__cell {
+    border-bottom-color: Highlight;
+  }
+}

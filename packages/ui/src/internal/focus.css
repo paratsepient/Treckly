@@ -1,0 +1,124 @@
+/*
+ * Пульсація фокуса (v1.2): хост у фокусі постійно малює перевірене світіння
+ * --ix-focus-steady-shadow (≥ 3:1), а поверх нього окремий шар <FocusPulse /> з ширшим
+ * ореолом --ix-focus-pulse-shadow повільно розгоряється й згасає. Анімується тільки
+ * opacity шару: без перерахунку тіней і layout у кожному кадрі. Фокус ніколи не зникає
+ * (рішення власника 05.11.2026 замість попереднього ризику з повним згасанням).
+ * При reduced motion ореол світиться постійно.
+ *
+ * Хост — елемент із класом .ix-focus-pulse; шар накриває його (inset: 0, border-radius: inherit).
+ * Хости в контейнерах з прокруткою (там і світіння внутрішнє) перевизначають
+ * --focus-pulse-shadow на --ix-focus-pulse-shadow-inset, інакше ореол обрізало б.
+ * У версіях токенів до v1.2 шар — none, а steady-тінь — звичайне кільце фокуса.
+ */
+.ix-focus-pulse {
+  --focus-pulse-shadow: var(--ix-focus-pulse-shadow);
+  position: relative;
+}
+
+.ix-focus-pulse__glow {
+  display: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: var(--focus-pulse-shadow);
+  opacity: 0;
+  animation: ix-focus-pulse var(--ix-focus-pulse-duration) var(--ix-easing-soft) infinite;
+}
+
+.ix-focus-pulse:focus-visible > .ix-focus-pulse__glow,
+.ix-focus-pulse[data-ix-preview="focus"] > .ix-focus-pulse__glow,
+.ix-focus-pulse:has(> :focus-visible) > .ix-focus-pulse__glow,
+.ix-focus-pulse:has(> [data-ix-preview="focus"]) > .ix-focus-pulse__glow,
+.ix-choice__input:focus-visible + .ix-focus-pulse > .ix-focus-pulse__glow,
+.ix-choice__input[data-ix-preview="focus"] + .ix-focus-pulse > .ix-focus-pulse__glow {
+  display: block;
+}
+
+/*
+ * Зв'язане світіння «папки»: у групі (data-pulse-group) контейнер із data-pulse-links
+ * містить хост-тригер (data-pulse-trigger) — вибрану вкладку; коли він у фокусі, світиться
+ * вся фігура (вкладка, вигини переходу, панель data-pulse-link) одним шаром
+ * .ix-focus-pulse__outline — SVG-контуром, який будує компонент. Один шар — одна
+ * прозорість: окремі шари вкладки й панелі на напівпрозорих фазах пульсу давали шви.
+ * Власне світіння тригера в цьому режимі приховане.
+ */
+[data-pulse-group] {
+  position: relative;
+  /* Контур лежить під фігурами (z-index: -1), але над тлом батьків. */
+  isolation: isolate;
+}
+
+.ix-focus-pulse__outline {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ix-focus-pulse__outline path {
+  fill: var(--ix-focus-pulse-color);
+  stroke: var(--ix-focus-pulse-color);
+  stroke-linejoin: round;
+}
+
+/*
+ * Обведення по обидва боки контуру: зовнішня половина — spread світіння, внутрішню закриває
+ * фігура. Смуга (band) постійна, як steady-світіння хостів; пульсує лише ореол (halo).
+ */
+.ix-focus-pulse__halo {
+  stroke-width: calc(2 * var(--ix-focus-pulse-spread));
+  opacity: 0;
+  animation: ix-focus-pulse var(--ix-focus-pulse-duration) var(--ix-easing-soft) infinite;
+}
+
+.ix-focus-pulse__band {
+  stroke-width: calc(2 * var(--ix-focus-glow-spread));
+}
+
+[data-pulse-group]:has(> [data-pulse-links] > [data-pulse-trigger]:is(:focus-visible, [data-ix-preview="focus"])) > .ix-focus-pulse__outline {
+  display: block;
+}
+
+[data-pulse-links] > [data-pulse-trigger] > .ix-focus-pulse__glow {
+  display: none;
+}
+
+/*
+ * Зв'язаний тригер не малює власного постійного світіння: його дає смуга SVG-контуру всієї
+ * папки. Інакше на межі вкладки й панелі світіння двоїлося б і давало шов.
+ */
+[data-pulse-links] > [data-pulse-trigger]:is(:focus-visible, [data-ix-preview="focus"]) {
+  box-shadow: none;
+}
+
+@keyframes ix-focus-pulse {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Без руху світіння постійне: інакше фокус на хостах зник би зовсім. */
+@media (prefers-reduced-motion: reduce) {
+  .ix-focus-pulse__glow {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Без руху ореол «папки» світиться постійно, як і звичайне світіння. */
+@media (prefers-reduced-motion: reduce) {
+  .ix-focus-pulse__halo {
+    animation: none;
+    opacity: 1;
+  }
+}

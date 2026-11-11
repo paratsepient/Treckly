@@ -1,0 +1,47 @@
+/*
+ * Іконки: лінія 1.5 px на сітці 24, заокруглені кінці й кути.
+ * Контур бере колір тексту поруч (currentColor) — у неактивній кнопці він теж
+ * приглушиться; акцент — колір теми, як лацкани емблеми.
+ */
+.ix-icon {
+  display: inline-block;
+  flex: none;
+  width: var(--ix-space-5);
+  height: var(--ix-space-5);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: middle;
+}
+
+.ix-icon[data-size="16"] {
+  width: var(--ix-space-4);
+  height: var(--ix-space-4);
+}
+
+.ix-icon[data-size="24"] {
+  width: var(--ix-space-6);
+  height: var(--ix-space-6);
+}
+
+.ix-icon__base {
+  stroke: currentColor;
+}
+
+/*
+ * Акцент — --ix-icon-accent (тон accent, що тримає 3:1 на всіх поверхнях і гранях кнопок).
+ * Контейнер може зробити іконку одноколірною через --icon-accent: currentColor — так
+ * роблять заповнені кнопки (акцент злився б із тлом) і вимкнений стан (яскравий акцент
+ * читався б як активний).
+ */
+.ix-icon__accent {
+  stroke: var(--icon-accent, var(--ix-icon-accent));
+}
+
+/* Windows High Contrast: системна палітра має один колір тексту — іконка одноколірна. */
+@media (forced-colors: active) {
+  .ix-icon {
+    --icon-accent: currentColor;
+  }
+}

@@ -1,0 +1,56 @@
+/*
+ * Drawer на нативному <dialog>. Анімація — лише прозорість: transform створив би
+ * containing block, і fixed-підказки всередині Drawer позиціонувалися б неправильно.
+ */
+.ixp-drawer {
+  box-sizing: border-box;
+  width: min(var(--ix-layout-inspector-width), calc(100vw - var(--ix-space-12)));
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  inset-block: 0;
+  border: 0;
+  background: var(--ix-surface);
+  color: var(--ix-foreground);
+  box-shadow: var(--ix-shadow-modal);
+}
+
+.ixp-drawer[data-side="start"] {
+  inset-inline: 0 auto;
+  border-right: 1px solid var(--ix-border);
+}
+
+.ixp-drawer[data-side="end"] {
+  inset-inline: auto 0;
+  border-left: 1px solid var(--ix-border);
+}
+
+.ixp-drawer[open] {
+  animation: ixp-fade-in var(--ix-duration-normal) var(--ix-easing-enter);
+}
+
+.ixp-drawer::backdrop {
+  background: var(--ix-backdrop);
+}
+
+.ixp-drawer__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+@keyframes ixp-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Тривалість у токені вже 0 при reduced motion; вимикаємо й саму анімацію для певності. */
+@media (prefers-reduced-motion: reduce) {
+  .ixp-drawer[open] {
+    animation: none;
+  }
+}

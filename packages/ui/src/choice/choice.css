@@ -1,0 +1,285 @@
+/*
+ * Checkbox, Radio, Switch: нативний input лежить поверх намальованого контрола
+ * з opacity 0. Стан читаємо з input через сусідній селектор `+`.
+ */
+.ix-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ix-space-2);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+}
+
+.ix-choice__control {
+  position: relative;
+  flex: none;
+  width: var(--ix-space-4);
+  height: var(--ix-space-4);
+  /* Вирівнювання контрола 16 px по центру першого рядка тексту 20 px. */
+  margin-top: 2px;
+}
+
+.ix-choice__input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Прихована мітка не займає місця: поле стоїть рівно в клітинці таблиці. */
+.ix-choice[data-hide-label] {
+  gap: 0;
+}
+
+.ix-choice__text {
+  display: grid;
+  gap: var(--ix-space-1);
+  min-width: 0;
+}
+
+.ix-choice__label {
+  cursor: pointer;
+}
+
+.ix-choice__description,
+.ix-choice__error {
+  font: var(--ix-font-caption);
+}
+
+.ix-choice__description {
+  color: var(--ix-foreground-muted);
+}
+
+.ix-choice__error {
+  color: var(--ix-error);
+}
+
+.ix-choice[data-disabled] .ix-choice__label,
+.ix-choice[data-disabled] .ix-choice__description {
+  color: var(--ix-disabled-foreground);
+  cursor: not-allowed;
+}
+
+.ix-choice__input:disabled {
+  cursor: not-allowed;
+}
+
+/* Спільна поверхня поля checkbox і radio. */
+.ix-checkbox__box,
+.ix-radio__circle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--ix-surface-inset);
+  border: var(--ix-control-border-width) solid var(--ix-well-border);
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  box-shadow: var(--ix-shadow-inset);
+  color: var(--ix-action-primary-foreground);
+  transition:
+    background-color var(--ix-duration-fast) var(--ix-easing-standard),
+    border-color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-checkbox__box {
+  border-radius: var(--ix-radius-compact);
+}
+
+.ix-radio__circle {
+  border-radius: var(--ix-radius-round);
+}
+
+.ix-choice:not([data-disabled]):hover .ix-checkbox__box,
+.ix-choice:not([data-disabled]):hover .ix-radio__circle,
+.ix-choice__input[data-ix-preview="hover"] + .ix-checkbox__box,
+.ix-choice__input[data-ix-preview="hover"] + .ix-radio__circle {
+  border-color: var(--ix-well-border-hover);
+}
+
+.ix-choice__input:focus-visible + .ix-checkbox__box,
+.ix-choice__input:focus-visible + .ix-radio__circle,
+.ix-choice__input:focus-visible + .ix-switch__track,
+.ix-choice__input[data-ix-preview="focus"] + .ix-checkbox__box,
+.ix-choice__input[data-ix-preview="focus"] + .ix-radio__circle,
+.ix-choice__input[data-ix-preview="focus"] + .ix-switch__track {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-steady-shadow), var(--ix-shadow-inset);
+}
+
+.ix-choice__input[aria-invalid="true"] + .ix-checkbox__box,
+.ix-choice__input[aria-invalid="true"] + .ix-radio__circle {
+  border-color: var(--ix-error);
+  /* У v1.2 рамки немає — межу помилки дає внутрішнє кільце. */
+  box-shadow: var(--ix-well-error-ring), var(--ix-shadow-inset);
+}
+
+/* Checkbox */
+.ix-checkbox__check,
+.ix-checkbox__dash {
+  display: none;
+  width: 14px;
+  height: 14px;
+}
+
+.ix-choice__input:checked + .ix-checkbox__box,
+.ix-choice__input:indeterminate + .ix-checkbox__box,
+.ix-choice__input:checked + .ix-radio__circle {
+  background-color: var(--ix-action-primary);
+  background-image: var(--ix-tonal-raised);
+  border-color: var(--ix-action-primary);
+  box-shadow: none;
+}
+
+.ix-choice__input:checked:not(:indeterminate) + .ix-checkbox__box .ix-checkbox__check,
+.ix-choice__input:indeterminate + .ix-checkbox__box .ix-checkbox__dash {
+  display: block;
+}
+
+/* Radio: внутрішня точка кольору тексту на primary. */
+.ix-choice__input:checked + .ix-radio__circle::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--ix-radius-round);
+  background: currentColor;
+}
+
+/* Неактивне поле лишається видимим контуром disabled-foreground, щоб його форму було видно. */
+.ix-choice__input:disabled + .ix-checkbox__box,
+.ix-choice__input:disabled + .ix-radio__circle {
+  background: var(--ix-disabled-background);
+  border-color: var(--ix-disabled-foreground);
+  box-shadow: none;
+  color: var(--ix-disabled-foreground);
+}
+
+/* Switch */
+.ix-choice__control.ix-switch {
+  width: var(--ix-space-8);
+  height: var(--ix-space-5);
+  margin-top: 0;
+}
+
+.ix-switch__track {
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--ix-surface-inset);
+  border: var(--ix-control-border-width) solid var(--ix-well-border);
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  border-radius: var(--ix-radius-round);
+  box-shadow: var(--ix-shadow-inset);
+  transition:
+    background-color var(--ix-duration-fast) var(--ix-easing-standard),
+    border-color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-switch__thumb {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: var(--ix-space-3);
+  height: var(--ix-space-3);
+  border-radius: var(--ix-radius-round);
+  background: var(--ix-foreground-muted);
+  /* Повзунок усередині треку: коротка тінь не виходить за його межі. */
+  box-shadow: var(--ix-shadow-control-nested);
+  transform: translateY(-50%);
+  transition: transform var(--ix-duration-normal) var(--ix-easing-soft);
+}
+
+.ix-choice:not([data-disabled]):hover .ix-switch__track,
+.ix-choice__input[data-ix-preview="hover"] + .ix-switch__track {
+  border-color: var(--ix-well-border-hover);
+}
+
+.ix-choice__input:checked + .ix-switch__track {
+  background-color: var(--ix-action-primary);
+  background-image: var(--ix-tonal-raised);
+  border-color: var(--ix-action-primary);
+  box-shadow: none;
+}
+
+.ix-choice__input:checked + .ix-switch__track .ix-switch__thumb {
+  background: var(--ix-action-primary-foreground);
+  transform: translate(var(--ix-space-3), -50%);
+}
+
+.ix-choice__input:disabled + .ix-switch__track {
+  background: var(--ix-disabled-background);
+  border-color: var(--ix-disabled-foreground);
+  box-shadow: none;
+}
+
+.ix-choice__input:disabled + .ix-switch__track .ix-switch__thumb {
+  background: var(--ix-disabled-foreground);
+  box-shadow: none;
+}
+
+/* RadioGroup */
+.ix-radio-group {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: var(--ix-space-2);
+}
+
+.ix-radio-group > legend {
+  padding: 0;
+  margin-bottom: var(--ix-space-2);
+}
+
+.ix-radio-group__items {
+  display: grid;
+  gap: var(--ix-space-2);
+}
+
+.ix-radio-group[data-orientation="horizontal"] .ix-radio-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-4);
+}
+
+/*
+ * Режим високої контрастності (Windows): браузер прибирає тіні й перефарбовує тло,
+ * тож стан, переданий лише ними, зникає. Тут його дублює системний колір Highlight
+ * (контур або межа), який forced-colors не змінює.
+ */
+@media (forced-colors: active) {
+  .ix-choice__input:checked + .ix-checkbox__box,
+  .ix-choice__input:indeterminate + .ix-checkbox__box,
+  .ix-choice__input:checked + .ix-radio__circle,
+  .ix-choice__input:checked + .ix-switch__track {
+    border-color: Highlight;
+  }
+
+  /*
+   * Точка radio й повзунок switch — фігури з тлом, яке forced-colors замінив би на Canvas;
+   * forced-color-adjust: none лишає їм системні кольори, задані тут явно.
+   */
+  .ix-choice__input:checked + .ix-radio__circle::after,
+  .ix-switch__thumb {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+
+  .ix-choice__input:checked + .ix-switch__track .ix-switch__thumb {
+    background: Highlight;
+  }
+
+  .ix-choice__input:disabled + .ix-switch__track .ix-switch__thumb {
+    background: GrayText;
+  }
+}

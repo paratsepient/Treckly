@@ -1,0 +1,59 @@
+/* FeedbackLayer: один шар повідомлень у правому нижньому куті. */
+.ixp-feedback {
+  position: fixed;
+  right: var(--ix-space-4);
+  bottom: var(--ix-space-4);
+  /*
+   * Порядок плаваючих шарів: Popover/Menu 900 < повідомлення 950 < Tooltip 1000.
+   * Повідомлення не мають ховатися під відкритим меню, а підказка — під повідомленням.
+   */
+  z-index: 950;
+  display: grid;
+  gap: var(--ix-space-2);
+  width: min(400px, calc(100vw - var(--ix-space-8)));
+  /* Порожній шар не перехоплює кліки по робочій області. */
+  pointer-events: none;
+}
+
+.ixp-feedback__stack {
+  display: grid;
+  gap: var(--ix-space-2);
+}
+
+.ixp-feedback__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ix-space-3);
+  padding: var(--ix-space-3) var(--ix-space-2) var(--ix-space-3) var(--ix-space-4);
+  background: var(--ix-surface-overlay);
+  border: 1px solid var(--ix-border);
+  border-left: var(--ix-space-1) solid var(--ixp-feedback-tone);
+  border-radius: var(--ix-radius-container);
+  box-shadow: var(--ix-shadow-floating);
+  color: var(--ix-foreground);
+  pointer-events: auto;
+}
+
+/* Колір тону — лише смуга; текст лишається foreground для читабельності на overlay. */
+.ixp-feedback__item[data-tone="saving"],
+.ixp-feedback__item[data-tone="info"] { --ixp-feedback-tone: var(--ix-info); }
+.ixp-feedback__item[data-tone="success"] { --ixp-feedback-tone: var(--ix-success); }
+.ixp-feedback__item[data-tone="warning"] { --ixp-feedback-tone: var(--ix-warning); }
+.ixp-feedback__item[data-tone="error"] { --ixp-feedback-tone: var(--ix-error); }
+
+.ixp-feedback__text {
+  flex: 1;
+  min-width: 0;
+  padding-top: var(--ix-space-1);
+}
+
+.ixp-feedback__title {
+  margin: 0;
+  font: var(--ix-font-body-strong);
+}
+
+.ixp-feedback__description {
+  margin: var(--ix-space-1) 0 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}

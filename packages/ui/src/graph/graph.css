@@ -1,0 +1,514 @@
+/*
+ * Графовий редактор. Полотно — рівень 0 (тон каркаса + сітка точок); ноди — об'єкти
+ * всередині фрейму полотна, тож тінь вкладена (floating-nested). Вибір ноди — та сама мова,
+ * що в Card: контур кольору індикатора і внутрішнє кільце.
+ */
+.ix-graph {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  /*
+   * Тон каркаса (як вузька смуга навігації), а не поверхні: полотно — глибший рівень під
+   * нодами, тож ноди surface-raised відокремлюються від нього сильніше.
+   */
+  background: var(--ix-background);
+  /* Вікно у світ: вміст поза видом обрізається, доступ до нього дає pan/zoom. */
+  overflow: hidden;
+  cursor: grab;
+  /* Дотик панорамує полотно, а не прокручує сторінку. */
+  touch-action: none;
+}
+
+/* Ліва кнопка виділяє рамкою — звичайний курсор; «рука» лише під час огляду правою кнопкою. */
+.ix-graph[data-marquee]:not([data-panning]) {
+  cursor: default;
+}
+
+/*
+ * Рамка виділення — у координатах екрана поверх світу: контур 1 px не масштабується з видом.
+ * Пунктир кольору індикатора вибору й тло вибору напівпрозорим шаром (::before), щоб ноди
+ * під рамкою лишалися видимими.
+ */
+.ix-graph-marquee {
+  position: absolute;
+  z-index: 4;
+  box-sizing: border-box;
+  border: 1px dashed var(--ix-selection-indicator);
+  border-radius: var(--ix-radius-compact);
+  pointer-events: none;
+}
+
+.ix-graph-marquee::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ix-selection-background);
+  opacity: 0.35;
+}
+
+.ix-graph[data-panning] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* Полотно фокусується для панорамування з клавіатури: кільце всередині, бо краї обрізає поверхня. */
+.ix-graph:focus {
+  outline: none;
+}
+
+.ix-graph:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-steady-shadow-inset);
+}
+
+/* Сітка на весь вид; патерн зсувається й масштабується разом зі світом. */
+.ix-graph__grid-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/*
+ * Світ — шар з transform виду. Позиціонований: від нього рахуються offset-координати
+ * нод і сокетів (GraphCanvas.worldBox), тож ребра не перераховуються при pan/zoom.
+ */
+.ix-graph__world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+/* Ребра в координатах світу: шар нульового розміру, лінії виходять за нього. */
+.ix-graph__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Ноди мають власні дії: курсор панорамування на них не поширюється. */
+.ix-graph-node {
+  cursor: default;
+}
+
+.ix-graph__dot {
+  fill: var(--ix-border-strong);
+  opacity: 0.5;
+}
+
+/* ---------- Ребро ---------- */
+.ix-graph-edge__line {
+  fill: none;
+  stroke: var(--ix-foreground-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ix-graph-edge[data-state="selected"] .ix-graph-edge__line {
+  stroke: var(--ix-selection-indicator);
+  stroke-width: 3;
+}
+
+/* Невалідне ребро: колір помилки і пунктир — розрізняється і без кольору. */
+.ix-graph-edge[data-state="invalid"] .ix-graph-edge__line {
+  stroke: var(--ix-error);
+}
+
+.ix-graph-edge[data-state="invalid"] .ix-graph-edge__line {
+  stroke-dasharray: 6 4;
+}
+
+/* Чернеткове (тягнеться мишею, ще не збережене): короткий пунктир нейтрального тону. */
+.ix-graph-edge[data-state="pending"] .ix-graph-edge__line {
+  stroke-dasharray: 2 4;
+}
+
+/* ---------- Нода ---------- */
+.ix-graph-node {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  width: calc(var(--ix-space-12) * 4);
+  background: var(--ix-surface-raised);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  box-shadow: var(--ix-shadow-floating-nested);
+  color: var(--ix-foreground);
+}
+
+.ix-graph-node[data-selected] {
+  border-color: var(--ix-selection-indicator);
+  box-shadow: inset 0 0 0 1px var(--ix-selection-indicator), var(--ix-shadow-floating-nested);
+}
+
+.ix-graph-node__header {
+  display: grid;
+  gap: var(--ix-space-1);
+  margin: 0;
+  padding: var(--ix-space-2) var(--ix-space-3);
+  background: none;
+  border: 0;
+  border-radius: var(--ix-radius-container);
+  outline: var(--ix-focus-width) solid transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+button.ix-graph-node__header {
+  cursor: pointer;
+}
+
+/*
+ * Рухома нода тягнеться за будь-яке місце: курсор «схопити», дотик не прокручує сторінку,
+ * текст не виділяється під час руху.
+ */
+.ix-graph-node[data-movable],
+.ix-graph-node[data-movable] button.ix-graph-node__header {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+/*
+ * Під час руху нода піднімається над іншими: м'яка вища тінь floating-lifted (довга
+ * floating для руху надто темна), курсор «тримаю».
+ */
+.ix-graph-node[data-dragging],
+.ix-graph-node[data-dragging] button.ix-graph-node__header {
+  cursor: grabbing;
+}
+
+.ix-graph-node[data-dragging] {
+  z-index: 2;
+  box-shadow: var(--ix-shadow-floating-lifted);
+}
+
+.ix-graph-node[data-dragging][data-selected] {
+  box-shadow: inset 0 0 0 1px var(--ix-selection-indicator), var(--ix-shadow-floating-lifted);
+}
+
+button.ix-graph-node__header:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow);
+}
+
+.ix-graph-node__type {
+  --icon-accent: currentColor;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-overline);
+  letter-spacing: var(--ix-font-overline-letter-spacing);
+  text-transform: uppercase;
+}
+
+/* Іконка типу двоколірна (акцент — теракота), підпис — приглушений текст. */
+.ix-graph-node__icon {
+  --icon-accent: var(--ix-icon-accent);
+  display: inline-flex;
+  color: var(--ix-foreground-secondary);
+}
+
+.ix-graph-node__name {
+  overflow-wrap: anywhere;
+  font: var(--ix-font-body-strong);
+}
+
+.ix-graph-node__ports {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--ix-space-2);
+  padding: var(--ix-space-2) 0;
+  border-top: 1px solid var(--ix-border);
+}
+
+.ix-graph-node__port-list {
+  display: grid;
+  align-content: start;
+  gap: var(--ix-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Порт ---------- */
+.ix-graph-port {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--ix-space-5);
+  padding: 0 var(--ix-space-3);
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.ix-graph-port[data-side="output"] {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.ix-graph-port__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * Сокет — гніздо на краю ноди: лунка (surface-inset + inset-тінь), центр рівно на контурі.
+ * Під'єднаний сокет заповнений кольором індикатора; невалідний — кільце помилки.
+ */
+.ix-graph-port__socket {
+  position: absolute;
+  top: 50%;
+  width: var(--ix-space-3);
+  height: var(--ix-space-3);
+  background: var(--ix-surface-inset);
+  border: 1px solid var(--ix-border-strong);
+  border-radius: var(--ix-radius-round);
+  box-shadow: var(--ix-shadow-inset);
+  transform: translateY(-50%);
+}
+
+.ix-graph-port[data-side="input"] .ix-graph-port__socket {
+  left: calc(var(--ix-space-3) / -2 - 1px);
+}
+
+.ix-graph-port[data-side="output"] .ix-graph-port__socket {
+  right: calc(var(--ix-space-3) / -2 - 1px);
+}
+
+.ix-graph-port[data-connected] .ix-graph-port__socket {
+  background: var(--ix-selection-indicator);
+  border-color: var(--ix-selection-indicator);
+  box-shadow: none;
+}
+
+.ix-graph-port[data-invalid] .ix-graph-port__socket {
+  border-color: var(--ix-error);
+  box-shadow: var(--ix-well-error-ring);
+}
+
+.ix-graph-port[data-invalid] .ix-graph-port__label {
+  color: var(--ix-error);
+}
+
+.ix-graph-node__status {
+  display: flex;
+  padding: 0 var(--ix-space-3) var(--ix-space-2);
+}
+
+/*
+ * Розсунутий сусід плавно переходить на нове місце попереднього результату; переміщувана
+ * нода йде за курсором без затримки (перехід лише для data-pushed). transform, не left/top:
+ * положення — дані власника, а зсув — тимчасовий.
+ */
+.ix-graph-node[data-pushed],
+.ix-graph-frame {
+  transition: transform var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-graph-frame[data-dragging] {
+  transition: none;
+}
+
+/* Закріплена нода не тягнеться: звичайний курсор і позначка-замок у рядку типу. */
+.ix-graph-node__pin {
+  display: inline-flex;
+  margin-left: auto;
+  color: var(--ix-foreground-muted);
+}
+
+/* Нода в згорнутому фреймі: розміри лишаються (полотно їх вимірює), але її не видно. */
+.ix-graph-node[data-hidden] {
+  visibility: hidden;
+}
+
+/* ---------- Ребро: ціль подвійного кліку й згини ---------- */
+.ix-graph-edge__hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 12;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+/* Під час перетягування ребра не перехоплюють курсор. */
+.ix-graph[data-dragging] .ix-graph-edge__hit {
+  pointer-events: none;
+}
+
+/* Шар над нодами: напрямні й маркери згинів (лише маркери ловлять курсор). */
+.ix-graph__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ix-graph-guide {
+  stroke: var(--ix-selection-indicator);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.ix-graph-bend {
+  fill: var(--ix-surface-raised);
+  stroke: var(--ix-foreground-muted);
+  stroke-width: 1.5;
+  pointer-events: all;
+  cursor: move;
+}
+
+.ix-graph-bend:hover {
+  stroke: var(--ix-selection-indicator);
+}
+
+/*
+ * Контур попереднього результату: куди стане нода чи фрейм після відпускання. Колір
+ * індикатора вибору — «тут буде»; якщо місця немає, контур помилки на старому місці.
+ */
+.ix-graph-ghost {
+  position: absolute;
+  z-index: 0;
+  box-sizing: border-box;
+  border: 2px dashed var(--ix-selection-indicator);
+  border-radius: var(--ix-radius-container);
+  pointer-events: none;
+}
+
+.ix-graph-ghost[data-strategy="blocked"] {
+  border-color: var(--ix-error);
+}
+
+/* ---------- Фрейм ---------- */
+.ix-graph-frame {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px dashed var(--ix-border-strong);
+  border-radius: var(--ix-radius-container);
+  pointer-events: none;
+}
+
+/* Заголовок — ручка фрейма: клік згортає, перетягування переносить разом із нодами. */
+.ix-graph-frame__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--ix-space-2) var(--ix-space-3);
+  background: none;
+  border: 0;
+  border-radius: var(--ix-radius-container);
+  outline: var(--ix-focus-width) solid transparent;
+  color: var(--ix-foreground-muted);
+  font: inherit;
+  text-align: left;
+}
+
+button.ix-graph-frame__header {
+  --icon-accent: currentColor;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+button.ix-graph-frame__header:hover {
+  color: var(--ix-foreground);
+}
+
+button.ix-graph-frame__header:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow);
+}
+
+.ix-graph-frame[data-dragging] button.ix-graph-frame__header {
+  cursor: grabbing;
+}
+
+.ix-graph-frame__label {
+  overflow: hidden;
+  font: var(--ix-font-overline);
+  letter-spacing: var(--ix-font-overline-letter-spacing);
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ix-graph-frame__count {
+  flex: none;
+  font: var(--ix-font-caption);
+}
+
+/*
+ * Згорнутий фрейм — компактний блок, на якому закінчуються зовнішні ребра: тон піднятої
+ * поверхні (як нода), але пунктирний контур лишає його групою, а не нодою.
+ */
+.ix-graph-frame[data-collapsed] {
+  z-index: 1;
+  background: var(--ix-surface-raised);
+}
+
+.ix-graph-frame[data-collapsed] .ix-graph-frame__header {
+  position: static;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  column-gap: var(--ix-space-1);
+  width: 100%;
+  height: 100%;
+}
+
+/* Лічильник — другим рядком під назвою: вузький блок не обрізає назву через число. */
+.ix-graph-frame[data-collapsed] .ix-graph-frame__count {
+  grid-column: 2;
+}
+
+@media (forced-colors: active) {
+  .ix-graph-edge__line {
+    stroke: CanvasText;
+  }
+
+  .ix-graph-port[data-connected] .ix-graph-port__socket {
+    background: CanvasText;
+  }
+
+  /* Вибір ноди тримався на кольорі межі й inset-кільці — обидва зникають. */
+  .ix-graph-node[data-selected] {
+    outline: var(--ix-focus-width) solid Highlight;
+    outline-offset: -1px;
+  }
+
+  .ix-graph-edge[data-state="selected"] .ix-graph-edge__line {
+    stroke: Highlight;
+  }
+
+  .ix-graph-guide,
+  .ix-graph-bend {
+    stroke: Highlight;
+  }
+
+  .ix-graph-ghost,
+  .ix-graph-marquee {
+    border-color: Highlight;
+  }
+}

@@ -1,0 +1,48 @@
+.ixp-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  min-width: 0;
+}
+
+.ixp-toolbar__group {
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+}
+
+.ixp-toolbar__separator {
+  align-self: stretch;
+  width: 1px;
+  margin: var(--ix-space-1) var(--ix-space-1);
+  background: var(--ix-border);
+}
+
+/* Компактна плаваюча панель поверх canvas: позиціонується в межах WorkspaceSurface. */
+.ixp-toolbar[data-placement="floating"] {
+  position: absolute;
+  z-index: 5;
+  padding: var(--ix-space-1);
+  background: var(--ix-surface-overlay);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-floating);
+  /* Панель лежить на полотні (фреймі): коротша розсіяна тінь замість довгої. */
+  box-shadow: var(--ix-shadow-floating-nested);
+}
+
+.ixp-toolbar[data-position="top-start"] {
+  top: var(--ix-space-3);
+  left: var(--ix-space-3);
+}
+
+.ixp-toolbar[data-position="top-center"] {
+  top: var(--ix-space-3);
+  left: 50%;
+  translate: -50% 0;
+}
+
+.ixp-toolbar[data-position="bottom-center"] {
+  bottom: var(--ix-space-4);
+  left: 50%;
+  translate: -50% 0;
+}

@@ -1,0 +1,274 @@
+/*
+ * Кільцеві діаграми (DonutChart, PieChart). Специфікація dataviz: тонкі заокруглені
+ * сегменти з проміжком кольору поверхні, легенда завжди поруч, текст — у кольорах
+ * тексту, а не серії; колір сегмента несе лише ідентичність частини.
+ */
+/* Легенда поруч із фігурою, а у вузькому місці переходить під неї (flex-wrap). */
+.ix-chart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ix-space-3) var(--ix-space-5);
+  margin: 0;
+  color: var(--ix-foreground);
+}
+
+/*
+ * Заголовок діаграми й підпис KPI — перший рядок віджета: у Card без заголовка над ним
+ * лежать плаваючі дії, тож відступ на їхню ширину (поза карткою змінна не задана — 0).
+ */
+.ix-chart__title {
+  box-sizing: border-box;
+  flex-basis: 100%;
+  padding-inline-end: var(--card-actions-inline-size, 0);
+  font: var(--ix-font-body-strong);
+}
+
+.ix-chart__body {
+  position: relative;
+  flex: none;
+  width: calc(var(--ix-space-10) * 4);
+  height: calc(var(--ix-space-10) * 4);
+}
+
+.ix-chart__plot {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Ширину обведення (2 × радіус заокруглення) задає компонент — вона менша у вузьких сегментів. */
+.ix-chart__slice {
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: opacity var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+/*
+ * Наведення або вибір: решта секторів переходить у штрихування (задає компонент),
+ * а рядки легенди — приглушуються, щоб читалась одна частина.
+ */
+.ix-chart[data-active] .ix-chart__item:not([data-active]) {
+  opacity: 0.35;
+}
+
+.ix-chart__item {
+  cursor: pointer;
+}
+
+.ix-chart__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+}
+
+.ix-chart__total {
+  font: var(--ix-font-heading-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.ix-chart__center-label {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.ix-chart__legend {
+  flex: 1 1 calc(var(--ix-space-10) * 4);
+  display: grid;
+  gap: var(--ix-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ix-chart__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ix-space-2);
+  font: var(--ix-font-body);
+  transition: opacity var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-chart__swatch {
+  width: var(--ix-space-3);
+  height: var(--ix-space-3);
+  border-radius: var(--ix-radius-compact);
+}
+
+.ix-chart__label {
+  overflow: hidden;
+  color: var(--ix-foreground-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ix-chart__value {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * BarChart — одна серія, одна вісь від нуля. Стовпчики кольору серії (chart-1), текст —
+ * токенами тексту, сітка — волосяні лінії кольору межі, базова лінія — на крок сильніша.
+ */
+.ix-bar {
+  display: grid;
+  gap: var(--ix-space-3);
+  margin: 0;
+  color: var(--ix-foreground);
+}
+
+.ix-bar__body {
+  min-width: 0;
+}
+
+/*
+ * Поки ширина не виміряна (прихована вкладка, перший кадр), viewBox масштабує фігуру в
+ * межі контейнера замість виходу за нього; після заміру масштаб 1:1.
+ */
+.ix-bar__plot {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ix-bar__bar {
+  fill: var(--ix-chart-1);
+}
+
+.ix-bar__hatch {
+  fill: var(--ix-chart-1);
+}
+
+.ix-bar__grid {
+  stroke: var(--ix-border);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.ix-bar__baseline {
+  stroke: var(--ix-border-strong);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.ix-bar__tick,
+.ix-bar__category {
+  fill: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.ix-bar__tick {
+  font-variant-numeric: tabular-nums;
+}
+
+.ix-bar__value {
+  fill: var(--ix-foreground);
+  font: var(--ix-font-body-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.ix-bar__hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+/*
+ * KpiTile — назва, значення, зміна до періоду, тренд. Значення — пропорційні цифри
+ * (tabular лише для стовпців чисел); зміна — статусна плашка зі стрілкою й текстом.
+ */
+.ix-kpi {
+  display: grid;
+  gap: var(--ix-space-1);
+  align-content: start;
+  min-width: 0;
+}
+
+.ix-kpi__label {
+  margin: 0;
+  padding-inline-end: var(--card-actions-inline-size, 0);
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-body);
+}
+
+.ix-kpi__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ix-space-1);
+  margin: 0;
+  color: var(--ix-foreground);
+  font: var(--ix-font-heading-xl);
+}
+
+.ix-kpi__unit {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-body-lg);
+}
+
+.ix-kpi__delta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ix-space-2);
+  margin: 0;
+  font: var(--ix-font-caption);
+}
+
+/* Статусний колір лише на своїй поверхні: пари status / status-surface перевірені на 4.5:1. */
+/* Іконка тренду одноколірна: колір статусу дає текст, другий відтінок розмив би сигнал. */
+.ix-kpi__change {
+  --icon-accent: currentColor;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  padding: 0 var(--ix-space-2);
+  border-radius: var(--ix-radius-compact);
+  font: var(--ix-font-body-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.ix-kpi__change[data-tone="positive"] {
+  background: var(--ix-success-surface);
+  color: var(--ix-success);
+}
+
+.ix-kpi__change[data-tone="negative"] {
+  background: var(--ix-error-surface);
+  color: var(--ix-error);
+}
+
+.ix-kpi__change[data-tone="neutral"] {
+  background: var(--ix-surface-muted);
+  color: var(--ix-foreground-secondary);
+}
+
+.ix-kpi__period {
+  color: var(--ix-foreground-muted);
+}
+
+/* Тренд: лінія приглушеного тону, поточний період — точка кольору серії з кільцем поверхні. */
+.ix-kpi__trend {
+  display: block;
+  margin-top: var(--ix-space-2);
+  overflow: visible;
+}
+
+.ix-kpi__trend-line {
+  fill: none;
+  stroke: var(--ix-foreground-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ix-kpi__trend-dot {
+  fill: var(--ix-chart-1);
+  stroke: var(--ix-surface);
+  stroke-width: 2;
+}

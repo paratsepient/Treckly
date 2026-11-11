@@ -1,0 +1,115 @@
+.ix-field {
+  display: grid;
+  gap: var(--ix-space-1);
+  min-width: 0;
+}
+
+.ix-field__label {
+  color: var(--ix-foreground);
+  font: var(--ix-font-body-strong);
+}
+
+.ix-field__required {
+  margin-left: var(--ix-space-1);
+  color: var(--ix-error);
+}
+
+.ix-field__description,
+.ix-field__error {
+  margin: 0;
+  font: var(--ix-font-caption);
+}
+
+.ix-field__description {
+  color: var(--ix-foreground-muted);
+}
+
+.ix-field__error {
+  color: var(--ix-error);
+}
+
+/* Спільна геометрія Input, Textarea і закритого Select. */
+.ix-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: var(--ix-space-8);
+  margin: 0;
+  padding: 0 var(--ix-space-3);
+  /*
+   * Заглиблене поле: форму лунки дає --ix-shadow-inset; межа — --ix-well-border
+   * (у v1.2 прозора, у старих палітрах border-strong). Прозора рамка лишається для
+   * forced-colors і для червоної межі помилки.
+   */
+  background: var(--ix-surface-inset);
+  border: var(--ix-control-border-width) solid var(--ix-well-border);
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  border-radius: var(--ix-radius-control);
+  box-shadow: var(--ix-shadow-inset);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+  transition:
+    border-color var(--ix-duration-fast) var(--ix-easing-standard),
+    background-color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-input::placeholder {
+  color: var(--ix-foreground-muted);
+  opacity: 1;
+}
+
+.ix-input:hover:not(:disabled, :focus-visible),
+.ix-input[data-ix-preview="hover"] {
+  border-color: var(--ix-well-border-hover);
+}
+
+/* Помилка зберігає червону межу і в hover: стан не повинен «зникати» під курсором. */
+.ix-input[aria-invalid="true"],
+.ix-input[aria-invalid="true"]:hover {
+  border-color: var(--ix-error);
+  /* У v1.2 рамки немає — межу помилки дає внутрішнє кільце. */
+  box-shadow: var(--ix-well-error-ring), var(--ix-shadow-inset);
+}
+
+/* Без :focus-visible специфічність (0,3,0) прибирала б світіння фокуса з read-only поля. */
+.ix-input:read-only:not(:disabled, select, :focus-visible) {
+  background: var(--ix-surface-muted);
+  box-shadow: none;
+}
+
+.ix-input:disabled {
+  background: var(--ix-disabled-background);
+  border-color: var(--ix-disabled-background);
+  box-shadow: none;
+  color: var(--ix-disabled-foreground);
+  cursor: not-allowed;
+}
+
+.ix-input:disabled::placeholder {
+  color: var(--ix-disabled-foreground);
+}
+
+.ix-textarea {
+  height: auto;
+  min-height: var(--ix-space-16);
+  padding: var(--ix-space-2) var(--ix-space-3);
+  resize: vertical;
+  /*
+   * Textarea прокручує себе сама (ScrollArea всередину поля не вкласти, не зламавши
+   * виділення й resize), тож нативна смуга фарбується тими самими токенами, що й власна.
+   */
+  scrollbar-width: thin;
+  scrollbar-color: var(--ix-scrollbar-thumb) var(--ix-scrollbar-track);
+}
+
+/*
+ * Фокус поля: світіння зовні, заглиблення всередині лишається. Єдине правило фокуса й
+ * навмисно після правил помилки та read-only: поле в фокусі показує фокус, а помилку
+ * далі видно з тексту під полем. Прозорий outline — для forced-colors.
+ */
+.ix-input:focus-visible,
+.ix-input[data-ix-preview="focus"] {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow), var(--ix-shadow-inset);
+}

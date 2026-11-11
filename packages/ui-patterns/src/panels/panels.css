@@ -1,0 +1,111 @@
+/* Спільний каркас ContextPanel і InspectorPanel. */
+.ixp-panel {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  background: var(--ix-surface);
+}
+
+.ixp-panel__header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--ix-space-2);
+  min-height: var(--ix-layout-header-height);
+  padding: var(--ix-space-2) var(--ix-space-2) var(--ix-space-2) var(--ix-space-4);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.ixp-panel__titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.ixp-panel__title {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--ix-radius-compact);
+  font: var(--ix-font-heading-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * Заголовок отримує фокус програмно (PanelControl.focus). Після миші кільця немає, після
+ * клавіатури — постійне світіння без пульсу: це орієнтир, а не контрол.
+ */
+.ixp-panel__title:focus {
+  outline: none;
+}
+
+.ixp-panel__title:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-steady-shadow);
+}
+
+.ixp-panel__subtitle {
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+.ixp-panel__actions {
+  display: flex;
+  gap: var(--ix-space-1);
+}
+
+.ixp-panel__toolbar {
+  flex: none;
+  padding: var(--ix-space-3) var(--ix-space-4);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+/* Вкладки інспектора — segmented-варіант Tabs у нерухомій зоні над прокруткою. */
+.ixp-panel[data-kind="inspector"] .ixp-panel__toolbar {
+  padding: var(--ix-space-2) var(--ix-space-4);
+}
+
+/*
+ * Єдиний власник прокрутки панелі. Смуга відступає від краю панелі на 8 px: біля самої межі
+ * з полотном вона зливалася з контуром (рішення власника 05.11.2026).
+ */
+.ixp-panel__body {
+  flex: 1 1 0;
+  min-height: 0;
+  padding-right: var(--ix-space-2);
+}
+
+/* Відступи всередині області прокрутки: смуга стоїть біля краю панелі, поза ними. */
+.ixp-panel__content {
+  padding: var(--ix-space-3) var(--ix-space-4);
+}
+
+.ixp-panel__body .ix-tabs__panel {
+  padding-top: 0;
+}
+
+/* StickyActions: поза прокруткою, тому завжди видимі. */
+.ixp-panel__footer {
+  flex: none;
+  padding: var(--ix-space-3) var(--ix-space-4);
+  background: var(--ix-surface);
+  border-top: 1px solid var(--ix-border);
+}
+
+.ixp-panel__sticky-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--ix-space-2);
+}
+
+/* Tabs інспектора обгортають каркас і мають заповнювати панель. */
+.ixp-inspector-tabs {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}

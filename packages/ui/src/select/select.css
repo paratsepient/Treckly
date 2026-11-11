@@ -1,0 +1,112 @@
+.ix-select {
+  position: relative;
+  display: block;
+  /* Шар пульсації фокуса успадковує радіус обгортки — він має збігатися з полем. */
+  border-radius: var(--ix-radius-control);
+}
+
+/* Select — хост пульсації: у полі лишається лише постійна частина індикатора. */
+.ix-select .ix-select__control:focus-visible,
+.ix-select .ix-select__control[data-ix-preview="focus"] {
+  box-shadow: var(--ix-focus-steady-shadow), var(--ix-shadow-inset);
+}
+
+/* Вигляд нативної стрілки різний у браузерах; власна стрілка дає однакову геометрію. */
+.ix-select__control {
+  appearance: none;
+  padding-right: var(--ix-space-8);
+  cursor: pointer;
+}
+
+.ix-select__control:disabled {
+  cursor: not-allowed;
+}
+
+.ix-select__chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--ix-space-2);
+  width: var(--ix-space-4);
+  height: var(--ix-space-4);
+  color: var(--ix-foreground-secondary);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.ix-select__control:disabled + .ix-select__chevron {
+  color: var(--ix-disabled-foreground);
+}
+
+/*
+ * Відкритий список (appearance: base-select, Chromium): той самий нативний <select> —
+ * клавіатура, пошук за літерою, доступність, — але список малюється токенами плаваючої
+ * поверхні, а не системою. Браузери без підтримки показують системний список.
+ */
+@supports (appearance: base-select) {
+  .ix-select__control,
+  .ix-select__control::picker(select) {
+    appearance: base-select;
+  }
+
+  /* base-select робить поле inline-flex без вирівнювання: текст прилип би до верху. */
+  .ix-select__control {
+    align-items: center;
+  }
+
+  /* Стрілку малює .ix-select__chevron, щоб геометрія не залежала від браузера. */
+  .ix-select__control::picker-icon {
+    display: none;
+  }
+
+  .ix-select__control::picker(select) {
+    margin-block: var(--ix-space-1);
+    padding: var(--ix-space-1);
+    background: var(--ix-surface-overlay);
+    border: 1px solid var(--ix-border);
+    border-radius: var(--ix-radius-floating);
+    box-shadow: var(--ix-shadow-floating);
+    color: var(--ix-foreground);
+    /* Довгий список прокручується нативно: смуга в кольорах токенів, як у Textarea. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--ix-scrollbar-thumb) var(--ix-scrollbar-track);
+  }
+
+  .ix-select__control option {
+    min-height: var(--ix-space-8);
+    padding: 0 var(--ix-space-2);
+    border-radius: var(--ix-radius-compact);
+    font: var(--ix-font-body);
+    cursor: pointer;
+  }
+
+  .ix-select__control option:hover:not(:disabled, :checked) {
+    background: var(--ix-surface-hover);
+  }
+
+  /* Пункт під клавіатурою: той самий hover-фон і внутрішнє світіння фокуса. */
+  .ix-select__control option:focus-visible {
+    outline: var(--ix-focus-width) solid transparent;
+    box-shadow: var(--ix-focus-shadow-inset);
+  }
+
+  .ix-select__control option:focus-visible:not(:checked) {
+    background: var(--ix-surface-hover);
+  }
+
+  /* Вибраний пункт: колір вибору плюс галочка — стан не передається лише кольором. */
+  .ix-select__control option:checked {
+    background: var(--ix-selection-background);
+    color: var(--ix-selection-foreground);
+  }
+
+  .ix-select__control option:disabled {
+    color: var(--ix-disabled-foreground);
+    cursor: default;
+  }
+}
+
+/* Пункти списку: браузер малює їх сам; задаємо лише кольори теми там, де це підтримується. */
+.ix-select__control option {
+  background: var(--ix-surface-overlay);
+  color: var(--ix-foreground);
+}

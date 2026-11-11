@@ -1,0 +1,108 @@
+/*
+ * TreeView: дерево за APG Tree View. Лише семантичні токени; відступ рівня — власна
+ * змінна --ixp-tree-level (число), помножена на крок сітки відступів.
+ */
+.ixp-tree,
+.ixp-tree ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Фокусується весь treeitem, кільце — на його рядку (інакше обвело б і дочірні). */
+.ixp-tree__item {
+  outline: none;
+}
+
+.ixp-tree__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  min-height: var(--ix-space-10);
+  padding: var(--ix-space-1) var(--ix-space-2);
+  padding-inline-start: calc(var(--ix-space-2) + var(--ix-space-4) * var(--ixp-tree-level, 0));
+  border-radius: var(--ix-radius-control);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+  cursor: pointer;
+}
+
+.ixp-tree__row:hover {
+  background: var(--ix-surface-hover);
+}
+
+.ixp-tree__item:focus-visible > .ixp-tree__row {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow-inset);
+}
+
+.ixp-tree__item[aria-selected="true"] > .ixp-tree__row {
+  background: var(--ix-selection-background);
+  color: var(--ix-selection-foreground);
+  box-shadow: inset var(--ix-space-1) 0 0 var(--ix-selection-indicator);
+}
+
+.ixp-tree__item[aria-selected="true"]:focus-visible > .ixp-tree__row {
+  box-shadow:
+    inset var(--ix-space-1) 0 0 var(--ix-selection-indicator),
+    var(--ix-focus-shadow-inset);
+}
+
+/* Вузол-група: підпис дрібнішим капітелем, як заголовок розділу. */
+.ixp-tree__item[data-group] > .ixp-tree__row .ixp-tree__label {
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-overline);
+  letter-spacing: var(--ix-font-overline-letter-spacing);
+  text-transform: uppercase;
+}
+
+.ixp-tree__toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--ix-space-4);
+  height: var(--ix-space-4);
+  color: var(--ix-foreground-muted);
+}
+
+.ixp-tree__icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--ix-icon-accent);
+}
+
+.ixp-tree__text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ixp-tree__label {
+  overflow-wrap: anywhere;
+}
+
+.ixp-tree__description {
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+.ixp-tree__badge {
+  flex: none;
+}
+
+/*
+ * Forced colors: фон вибору зникає, тож вибраний рядок дублюємо контуром (Highlight),
+ * а фокус — товщим контуром; колір не єдиний носій стану.
+ */
+@media (forced-colors: active) {
+  .ixp-tree__item[aria-selected="true"] > .ixp-tree__row {
+    outline: var(--ix-focus-width) solid Highlight;
+    outline-offset: calc(var(--ix-focus-width) * -1);
+  }
+
+  .ixp-tree__item:focus-visible > .ixp-tree__row {
+    outline: calc(var(--ix-focus-width) * 2) solid CanvasText;
+  }
+}

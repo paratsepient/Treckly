@@ -1,0 +1,237 @@
+.ix-button {
+  /* Контейнер для .ix-sr-only: інакше прихований текст «вилітає» з overflow-батьків і розширює сторінку. */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ix-space-2);
+  height: var(--ix-space-8);
+  padding: 0 var(--ix-space-4);
+  /*
+   * У v1.2 рамка нульова: прозора рамка лишалася незатіненим світлим обідком під
+   * внутрішніми тінями. Прозорий outline з від'ємним відступом не займає місця й
+   * стає видимим у Windows High Contrast (forced-colors).
+   */
+  border: var(--ix-control-border-width) solid transparent;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  border-radius: var(--ix-radius-control);
+  font: var(--ix-font-body-strong);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  /* Невелика кількість кнопок на екрані, тож перехід тіні не навантажує рендеринг. */
+  transition:
+    background-color var(--ix-duration-fast) var(--ix-easing-standard),
+    box-shadow var(--ix-duration-fast) var(--ix-easing-standard),
+    color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-button__icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.ix-button__icon > svg {
+  width: var(--ix-space-4);
+  height: var(--ix-space-4);
+}
+
+/* secondary — нейтральний варіант за замовчуванням. */
+.ix-button[data-variant="secondary"] {
+  background-color: var(--ix-action-secondary);
+  color: var(--ix-action-secondary-foreground);
+}
+
+.ix-button[data-variant="secondary"]:hover:not(:disabled, [data-loading]),
+.ix-button[data-variant="secondary"][data-ix-preview="hover"] {
+  background-color: var(--ix-action-secondary-hover);
+}
+
+.ix-button[data-variant="secondary"]:active:not(:disabled, [data-loading]),
+.ix-button[data-variant="secondary"][data-ix-preview="active"] {
+  background-color: var(--ix-action-secondary-active);
+}
+
+.ix-button[data-variant="primary"] {
+  background-color: var(--ix-action-primary);
+  color: var(--ix-action-primary-foreground);
+}
+
+.ix-button[data-variant="primary"]:hover:not(:disabled, [data-loading]),
+.ix-button[data-variant="primary"][data-ix-preview="hover"] {
+  background-color: var(--ix-action-primary-hover);
+}
+
+.ix-button[data-variant="primary"]:active:not(:disabled, [data-loading]),
+.ix-button[data-variant="primary"][data-ix-preview="active"] {
+  background-color: var(--ix-action-primary-active);
+}
+
+/*
+ * accent — контурна кнопка: прозоре тло, теракотові текст і контур. Заливка теракотою
+ * майже не відрізнялася від знищувальної brick (ΔE 5.6 Light / 3.2 Dark), тож заливку
+ * має лише destructive: різницю дає форма. Піднятого матеріалу немає свідомо: світлий
+ * верх і блиск у Dark опускали теракотовий текст до 3.9:1. Контур — колір наявного
+ * прозорого outline (він же межа у forced-colors), без нових тіней.
+ */
+.ix-button[data-variant="accent"] {
+  background-color: transparent;
+  outline-color: var(--ix-accent-text);
+  color: var(--ix-accent-text);
+}
+
+/* Вимкнена контурна кнопка не зберігає теракотовий контур: він читався б як активний стан. */
+.ix-button[data-variant="accent"]:disabled {
+  outline-color: transparent;
+}
+
+.ix-button[data-variant="accent"]:hover:not(:disabled, [data-loading]),
+.ix-button[data-variant="accent"][data-ix-preview="hover"],
+.ix-button[data-variant="accent"]:active:not(:disabled, [data-loading]),
+.ix-button[data-variant="accent"][data-ix-preview="active"] {
+  background-color: var(--ix-surface-hover);
+}
+
+.ix-button[data-variant="destructive"] {
+  background-color: var(--ix-action-destructive);
+  color: var(--ix-action-destructive-foreground);
+}
+
+.ix-button[data-variant="destructive"]:hover:not(:disabled, [data-loading]),
+.ix-button[data-variant="destructive"][data-ix-preview="hover"] {
+  background-color: var(--ix-action-destructive-hover);
+}
+
+.ix-button[data-variant="destructive"]:active:not(:disabled, [data-loading]),
+.ix-button[data-variant="destructive"][data-ix-preview="active"] {
+  background-color: var(--ix-action-destructive-active);
+}
+
+/* ghost — без заливки; hover і active використовують ті самі пари, що перевірені валідатором. */
+.ix-button[data-variant="ghost"] {
+  background-color: transparent;
+  color: var(--ix-foreground-secondary);
+}
+
+.ix-button[data-variant="ghost"]:hover:not(:disabled, [data-loading]),
+.ix-button[data-variant="ghost"][data-ix-preview="hover"] {
+  background-color: var(--ix-surface-hover);
+  color: var(--ix-foreground);
+}
+
+/* Ghost при натисканні стає тим самим увігнутим матеріалом, що й інші кнопки. */
+.ix-button[data-variant="ghost"]:active:not(:disabled, [data-loading]),
+.ix-button[data-variant="ghost"][data-ix-preview="active"] {
+  background-color: var(--ix-action-secondary-active);
+  background-image: var(--ix-tonal-pressed);
+  box-shadow: var(--ix-shadow-control-pressed);
+  color: var(--ix-action-secondary-foreground);
+}
+
+/*
+ * Soft Raised Control: опукла кнопка в заглибленому гнізді (--ix-shadow-socket).
+ * Натиснутий стан — та сама кнопка, утиснута в гніздо; геометрія й hit area не змінюються.
+ * Ghost і контурна accent лишаються пласкими й без гнізда. У версіях токенів до v1.2 гніздо прозоре.
+ */
+.ix-button:not([data-variant="ghost"], [data-variant="accent"]) {
+  background-image: var(--ix-tonal-raised);
+  box-shadow: var(--ix-shadow-control), var(--ix-shadow-socket);
+}
+
+/*
+ * Перелив блиску при наведенні: один прохід зліва направо двома синхронними шарами
+ * над тональним верхом. Яскравий відблиск (--ix-sheen) — еліпс на верхній кромці
+ * (зсув на половину висоти вгору), видна лише його нижня половина, що згасає вище
+ * рядка тексту. Слабка смуга (--ix-sheen-band) — через усю висоту; під текстом її
+ * перевіряє валідатор контрасту. Обидва зображення втричі ширші за кнопку й зсуваються
+ * однаково: на початку й наприкінці блиск поза кнопкою.
+ */
+.ix-button:not([data-variant="ghost"], [data-variant="accent"]):hover:not(:disabled, [data-loading]),
+.ix-button:not([data-variant="ghost"], [data-variant="accent"])[data-ix-preview="hover"] {
+  background-image: var(--ix-sheen), var(--ix-sheen-band), var(--ix-tonal-raised);
+  background-repeat: no-repeat;
+  background-size: 300% var(--ix-sheen-height), 300% 100%, 100% 100%;
+  background-position: 100% calc(var(--ix-sheen-height) / -2), 100% 0, 0 0;
+  animation: ix-button-sheen var(--ix-sheen-duration) var(--ix-easing-soft) both;
+}
+
+@keyframes ix-button-sheen {
+  from {
+    background-position: 100% calc(var(--ix-sheen-height) / -2), 100% 0, 0 0;
+  }
+  to {
+    background-position: 0% calc(var(--ix-sheen-height) / -2), 0% 0, 0 0;
+  }
+}
+
+.ix-button:not([data-variant="ghost"], [data-variant="accent"]):active:not(:disabled, [data-loading]),
+.ix-button:not([data-variant="ghost"], [data-variant="accent"])[data-ix-preview="active"] {
+  background-image: var(--ix-tonal-pressed);
+  background-size: auto;
+  background-position: 0 0;
+  box-shadow: var(--ix-shadow-control-pressed), var(--ix-shadow-socket);
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ix-button {
+    animation: none;
+  }
+}
+
+/*
+ * На заповнених кнопках акцент іконки злився б із тлом (1.0–1.2:1), а у вимкненому стані
+ * яскравий акцент читався б як активний — іконка стає одноколірною кольором тексту кнопки.
+ */
+.ix-button:is([data-variant="primary"], [data-variant="accent"], [data-variant="destructive"]),
+.ix-button:disabled {
+  /* В accent контур і текст уже теракотові: двоколірна іконка дала б третій відтінок. */
+  --icon-accent: currentColor;
+}
+
+.ix-button:disabled {
+  background-color: var(--ix-disabled-background);
+  background-image: none;
+  box-shadow: none;
+  color: var(--ix-disabled-foreground);
+  cursor: not-allowed;
+}
+
+.ix-button[data-variant="ghost"]:disabled {
+  background-color: transparent;
+}
+
+.ix-button[data-loading] {
+  cursor: progress;
+}
+
+.ix-icon-button {
+  width: var(--ix-space-8);
+  padding: 0;
+}
+
+/*
+ * Без тексту іконка — єдиний зміст кнопки, тож базовий розмір набору (20 px):
+ * на 16 px лінія сітки 24 тоншає до 1 px і акцентні деталі губляться.
+ */
+.ix-icon-button .ix-button__icon > svg {
+  width: var(--ix-space-5);
+  height: var(--ix-space-5);
+}
+
+/*
+ * Фокус — пульсуюче світіння шару <FocusPulse /> (internal/focus.css); у box-shadow кнопки
+ * лишається лише постійна частина індикатора (--ix-focus-steady-shadow) поверх власної тіні.
+ * Прозорий outline лишається для Windows High Contrast, де box-shadow не малюється.
+ */
+.ix-button:focus-visible,
+.ix-button[data-ix-preview="focus"] {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-steady-shadow);
+}
+
+.ix-button:not([data-variant="ghost"]):focus-visible,
+.ix-button:not([data-variant="ghost"])[data-ix-preview="focus"] {
+  box-shadow: var(--ix-focus-steady-shadow), var(--ix-shadow-control), var(--ix-shadow-socket);
+}

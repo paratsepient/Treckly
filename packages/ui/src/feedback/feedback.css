@@ -1,0 +1,118 @@
+/*
+ * Позначки й стани даних. Іконка одноколірна (--icon-accent: currentColor): тон стану
+ * передає колір тексту поруч, а двоколірний акцент лише розмив би сигнал.
+ */
+
+/* ---------- Badge ---------- */
+.ix-badge {
+  --icon-accent: currentColor;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-1);
+  max-width: 100%;
+  min-height: var(--ix-space-5);
+  padding: 0 var(--ix-space-2);
+  background: var(--ix-surface-muted);
+  border-radius: var(--ix-radius-compact);
+  /* Межа для forced-colors: без неї тло позначки зникає разом із кольорами. */
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.ix-badge[data-tone="success"] {
+  background: var(--ix-success-surface);
+  color: var(--ix-success);
+}
+
+.ix-badge[data-tone="warning"] {
+  background: var(--ix-warning-surface);
+  color: var(--ix-warning);
+}
+
+.ix-badge[data-tone="error"] {
+  background: var(--ix-error-surface);
+  color: var(--ix-error);
+}
+
+.ix-badge[data-tone="info"] {
+  background: var(--ix-info-surface);
+  color: var(--ix-info);
+}
+
+.ix-badge__icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.ix-badge__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- DataState ---------- */
+.ix-data-state {
+  --icon-accent: currentColor;
+  display: grid;
+  justify-items: center;
+  gap: var(--ix-space-3);
+  padding: var(--ix-space-8) var(--ix-space-4);
+  color: var(--ix-foreground-secondary);
+  text-align: center;
+}
+
+.ix-data-state__icon {
+  display: inline-flex;
+  color: var(--ix-foreground-muted);
+}
+
+.ix-data-state[data-tone="warning"] .ix-data-state__icon {
+  color: var(--ix-warning);
+}
+
+.ix-data-state[data-tone="error"] .ix-data-state__icon,
+.ix-data-state[data-tone="error"] .ix-data-state__title {
+  color: var(--ix-error);
+}
+
+.ix-data-state__text {
+  display: grid;
+  gap: var(--ix-space-1);
+  max-width: 40ch;
+}
+
+.ix-data-state__title,
+.ix-data-state__description {
+  margin: 0;
+}
+
+.ix-data-state__title {
+  color: var(--ix-foreground);
+  font: var(--ix-font-body-strong);
+}
+
+.ix-data-state__description {
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+  /* Опис буває на кілька рядків: інтервал caption 16 px для 13 px тексту (1.23) надто щільний. */
+  line-height: var(--ix-font-body-line-height);
+}
+
+/* Компактний: у віджеті чи клітинці — рядок «іконка, текст, дія» без відступів блоку. */
+.ix-data-state[data-size="compact"] {
+  grid-auto-flow: column;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  justify-items: start;
+  gap: var(--ix-space-2);
+  padding: 0;
+  text-align: left;
+}
+
+.ix-data-state[data-size="compact"] .ix-data-state__title {
+  font: var(--ix-font-body);
+}

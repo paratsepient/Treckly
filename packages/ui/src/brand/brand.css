@@ -1,0 +1,19 @@
+/*
+ * Емблема: висота задає розмір, ширина — за пропорцією 490 × 810.
+ * Кольори — лише токени теми, щоб емблема змінювалась разом із темою й версією токенів.
+ */
+.ix-emblem {
+  display: inline-block;
+  flex: none;
+  width: auto;
+  height: var(--ix-space-8);
+  vertical-align: middle;
+}
+
+.ix-emblem__mark {
+  fill: var(--ix-accent);
+}
+
+.ix-emblem__ink {
+  fill: var(--ix-foreground);
+}

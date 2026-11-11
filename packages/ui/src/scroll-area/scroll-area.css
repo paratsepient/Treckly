@@ -1,0 +1,170 @@
+/*
+ * Корінь — сітка: область з вмістом і смуга прокрутки поруч, поза рамкою області.
+ * minmax(0, 1fr): область стискається до висоти кореня (flex-батько або maxHeight),
+ * а без обмеження росте з вмістом.
+ */
+/*
+ * Товщина смуги: повзунок 6 px, жолоб 3 px — на чверть тонші за крок сітки (8 / 4 px,
+ * рішення власника 05.11.2026), щоб смуга не змагалася з вмістом панелі.
+ */
+.ix-scroll-area {
+  --scrollbar-size: calc(var(--ix-space-2) * 0.75);
+  --scrollbar-track-size: calc(var(--ix-space-1) * 0.75);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--ix-space-1);
+  min-width: 0;
+  min-height: 0;
+}
+
+.ix-scroll-area:is([data-orientation="vertical"], [data-orientation="both"]):not([data-scrollbar="hidden"]) {
+  grid-template-columns: minmax(0, 1fr) var(--scrollbar-size);
+}
+
+.ix-scroll-area:is([data-orientation="horizontal"], [data-orientation="both"]):not([data-scrollbar="hidden"]) {
+  grid-template-rows: minmax(0, 1fr) var(--scrollbar-size);
+}
+
+/*
+ * Нативна прокрутка без нативної смуги. overscroll-behavior свідомо auto: обмеження
+ * (contain/none) зупинило б передачу прокрутки сторінці й створило б пастку на тачпаді.
+ */
+.ix-scroll-area__viewport {
+  grid-row: 1;
+  grid-column: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: auto;
+  scrollbar-width: none;
+}
+
+.ix-scroll-area__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.ix-scroll-area[data-orientation="vertical"] > .ix-scroll-area__viewport {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.ix-scroll-area[data-orientation="horizontal"] > .ix-scroll-area__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/*
+ * Лунка, як у полів вводу: внутрішня тінь не прокручується разом із вмістом, тож верхній
+ * край завжди читається заглибленим. Межа — --ix-well-border (у v1.2 прозора, форму дає
+ * тінь); прозорий outline лишається для forced-colors.
+ */
+.ix-scroll-area[data-variant="well"] > .ix-scroll-area__viewport {
+  background: var(--ix-surface-inset);
+  border: var(--ix-control-border-width) solid var(--ix-well-border);
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  border-radius: var(--ix-radius-container);
+  box-shadow: var(--ix-shadow-inset);
+}
+
+/* Внутрішній контур: зовнішній обрізався б батьківським overflow. */
+.ix-scroll-area__viewport:focus-visible,
+.ix-scroll-area__viewport[data-ix-preview="focus"] {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow-inset);
+}
+
+/*
+ * Смуга: заглиблений жолоб і ширший за нього опуклий повзунок — та сама мова, що поля
+ * (лунка) і кнопки (піднятий елемент). Місце під смугу зарезервоване завжди, тож вміст
+ * не стрибає, коли прокрутка з'являється; без переповнення смуга невидима.
+ */
+.ix-scroll-area__bar {
+  position: relative;
+  visibility: hidden;
+  touch-action: none;
+  user-select: none;
+}
+
+.ix-scroll-area__bar[data-active] {
+  visibility: visible;
+}
+
+.ix-scroll-area__bar[data-axis="y"] {
+  grid-row: 1;
+  grid-column: 2;
+}
+
+.ix-scroll-area__bar[data-axis="x"] {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.ix-scroll-area__bar::before {
+  content: "";
+  position: absolute;
+  border-radius: var(--ix-radius-round);
+  background: var(--ix-scrollbar-track);
+  box-shadow: var(--ix-shadow-inset);
+}
+
+.ix-scroll-area__bar[data-axis="y"]::before {
+  top: 0;
+  bottom: 0;
+  left: calc(50% - var(--scrollbar-track-size) / 2);
+  width: var(--scrollbar-track-size);
+}
+
+.ix-scroll-area__bar[data-axis="x"]::before {
+  top: calc(50% - var(--scrollbar-track-size) / 2);
+  right: 0;
+  left: 0;
+  height: var(--scrollbar-track-size);
+}
+
+/* Повзунок — той самий м'який підйом, що кнопки: тональний перехід зверху й опукла тінь. */
+.ix-scroll-area__thumb {
+  position: absolute;
+  border-radius: var(--ix-radius-round);
+  background-color: var(--ix-scrollbar-thumb);
+  background-image: var(--ix-tonal-raised);
+  box-shadow: var(--ix-shadow-control);
+  cursor: default;
+  transition: background-color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-scroll-area__bar[data-axis="y"] > .ix-scroll-area__thumb {
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--thumb-size, 0);
+  transform: translateY(var(--thumb-offset, 0));
+}
+
+.ix-scroll-area__bar[data-axis="x"] > .ix-scroll-area__thumb {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--thumb-size, 0);
+  transform: translateX(var(--thumb-offset, 0));
+}
+
+.ix-scroll-area__thumb:hover,
+.ix-scroll-area__bar[data-dragging] > .ix-scroll-area__thumb {
+  background-color: var(--ix-scrollbar-thumb-hover);
+}
+
+/* Windows High Contrast: тіні не малюються — жолоб і повзунок отримують контур. */
+@media (forced-colors: active) {
+  .ix-scroll-area__bar::before,
+  .ix-scroll-area__thumb {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* Лунка у фокусі: кільце фокуса разом із заглибленням. */
+.ix-scroll-area[data-variant="well"] > .ix-scroll-area__viewport:focus-visible,
+.ix-scroll-area[data-variant="well"] > .ix-scroll-area__viewport[data-ix-preview="focus"] {
+  box-shadow: var(--ix-focus-shadow-inset), var(--ix-shadow-inset);
+}

@@ -1,0 +1,234 @@
+.ix-tabs {
+  display: grid;
+  min-width: 0;
+}
+
+/* Роздільник під вкладками — декоративний border; вибір показує індикатор selection-indicator. */
+.ix-tabs__list {
+  display: flex;
+  gap: var(--ix-space-1);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.ix-tabs__tab {
+  position: relative;
+  flex: none;
+  height: var(--ix-space-10);
+  padding: 0 var(--ix-space-3);
+  background: transparent;
+  border: 0;
+  border-radius: var(--ix-radius-control) var(--ix-radius-control) 0 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-body-strong);
+  cursor: pointer;
+  transition:
+    background-color var(--ix-duration-fast) var(--ix-easing-standard),
+    color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-tabs__tab:hover:not(:disabled),
+.ix-tabs__tab[data-ix-preview="hover"] {
+  background: var(--ix-surface-hover);
+  color: var(--ix-foreground);
+}
+
+.ix-tabs__tab[aria-selected="true"] {
+  color: var(--ix-foreground);
+  box-shadow: inset 0 -2px 0 var(--ix-selection-indicator);
+}
+
+/*
+ * Внутрішній контур: список має overflow-x, і зовнішній контур був би обрізаний.
+ * З тієї ж причини пульсація фокуса — всередині вкладки.
+ */
+.ix-tabs__tab:focus-visible,
+.ix-tabs__tab[data-ix-preview="focus"] {
+  --focus-pulse-shadow: var(--ix-focus-pulse-shadow-inset);
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-steady-shadow-inset);
+}
+
+.ix-tabs__tab:disabled {
+  color: var(--ix-disabled-foreground);
+  cursor: not-allowed;
+}
+
+/*
+ * variant="segmented": той самий контракт Tabs, вигляд — заглиблений трек
+ * і піднята вибрана вкладка. Підходить для 2–4 коротких вкладок у панелях.
+ */
+.ix-tabs__list[data-variant="segmented"] {
+  display: inline-flex;
+  gap: var(--ix-space-1);
+  justify-self: start;
+  padding: var(--ix-space-1);
+  background: var(--ix-surface-inset);
+  border-bottom: 0;
+  border-radius: var(--ix-radius-control);
+  box-shadow: var(--ix-shadow-inset);
+}
+
+.ix-tabs__list[data-variant="segmented"] .ix-tabs__tab {
+  height: var(--ix-space-6);
+  border: var(--ix-control-border-width) solid transparent;
+  border-radius: var(--ix-radius-compact);
+  transition:
+    background-color var(--ix-duration-fast) var(--ix-easing-standard),
+    box-shadow var(--ix-duration-fast) var(--ix-easing-standard),
+    color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ix-tabs__list[data-variant="segmented"] .ix-tabs__tab[aria-selected="true"] {
+  background-color: var(--ix-surface-raised);
+  background-image: var(--ix-tonal-raised);
+  border-color: var(--ix-raised-border);
+  box-shadow: var(--ix-shadow-control-nested);
+}
+
+.ix-tabs__panel {
+  padding-top: var(--ix-space-4);
+}
+
+.ix-tabs__panel:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow);
+}
+
+/* Вибрана вкладка у фокусі: світіння разом з індикатором вибору (line) або підйомом (segmented). */
+.ix-tabs__tab[aria-selected="true"]:focus-visible,
+.ix-tabs__tab[aria-selected="true"][data-ix-preview="focus"] {
+  box-shadow: var(--ix-focus-steady-shadow-inset), inset 0 -2px 0 var(--ix-selection-indicator);
+}
+
+.ix-tabs__list[data-variant="segmented"] .ix-tabs__tab[aria-selected="true"]:focus-visible,
+.ix-tabs__list[data-variant="segmented"] .ix-tabs__tab[aria-selected="true"][data-ix-preview="focus"] {
+  box-shadow: var(--ix-focus-steady-shadow-inset), var(--ix-shadow-control-nested);
+}
+
+/*
+ * variant="folder": вкладки-«папки». Вибрана вкладка вища, кольору панелі вмісту й
+ * перетікає в неї вигнутими нижніми кутами; невибрані — компактні пігулки над панеллю.
+ * Вибір читається формою, висотою й вагою шрифту, а не лише кольором.
+ * Панель (.ix-tabs__panel) отримує ту саму поверхню через :has — розмітка Tabs не змінюється.
+ */
+.ix-tabs__list[data-variant="folder"] {
+  align-items: flex-end;
+  /*
+   * Місце для зовнішнього світіння фокуса вибраної вкладки (список прокручується й обрізав
+   * би його): відступ зверху й зліва; від'ємне поле зліва лишає вкладки на одній лінії з панеллю.
+   */
+  margin-inline-start: calc(-1 * var(--ix-space-2));
+  padding-top: var(--ix-space-2);
+  padding-inline-start: var(--ix-space-2);
+  /*
+   * Стик вкладки й панелі на дробовому пікселі згладжувався з обох боків і просвічував
+   * тлом — тонкий шов. Вибрана вкладка заходить у панель (вона лежить вище) на
+   * --tabs-folder-overlap: список дає під неї місце знизу, а панель підтягується на стільки ж.
+   */
+  --tabs-folder-overlap: 2px;
+  margin-bottom: calc(-1 * var(--tabs-folder-overlap));
+  padding-bottom: var(--tabs-folder-overlap);
+  /* Місце для правого вигину останньої вибраної вкладки: список має overflow-x і обрізав би його. */
+  padding-inline-end: var(--ix-radius-container);
+  border-bottom: 0;
+  /*
+   * Смуга прокрутки між вкладкою й панеллю розірвала б «папку». Прокрутка лишається:
+   * roving-фокус підтягує вкладку в поле зору, також Shift+колесо й жест.
+   */
+  scrollbar-width: none;
+}
+
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab {
+  height: var(--ix-space-6);
+  margin-bottom: var(--ix-space-2);
+  padding: 0 var(--ix-space-3);
+  background-color: var(--ix-surface-raised);
+  border-radius: var(--ix-radius-control);
+  font: var(--ix-font-body);
+}
+
+/* Наведення на пігулку: легкий підйом, як у піднятих контролів. */
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab:hover:not(:disabled, [aria-selected="true"]),
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[data-ix-preview="hover"]:not([aria-selected="true"]) {
+  background-image: var(--ix-tonal-raised);
+  box-shadow: var(--ix-shadow-control-nested);
+}
+
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"] {
+  z-index: 1;
+  height: var(--ix-space-10);
+  /*
+   * Поля на ширину вигину: інакше сусідні пігулки (проміжок лише space-1) заходили б на
+   * вигин переходу й перекривали його разом зі світінням фокуса.
+   */
+  margin: 0 var(--ix-radius-container) calc(-1 * var(--tabs-folder-overlap));
+  padding: 0 var(--ix-space-4);
+  border-radius: var(--ix-radius-container) var(--ix-radius-container) 0 0;
+  color: var(--ix-foreground);
+  font: var(--ix-font-body-strong);
+  box-shadow: none;
+}
+
+/*
+ * Вигнуті нижні кути: квадрат радіуса з заокругленим внутрішнім кутом, а тінь кольору
+ * панелі заповнює простір навколо вигину. Так вкладка й панель — одна фігура.
+ */
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"]::before,
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  /* Вигин закінчується на верхньому краї панелі, а не в зоні накладення. */
+  bottom: var(--tabs-folder-overlap);
+  width: var(--ix-radius-container);
+  height: var(--ix-radius-container);
+  pointer-events: none;
+}
+
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"]::before {
+  left: calc(-1 * var(--ix-radius-container));
+  border-bottom-right-radius: var(--ix-radius-container);
+  box-shadow: calc(var(--ix-radius-container) / 2) calc(var(--ix-radius-container) / 2) 0 calc(var(--ix-radius-container) / 2) var(--ix-surface-raised);
+}
+
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"]::after {
+  right: calc(-1 * var(--ix-radius-container));
+  border-bottom-left-radius: var(--ix-radius-container);
+  box-shadow: calc(var(--ix-radius-container) / -2) calc(var(--ix-radius-container) / 2) 0 calc(var(--ix-radius-container) / 2) var(--ix-surface-raised);
+}
+
+/* Перша вкладка стоїть на краю панелі: лівого вигину немає, кут панелі прямий. */
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"]:first-child {
+  margin-left: 0;
+}
+
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"]:first-child::before {
+  display: none;
+}
+
+.ix-tabs:has(> .ix-tabs__list[data-variant="folder"]) > .ix-tabs__panel {
+  padding: var(--ix-space-4);
+  background-color: var(--ix-surface-raised);
+  border-radius: var(--ix-radius-container);
+}
+
+.ix-tabs:has(> .ix-tabs__list[data-variant="folder"] > .ix-tabs__tab:first-child[aria-selected="true"]) > .ix-tabs__panel {
+  border-top-left-radius: 0;
+}
+
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"]:focus-visible,
+.ix-tabs__list[data-variant="folder"] .ix-tabs__tab[aria-selected="true"][data-ix-preview="focus"] {
+  box-shadow: var(--ix-focus-steady-shadow-inset);
+}
+
+/*
+ * Режим високої контрастності (Windows): браузер прибирає тіні й перефарбовує тло,
+ * тож стан, переданий лише ними, зникає. Тут його дублює системний колір Highlight
+ * (контур або межа), який forced-colors не змінює.
+ */
+@media (forced-colors: active) {
+  .ix-tabs__tab[aria-selected="true"] {
+    outline: var(--ix-focus-width) solid Highlight;
+    outline-offset: calc(var(--ix-focus-width) * -1);
+  }
+}

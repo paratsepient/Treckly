@@ -1,0 +1,381 @@
+/* WorkspaceLayout: [ContextPanel] [WorkspaceSurface] [InspectorPanel]. */
+.ixp-workspace {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/*
+ * Тло тіла — тон панелей: у заокруглених кутах поверхні проступає саме воно, тож
+ * панель і заголовок ніби огинають полотно.
+ */
+.ixp-workspace__body {
+  /* Опора для плаваючого інспектора. */
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  background: var(--ix-surface);
+}
+
+.ixp-workspace__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--ix-surface);
+}
+
+.ixp-workspace__panel[hidden] {
+  display: none;
+}
+
+.ixp-workspace__panel[data-panel="context"] {
+  flex: 0 0 var(--ixp-context-width);
+}
+
+/*
+ * Закріплений інспектор — окрема плаваюча панель над полотном, а не колонка каркаса:
+ * полотно займає всю ширину, а інспектор лежить над ним з відступом, як плаваючі
+ * інструменти (рівень floating): тло overlay, контур, радіус і коротка розсіяна тінь,
+ * що не виходить за межі робочої області. Ширину й далі змінює PanelResizer.
+ */
+.ixp-workspace__panel[data-panel="inspector"] {
+  position: absolute;
+  top: var(--ix-space-3);
+  right: var(--ix-space-3);
+  bottom: var(--ix-space-3);
+  z-index: 6;
+  width: var(--ixp-inspector-width);
+  max-width: calc(100% - var(--ix-space-6));
+  overflow: clip;
+  background: var(--ix-surface-overlay);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-floating);
+  box-shadow: var(--ix-shadow-floating-nested);
+}
+
+/* Внутрішні шари панелі прозорі: тло дає сама плаваюча панель. */
+.ixp-workspace__panel[data-panel="inspector"] .ixp-panel,
+.ixp-workspace__panel[data-panel="inspector"] .ixp-panel__footer {
+  background: transparent;
+}
+
+/*
+ * Поверхня отримує весь залишок ширини й не розширює сторінку. Межу з закріпленою
+ * ContextPanel малює сама поверхня: верхній кут біля панелі заокруглений, і лінія межі
+ * загинається по ньому до лінії заголовка. clip обрізає вміст по заокругленню,
+ * не стаючи контейнером прокрутки.
+ */
+.ixp-workspace__surface {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: clip;
+}
+
+.ixp-workspace__body:has(> .ixp-workspace__panel[data-panel="context"]:not([hidden])) > .ixp-workspace__surface {
+  border-left: 1px solid var(--ix-border);
+  border-top-left-radius: var(--ix-radius-container);
+}
+
+.ixp-workspace__surface:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow-inset);
+}
+
+/* PanelResizer: широка невидима зона влучання, тонка лінія при наведенні. */
+.ixp-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: var(--ix-space-2);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.ixp-resizer[data-edge="end"] {
+  right: calc(var(--ix-space-1) * -1);
+}
+
+.ixp-resizer[data-edge="start"] {
+  left: calc(var(--ix-space-1) * -1);
+}
+
+.ixp-resizer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: transparent;
+  transition: background-color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.ixp-resizer:hover::after {
+  background: var(--ix-border-strong);
+}
+
+.ixp-resizer:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow);
+}
+
+.ixp-resizer:focus-visible::after {
+  background: var(--ix-focus-ring);
+}
+
+/*
+ * WorkspaceHeader висотою з вкладку колонки навігації: один рядок — шлях, назва й
+ * метадані через пробіл, дії праворуч. Переносити дії дозволено лише на вузькому
+ * екрані (data-compact), де шапка може вирости.
+ */
+.ixp-header {
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ix-space-2) var(--ix-space-3);
+  /* border-box: нижня межа входить у висоту, тож шапка рівно з вкладку. */
+  box-sizing: border-box;
+  min-height: var(--ix-layout-header-height);
+  padding: 0 var(--ix-space-4);
+  background: var(--ix-surface);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.ixp-header__start {
+  /* Контейнер для запитів нижче: що ховати, вирішує місце, що лишилося назві, а не viewport. */
+  container: ixp-header-start / inline-size;
+  display: flex;
+  flex: 1 1 240px;
+  align-items: center;
+  gap: var(--ix-space-2);
+  min-width: 0;
+}
+
+/*
+ * Вузький екран: два рядки замість п'яти — назва з перемикачами панелей на всю ширину,
+ * дії під нею (переносяться всередині свого рядка, а не по одній).
+ */
+.ixp-header[data-compact] {
+  flex-wrap: wrap;
+  padding-block: var(--ix-space-2);
+}
+
+.ixp-header[data-compact] .ixp-header__start {
+  flex-basis: 100%;
+}
+
+.ixp-header[data-compact] .ixp-header__end {
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+}
+
+/* Шлях, назва й метадані в одному рядку; першими скорочуються метадані, потім шлях. */
+.ixp-header__titles {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ix-space-2);
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.ixp-header__titles > .ixp-breadcrumbs {
+  display: flex;
+  flex: 0 100 auto;
+  align-items: baseline;
+  /* Шлях не стискається до самого розділювача «/»: нижче цієї ширини він ховається цілком. */
+  min-width: var(--ix-space-16);
+}
+
+/* Розділювач між шляхом і назвою — продовження шляху. */
+.ixp-header__titles > .ixp-breadcrumbs::after {
+  content: "/";
+  margin-left: var(--ix-space-1);
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+/*
+ * Назва стискається (h1 скорочується трикрапкою), інакше на 375 px вона виходила за край.
+ * Стиснення пропорційне базовій ширині, тож пріоритет задають коефіцієнти на порядок:
+ * метадані (1000), потім шлях (100) до свого мінімуму, і лише потім назва (1).
+ */
+.ixp-header__title-row {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: var(--ix-space-2);
+  min-width: 0;
+  max-width: 100%;
+}
+
+/*
+ * Назва екрана — h1, найбільший заголовок сторінки: заголовки розділів (h2) і карток (h3)
+ * мають бути меншими, інакше ієрархія перевертається. 22/28 вміщується в шапку 48 px.
+ */
+.ixp-header__title {
+  margin: 0;
+  overflow: hidden;
+  font: var(--ix-font-heading-lg);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ixp-header__badge {
+  flex: none;
+  padding: 0 var(--ix-space-2);
+  border: 1px solid var(--ix-border-strong);
+  border-radius: var(--ix-radius-control);
+  background: var(--ix-surface-muted);
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+  white-space: nowrap;
+}
+
+.ixp-header__meta {
+  flex: 0 1000 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* На вузькому екрані метадані поступаються місцем діям; назва й шлях лишаються. */
+.ixp-header[data-compact] .ixp-header__meta {
+  display: none;
+}
+
+/*
+ * Коли діям потрібне місце, назва зберігається найдовше: спершу зникають метадані,
+ * потім шлях (цілком, разом із розділювачем). Пороги — у кроках шкали відступів.
+ */
+@container ixp-header-start (max-width: 480px) {
+  .ixp-header__meta {
+    display: none;
+  }
+}
+
+@container ixp-header-start (max-width: 320px) {
+  .ixp-header__titles > .ixp-breadcrumbs {
+    display: none;
+  }
+}
+
+.ixp-header__end {
+  display: flex;
+  /* На широкому екрані дії не переносяться й не стискаються: місце віддає назва. */
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ix-space-2);
+  min-width: 0;
+}
+
+.ixp-breadcrumbs ol {
+  display: flex;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  font: var(--ix-font-caption);
+  white-space: nowrap;
+}
+
+.ixp-breadcrumbs li {
+  overflow: hidden;
+  color: var(--ix-foreground-muted);
+  text-overflow: ellipsis;
+}
+
+.ixp-breadcrumbs li + li::before {
+  content: "/";
+  margin: 0 var(--ix-space-1);
+}
+
+.ixp-breadcrumbs a {
+  color: var(--ix-foreground-secondary);
+}
+
+.ixp-breadcrumbs a:focus-visible {
+  outline: var(--ix-focus-width) solid transparent;
+  box-shadow: var(--ix-focus-shadow);
+}
+
+/* SaveStatus */
+.ixp-save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-2);
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+  white-space: nowrap;
+}
+
+.ixp-save-status__dot {
+  width: var(--ix-space-2);
+  height: var(--ix-space-2);
+  border-radius: var(--ix-radius-round);
+}
+
+.ixp-save-status[data-state="saved"] .ixp-save-status__dot { background: var(--ix-success); }
+.ixp-save-status[data-state="saving"] .ixp-save-status__dot { background: var(--ix-info); }
+.ixp-save-status[data-state="dirty"] .ixp-save-status__dot { background: var(--ix-warning); }
+.ixp-save-status[data-state="error"] .ixp-save-status__dot { background: var(--ix-error); }
+
+.ixp-save-status[data-state="error"] {
+  color: var(--ix-error);
+}
+
+/*
+ * WorkspaceSurface. clip, а не hidden: довгі тіні плаваючих інструментів не виходять
+ * за межі полотна на сусідні панелі, і при цьому поверхня не стає контейнером прокрутки.
+ */
+.ixp-surface {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: clip;
+  background: var(--ix-background);
+}
+
+.ixp-surface__scroll {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.ixp-surface__content {
+  padding: var(--ix-space-6);
+}
+
+.ixp-surface[data-variant="page"] .ixp-surface__content {
+  max-width: var(--ix-layout-content-max-width);
+  margin-inline: auto;
+}
+
+/* Вміст сам керує переглядом (DataTable, pan/zoom canvas), тому поверхня лише обрізає. */
+.ixp-surface__fill {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,110 @@
+/*
+ * Картка: рівень 1 реєстру elevation — світліша поверхня, волосяний контур і тінь card.
+ * Контур --ix-border дозволений: це контур контейнера, а не межа контролу.
+ */
+.ix-card {
+  /*
+   * Ширина плаваючих дій (Card.tsx задає її inline). Нуль за замовчуванням: вкладена
+   * картка без дій не успадковує відступ зовнішньої.
+   */
+  --card-actions-inline-size: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+  min-width: 0;
+  padding: var(--ix-space-4);
+  background: var(--ix-surface-raised);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  box-shadow: var(--ix-shadow-card);
+  color: var(--ix-foreground);
+}
+
+/* Рівень 0: група всередині панелі — розділення тоном і контуром, без тіні. */
+.ix-card[data-variant="flat"] {
+  background: var(--ix-surface);
+  box-shadow: none;
+}
+
+/*
+ * Вибір: контур кольору індикатора плюс внутрішнє кільце 1 px — разом 2 px смуги,
+ * помітної і без розрізнення кольору (форма контуру змінюється).
+ */
+.ix-card[data-selected] {
+  border-color: var(--ix-selection-indicator);
+  box-shadow: inset 0 0 0 1px var(--ix-selection-indicator), var(--ix-shadow-card);
+}
+
+.ix-card[data-variant="flat"][data-selected] {
+  box-shadow: inset 0 0 0 1px var(--ix-selection-indicator);
+}
+
+.ix-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ix-space-2);
+  min-width: 0;
+}
+
+.ix-card__titles {
+  display: grid;
+  flex: 1 1 auto;
+  gap: var(--ix-space-1);
+  min-width: 0;
+}
+
+.ix-card__title {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font: var(--ix-font-heading-sm);
+}
+
+.ix-card__subtitle {
+  margin: 0;
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+/* Дії не зсувають заголовок: компактний ряд IconButton притиснутий до верхнього краю. */
+.ix-card__actions {
+  display: flex;
+  flex: none;
+  gap: var(--ix-space-1);
+  margin: calc(var(--ix-space-2) * -1) calc(var(--ix-space-2) * -1) 0 0;
+}
+
+.ix-card__actions[data-floating] {
+  position: absolute;
+  top: var(--ix-space-2);
+  right: var(--ix-space-2);
+  z-index: 1;
+  margin: 0;
+}
+
+.ix-card__body {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+.ix-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ix-space-2);
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+/*
+ * Режим високої контрастності (Windows): браузер прибирає тіні й перефарбовує тло,
+ * тож стан, переданий лише ними, зникає. Тут його дублює системний колір Highlight
+ * (контур або межа), який forced-colors не змінює.
+ */
+@media (forced-colors: active) {
+  .ix-card[data-selected] {
+    outline: var(--ix-focus-width) solid Highlight;
+    outline-offset: -1px;
+  }
+}

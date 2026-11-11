@@ -1,0 +1,269 @@
+/* Розкладка Playground. Лише токени; стилі компонентів — з @index/ui. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--ix-background);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+}
+
+.pg-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ix-space-3);
+  padding: var(--ix-space-3) var(--ix-space-6);
+  background: var(--ix-surface);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.pg-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ix-space-2);
+}
+
+.pg-brand strong {
+  font: var(--ix-font-heading-sm);
+}
+
+.pg-muted {
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+.pg-panes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr));
+}
+
+.pg-pane {
+  min-width: 0;
+  padding: var(--ix-space-6);
+  background: var(--ix-background);
+  color: var(--ix-foreground);
+}
+
+.pg-pane__title {
+  margin: 0 0 var(--ix-space-4);
+  font: var(--ix-font-heading-lg);
+}
+
+.pg-section {
+  margin-bottom: var(--ix-space-6);
+  padding: var(--ix-space-5);
+  background: var(--ix-surface);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+}
+
+.pg-section__title {
+  margin: 0 0 var(--ix-space-1);
+  font: var(--ix-font-heading-md);
+}
+
+.pg-section__note {
+  margin: 0 0 var(--ix-space-4);
+  max-width: 72ch;
+  color: var(--ix-foreground-secondary);
+}
+
+.pg-overline {
+  margin: 0 0 var(--ix-space-2);
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-overline);
+  letter-spacing: var(--ix-font-overline-letter-spacing);
+  text-transform: uppercase;
+}
+
+/* Матриця станів: рядок = варіант, стовпець = стан. */
+.pg-matrix {
+  display: grid;
+  grid-template-columns: 96px repeat(var(--pg-columns), minmax(max-content, 1fr));
+  gap: var(--ix-space-3);
+  align-items: center;
+  overflow-x: auto;
+  padding: var(--ix-space-2) var(--ix-space-1);
+}
+
+.pg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--ix-space-4);
+  align-items: start;
+}
+
+/* Ширші клітинки для компонентів із шириною за вмістом (segmented control). */
+.pg-grid--wide {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+}
+
+.pg-cell {
+  display: grid;
+  gap: var(--ix-space-2);
+  align-content: start;
+}
+
+.pg-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-3);
+  align-items: center;
+}
+
+.pg-log-line {
+  margin: 0;
+  padding: var(--ix-space-1) var(--ix-space-3);
+  border-bottom: 1px solid var(--ix-border);
+  font: var(--ix-font-mono);
+}
+
+.pg-wide {
+  display: flex;
+  gap: var(--ix-space-3);
+  width: max-content;
+  padding: var(--ix-space-3);
+}
+
+.pg-chip {
+  padding: var(--ix-space-2) var(--ix-space-3);
+  background: var(--ix-surface-raised);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-control);
+  white-space: nowrap;
+}
+
+.pg-status {
+  font: var(--ix-font-mono);
+  color: var(--ix-foreground-secondary);
+}
+
+/* Демонстрація токенів elevation (не компоненти). */
+/* Полотно — фрейм: довга тінь плаваючих інструментів обрізається по його краю, як у WorkspaceSurface. */
+.pg-canvas {
+  position: relative;
+  overflow: clip;
+  min-height: 96px;
+  background: var(--ix-background);
+  border-radius: var(--ix-radius-container);
+}
+
+.pg-floating {
+  position: absolute;
+  bottom: var(--ix-space-3);
+  left: 50%;
+  display: flex;
+  gap: var(--ix-space-1);
+  padding: var(--ix-space-1);
+  background: var(--ix-surface-overlay);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-floating);
+  box-shadow: var(--ix-shadow-floating-nested);
+  translate: -50% 0;
+}
+
+.pg-card {
+  padding: var(--ix-space-4);
+  background: var(--ix-surface-raised);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  box-shadow: var(--ix-shadow-card);
+}
+
+.pg-card p {
+  margin: 0;
+}
+
+.pg-card__value {
+  font: var(--ix-font-heading-lg);
+}
+
+@media (max-width: 720px) {
+  .pg-topbar,
+  .pg-pane {
+    padding-left: var(--ix-space-4);
+    padding-right: var(--ix-space-4);
+  }
+}
+
+/* Галерея іконок: плитка з іконкою й підписом. */
+.pg-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: var(--ix-space-2);
+  margin-bottom: var(--ix-space-4);
+}
+
+.pg-icon {
+  display: grid;
+  justify-items: center;
+  gap: var(--ix-space-2);
+  margin: 0;
+  padding: var(--ix-space-3) var(--ix-space-2);
+  border-radius: var(--ix-radius-control);
+  background: var(--ix-surface-muted);
+  color: var(--ix-foreground);
+  text-align: center;
+}
+
+.pg-icon figcaption {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+/* KPI-плитки в рядок; у вузькому місці переносяться. */
+.pg-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ix-space-4);
+  margin-bottom: var(--ix-space-5);
+}
+
+.pg-kpis > * {
+  padding: var(--ix-space-4);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface-raised);
+  box-shadow: var(--ix-shadow-card);
+}
+
+/* Нові розділи: картки сіткою, таблиця й граф з обмеженою висотою (прокрутку дає компонент). */
+.pg-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--ix-layout-panel-min-width), 1fr));
+  gap: var(--ix-space-4);
+  margin-bottom: var(--ix-space-4);
+}
+
+/* Ряд позначок між сітками карток: нижній проміжок такий самий, як у сіток (в .pg-cards він margin-bottom). */
+.pg-row:has(+ .pg-cards) {
+  margin-bottom: var(--ix-space-4);
+}
+
+.pg-text {
+  margin: 0;
+  color: var(--ix-foreground-secondary);
+}
+
+.pg-stack {
+  display: grid;
+  gap: var(--ix-space-3);
+}
+
+.pg-table {
+  max-height: calc(var(--ix-space-16) * 4);
+  margin-bottom: var(--ix-space-4);
+}
+
+.pg-graph {
+  height: calc(var(--ix-space-16) * 7);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+}

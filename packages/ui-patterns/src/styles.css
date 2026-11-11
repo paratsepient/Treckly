@@ -1,0 +1,17 @@
+/*
+ * Стилі @index/ui-patterns. Підключаються один раз: `@import "@index/ui-patterns/styles.css";`.
+ * Включають @index/ui (і через нього токени), тому окремо їх підключати не потрібно.
+ *
+ * Правила: лише семантичні токени `--ix-*`; прокрутку дає тільки ScrollArea з @index/ui
+ * (тест забороняє overflow: auto/scroll тут); власні змінні мають префікс `--ixp-`.
+ */
+@import "@index/ui/styles.css";
+@import "./shell/shell.css";
+@import "./drawer/drawer.css";
+@import "./dialog/dialog.css";
+@import "./form-builder/form-builder.css";
+@import "./workspace/workspace.css";
+@import "./panels/panels.css";
+@import "./toolbar/toolbar.css";
+@import "./feedback/feedback.css";
+@import "./tree/tree.css";
