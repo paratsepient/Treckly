@@ -101,6 +101,9 @@ test("Публічний API: по одному компоненту кожно�
     "ContextPanel",
     "Dialog",
     "Drawer",
+    // ЛОКАЛЬНА ЗМІНА (dsp-orders, див. UPSTREAM.md): шар повідомлень відкрито для власної оболонки застосунку.
+    "FeedbackLayer",
+    "FeedbackProvider",
     "FormFieldTable",
     "InspectorPanel",
     "MAX_VISIBLE_FEEDBACK",
