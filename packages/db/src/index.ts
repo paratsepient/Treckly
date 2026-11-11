@@ -4,6 +4,8 @@ export {
   saveOutcome,
   saveBudget,
   saveNotifications,
+  loadExtracts,
+  loadAllEvents,
   loadNotifications,
   markNotificationsRead,
   type Reader,

@@ -5,6 +5,7 @@ import { createManualClock, dailyReminders, DomainError, type IdGenerator } from
 import { ApiError, createCommandRunner, metaOf, parseBody, STATUS, type Env } from "./http.ts";
 import { inboxRoutes } from "./routes/inbox.ts";
 import { levelRoutes } from "./routes/levels.ts";
+import { summaryRoutes } from "./routes/summary.ts";
 import { readRoutes, sessionOf } from "./routes/read.ts";
 import { requestRoutes } from "./routes/requests.ts";
 
@@ -22,7 +23,7 @@ export interface AppOptions {
  *
  * Ролі: користувач передається заголовком `X-User-Id` (перемикач ролей без паролів); без
  * заголовка діє перший автор. Реалізовано сесію, довідники, майно, заявки автора, чергу рівня,
- * денні переліки, затвердження, сповіщення й «Наступний день»; зведення — ітерація 4.
+ * денні переліки, затвердження, сповіщення, «Наступний день», остаточний перелік, витяги й зведення.
  */
 export function createApp(options: AppOptions) {
   const { db } = options;
@@ -53,6 +54,7 @@ export function createApp(options: AppOptions) {
   app.route("/", requestRoutes(db, run));
   app.route("/", levelRoutes(db, run));
   app.route("/", inboxRoutes(db));
+  app.route("/", summaryRoutes(db));
 
   /** Сесія без стану: перемикач ролей лише повертає дані обраного користувача. */
   app.post("/api/session/role", async (c) => {

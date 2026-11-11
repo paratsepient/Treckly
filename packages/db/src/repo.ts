@@ -4,6 +4,8 @@ import {
   type Audience,
   type Budget,
   type DailyList,
+  type Extract,
+  type JournalEvent,
   type Level,
   type Notification,
   type Outcome,
@@ -314,4 +316,31 @@ export async function loadNow(q: Queryable): Promise<string> {
 
 export async function saveNow(q: Queryable, now: string): Promise<void> {
   await q.insert(demoState).values({ id: 1, now }).onConflictDoUpdate({ target: demoState.id, set: { now } });
+}
+
+/** Витяги по в/ч разом із рядками (статус рядка «Заміна погоджена» — лише з витягом). */
+export async function loadExtracts(q: Queryable): Promise<Extract[]> {
+  const [heads, lines] = await Promise.all([q.select().from(extracts).orderBy(asc(extracts.date), asc(extracts.id)), q.select().from(extractLines)]);
+  return heads.map((head) => {
+    const own = lines.filter((l) => l.extractId === head.id);
+    return {
+      id: head.id,
+      unitId: head.unitId,
+      date: head.date,
+      requestIds: [...new Set(own.map((l) => l.requestId))],
+      lines: own.map((l) => ({
+        requestId: l.requestId,
+        lineId: l.lineId,
+        positionId: l.positionId,
+        qty: l.qty,
+        kind: l.kind,
+        status: l.status as Extract["lines"][number]["status"],
+      })),
+    };
+  });
+}
+
+/** Увесь журнал у порядку виконання: з нього рахуються дні на рівнях і частка повернень. */
+export async function loadAllEvents(q: Queryable): Promise<JournalEvent[]> {
+  return (await q.select({ data: journal.data }).from(journal).orderBy(asc(journal.seq))).map((r) => r.data);
 }
