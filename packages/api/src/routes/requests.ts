@@ -23,6 +23,7 @@ import {
   editLines,
   lineStatus,
   resubmit,
+  returnRequest,
   submit,
   withdraw,
   type DomainContext,
@@ -108,6 +109,12 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
       resubmit(ctx, meta, { request, ...(await checkState(tx, request.route[3])) }),
     );
+  });
+
+  /** Повернення з обов'язковою приміткою: заявка йде автору, нижчі рівні отримують сповіщення. */
+  app.post("/api/requests/:id/return", async (c) => {
+    const { note, expectedRevision } = await parseBody(c, API.returnRequest.input);
+    return commandOn(c, c.req.param("id"), expectedRevision, async ({ ctx, meta, request }) => returnRequest(ctx, meta, { request, note }));
   });
 
   app.post("/api/requests/:id/withdraw", async (c) => {

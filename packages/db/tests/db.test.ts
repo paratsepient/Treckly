@@ -26,7 +26,9 @@ import {
   loadBudget,
   loadList,
   loadLists,
+  loadNotifications,
   loadNow,
+  markNotificationsRead,
   loadPositions,
   loadRequest,
   loadRequests,
@@ -35,6 +37,7 @@ import {
   openDb,
   resetDb,
   runMigrations,
+  saveNotifications,
   saveNow,
   saveOutcome,
   type DspDb,
@@ -246,4 +249,47 @@ test("ключі ідемпотентності: повторний ключ в�
   const s: DspDb = (await setup()).db;
   await s.insert(idempotencyKeys).values({ key: "k", status: 200, response: {} });
   await assert.rejects(() => s.insert(idempotencyKeys).values({ key: "k", status: 200, response: {} }));
+});
+
+test("сповіщення: автор бачить свої, роль рівня — лише свого рівня, підрозділу й ролі; чужі не видно", async () => {
+  const s = await setup();
+  const at = "2027-02-15T09:00:00.000Z";
+  const note = (audience: Parameters<typeof saveNotifications>[1][number]["audience"], requestId = "r1") =>
+    ({ kind: "reminder" as const, audience, requestId, listId: null, note: null, at });
+  await saveNotifications(s.db, [
+    note({ kind: "author", userId: "a1" }),
+    note({ kind: "author", userId: "a2" }),
+    note({ kind: "level", level: 1, unitId: "u-vch", role: "preparer" }),
+    note({ kind: "level", level: 1, unitId: "u-vch", role: "approver" }),
+    note({ kind: "level", level: 1, unitId: "u-vch", role: "both" }),
+    note({ kind: "level", level: 1, unitId: "u-other", role: "both" }),
+    note({ kind: "level", level: 2, unitId: "u-brig", role: "both" }),
+  ]);
+  const ids = async (reader: Parameters<typeof loadNotifications>[1]) => (await loadNotifications(s.db, reader)).map((n) => n.audience.kind === "author" ? `автор:${n.audience.userId}` : `L${n.audience.level}:${n.audience.unitId}:${n.audience.role}`);
+  assert.deepEqual(await ids({ userId: "a1", roleKind: "author", level: null, unitId: "u-vch" }), ["автор:a1"]);
+  assert.deepEqual((await ids({ userId: "p", roleKind: "preparer", level: 1, unitId: "u-vch" })).sort(), ["L1:u-vch:both", "L1:u-vch:preparer"]);
+  assert.deepEqual((await ids({ userId: "g", roleKind: "approver", level: 1, unitId: "u-vch" })).sort(), ["L1:u-vch:approver", "L1:u-vch:both"]);
+  assert.deepEqual(await ids({ userId: "x", roleKind: "admin", level: null, unitId: null }), [], "адміністратор сповіщень не отримує");
+});
+
+test("сповіщення: прочитання лише своїх, повторне не рахується, нові згори", async () => {
+  const s = await setup();
+  const at = "2027-02-15T09:00:00.000Z";
+  await saveNotifications(s.db, [
+    { kind: "request_returned", audience: { kind: "author", userId: "a1" }, requestId: "r1", listId: null, note: "перше", at },
+    { kind: "request_returned", audience: { kind: "author", userId: "a1" }, requestId: "r2", listId: null, note: "друге", at },
+    { kind: "request_returned", audience: { kind: "author", userId: "a2" }, requestId: "r3", listId: null, note: "чуже", at },
+  ]);
+  const reader = { userId: "a1", roleKind: "author" as const, level: null, unitId: "u-vch" };
+  const before = await loadNotifications(s.db, reader);
+  assert.deepEqual(before.map((n) => n.note), ["друге", "перше"]);
+  assert.ok(before.every((n) => n.readAt === null));
+
+  const foreign = (await loadNotifications(s.db, { ...reader, userId: "a2" }))[0]!;
+  assert.equal(await markNotificationsRead(s.db, reader, at, [foreign.id]), 0, "чужі сповіщення не чіпає");
+  assert.equal(await markNotificationsRead(s.db, reader, at, [before[0]!.id]), 1);
+  assert.equal(await markNotificationsRead(s.db, reader, at, [before[0]!.id]), 0, "вдруге те саме не рахується");
+  assert.equal(await markNotificationsRead(s.db, reader, at), 1, "решта своїх");
+  assert.ok((await loadNotifications(s.db, reader)).every((n) => n.readAt === at));
+  assert.equal((await loadNotifications(s.db, { ...reader, userId: "a2" }))[0]?.readAt, null);
 });

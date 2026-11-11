@@ -1,10 +1,11 @@
-import { and, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
   DomainError,
   type Audience,
   type Budget,
   type DailyList,
   type Level,
+  type Notification,
   type Outcome,
   type Positions,
   type Request,
@@ -115,19 +116,7 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
     if (x.lines.length > 0) await tx.insert(extractLines).values(x.lines.map((line) => ({ extractId: x.id, ...line })));
   }
 
-  if (outcome.notifications.length > 0) {
-    await tx.insert(notifications).values(
-      outcome.notifications.map((n) => ({
-        kind: n.kind,
-        audience: n.audience,
-        ...audienceColumns(n.audience),
-        requestId: n.requestId,
-        listId: n.listId,
-        note: n.note,
-        at: n.at,
-      })),
-    );
-  }
+  await saveNotifications(tx, outcome.notifications);
 
   if (outcome.events.length > 0) {
     await tx.insert(journal).values(
@@ -142,6 +131,66 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
       })),
     );
   }
+}
+
+/** Сповіщення в системі: адресат зберігається і структурою, і колонками для швидкого відбору «моїх». */
+export async function saveNotifications(tx: Queryable, notes: readonly Notification[]): Promise<void> {
+  if (notes.length === 0) return;
+  await tx.insert(notifications).values(
+    notes.map((n) => ({
+      kind: n.kind,
+      audience: n.audience,
+      ...audienceColumns(n.audience),
+      requestId: n.requestId,
+      listId: n.listId,
+      note: n.note,
+      at: n.at,
+    })),
+  );
+}
+
+/** Хто читає сповіщення: автор — за собою, роль рівня — за рівнем, підрозділом і роллю. */
+export interface Reader {
+  readonly userId: string;
+  readonly roleKind: "author" | "preparer" | "approver" | "admin";
+  readonly level: number | null;
+  readonly unitId: string | null;
+}
+
+function visibleTo(reader: Reader) {
+  if (reader.roleKind === "author") return eq(notifications.audienceUserId, reader.userId);
+  if ((reader.roleKind === "preparer" || reader.roleKind === "approver") && reader.level !== null && reader.unitId !== null) {
+    return and(
+      eq(notifications.audienceLevel, reader.level),
+      eq(notifications.audienceUnitId, reader.unitId),
+      inArray(notifications.audienceRole, ["both", reader.roleKind]),
+    );
+  }
+  return sql`false`;
+}
+
+export type StoredNotification = Notification & { readonly id: number; readonly readAt: string | null };
+
+/** Останні сповіщення читача, нові згори. */
+export async function loadNotifications(q: Queryable, reader: Reader, limit = 100): Promise<StoredNotification[]> {
+  const rows = await q.select().from(notifications).where(visibleTo(reader)).orderBy(desc(notifications.id)).limit(limit);
+  return rows.map((r) => ({
+    id: r.id,
+    kind: r.kind as Notification["kind"],
+    audience: r.audience,
+    requestId: r.requestId,
+    listId: r.listId,
+    note: r.note,
+    at: r.at,
+    readAt: r.readAt,
+  }));
+}
+
+/** Позначає прочитаними сповіщення читача (усі або вказані); чужі не чіпає. */
+export async function markNotificationsRead(q: Queryable, reader: Reader, at: string, ids?: readonly number[]): Promise<number> {
+  const scope = and(visibleTo(reader), isNull(notifications.readAt), ids ? inArray(notifications.id, [...ids]) : undefined);
+  const updated = await q.update(notifications).set({ readAt: at }).where(scope).returning({ id: notifications.id });
+  return updated.length;
 }
 
 export async function saveBudget(tx: Queryable, directionId: string, budget: Budget): Promise<void> {

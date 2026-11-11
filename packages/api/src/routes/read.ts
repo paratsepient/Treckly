@@ -13,6 +13,7 @@ import {
   loadUnits,
   loadUsers,
   type DspDb,
+  type Queryable,
   type UserRow,
 } from "@dsp/db";
 import { DEFAULT_LEVELS } from "@dsp/domain";
@@ -29,7 +30,7 @@ const itemView = (i: Awaited<ReturnType<typeof loadItems>>[number]) => ({
   group: i.groupKey,
 });
 
-export async function sessionOf(db: DspDb, user: UserRow) {
+export async function sessionOf(db: Queryable, user: UserRow) {
   const [users, now] = await Promise.all([loadUsers(db), loadNow(db)]);
   return { user: userView(user), users: users.map(userView), today: now.slice(0, 10) };
 }

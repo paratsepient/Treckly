@@ -3,6 +3,11 @@ export { openDb, resetDb, runMigrations, type DspDb, type DspTx, type Queryable 
 export {
   saveOutcome,
   saveBudget,
+  saveNotifications,
+  loadNotifications,
+  markNotificationsRead,
+  type Reader,
+  type StoredNotification,
   loadBudget,
   loadPositions,
   loadRequests,

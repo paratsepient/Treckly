@@ -1,8 +1,10 @@
 import { Hono } from "hono";
 import { API } from "@dsp/contract";
-import { loadUser, loadUsers, type DspDb } from "@dsp/db";
-import { DomainError, type IdGenerator } from "@dsp/domain";
-import { ApiError, createCommandRunner, parseBody, STATUS, type Env } from "./http.ts";
+import { loadNow, loadRequests, loadUser, loadUsers, saveNotifications, saveNow, type DspDb } from "@dsp/db";
+import { createManualClock, dailyReminders, DomainError, type IdGenerator } from "@dsp/domain";
+import { ApiError, createCommandRunner, metaOf, parseBody, STATUS, type Env } from "./http.ts";
+import { inboxRoutes } from "./routes/inbox.ts";
+import { levelRoutes } from "./routes/levels.ts";
 import { readRoutes, sessionOf } from "./routes/read.ts";
 import { requestRoutes } from "./routes/requests.ts";
 
@@ -19,8 +21,8 @@ export interface AppOptions {
  * транзакції. Тіла запитів перевіряються схемами `@dsp/contract`.
  *
  * Ролі: користувач передається заголовком `X-User-Id` (перемикач ролей без паролів); без
- * заголовка діє перший автор. Реалізовано сесію, довідники, майно та заявки автора;
- * переліки рівнів, затвердження й зведення додаються в ітераціях 3–4.
+ * заголовка діє перший автор. Реалізовано сесію, довідники, майно, заявки автора, чергу рівня,
+ * денні переліки, затвердження, сповіщення й «Наступний день»; зведення — ітерація 4.
  */
 export function createApp(options: AppOptions) {
   const { db } = options;
@@ -49,6 +51,8 @@ export function createApp(options: AppOptions) {
 
   app.route("/", readRoutes(db));
   app.route("/", requestRoutes(db, run));
+  app.route("/", levelRoutes(db, run));
+  app.route("/", inboxRoutes(db));
 
   /** Сесія без стану: перемикач ролей лише повертає дані обраного користувача. */
   app.post("/api/session/role", async (c) => {
@@ -56,6 +60,21 @@ export function createApp(options: AppOptions) {
     const user = await loadUser(db, userId);
     if (!user) throw new ApiError(404, "NOT_FOUND", `Невідомий користувач ${userId}.`);
     return c.json(await sessionOf(db, user));
+  });
+
+  /**
+   * «Наступний день»: демо-дата зсувається на добу, а всім, у кого є заявки, надходять
+   * щоденні нагадування (з лічильником днів на рівні).
+   */
+  app.post("/api/demo/next-day", async (c) => {
+    const meta = metaOf(c);
+    const reply = await run(meta.idempotencyKey, async (tx) => {
+      const next = new Date(Date.parse(await loadNow(tx)) + 86_400_000).toISOString();
+      await saveNow(tx, next);
+      await saveNotifications(tx, dailyReminders({ clock: createManualClock(next), ids: options.ids }, await loadRequests(tx)));
+      return { status: 200, body: await sessionOf(tx, c.get("user")) };
+    });
+    return c.json(reply.body, reply.status as 200);
   });
 
   app.post("/api/demo/reset", async (c) => {
