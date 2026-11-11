@@ -16,6 +16,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@dsp/domain": "workspace:*",
     "@electric-sql/pglite": "0.5.12",
     "drizzle-orm": "0.45.4"
   },

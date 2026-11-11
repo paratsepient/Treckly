@@ -10,6 +10,10 @@
     "dev": "node scripts/serve.ts"
   },
   "dependencies": {
+    "@dsp/api": "workspace:*",
+    "@dsp/db": "workspace:*",
+    "@dsp/domain": "workspace:*",
+    "@electric-sql/pglite": "0.5.12",
     "@hookform/resolvers": "6.0.2",
     "@index/design-tokens": "workspace:*",
     "@index/ui": "workspace:*",
