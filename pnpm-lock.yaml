@@ -89,7 +89,11 @@ importers:
         specifier: 24.10.1
         version: 24.10.1
 
-  packages/domain: {}
+  packages/domain:
+    devDependencies:
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
 
   packages/seed:
     dependencies:
