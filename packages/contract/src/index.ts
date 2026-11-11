@@ -1,2 +1,2 @@
-// Заготовка пакета @dsp/contract: реалізація — у наступних ітераціях.
-export {};
+export * from "./schemas.ts";
+export * from "./api.ts";

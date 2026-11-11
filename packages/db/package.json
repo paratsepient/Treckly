@@ -12,8 +12,13 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "embed": "node scripts/embed-migrations.ts",
+    "check:migrations": "node scripts/embed-migrations.ts --check",
+    "generate": "drizzle-kit generate",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "check": "pnpm run check:migrations && pnpm run typecheck && pnpm run test"
   },
   "dependencies": {
     "@dsp/domain": "workspace:*",
@@ -21,6 +26,7 @@
     "drizzle-orm": "0.45.4"
   },
   "devDependencies": {
+    "@types/node": "24.10.1",
     "drizzle-kit": "0.31.11"
   }
 }

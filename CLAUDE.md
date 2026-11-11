@@ -67,7 +67,10 @@ UPSTREAM.md            коміт IndeX, з якого скопійовано UI
 - `pnpm dev` — dev-сервер (http://localhost:4340/, `PORT` змінює порт)
 - `pnpm build` — збірка всіх пакетів і `apps/web` (результат у `apps/web/public/dist`)
 - `pnpm typecheck` / `pnpm check` — перевірка типів / повна перевірка пакетів
-- test, e2e, lint, reset demo — заповнити пізніше (lint у IndeX відсутній)
+- `pnpm check` — типи й тести всіх пакетів (`node:test`); один пакет: `pnpm --filter @dsp/domain check`
+- `pnpm --filter @dsp/db generate` — нова міграція Drizzle після зміни схеми, потім `pnpm --filter @dsp/db embed`
+  (SQL вбудовується в `migrations.generated.ts`, бо в браузері немає файлів; `check:migrations` це контролює)
+- «Скинути демо» — `resetDemo()` з `@dsp/seed` (чиста схема + той самий початковий стан); e2e, lint — пізніше (lint у IndeX відсутній)
 
 ## Готово, якщо
 Сценарії E1–E7 з документа розробки проходять, усі переходи процесу покриті тестами,

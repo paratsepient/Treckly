@@ -26,11 +26,7 @@ function copyPgliteAssets(): void {
 }
 
 const options: esbuild.BuildOptions = {
-  entryPoints: {
-    main: join(appRoot, "src", "index.ts"),
-    // Етап 0: перевірка Hono + PGlite у браузері (spike.html).
-    spike: join(appRoot, "src", "spike", "index.ts"),
-  },
+  entryPoints: { main: join(appRoot, "src", "index.ts") },
   outdir,
   bundle: true,
   format: "esm",
