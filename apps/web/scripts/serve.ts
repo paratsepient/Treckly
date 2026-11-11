@@ -26,7 +26,7 @@ function copyPgliteAssets(): void {
 }
 
 const options: esbuild.BuildOptions = {
-  entryPoints: { main: join(appRoot, "src", "index.ts") },
+  entryPoints: { main: join(appRoot, "src", "index.tsx") },
   outdir,
   bundle: true,
   format: "esm",

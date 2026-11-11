@@ -1,0 +1,7795 @@
+{
+ "directionId": "dir-1",
+ "units": [
+  {
+   "id": "vor",
+   "parentId": null,
+   "kind": "authority",
+   "name": "Відділ оборонних ресурсів і Голова"
+  },
+  {
+   "id": "dir-1",
+   "parentId": "vor",
+   "kind": "direction",
+   "name": "Напрямок «Технічне забезпечення» (умовний)"
+  },
+  {
+   "id": "ru-1",
+   "parentId": "dir-1",
+   "kind": "ru",
+   "name": "РУ-1"
+  },
+  {
+   "id": "brig-1",
+   "parentId": "ru-1",
+   "kind": "brigade",
+   "name": "Бригада 1"
+  },
+  {
+   "id": "brig-2",
+   "parentId": "ru-1",
+   "kind": "brigade",
+   "name": "Бригада 2"
+  },
+  {
+   "id": "unit-a",
+   "parentId": "brig-1",
+   "kind": "unit",
+   "name": "в/ч А0001"
+  },
+  {
+   "id": "unit-b",
+   "parentId": "brig-1",
+   "kind": "unit",
+   "name": "в/ч А0002"
+  },
+  {
+   "id": "unit-c",
+   "parentId": "brig-2",
+   "kind": "unit",
+   "name": "в/ч А0003"
+  },
+  {
+   "id": "dep-a1",
+   "parentId": "unit-a",
+   "kind": "department",
+   "name": "Відділ зв'язку в/ч А0001"
+  },
+  {
+   "id": "dep-a2",
+   "parentId": "unit-a",
+   "kind": "department",
+   "name": "Відділ тилу в/ч А0001"
+  },
+  {
+   "id": "dep-b1",
+   "parentId": "unit-b",
+   "kind": "department",
+   "name": "Відділ матеріального забезпечення в/ч А0002"
+  },
+  {
+   "id": "dep-c1",
+   "parentId": "unit-c",
+   "kind": "department",
+   "name": "Відділ технічного забезпечення в/ч А0003"
+  }
+ ],
+ "users": [
+  {
+   "id": "author-unit-a",
+   "name": "Савицький Роксолан Корнилович",
+   "roleKind": "author",
+   "level": null,
+   "unitId": "unit-a",
+   "title": "Автор заявок"
+  },
+  {
+   "id": "author-unit-b",
+   "name": "Горова Альбіна Родіонівна",
+   "roleKind": "author",
+   "level": null,
+   "unitId": "unit-b",
+   "title": "Автор заявок"
+  },
+  {
+   "id": "author-unit-c",
+   "name": "Далемир Зиновійович Латаний",
+   "roleKind": "author",
+   "level": null,
+   "unitId": "unit-c",
+   "title": "Автор заявок"
+  },
+  {
+   "id": "prep-1-unit-a",
+   "name": "Іванишина Поліна Данилівна",
+   "roleKind": "preparer",
+   "level": 1,
+   "unitId": "unit-a",
+   "title": "Уповноважений заступник командира"
+  },
+  {
+   "id": "appr-1-unit-a",
+   "name": "Корній Глинський",
+   "roleKind": "approver",
+   "level": 1,
+   "unitId": "unit-a",
+   "title": "Командир в/ч"
+  },
+  {
+   "id": "prep-1-unit-b",
+   "name": "Васильківська Февронія Азарівна",
+   "roleKind": "preparer",
+   "level": 1,
+   "unitId": "unit-b",
+   "title": "Уповноважений заступник командира"
+  },
+  {
+   "id": "appr-1-unit-b",
+   "name": "Зеновій Альбертович Миклашевський",
+   "roleKind": "approver",
+   "level": 1,
+   "unitId": "unit-b",
+   "title": "Командир в/ч"
+  },
+  {
+   "id": "prep-1-unit-c",
+   "name": "Гладківська Каріна Ізяславівна",
+   "roleKind": "preparer",
+   "level": 1,
+   "unitId": "unit-c",
+   "title": "Уповноважений заступник командира"
+  },
+  {
+   "id": "appr-1-unit-c",
+   "name": "Савицький Борислав Аркадійович",
+   "roleKind": "approver",
+   "level": 1,
+   "unitId": "unit-c",
+   "title": "Командир в/ч"
+  },
+  {
+   "id": "prep-2-brig-1",
+   "name": "Люборада Орхипівна Яцишина",
+   "roleKind": "preparer",
+   "level": 2,
+   "unitId": "brig-1",
+   "title": "Уповноважений заступник командира бригади"
+  },
+  {
+   "id": "appr-2-brig-1",
+   "name": "Боровський Роксолан",
+   "roleKind": "approver",
+   "level": 2,
+   "unitId": "brig-1",
+   "title": "Командир бригади"
+  },
+  {
+   "id": "prep-2-brig-2",
+   "name": "Аполлонія Адамівна Григоришина",
+   "roleKind": "preparer",
+   "level": 2,
+   "unitId": "brig-2",
+   "title": "Уповноважений заступник командира бригади"
+  },
+  {
+   "id": "appr-2-brig-2",
+   "name": "Іван Русланович Корецький",
+   "roleKind": "approver",
+   "level": 2,
+   "unitId": "brig-2",
+   "title": "Командир бригади"
+  },
+  {
+   "id": "prep-3-ru-1",
+   "name": "Любава Ногачевська",
+   "roleKind": "preparer",
+   "level": 3,
+   "unitId": "ru-1",
+   "title": "Уповноважений заступник командира РУ"
+  },
+  {
+   "id": "appr-3-ru-1",
+   "name": "Балабух Добромир Юрійович",
+   "roleKind": "approver",
+   "level": 3,
+   "unitId": "ru-1",
+   "title": "Начальник РУ"
+  },
+  {
+   "id": "prep-4-dir-1",
+   "name": "Довгалевська Любомила",
+   "roleKind": "preparer",
+   "level": 4,
+   "unitId": "dir-1",
+   "title": "Заступник по напрямку (службі)"
+  },
+  {
+   "id": "appr-4-dir-1",
+   "name": "Орест Гриневецький",
+   "roleKind": "approver",
+   "level": 4,
+   "unitId": "dir-1",
+   "title": "Заступник Голови"
+  },
+  {
+   "id": "prep-5-vor",
+   "name": "Антонія Григоришина",
+   "roleKind": "preparer",
+   "level": 5,
+   "unitId": "vor",
+   "title": "Відділ оборонних ресурсів"
+  },
+  {
+   "id": "appr-5-vor",
+   "name": "Анастас Гриневецький",
+   "roleKind": "approver",
+   "level": 5,
+   "unitId": "vor",
+   "title": "Голова"
+  },
+  {
+   "id": "admin-demo",
+   "name": "Демо-адміністратор",
+   "roleKind": "admin",
+   "level": null,
+   "unitId": null,
+   "title": "Адміністратор демо"
+  }
+ ],
+ "kekv": [
+  {
+   "code": "2210",
+   "name": "Предмети, матеріали, обладнання та інвентар"
+  },
+  {
+   "code": "2220",
+   "name": "Медикаменти та перев'язувальні матеріали"
+  },
+  {
+   "code": "3110",
+   "name": "Придбання обладнання і предметів довгострокового користування"
+  }
+ ],
+ "items": [
+  {
+   "id": "item-001",
+   "code": "ПМ-001",
+   "name": "Акумулятор літій-полімерний 6S",
+   "kekv": "2210",
+   "priceMinor": 320000,
+   "measure": "шт.",
+   "groupKey": "живлення"
+  },
+  {
+   "id": "item-002",
+   "code": "ПМ-002",
+   "name": "Акумулятор літій-полімерний 4S",
+   "kekv": "2210",
+   "priceMinor": 180000,
+   "measure": "шт.",
+   "groupKey": "живлення"
+  },
+  {
+   "id": "item-003",
+   "code": "ПМ-003",
+   "name": "Зарядний пристрій універсальний",
+   "kekv": "2210",
+   "priceMinor": 240000,
+   "measure": "шт.",
+   "groupKey": "живлення"
+  },
+  {
+   "id": "item-004",
+   "code": "ПМ-004",
+   "name": "Павербанк 20 000 мА·год",
+   "kekv": "2210",
+   "priceMinor": 150000,
+   "measure": "шт.",
+   "groupKey": "живлення"
+  },
+  {
+   "id": "item-005",
+   "code": "ПМ-005",
+   "name": "Антена направлена 5,8 ГГц",
+   "kekv": "2210",
+   "priceMinor": 210000,
+   "measure": "шт.",
+   "groupKey": "зв'язок"
+  },
+  {
+   "id": "item-006",
+   "code": "ПМ-006",
+   "name": "Антена всеспрямована 2,4 ГГц",
+   "kekv": "2210",
+   "priceMinor": 90000,
+   "measure": "шт.",
+   "groupKey": "зв'язок"
+  },
+  {
+   "id": "item-007",
+   "code": "ПМ-007",
+   "name": "Кабель живлення польовий 50 м",
+   "kekv": "2210",
+   "priceMinor": 130000,
+   "measure": "шт.",
+   "groupKey": "кабелі"
+  },
+  {
+   "id": "item-008",
+   "code": "ПМ-008",
+   "name": "Кабель сигнальний екранований 100 м",
+   "kekv": "2210",
+   "priceMinor": 260000,
+   "measure": "шт.",
+   "groupKey": "кабелі"
+  },
+  {
+   "id": "item-009",
+   "code": "ПМ-009",
+   "name": "Шолом захисний балістичний",
+   "kekv": "2210",
+   "priceMinor": 950000,
+   "measure": "шт.",
+   "groupKey": "захист"
+  },
+  {
+   "id": "item-010",
+   "code": "ПМ-010",
+   "name": "Окуляри захисні балістичні",
+   "kekv": "2210",
+   "priceMinor": 120000,
+   "measure": "шт.",
+   "groupKey": "захист"
+  },
+  {
+   "id": "item-011",
+   "code": "ПМ-011",
+   "name": "Навушники активні шумопоглинальні",
+   "kekv": "2210",
+   "priceMinor": 480000,
+   "measure": "шт.",
+   "groupKey": "захист"
+  },
+  {
+   "id": "item-012",
+   "code": "ПМ-012",
+   "name": "Рюкзак польовий 40 л",
+   "kekv": "2210",
+   "priceMinor": 360000,
+   "measure": "шт.",
+   "groupKey": "спорядження"
+  },
+  {
+   "id": "item-013",
+   "code": "ПМ-013",
+   "name": "Підсумок універсальний",
+   "kekv": "2210",
+   "priceMinor": 70000,
+   "measure": "шт.",
+   "groupKey": "спорядження"
+  },
+  {
+   "id": "item-014",
+   "code": "ПМ-014",
+   "name": "Спальний мішок зимовий",
+   "kekv": "2210",
+   "priceMinor": 420000,
+   "measure": "шт.",
+   "groupKey": "спорядження"
+  },
+  {
+   "id": "item-015",
+   "code": "ПМ-015",
+   "name": "Ліхтар налобний акумуляторний",
+   "kekv": "2210",
+   "priceMinor": 110000,
+   "measure": "шт.",
+   "groupKey": "освітлення"
+  },
+  {
+   "id": "item-016",
+   "code": "ПМ-016",
+   "name": "Ліхтар тактичний",
+   "kekv": "2210",
+   "priceMinor": 190000,
+   "measure": "шт.",
+   "groupKey": "освітлення"
+  },
+  {
+   "id": "item-017",
+   "code": "ПМ-017",
+   "name": "Набір інструментів польовий",
+   "kekv": "2210",
+   "priceMinor": 520000,
+   "measure": "компл.",
+   "groupKey": "інструмент"
+  },
+  {
+   "id": "item-018",
+   "code": "ПМ-018",
+   "name": "Паяльна станція переносна",
+   "kekv": "2210",
+   "priceMinor": 390000,
+   "measure": "шт.",
+   "groupKey": "інструмент"
+  },
+  {
+   "id": "item-019",
+   "code": "ПМ-019",
+   "name": "Мультиметр цифровий",
+   "kekv": "2210",
+   "priceMinor": 140000,
+   "measure": "шт.",
+   "groupKey": "інструмент"
+  },
+  {
+   "id": "item-020",
+   "code": "ПМ-020",
+   "name": "Бінокль польовий 10×42",
+   "kekv": "2210",
+   "priceMinor": 680000,
+   "measure": "шт.",
+   "groupKey": "оптика"
+  },
+  {
+   "id": "item-021",
+   "code": "ПМ-021",
+   "name": "Монокуляр нічного бачення",
+   "kekv": "2210",
+   "priceMinor": 880000,
+   "measure": "шт.",
+   "groupKey": "оптика"
+  },
+  {
+   "id": "item-022",
+   "code": "МД-022",
+   "name": "Аптечка індивідуальна",
+   "kekv": "2220",
+   "priceMinor": 135000,
+   "measure": "компл.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-023",
+   "code": "МД-023",
+   "name": "Джгут кровоспинний",
+   "kekv": "2220",
+   "priceMinor": 45000,
+   "measure": "шт.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-024",
+   "code": "МД-024",
+   "name": "Бинт компресійний стерильний",
+   "kekv": "2220",
+   "priceMinor": 18000,
+   "measure": "шт.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-025",
+   "code": "МД-025",
+   "name": "Пов'язка оклюзійна",
+   "kekv": "2220",
+   "priceMinor": 32000,
+   "measure": "шт.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-026",
+   "code": "МД-026",
+   "name": "Гемостатичний засіб",
+   "kekv": "2220",
+   "priceMinor": 95000,
+   "measure": "уп.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-027",
+   "code": "МД-027",
+   "name": "Набір для знеболення польовий",
+   "kekv": "2220",
+   "priceMinor": 220000,
+   "measure": "компл.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-028",
+   "code": "МД-028",
+   "name": "Термоковдра рятувальна",
+   "kekv": "2220",
+   "priceMinor": 15000,
+   "measure": "шт.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-029",
+   "code": "МД-029",
+   "name": "Шина іммобілізаційна",
+   "kekv": "2220",
+   "priceMinor": 64000,
+   "measure": "шт.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-030",
+   "code": "ОБ-030",
+   "name": "Квадрокоптер розвідувальний",
+   "kekv": "3110",
+   "priceMinor": 18500000,
+   "measure": "компл.",
+   "groupKey": "безпілотні"
+  },
+  {
+   "id": "item-031",
+   "code": "ОБ-031",
+   "name": "Квадрокоптер вантажний",
+   "kekv": "3110",
+   "priceMinor": 24000000,
+   "measure": "компл.",
+   "groupKey": "безпілотні"
+  },
+  {
+   "id": "item-032",
+   "code": "ОБ-032",
+   "name": "Станція керування наземна",
+   "kekv": "3110",
+   "priceMinor": 9600000,
+   "measure": "компл.",
+   "groupKey": "безпілотні"
+  },
+  {
+   "id": "item-033",
+   "code": "ОБ-033",
+   "name": "Радіостанція носима цифрова",
+   "kekv": "3110",
+   "priceMinor": 4200000,
+   "measure": "шт.",
+   "groupKey": "радіозв'язок"
+  },
+  {
+   "id": "item-034",
+   "code": "ОБ-034",
+   "name": "Радіостанція возима",
+   "kekv": "3110",
+   "priceMinor": 7800000,
+   "measure": "шт.",
+   "groupKey": "радіозв'язок"
+  },
+  {
+   "id": "item-035",
+   "code": "ОБ-035",
+   "name": "Ретранслятор польовий",
+   "kekv": "3110",
+   "priceMinor": 12500000,
+   "measure": "компл.",
+   "groupKey": "радіозв'язок"
+  },
+  {
+   "id": "item-036",
+   "code": "ОБ-036",
+   "name": "Генератор бензиновий 3 кВт",
+   "kekv": "3110",
+   "priceMinor": 5800000,
+   "measure": "шт.",
+   "groupKey": "енергопостачання"
+  },
+  {
+   "id": "item-037",
+   "code": "ОБ-037",
+   "name": "Зарядна станція 2 кВт·год",
+   "kekv": "3110",
+   "priceMinor": 6400000,
+   "measure": "шт.",
+   "groupKey": "енергопостачання"
+  },
+  {
+   "id": "item-038",
+   "code": "ОБ-038",
+   "name": "Сонячна панель складна 200 Вт",
+   "kekv": "3110",
+   "priceMinor": 2100000,
+   "measure": "шт.",
+   "groupKey": "енергопостачання"
+  },
+  {
+   "id": "item-039",
+   "code": "ОБ-039",
+   "name": "Тепловізор ручний",
+   "kekv": "3110",
+   "priceMinor": 13800000,
+   "measure": "шт.",
+   "groupKey": "оптика"
+  },
+  {
+   "id": "item-040",
+   "code": "ОБ-040",
+   "name": "Ноутбук захищений польовий",
+   "kekv": "3110",
+   "priceMinor": 11200000,
+   "measure": "шт.",
+   "groupKey": "обчислювальна техніка"
+  },
+  {
+   "id": "item-041",
+   "code": "ОБ-041",
+   "name": "Планшет захищений",
+   "kekv": "3110",
+   "priceMinor": 5400000,
+   "measure": "шт.",
+   "groupKey": "обчислювальна техніка"
+  },
+  {
+   "id": "item-101",
+   "code": "ПМ-901",
+   "name": "Акумулятор літій-залізо-фосфатний 12 В",
+   "kekv": "2210",
+   "priceMinor": 390000,
+   "measure": "шт.",
+   "groupKey": "живлення"
+  },
+  {
+   "id": "item-102",
+   "code": "ОБ-902",
+   "name": "Зарядна станція 1 кВт·год",
+   "kekv": "3110",
+   "priceMinor": 3600000,
+   "measure": "шт.",
+   "groupKey": "живлення"
+  },
+  {
+   "id": "item-103",
+   "code": "ПМ-903",
+   "name": "Антена направлена 2,4 ГГц",
+   "kekv": "2210",
+   "priceMinor": 170000,
+   "measure": "шт.",
+   "groupKey": "зв'язок"
+  },
+  {
+   "id": "item-104",
+   "code": "ОБ-904",
+   "name": "Антенна система мобільна",
+   "kekv": "3110",
+   "priceMinor": 4800000,
+   "measure": "компл.",
+   "groupKey": "зв'язок"
+  },
+  {
+   "id": "item-105",
+   "code": "ПМ-905",
+   "name": "Шолом захисний полегшений",
+   "kekv": "2210",
+   "priceMinor": 760000,
+   "measure": "шт.",
+   "groupKey": "захист"
+  },
+  {
+   "id": "item-106",
+   "code": "ОБ-906",
+   "name": "Бронежилет модульний",
+   "kekv": "3110",
+   "priceMinor": 4600000,
+   "measure": "компл.",
+   "groupKey": "захист"
+  },
+  {
+   "id": "item-107",
+   "code": "ПМ-907",
+   "name": "Ліхтар вуличний акумуляторний",
+   "kekv": "2210",
+   "priceMinor": 260000,
+   "measure": "шт.",
+   "groupKey": "освітлення"
+  },
+  {
+   "id": "item-108",
+   "code": "ОБ-908",
+   "name": "Освітлювальна щогла мобільна",
+   "kekv": "3110",
+   "priceMinor": 5200000,
+   "measure": "компл.",
+   "groupKey": "освітлення"
+  },
+  {
+   "id": "item-109",
+   "code": "ПМ-909",
+   "name": "Бінокль польовий 8×32",
+   "kekv": "2210",
+   "priceMinor": 490000,
+   "measure": "шт.",
+   "groupKey": "оптика"
+  },
+  {
+   "id": "item-110",
+   "code": "ОБ-910",
+   "name": "Тепловізор насадка",
+   "kekv": "3110",
+   "priceMinor": 9800000,
+   "measure": "шт.",
+   "groupKey": "оптика"
+  },
+  {
+   "id": "item-111",
+   "code": "МД-911",
+   "name": "Аптечка груповий набір",
+   "kekv": "2220",
+   "priceMinor": 540000,
+   "measure": "компл.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-112",
+   "code": "ПМ-912",
+   "name": "Тактична медична сумка",
+   "kekv": "2210",
+   "priceMinor": 330000,
+   "measure": "шт.",
+   "groupKey": "медичні"
+  },
+  {
+   "id": "item-113",
+   "code": "ПМ-913",
+   "name": "Квадрокоптер навчальний",
+   "kekv": "2210",
+   "priceMinor": 3800000,
+   "measure": "компл.",
+   "groupKey": "безпілотні"
+  },
+  {
+   "id": "item-114",
+   "code": "ОБ-914",
+   "name": "Квадрокоптер розвідувальний покращений",
+   "kekv": "3110",
+   "priceMinor": 20500000,
+   "measure": "компл.",
+   "groupKey": "безпілотні"
+  },
+  {
+   "id": "item-115",
+   "code": "ОБ-915",
+   "name": "Радіостанція носима аналогова",
+   "kekv": "3110",
+   "priceMinor": 3100000,
+   "measure": "шт.",
+   "groupKey": "радіозв'язок"
+  },
+  {
+   "id": "item-116",
+   "code": "ПМ-916",
+   "name": "Гарнітура для радіостанції",
+   "kekv": "2210",
+   "priceMinor": 370000,
+   "measure": "шт.",
+   "groupKey": "радіозв'язок"
+  },
+  {
+   "id": "item-117",
+   "code": "ОБ-917",
+   "name": "Генератор бензиновий 2 кВт",
+   "kekv": "3110",
+   "priceMinor": 4100000,
+   "measure": "шт.",
+   "groupKey": "енергопостачання"
+  },
+  {
+   "id": "item-118",
+   "code": "ПМ-918",
+   "name": "Блок живлення польовий 1 кВт",
+   "kekv": "2210",
+   "priceMinor": 980000,
+   "measure": "шт.",
+   "groupKey": "енергопостачання"
+  }
+ ],
+ "listPositions": [
+  {
+   "id": "pos-001",
+   "directionId": "dir-1",
+   "itemId": "item-001",
+   "plannedQty": 120
+  },
+  {
+   "id": "pos-002",
+   "directionId": "dir-1",
+   "itemId": "item-002",
+   "plannedQty": 150
+  },
+  {
+   "id": "pos-003",
+   "directionId": "dir-1",
+   "itemId": "item-003",
+   "plannedQty": 60
+  },
+  {
+   "id": "pos-004",
+   "directionId": "dir-1",
+   "itemId": "item-004",
+   "plannedQty": 90
+  },
+  {
+   "id": "pos-005",
+   "directionId": "dir-1",
+   "itemId": "item-005",
+   "plannedQty": 80
+  },
+  {
+   "id": "pos-006",
+   "directionId": "dir-1",
+   "itemId": "item-006",
+   "plannedQty": 100
+  },
+  {
+   "id": "pos-007",
+   "directionId": "dir-1",
+   "itemId": "item-007",
+   "plannedQty": 70
+  },
+  {
+   "id": "pos-008",
+   "directionId": "dir-1",
+   "itemId": "item-008",
+   "plannedQty": 40
+  },
+  {
+   "id": "pos-009",
+   "directionId": "dir-1",
+   "itemId": "item-009",
+   "plannedQty": 200
+  },
+  {
+   "id": "pos-010",
+   "directionId": "dir-1",
+   "itemId": "item-010",
+   "plannedQty": 250
+  },
+  {
+   "id": "pos-011",
+   "directionId": "dir-1",
+   "itemId": "item-011",
+   "plannedQty": 110
+  },
+  {
+   "id": "pos-012",
+   "directionId": "dir-1",
+   "itemId": "item-012",
+   "plannedQty": 180
+  },
+  {
+   "id": "pos-013",
+   "directionId": "dir-1",
+   "itemId": "item-013",
+   "plannedQty": 300
+  },
+  {
+   "id": "pos-014",
+   "directionId": "dir-1",
+   "itemId": "item-014",
+   "plannedQty": 140
+  },
+  {
+   "id": "pos-015",
+   "directionId": "dir-1",
+   "itemId": "item-015",
+   "plannedQty": 160
+  },
+  {
+   "id": "pos-016",
+   "directionId": "dir-1",
+   "itemId": "item-016",
+   "plannedQty": 120
+  },
+  {
+   "id": "pos-017",
+   "directionId": "dir-1",
+   "itemId": "item-017",
+   "plannedQty": 50
+  },
+  {
+   "id": "pos-018",
+   "directionId": "dir-1",
+   "itemId": "item-018",
+   "plannedQty": 30
+  },
+  {
+   "id": "pos-019",
+   "directionId": "dir-1",
+   "itemId": "item-019",
+   "plannedQty": 45
+  },
+  {
+   "id": "pos-020",
+   "directionId": "dir-1",
+   "itemId": "item-020",
+   "plannedQty": 55
+  },
+  {
+   "id": "pos-021",
+   "directionId": "dir-1",
+   "itemId": "item-021",
+   "plannedQty": 35
+  },
+  {
+   "id": "pos-022",
+   "directionId": "dir-1",
+   "itemId": "item-022",
+   "plannedQty": 400
+  },
+  {
+   "id": "pos-023",
+   "directionId": "dir-1",
+   "itemId": "item-023",
+   "plannedQty": 500
+  },
+  {
+   "id": "pos-024",
+   "directionId": "dir-1",
+   "itemId": "item-024",
+   "plannedQty": 900
+  },
+  {
+   "id": "pos-025",
+   "directionId": "dir-1",
+   "itemId": "item-025",
+   "plannedQty": 600
+  },
+  {
+   "id": "pos-026",
+   "directionId": "dir-1",
+   "itemId": "item-026",
+   "plannedQty": 350
+  },
+  {
+   "id": "pos-027",
+   "directionId": "dir-1",
+   "itemId": "item-027",
+   "plannedQty": 120
+  },
+  {
+   "id": "pos-028",
+   "directionId": "dir-1",
+   "itemId": "item-028",
+   "plannedQty": 800
+  },
+  {
+   "id": "pos-029",
+   "directionId": "dir-1",
+   "itemId": "item-029",
+   "plannedQty": 260
+  },
+  {
+   "id": "pos-030",
+   "directionId": "dir-1",
+   "itemId": "item-030",
+   "plannedQty": 24
+  },
+  {
+   "id": "pos-031",
+   "directionId": "dir-1",
+   "itemId": "item-031",
+   "plannedQty": 12
+  },
+  {
+   "id": "pos-032",
+   "directionId": "dir-1",
+   "itemId": "item-032",
+   "plannedQty": 18
+  },
+  {
+   "id": "pos-033",
+   "directionId": "dir-1",
+   "itemId": "item-033",
+   "plannedQty": 90
+  },
+  {
+   "id": "pos-034",
+   "directionId": "dir-1",
+   "itemId": "item-034",
+   "plannedQty": 36
+  },
+  {
+   "id": "pos-035",
+   "directionId": "dir-1",
+   "itemId": "item-035",
+   "plannedQty": 10
+  },
+  {
+   "id": "pos-036",
+   "directionId": "dir-1",
+   "itemId": "item-036",
+   "plannedQty": 20
+  },
+  {
+   "id": "pos-037",
+   "directionId": "dir-1",
+   "itemId": "item-037",
+   "plannedQty": 25
+  },
+  {
+   "id": "pos-038",
+   "directionId": "dir-1",
+   "itemId": "item-038",
+   "plannedQty": 40
+  },
+  {
+   "id": "pos-039",
+   "directionId": "dir-1",
+   "itemId": "item-039",
+   "plannedQty": 15
+  },
+  {
+   "id": "pos-040",
+   "directionId": "dir-1",
+   "itemId": "item-040",
+   "plannedQty": 16
+  },
+  {
+   "id": "pos-041",
+   "directionId": "dir-1",
+   "itemId": "item-041",
+   "plannedQty": 30
+  }
+ ],
+ "budget": {
+  "total": {
+   "limitMinor": 138720000,
+   "approvedMinor": 42960000
+  },
+  "perKekv": {
+   "2210": {
+    "limitMinor": 57870000,
+    "approvedMinor": 22110000
+   },
+   "2220": {
+    "limitMinor": 57650000,
+    "approvedMinor": 7650000
+   },
+   "3110": {
+    "limitMinor": 23200000,
+    "approvedMinor": 13200000
+   }
+  }
+ },
+ "property": [
+  {
+   "id": "prop-unit-a-planned-1",
+   "unitId": "unit-a",
+   "itemId": "item-005",
+   "tab": "planned",
+   "qty": 38
+  },
+  {
+   "id": "prop-unit-a-planned-2",
+   "unitId": "unit-a",
+   "itemId": "item-010",
+   "tab": "planned",
+   "qty": 40
+  },
+  {
+   "id": "prop-unit-a-planned-3",
+   "unitId": "unit-a",
+   "itemId": "item-039",
+   "tab": "planned",
+   "qty": 30
+  },
+  {
+   "id": "prop-unit-a-planned-4",
+   "unitId": "unit-a",
+   "itemId": "item-001",
+   "tab": "planned",
+   "qty": 37
+  },
+  {
+   "id": "prop-unit-a-planned-5",
+   "unitId": "unit-a",
+   "itemId": "item-015",
+   "tab": "planned",
+   "qty": 35
+  },
+  {
+   "id": "prop-unit-a-on_base-1",
+   "unitId": "unit-a",
+   "itemId": "item-009",
+   "tab": "on_base",
+   "qty": 8
+  },
+  {
+   "id": "prop-unit-a-on_base-2",
+   "unitId": "unit-a",
+   "itemId": "item-022",
+   "tab": "on_base",
+   "qty": 15
+  },
+  {
+   "id": "prop-unit-a-on_base-3",
+   "unitId": "unit-a",
+   "itemId": "item-032",
+   "tab": "on_base",
+   "qty": 28
+  },
+  {
+   "id": "prop-unit-a-on_base-4",
+   "unitId": "unit-a",
+   "itemId": "item-026",
+   "tab": "on_base",
+   "qty": 28
+  },
+  {
+   "id": "prop-unit-a-on_base-5",
+   "unitId": "unit-a",
+   "itemId": "item-019",
+   "tab": "on_base",
+   "qty": 38
+  },
+  {
+   "id": "prop-unit-a-received-1",
+   "unitId": "unit-a",
+   "itemId": "item-012",
+   "tab": "received",
+   "qty": 2
+  },
+  {
+   "id": "prop-unit-a-received-2",
+   "unitId": "unit-a",
+   "itemId": "item-028",
+   "tab": "received",
+   "qty": 30
+  },
+  {
+   "id": "prop-unit-a-received-3",
+   "unitId": "unit-a",
+   "itemId": "item-021",
+   "tab": "received",
+   "qty": 25
+  },
+  {
+   "id": "prop-unit-a-received-4",
+   "unitId": "unit-a",
+   "itemId": "item-037",
+   "tab": "received",
+   "qty": 28
+  },
+  {
+   "id": "prop-unit-a-received-5",
+   "unitId": "unit-a",
+   "itemId": "item-015",
+   "tab": "received",
+   "qty": 35
+  },
+  {
+   "id": "prop-unit-b-planned-1",
+   "unitId": "unit-b",
+   "itemId": "item-028",
+   "tab": "planned",
+   "qty": 9
+  },
+  {
+   "id": "prop-unit-b-planned-2",
+   "unitId": "unit-b",
+   "itemId": "item-034",
+   "tab": "planned",
+   "qty": 21
+  },
+  {
+   "id": "prop-unit-b-planned-3",
+   "unitId": "unit-b",
+   "itemId": "item-007",
+   "tab": "planned",
+   "qty": 26
+  },
+  {
+   "id": "prop-unit-b-planned-4",
+   "unitId": "unit-b",
+   "itemId": "item-036",
+   "tab": "planned",
+   "qty": 38
+  },
+  {
+   "id": "prop-unit-b-planned-5",
+   "unitId": "unit-b",
+   "itemId": "item-026",
+   "tab": "planned",
+   "qty": 32
+  },
+  {
+   "id": "prop-unit-b-on_base-1",
+   "unitId": "unit-b",
+   "itemId": "item-019",
+   "tab": "on_base",
+   "qty": 24
+  },
+  {
+   "id": "prop-unit-b-on_base-2",
+   "unitId": "unit-b",
+   "itemId": "item-013",
+   "tab": "on_base",
+   "qty": 22
+  },
+  {
+   "id": "prop-unit-b-on_base-3",
+   "unitId": "unit-b",
+   "itemId": "item-029",
+   "tab": "on_base",
+   "qty": 11
+  },
+  {
+   "id": "prop-unit-b-on_base-4",
+   "unitId": "unit-b",
+   "itemId": "item-010",
+   "tab": "on_base",
+   "qty": 6
+  },
+  {
+   "id": "prop-unit-b-on_base-5",
+   "unitId": "unit-b",
+   "itemId": "item-003",
+   "tab": "on_base",
+   "qty": 22
+  },
+  {
+   "id": "prop-unit-b-received-1",
+   "unitId": "unit-b",
+   "itemId": "item-038",
+   "tab": "received",
+   "qty": 38
+  },
+  {
+   "id": "prop-unit-b-received-2",
+   "unitId": "unit-b",
+   "itemId": "item-037",
+   "tab": "received",
+   "qty": 36
+  },
+  {
+   "id": "prop-unit-b-received-3",
+   "unitId": "unit-b",
+   "itemId": "item-007",
+   "tab": "received",
+   "qty": 35
+  },
+  {
+   "id": "prop-unit-b-received-4",
+   "unitId": "unit-b",
+   "itemId": "item-027",
+   "tab": "received",
+   "qty": 40
+  },
+  {
+   "id": "prop-unit-b-received-5",
+   "unitId": "unit-b",
+   "itemId": "item-015",
+   "tab": "received",
+   "qty": 35
+  },
+  {
+   "id": "prop-unit-c-planned-1",
+   "unitId": "unit-c",
+   "itemId": "item-016",
+   "tab": "planned",
+   "qty": 17
+  },
+  {
+   "id": "prop-unit-c-planned-2",
+   "unitId": "unit-c",
+   "itemId": "item-039",
+   "tab": "planned",
+   "qty": 20
+  },
+  {
+   "id": "prop-unit-c-planned-3",
+   "unitId": "unit-c",
+   "itemId": "item-019",
+   "tab": "planned",
+   "qty": 29
+  },
+  {
+   "id": "prop-unit-c-planned-4",
+   "unitId": "unit-c",
+   "itemId": "item-006",
+   "tab": "planned",
+   "qty": 16
+  },
+  {
+   "id": "prop-unit-c-planned-5",
+   "unitId": "unit-c",
+   "itemId": "item-029",
+   "tab": "planned",
+   "qty": 28
+  },
+  {
+   "id": "prop-unit-c-on_base-1",
+   "unitId": "unit-c",
+   "itemId": "item-028",
+   "tab": "on_base",
+   "qty": 9
+  },
+  {
+   "id": "prop-unit-c-on_base-2",
+   "unitId": "unit-c",
+   "itemId": "item-008",
+   "tab": "on_base",
+   "qty": 4
+  },
+  {
+   "id": "prop-unit-c-on_base-3",
+   "unitId": "unit-c",
+   "itemId": "item-013",
+   "tab": "on_base",
+   "qty": 31
+  },
+  {
+   "id": "prop-unit-c-on_base-4",
+   "unitId": "unit-c",
+   "itemId": "item-035",
+   "tab": "on_base",
+   "qty": 32
+  },
+  {
+   "id": "prop-unit-c-on_base-5",
+   "unitId": "unit-c",
+   "itemId": "item-012",
+   "tab": "on_base",
+   "qty": 5
+  },
+  {
+   "id": "prop-unit-c-received-1",
+   "unitId": "unit-c",
+   "itemId": "item-032",
+   "tab": "received",
+   "qty": 19
+  },
+  {
+   "id": "prop-unit-c-received-2",
+   "unitId": "unit-c",
+   "itemId": "item-010",
+   "tab": "received",
+   "qty": 33
+  },
+  {
+   "id": "prop-unit-c-received-3",
+   "unitId": "unit-c",
+   "itemId": "item-024",
+   "tab": "received",
+   "qty": 30
+  },
+  {
+   "id": "prop-unit-c-received-4",
+   "unitId": "unit-c",
+   "itemId": "item-023",
+   "tab": "received",
+   "qty": 36
+  },
+  {
+   "id": "prop-unit-c-received-5",
+   "unitId": "unit-c",
+   "itemId": "item-001",
+   "tab": "received",
+   "qty": 14
+  }
+ ],
+ "outcomes": [
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0001",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0002",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "preparer"
+     },
+     "requestId": "req-0001",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0003",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0004",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "preparer"
+     },
+     "requestId": "req-0002",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0003",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-8",
+       "positionId": "pos-030",
+       "qty": 1,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-9",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0005",
+     "requestId": "req-0003",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0003",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-8",
+       "positionId": "pos-030",
+       "qty": 1,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-9",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0006",
+     "requestId": "req-0003",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "preparer"
+     },
+     "requestId": "req-0003",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0004",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-10",
+       "positionId": "pos-002",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-11",
+       "positionId": "pos-011",
+       "qty": 5,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-12",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0007",
+     "requestId": "req-0004",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0004",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-10",
+       "positionId": "pos-002",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-11",
+       "positionId": "pos-011",
+       "qty": 5,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-12",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0008",
+     "requestId": "req-0004",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "preparer"
+     },
+     "requestId": "req-0004",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0005",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-13",
+       "positionId": "pos-015",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-14",
+       "positionId": "pos-016",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0009",
+     "requestId": "req-0005",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0005",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-13",
+       "positionId": "pos-015",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-14",
+       "positionId": "pos-016",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0010",
+     "requestId": "req-0005",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "preparer"
+     },
+     "requestId": "req-0005",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0001",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0001",
+     "level": 1,
+     "unitId": "unit-a",
+     "date": "2027-02-01",
+     "status": "formed",
+     "requestIds": [
+      "req-0001"
+     ],
+     "formedBy": "prep-1-unit-a",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-a",
+     "idempotencyKey": "seed-0011",
+     "requestId": null,
+     "listId": "list-0001",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-a",
+      "date": "2027-02-01",
+      "requestIds": [
+       "req-0001"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-a",
+     "idempotencyKey": "seed-0011",
+     "requestId": "req-0001",
+     "listId": "list-0001",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "approver"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0001",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0001",
+     "level": 1,
+     "unitId": "unit-a",
+     "date": "2027-02-01",
+     "status": "approved",
+     "requestIds": [
+      "req-0001"
+     ],
+     "formedBy": "prep-1-unit-a",
+     "sedoNumber": 7240006,
+     "approvedBy": "appr-1-unit-a",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-a",
+     "idempotencyKey": "seed-0012",
+     "requestId": null,
+     "listId": "list-0001",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "sedoNumber": 7240006
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-a",
+     "idempotencyKey": "seed-0012",
+     "requestId": "req-0001",
+     "listId": "list-0001",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240006
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0001",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0002",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0003",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0002",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-8",
+       "positionId": "pos-030",
+       "qty": 1,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-9",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0004",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0002",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-10",
+       "positionId": "pos-002",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-11",
+       "positionId": "pos-011",
+       "qty": 5,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-12",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0002",
+     "level": 1,
+     "unitId": "unit-b",
+     "date": "2027-02-01",
+     "status": "formed",
+     "requestIds": [
+      "req-0002",
+      "req-0003",
+      "req-0004"
+     ],
+     "formedBy": "prep-1-unit-b",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-b",
+     "idempotencyKey": "seed-0013",
+     "requestId": null,
+     "listId": "list-0002",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-b",
+      "date": "2027-02-01",
+      "requestIds": [
+       "req-0002",
+       "req-0003",
+       "req-0004"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-b",
+     "idempotencyKey": "seed-0013",
+     "requestId": "req-0002",
+     "listId": "list-0002",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-b",
+     "idempotencyKey": "seed-0013",
+     "requestId": "req-0003",
+     "listId": "list-0002",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-b",
+     "idempotencyKey": "seed-0013",
+     "requestId": "req-0004",
+     "listId": "list-0002",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "approver"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0002",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0003",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-8",
+       "positionId": "pos-030",
+       "qty": 1,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-9",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0004",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-10",
+       "positionId": "pos-002",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-11",
+       "positionId": "pos-011",
+       "qty": 5,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-12",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0002",
+     "level": 1,
+     "unitId": "unit-b",
+     "date": "2027-02-01",
+     "status": "approved",
+     "requestIds": [
+      "req-0002",
+      "req-0003",
+      "req-0004"
+     ],
+     "formedBy": "prep-1-unit-b",
+     "sedoNumber": 7240011,
+     "approvedBy": "appr-1-unit-b",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-b",
+     "idempotencyKey": "seed-0014",
+     "requestId": null,
+     "listId": "list-0002",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "sedoNumber": 7240011
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-b",
+     "idempotencyKey": "seed-0014",
+     "requestId": "req-0002",
+     "listId": "list-0002",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240011
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-b",
+     "idempotencyKey": "seed-0014",
+     "requestId": "req-0003",
+     "listId": "list-0002",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240011
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-b",
+     "idempotencyKey": "seed-0014",
+     "requestId": "req-0004",
+     "listId": "list-0002",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240011
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0002",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0003",
+     "listId": "list-0002",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0004",
+     "listId": "list-0002",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0005",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0003",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-13",
+       "positionId": "pos-015",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-14",
+       "positionId": "pos-016",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0003",
+     "level": 1,
+     "unitId": "unit-c",
+     "date": "2027-02-01",
+     "status": "formed",
+     "requestIds": [
+      "req-0005"
+     ],
+     "formedBy": "prep-1-unit-c",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0015",
+     "requestId": null,
+     "listId": "list-0003",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-c",
+      "date": "2027-02-01",
+      "requestIds": [
+       "req-0005"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0015",
+     "requestId": "req-0005",
+     "listId": "list-0003",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "approver"
+     },
+     "requestId": "req-0005",
+     "listId": "list-0003",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0005",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-13",
+       "positionId": "pos-015",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-14",
+       "positionId": "pos-016",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0003",
+     "level": 1,
+     "unitId": "unit-c",
+     "date": "2027-02-01",
+     "status": "approved",
+     "requestIds": [
+      "req-0005"
+     ],
+     "formedBy": "prep-1-unit-c",
+     "sedoNumber": 7240014,
+     "approvedBy": "appr-1-unit-c",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-c",
+     "idempotencyKey": "seed-0016",
+     "requestId": null,
+     "listId": "list-0003",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "sedoNumber": 7240014
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "appr-1-unit-c",
+     "idempotencyKey": "seed-0016",
+     "requestId": "req-0005",
+     "listId": "list-0003",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240014
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "preparer"
+     },
+     "requestId": "req-0005",
+     "listId": "list-0003",
+     "note": null,
+     "at": "2027-02-01T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0004",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0004",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0003",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0004",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-8",
+       "positionId": "pos-030",
+       "qty": 1,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-9",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0004",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0004",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-10",
+       "positionId": "pos-002",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-11",
+       "positionId": "pos-011",
+       "qty": 5,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-12",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0004",
+     "level": 2,
+     "unitId": "brig-1",
+     "date": "2027-02-02",
+     "status": "formed",
+     "requestIds": [
+      "req-0001",
+      "req-0002",
+      "req-0003",
+      "req-0004"
+     ],
+     "formedBy": "prep-2-brig-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0017",
+     "requestId": null,
+     "listId": "list-0004",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "unitId": "brig-1",
+      "date": "2027-02-02",
+      "requestIds": [
+       "req-0001",
+       "req-0002",
+       "req-0003",
+       "req-0004"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0017",
+     "requestId": "req-0001",
+     "listId": "list-0004",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0017",
+     "requestId": "req-0002",
+     "listId": "list-0004",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0017",
+     "requestId": "req-0003",
+     "listId": "list-0004",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0017",
+     "requestId": "req-0004",
+     "listId": "list-0004",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "approver"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0004",
+     "note": null,
+     "at": "2027-02-02T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0003",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-8",
+       "positionId": "pos-030",
+       "qty": 1,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-9",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0004",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-10",
+       "positionId": "pos-002",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-11",
+       "positionId": "pos-011",
+       "qty": 5,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-12",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0004",
+     "level": 2,
+     "unitId": "brig-1",
+     "date": "2027-02-02",
+     "status": "approved",
+     "requestIds": [
+      "req-0001",
+      "req-0002",
+      "req-0003",
+      "req-0004"
+     ],
+     "formedBy": "prep-2-brig-1",
+     "sedoNumber": 7240020,
+     "approvedBy": "appr-2-brig-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "appr-2-brig-1",
+     "idempotencyKey": "seed-0018",
+     "requestId": null,
+     "listId": "list-0004",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "sedoNumber": 7240020
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "appr-2-brig-1",
+     "idempotencyKey": "seed-0018",
+     "requestId": "req-0001",
+     "listId": "list-0004",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240020
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "appr-2-brig-1",
+     "idempotencyKey": "seed-0018",
+     "requestId": "req-0002",
+     "listId": "list-0004",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240020
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "appr-2-brig-1",
+     "idempotencyKey": "seed-0018",
+     "requestId": "req-0003",
+     "listId": "list-0004",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240020
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "appr-2-brig-1",
+     "idempotencyKey": "seed-0018",
+     "requestId": "req-0004",
+     "listId": "list-0004",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240020
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0004",
+     "note": null,
+     "at": "2027-02-02T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0004",
+     "note": null,
+     "at": "2027-02-02T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0003",
+     "listId": "list-0004",
+     "note": null,
+     "at": "2027-02-02T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0004",
+     "listId": "list-0004",
+     "note": null,
+     "at": "2027-02-02T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0005",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "withdrawn",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-13",
+       "positionId": "pos-015",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-14",
+       "positionId": "pos-016",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.withdrawn",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0019",
+     "requestId": "req-0005",
+     "listId": null,
+     "from": "at_level",
+     "to": "withdrawn",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "reachedLevel": 2,
+      "today": "2027-02-02"
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_withdrawn",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "both"
+     },
+     "requestId": "req-0005",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-02T09:00:00.000Z"
+    },
+    {
+     "kind": "request_withdrawn",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "both"
+     },
+     "requestId": "req-0005",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-02T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0020",
+     "requestId": "req-0006",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0021",
+     "requestId": "req-0006",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "preparer"
+     },
+     "requestId": "req-0006",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0022",
+     "requestId": "req-0007",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0023",
+     "requestId": "req-0007",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "preparer"
+     },
+     "requestId": "req-0007",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0008",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-20",
+       "positionId": "pos-026",
+       "qty": 30,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-21",
+       "positionId": "pos-027",
+       "qty": 6,
+       "kekv": "2220"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0024",
+     "requestId": "req-0008",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0008",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-20",
+       "positionId": "pos-026",
+       "qty": 30,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-21",
+       "positionId": "pos-027",
+       "qty": 6,
+       "kekv": "2220"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0025",
+     "requestId": "req-0008",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "preparer"
+     },
+     "requestId": "req-0008",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0005",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    },
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0005",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0005",
+     "level": 1,
+     "unitId": "unit-c",
+     "date": "2027-02-03",
+     "status": "formed",
+     "requestIds": [
+      "req-0006",
+      "req-0007"
+     ],
+     "formedBy": "prep-1-unit-c",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0026",
+     "requestId": null,
+     "listId": "list-0005",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-c",
+      "date": "2027-02-03",
+      "requestIds": [
+       "req-0006",
+       "req-0007"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0026",
+     "requestId": "req-0006",
+     "listId": "list-0005",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0026",
+     "requestId": "req-0007",
+     "listId": "list-0005",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "approver"
+     },
+     "requestId": "req-0006",
+     "listId": "list-0005",
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    },
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0005",
+     "level": 1,
+     "unitId": "unit-c",
+     "date": "2027-02-03",
+     "status": "approved",
+     "requestIds": [
+      "req-0006",
+      "req-0007"
+     ],
+     "formedBy": "prep-1-unit-c",
+     "sedoNumber": 7240025,
+     "approvedBy": "appr-1-unit-c",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "appr-1-unit-c",
+     "idempotencyKey": "seed-0027",
+     "requestId": null,
+     "listId": "list-0005",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "sedoNumber": 7240025
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "appr-1-unit-c",
+     "idempotencyKey": "seed-0027",
+     "requestId": "req-0006",
+     "listId": "list-0005",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240025
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "appr-1-unit-c",
+     "idempotencyKey": "seed-0027",
+     "requestId": "req-0007",
+     "listId": "list-0005",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240025
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "preparer"
+     },
+     "requestId": "req-0006",
+     "listId": "list-0005",
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "preparer"
+     },
+     "requestId": "req-0007",
+     "listId": "list-0005",
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0008",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0006",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-20",
+       "positionId": "pos-026",
+       "qty": 30,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-21",
+       "positionId": "pos-027",
+       "qty": 6,
+       "kekv": "2220"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0006",
+     "level": 1,
+     "unitId": "unit-a",
+     "date": "2027-02-03",
+     "status": "formed",
+     "requestIds": [
+      "req-0008"
+     ],
+     "formedBy": "prep-1-unit-a",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "prep-1-unit-a",
+     "idempotencyKey": "seed-0028",
+     "requestId": null,
+     "listId": "list-0006",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-a",
+      "date": "2027-02-03",
+      "requestIds": [
+       "req-0008"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "prep-1-unit-a",
+     "idempotencyKey": "seed-0028",
+     "requestId": "req-0008",
+     "listId": "list-0006",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "approver"
+     },
+     "requestId": "req-0008",
+     "listId": "list-0006",
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0008",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-20",
+       "positionId": "pos-026",
+       "qty": 30,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-21",
+       "positionId": "pos-027",
+       "qty": 6,
+       "kekv": "2220"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0006",
+     "level": 1,
+     "unitId": "unit-a",
+     "date": "2027-02-03",
+     "status": "approved",
+     "requestIds": [
+      "req-0008"
+     ],
+     "formedBy": "prep-1-unit-a",
+     "sedoNumber": 7240028,
+     "approvedBy": "appr-1-unit-a",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "appr-1-unit-a",
+     "idempotencyKey": "seed-0029",
+     "requestId": null,
+     "listId": "list-0006",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "sedoNumber": 7240028
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "appr-1-unit-a",
+     "idempotencyKey": "seed-0029",
+     "requestId": "req-0008",
+     "listId": "list-0006",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240028
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0008",
+     "listId": "list-0006",
+     "note": null,
+     "at": "2027-02-03T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
+     "status": "in_list",
+     "level": 3,
+     "listId": "list-0007",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
+     "status": "in_list",
+     "level": 3,
+     "listId": "list-0007",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0007",
+     "level": 3,
+     "unitId": "ru-1",
+     "date": "2027-02-04",
+     "status": "formed",
+     "requestIds": [
+      "req-0001",
+      "req-0002"
+     ],
+     "formedBy": "prep-3-ru-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0030",
+     "requestId": null,
+     "listId": "list-0007",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 3,
+      "unitId": "ru-1",
+      "date": "2027-02-04",
+      "requestIds": [
+       "req-0001",
+       "req-0002"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0030",
+     "requestId": "req-0001",
+     "listId": "list-0007",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 7,
+     "data": {
+      "level": 3
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0030",
+     "requestId": "req-0002",
+     "listId": "list-0007",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 7,
+     "data": {
+      "level": 3
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "approver"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0007",
+     "note": null,
+     "at": "2027-02-04T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 8,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-04",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 8,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-04",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0007",
+     "level": 3,
+     "unitId": "ru-1",
+     "date": "2027-02-04",
+     "status": "approved",
+     "requestIds": [
+      "req-0001",
+      "req-0002"
+     ],
+     "formedBy": "prep-3-ru-1",
+     "sedoNumber": 7240034,
+     "approvedBy": "appr-3-ru-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0031",
+     "requestId": null,
+     "listId": "list-0007",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 3,
+      "sedoNumber": 7240034
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0031",
+     "requestId": "req-0001",
+     "listId": "list-0007",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 8,
+     "data": {
+      "fromLevel": 3,
+      "level": 4,
+      "sedoNumber": 7240034
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0031",
+     "requestId": "req-0002",
+     "listId": "list-0007",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 8,
+     "data": {
+      "fromLevel": 3,
+      "level": 4,
+      "sedoNumber": 7240034
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0007",
+     "note": null,
+     "at": "2027-02-04T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0007",
+     "note": null,
+     "at": "2027-02-04T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0004",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
+     "status": "returned",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-10",
+       "positionId": "pos-002",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-11",
+       "positionId": "pos-011",
+       "qty": 5,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-12",
+       "positionId": "pos-032",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": {
+      "level": 3,
+      "note": "Уточніть кількість акумуляторів і КЕКВ для станції керування.",
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-04T09:00:00.000Z",
+      "cascade": [
+       {
+        "kind": "level",
+        "level": 2,
+        "unitId": "brig-1",
+        "role": "both"
+       },
+       {
+        "kind": "level",
+        "level": 1,
+        "unitId": "unit-b",
+        "role": "both"
+       },
+       {
+        "kind": "author",
+        "userId": "author-unit-b"
+       }
+      ]
+     },
+     "levelEnteredOn": "2027-02-04",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.returned",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0032",
+     "requestId": "req-0004",
+     "listId": null,
+     "from": "at_level",
+     "to": "returned",
+     "requestVersion": 1,
+     "revision": 7,
+     "data": {
+      "level": 3,
+      "note": "Уточніть кількість акумуляторів і КЕКВ для станції керування.",
+      "cascade": [
+       "L2",
+       "L1",
+       "author"
+      ]
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_returned",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "both"
+     },
+     "requestId": "req-0004",
+     "listId": null,
+     "note": "Уточніть кількість акумуляторів і КЕКВ для станції керування.",
+     "at": "2027-02-04T09:00:00.000Z"
+    },
+    {
+     "kind": "request_returned",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "both"
+     },
+     "requestId": "req-0004",
+     "listId": null,
+     "note": "Уточніть кількість акумуляторів і КЕКВ для станції керування.",
+     "at": "2027-02-04T09:00:00.000Z"
+    },
+    {
+     "kind": "request_returned",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-b"
+     },
+     "requestId": "req-0004",
+     "listId": null,
+     "note": "Уточніть кількість акумуляторів і КЕКВ для станції керування.",
+     "at": "2027-02-04T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 9,
+     "status": "in_list",
+     "level": 4,
+     "listId": "list-0008",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-04",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 9,
+     "status": "in_list",
+     "level": 4,
+     "listId": "list-0008",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-04",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0008",
+     "level": 4,
+     "unitId": "dir-1",
+     "date": "2027-02-05",
+     "status": "formed",
+     "requestIds": [
+      "req-0001",
+      "req-0002"
+     ],
+     "formedBy": "prep-4-dir-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0033",
+     "requestId": null,
+     "listId": "list-0008",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 4,
+      "unitId": "dir-1",
+      "date": "2027-02-05",
+      "requestIds": [
+       "req-0001",
+       "req-0002"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0033",
+     "requestId": "req-0001",
+     "listId": "list-0008",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 4
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0033",
+     "requestId": "req-0002",
+     "listId": "list-0008",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 4
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "approver"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0008",
+     "note": null,
+     "at": "2027-02-05T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 10,
+     "status": "at_level",
+     "level": 5,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-05",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 10,
+     "status": "at_level",
+     "level": 5,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-05",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0008",
+     "level": 4,
+     "unitId": "dir-1",
+     "date": "2027-02-05",
+     "status": "approved",
+     "requestIds": [
+      "req-0001",
+      "req-0002"
+     ],
+     "formedBy": "prep-4-dir-1",
+     "sedoNumber": 7240039,
+     "approvedBy": "appr-4-dir-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0034",
+     "requestId": null,
+     "listId": "list-0008",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 4,
+      "sedoNumber": 7240039
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0034",
+     "requestId": "req-0001",
+     "listId": "list-0008",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 10,
+     "data": {
+      "fromLevel": 4,
+      "level": 5,
+      "sedoNumber": 7240039
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0034",
+     "requestId": "req-0002",
+     "listId": "list-0008",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 10,
+     "data": {
+      "fromLevel": 4,
+      "level": 5,
+      "sedoNumber": 7240039
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 5,
+      "unitId": "vor",
+      "role": "preparer"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0008",
+     "note": null,
+     "at": "2027-02-05T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 5,
+      "unitId": "vor",
+      "role": "preparer"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0008",
+     "note": null,
+     "at": "2027-02-05T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 11,
+     "status": "in_list",
+     "level": 5,
+     "listId": "list-0009",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-05",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 11,
+     "status": "in_list",
+     "level": 5,
+     "listId": "list-0009",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-05",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0009",
+     "level": 5,
+     "unitId": "vor",
+     "date": "2027-02-06",
+     "status": "formed",
+     "requestIds": [
+      "req-0001",
+      "req-0002"
+     ],
+     "formedBy": "prep-5-vor",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0035",
+     "requestId": null,
+     "listId": "list-0009",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 5,
+      "unitId": "vor",
+      "date": "2027-02-06",
+      "requestIds": [
+       "req-0001",
+       "req-0002"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0035",
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 11,
+     "data": {
+      "level": 5
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0035",
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 11,
+     "data": {
+      "level": 5
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 5,
+      "unitId": "vor",
+      "role": "approver"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 12,
+     "status": "approved",
+     "level": 5,
+     "listId": "list-0009",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 12,
+     "status": "approved",
+     "level": 5,
+     "listId": "list-0009",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0009",
+     "level": 5,
+     "unitId": "vor",
+     "date": "2027-02-06",
+     "status": "approved",
+     "requestIds": [
+      "req-0001",
+      "req-0002"
+     ],
+     "formedBy": "prep-5-vor",
+     "sedoNumber": 7240042,
+     "approvedBy": "appr-5-vor",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "appr-5-vor",
+     "idempotencyKey": "seed-0036",
+     "requestId": null,
+     "listId": "list-0009",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 5,
+      "sedoNumber": 7240042
+     }
+    },
+    {
+     "type": "request.approved",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "appr-5-vor",
+     "idempotencyKey": "seed-0036",
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "from": "in_list",
+     "to": "approved",
+     "requestVersion": 1,
+     "revision": 12,
+     "data": {
+      "sedoNumber": 7240042
+     }
+    },
+    {
+     "type": "request.approved",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "appr-5-vor",
+     "idempotencyKey": "seed-0036",
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "from": "in_list",
+     "to": "approved",
+     "requestVersion": 1,
+     "revision": 12,
+     "data": {
+      "sedoNumber": 7240042
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-a"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "both"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "both"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "both"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "both"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-b"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "both"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "both"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "both"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "both"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    }
+   ],
+   "budget": {
+    "total": {
+     "limitMinor": 10000000000000,
+     "approvedMinor": 42960000
+    },
+    "perKekv": {
+     "2210": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 22110000
+     },
+     "2220": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 7650000
+     },
+     "3110": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 13200000
+     }
+    }
+   }
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 13,
+     "status": "extract_issued",
+     "level": 5,
+     "listId": "list-0009",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-909",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "priceMinor": 490000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-01"
+    },
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 13,
+     "status": "extract_issued",
+     "level": 5,
+     "listId": "list-0009",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ОБ-904",
+        "name": "Антенна система мобільна",
+        "kekv": "3110",
+        "priceMinor": 4800000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.extract_issued",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "system",
+     "idempotencyKey": "seed-0037",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": "approved",
+     "to": "extract_issued",
+     "requestVersion": 1,
+     "revision": 13,
+     "data": {}
+    },
+    {
+     "type": "request.extract_issued",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "system",
+     "idempotencyKey": "seed-0037",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": "approved",
+     "to": "extract_issued",
+     "requestVersion": 1,
+     "revision": 13,
+     "data": {}
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "extract_issued",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-a"
+     },
+     "requestId": "req-0001",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "extract_issued",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-b"
+     },
+     "requestId": "req-0002",
+     "listId": "list-0009",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    }
+   ],
+   "extracts": [
+    {
+     "id": "extract-0001",
+     "unitId": "unit-a",
+     "date": "2027-02-06",
+     "requestIds": [
+      "req-0001"
+     ],
+     "lines": [
+      {
+       "requestId": "req-0001",
+       "lineId": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0001",
+       "lineId": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0001",
+       "lineId": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0001",
+       "lineId": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kind": "replacement",
+       "status": "replacement_agreed"
+      }
+     ]
+    },
+    {
+     "id": "extract-0002",
+     "unitId": "unit-b",
+     "date": "2027-02-06",
+     "requestIds": [
+      "req-0002"
+     ],
+     "lines": [
+      {
+       "requestId": "req-0002",
+       "lineId": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0002",
+       "lineId": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0002",
+       "lineId": "ln-7",
+       "positionId": "pos-006",
+       "qty": 1,
+       "kind": "replacement",
+       "status": "replacement_agreed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0010",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    },
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0010",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0010",
+     "level": 2,
+     "unitId": "brig-2",
+     "date": "2027-02-06",
+     "status": "formed",
+     "requestIds": [
+      "req-0006",
+      "req-0007"
+     ],
+     "formedBy": "prep-2-brig-2",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-2-brig-2",
+     "idempotencyKey": "seed-0038",
+     "requestId": null,
+     "listId": "list-0010",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "unitId": "brig-2",
+      "date": "2027-02-06",
+      "requestIds": [
+       "req-0006",
+       "req-0007"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-2-brig-2",
+     "idempotencyKey": "seed-0038",
+     "requestId": "req-0006",
+     "listId": "list-0010",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-2-brig-2",
+     "idempotencyKey": "seed-0038",
+     "requestId": "req-0007",
+     "listId": "list-0010",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "approver"
+     },
+     "requestId": "req-0006",
+     "listId": "list-0010",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-03"
+    },
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0010",
+     "level": 2,
+     "unitId": "brig-2",
+     "date": "2027-02-06",
+     "status": "approved",
+     "requestIds": [
+      "req-0006",
+      "req-0007"
+     ],
+     "formedBy": "prep-2-brig-2",
+     "sedoNumber": 7240048,
+     "approvedBy": "appr-2-brig-2",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "appr-2-brig-2",
+     "idempotencyKey": "seed-0039",
+     "requestId": null,
+     "listId": "list-0010",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "sedoNumber": 7240048
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "appr-2-brig-2",
+     "idempotencyKey": "seed-0039",
+     "requestId": "req-0006",
+     "listId": "list-0010",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240048
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "appr-2-brig-2",
+     "idempotencyKey": "seed-0039",
+     "requestId": "req-0007",
+     "listId": "list-0010",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240048
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0006",
+     "listId": "list-0010",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0007",
+     "listId": "list-0010",
+     "note": null,
+     "at": "2027-02-06T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
+     "status": "in_list",
+     "level": 3,
+     "listId": "list-0011",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-03"
+    },
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
+     "status": "in_list",
+     "level": 3,
+     "listId": "list-0011",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0011",
+     "level": 3,
+     "unitId": "ru-1",
+     "date": "2027-02-07",
+     "status": "formed",
+     "requestIds": [
+      "req-0006",
+      "req-0007"
+     ],
+     "formedBy": "prep-3-ru-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-07T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0040",
+     "requestId": null,
+     "listId": "list-0011",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 3,
+      "unitId": "ru-1",
+      "date": "2027-02-07",
+      "requestIds": [
+       "req-0006",
+       "req-0007"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-07T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0040",
+     "requestId": "req-0006",
+     "listId": "list-0011",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 7,
+     "data": {
+      "level": 3
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-07T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0040",
+     "requestId": "req-0007",
+     "listId": "list-0011",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 7,
+     "data": {
+      "level": 3
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "approver"
+     },
+     "requestId": "req-0006",
+     "listId": "list-0011",
+     "note": null,
+     "at": "2027-02-07T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0006",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 8,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-15",
+       "positionId": "pos-036",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-16",
+       "positionId": "pos-038",
+       "qty": 2,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-07",
+     "createdOn": "2027-02-03"
+    },
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 8,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-07",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0011",
+     "level": 3,
+     "unitId": "ru-1",
+     "date": "2027-02-07",
+     "status": "approved",
+     "requestIds": [
+      "req-0006",
+      "req-0007"
+     ],
+     "formedBy": "prep-3-ru-1",
+     "sedoNumber": 7240053,
+     "approvedBy": "appr-3-ru-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-07T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0041",
+     "requestId": null,
+     "listId": "list-0011",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 3,
+      "sedoNumber": 7240053
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-07T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0041",
+     "requestId": "req-0006",
+     "listId": "list-0011",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 8,
+     "data": {
+      "fromLevel": 3,
+      "level": 4,
+      "sedoNumber": 7240053
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-07T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0041",
+     "requestId": "req-0007",
+     "listId": "list-0011",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 8,
+     "data": {
+      "fromLevel": 3,
+      "level": 4,
+      "sedoNumber": 7240053
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0006",
+     "listId": "list-0011",
+     "note": null,
+     "at": "2027-02-07T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0007",
+     "listId": "list-0011",
+     "note": null,
+     "at": "2027-02-07T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 9,
+     "status": "in_list",
+     "level": 4,
+     "listId": "list-0012",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-07",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0012",
+     "level": 4,
+     "unitId": "dir-1",
+     "date": "2027-02-08",
+     "status": "formed",
+     "requestIds": [
+      "req-0007"
+     ],
+     "formedBy": "prep-4-dir-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-08T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0042",
+     "requestId": null,
+     "listId": "list-0012",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 4,
+      "unitId": "dir-1",
+      "date": "2027-02-08",
+      "requestIds": [
+       "req-0007"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-08T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0042",
+     "requestId": "req-0007",
+     "listId": "list-0012",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 4
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "approver"
+     },
+     "requestId": "req-0007",
+     "listId": "list-0012",
+     "note": null,
+     "at": "2027-02-08T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 10,
+     "status": "at_level",
+     "level": 5,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "ПМ-907",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "priceMinor": 260000
+       }
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-08",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0012",
+     "level": 4,
+     "unitId": "dir-1",
+     "date": "2027-02-08",
+     "status": "approved",
+     "requestIds": [
+      "req-0007"
+     ],
+     "formedBy": "prep-4-dir-1",
+     "sedoNumber": 7240056,
+     "approvedBy": "appr-4-dir-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-08T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0043",
+     "requestId": null,
+     "listId": "list-0012",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 4,
+      "sedoNumber": 7240056
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-08T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0043",
+     "requestId": "req-0007",
+     "listId": "list-0012",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 10,
+     "data": {
+      "fromLevel": 4,
+      "level": 5,
+      "sedoNumber": 7240056
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 5,
+      "unitId": "vor",
+      "role": "preparer"
+     },
+     "requestId": "req-0007",
+     "listId": "list-0012",
+     "note": null,
+     "at": "2027-02-08T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0009",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-22",
+       "positionId": "pos-012",
+       "qty": 15,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-23",
+       "positionId": "pos-013",
+       "qty": 40,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-09"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-09T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0044",
+     "requestId": "req-0009",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0009",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-22",
+       "positionId": "pos-012",
+       "qty": 15,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-23",
+       "positionId": "pos-013",
+       "qty": 40,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-09",
+     "createdOn": "2027-02-09"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-09T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0045",
+     "requestId": "req-0009",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "preparer"
+     },
+     "requestId": "req-0009",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-09T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0010",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-24",
+       "positionId": "pos-039",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-09"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-09T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0046",
+     "requestId": "req-0010",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0010",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-24",
+       "positionId": "pos-039",
+       "qty": 1,
+       "kekv": "3110"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-09",
+     "createdOn": "2027-02-09"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-09T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0047",
+     "requestId": "req-0010",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "preparer"
+     },
+     "requestId": "req-0010",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-09T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0009",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0013",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-22",
+       "positionId": "pos-012",
+       "qty": 15,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-23",
+       "positionId": "pos-013",
+       "qty": 40,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": "2027-02-09",
+     "createdOn": "2027-02-09"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0013",
+     "level": 1,
+     "unitId": "unit-a",
+     "date": "2027-02-09",
+     "status": "formed",
+     "requestIds": [
+      "req-0009"
+     ],
+     "formedBy": "prep-1-unit-a",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-09T09:00:00.000Z",
+     "actorId": "prep-1-unit-a",
+     "idempotencyKey": "seed-0048",
+     "requestId": null,
+     "listId": "list-0013",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-a",
+      "date": "2027-02-09",
+      "requestIds": [
+       "req-0009"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-09T09:00:00.000Z",
+     "actorId": "prep-1-unit-a",
+     "idempotencyKey": "seed-0048",
+     "requestId": "req-0009",
+     "listId": "list-0013",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-a",
+      "role": "approver"
+     },
+     "requestId": "req-0009",
+     "listId": "list-0013",
+     "note": null,
+     "at": "2027-02-09T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0011",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-25",
+       "positionId": "pos-017",
+       "qty": 2,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-26",
+       "positionId": "pos-019",
+       "qty": 4,
+       "kekv": "2210"
+      }
+     ],
+     "returnInfo": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-10"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-10T09:00:00.000Z",
+     "actorId": "author-unit-a",
+     "idempotencyKey": "seed-0049",
+     "requestId": "req-0011",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  }
+ ],
+ "now": "2027-02-15T09:00:00.000Z"
+}

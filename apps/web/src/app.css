@@ -1,0 +1,362 @@
+/*
+ * Стилі застосунку: лише семантичні токени набору (жодних колірних літералів).
+ * Каркас екранів — з @index/ui-patterns; тут тільки вміст: банер, трек, таблиця рядків заявки.
+ */
+
+.boot {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--ix-space-6);
+  background: var(--ix-background);
+  color: var(--ix-foreground);
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+  padding: var(--ix-space-4);
+}
+
+.screen__hint {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--ix-foreground-secondary);
+}
+
+/* Банер «Демонстраційні дані»: видно на всіх екранах. */
+.demo-banner {
+  margin: 0;
+  padding: var(--ix-space-2) var(--ix-space-3);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-control);
+  background: var(--ix-info-surface);
+  color: var(--ix-foreground);
+  font: var(--ix-font-caption);
+}
+
+.return-note {
+  margin: 0;
+  padding: var(--ix-space-3);
+  border: 1px solid var(--ix-border);
+  border-inline-start: 4px solid var(--ix-warning);
+  border-radius: var(--ix-radius-control);
+  background: var(--ix-warning-surface);
+}
+
+.return-note__hint {
+  color: var(--ix-foreground-secondary);
+}
+
+.demo-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+  min-width: 18rem;
+}
+
+/* ── Трек 5 рівнів ─────────────────────────────────────────────────────────── */
+
+.track {
+  --track-marker: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.track__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--track-marker) 1fr;
+  gap: var(--ix-space-3);
+  padding-bottom: var(--ix-space-4);
+  color: var(--ix-foreground);
+}
+
+/* З'єднувальна лінія між маркерами. */
+.track__step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--track-marker) 0;
+  inset-inline-start: calc(var(--track-marker) / 2 - 1px);
+  width: 2px;
+  background: var(--ix-border);
+}
+
+.track__step[data-state="done"]:not(:last-child)::before {
+  background: var(--ix-success);
+}
+
+.track__marker {
+  display: grid;
+  place-items: center;
+  width: var(--track-marker);
+  height: var(--track-marker);
+  border: 2px solid var(--ix-border-strong);
+  border-radius: var(--ix-radius-round);
+  background: var(--ix-surface);
+  color: var(--ix-foreground-muted);
+}
+
+.track__step[data-state="done"] .track__marker {
+  border-color: var(--ix-success);
+  background: var(--ix-success-surface);
+  color: var(--ix-success);
+}
+
+.track__step[data-state="current"] .track__marker {
+  border-color: var(--ix-info);
+  background: var(--ix-info-surface);
+  color: var(--ix-info);
+}
+
+.track__step[data-state="returned"] .track__marker {
+  border-color: var(--ix-warning);
+  background: var(--ix-warning-surface);
+  color: var(--ix-warning);
+}
+
+.track__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--ix-radius-round);
+  background: currentColor;
+}
+
+.track__body > p {
+  margin: 0;
+}
+
+.track__title {
+  font: var(--ix-font-body-strong);
+}
+
+.track__level {
+  color: var(--ix-foreground-secondary);
+}
+
+.track__state,
+.track__meta {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.track__step[data-state="pending"] .track__title {
+  color: var(--ix-foreground-secondary);
+}
+
+.track__note {
+  margin: var(--ix-space-2) 0 0;
+  padding: var(--ix-space-2) var(--ix-space-3);
+  border-inline-start: 3px solid var(--ix-warning);
+  background: var(--ix-warning-surface);
+  color: var(--ix-foreground);
+}
+
+/* ── Таблиця рядків заявки ─────────────────────────────────────────────────── */
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+}
+
+.lines__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lines__caption {
+  padding-block-end: var(--ix-space-2);
+  text-align: start;
+  font: var(--ix-font-heading-sm);
+}
+
+.lines__table th,
+.lines__table td {
+  padding: var(--ix-space-2);
+  border-bottom: 1px solid var(--ix-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.lines__table thead th {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-overline);
+}
+
+.lines__num {
+  width: 2.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.lines__qty {
+  width: 7rem;
+}
+
+.lines__money {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.lines__actions {
+  width: 3rem;
+}
+
+.lines__muted {
+  color: var(--ix-foreground-muted);
+}
+
+.lines__row[data-invalid="true"] > * {
+  background: var(--ix-error-surface);
+}
+
+.lines__detail-row .lines__detail {
+  padding-block-start: 0;
+}
+
+.lines__replacement {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-3);
+  align-items: flex-end;
+}
+
+.lines__replacement > :first-child {
+  flex: 1 1 22rem;
+}
+
+.lines__issues {
+  margin: var(--ix-space-2) 0 0;
+  padding-inline-start: var(--ix-space-5);
+  color: var(--ix-error);
+}
+
+.lines__footer {
+  display: flex;
+}
+
+/* ── Праворуч: перевірки й бюджет ──────────────────────────────────────────── */
+
+.check {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-6);
+}
+
+.check__title {
+  margin: 0 0 var(--ix-space-2);
+  font: var(--ix-font-heading-sm);
+}
+
+.check__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
+  margin: 0 0 var(--ix-space-2);
+}
+
+.check__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.check__item {
+  margin-bottom: var(--ix-space-2);
+  padding: var(--ix-space-2) var(--ix-space-3);
+  border-inline-start: 3px solid var(--ix-border-strong);
+  border-radius: var(--ix-radius-compact);
+}
+
+.check__item[data-tone="error"] {
+  border-inline-start-color: var(--ix-error);
+  background: var(--ix-error-surface);
+}
+
+.check__item[data-tone="warning"] {
+  border-inline-start-color: var(--ix-warning);
+  background: var(--ix-warning-surface);
+}
+
+.check__table {
+  width: 100%;
+  border-collapse: collapse;
+  font: var(--ix-font-caption);
+}
+
+.check__table th,
+.check__table td {
+  padding: var(--ix-space-1) var(--ix-space-2);
+  border-bottom: 1px solid var(--ix-border);
+  text-align: start;
+}
+
+.check__table thead th {
+  color: var(--ix-foreground-secondary);
+}
+
+.check__num {
+  text-align: end !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.check__table [data-negative="true"] {
+  color: var(--ix-error);
+  font-weight: var(--ix-font-weight-semibold);
+}
+
+.check__sub {
+  display: block;
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-caption);
+}
+
+.check__table [data-sign="plus"] {
+  color: var(--ix-warning);
+}
+
+.check__table [data-sign="minus"] {
+  color: var(--ix-success);
+}
+
+.check__hint {
+  margin: var(--ix-space-2) 0 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+/* ── Картка заявки ─────────────────────────────────────────────────────────── */
+
+.request-lines,
+.journal {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.request-lines__item {
+  padding-block: var(--ix-space-2);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.request-lines__item p {
+  margin: 0 0 var(--ix-space-1);
+}
+
+.request-lines__name {
+  font: var(--ix-font-body-strong);
+}
+
+.request-lines__meta,
+.journal__time {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.journal__item {
+  padding-block: var(--ix-space-1);
+}

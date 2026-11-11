@@ -19,7 +19,10 @@ import {
   openDb,
   requests as requestsTable,
 } from "@dsp/db";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { applySeed, generateSeed, resetDemo, type SeedData } from "../src/index.ts";
+import { seedData } from "../src/browser.ts";
 
 const seed = generateSeed();
 
@@ -249,5 +252,22 @@ test("«Моє майно»: для кожної в/ч заповнено три
       assert.equal(rows.length, 5, `${unit}/${tab}`);
       assert.ok(rows.every((r) => r.qty > 0 && seed.listPositions.some((p) => p.itemId === r.itemId)));
     }
+  }
+});
+
+test("браузерний вхід: готові дані збігаються з генератором і застосовуються до бази", async () => {
+  assert.deepEqual(seedData, JSON.parse(JSON.stringify(seed)), "seed-data.json застарів: pnpm --filter @dsp/seed generate");
+  const { db } = await openDb();
+  await applySeed(db, seedData);
+  assert.equal((await loadRequests(db)).length, final.requests.size);
+  assert.equal(await loadNow(db), seed.now);
+});
+
+test("браузерна збірка не тягне генератор: browser.ts і apply.ts не імпортують faker та generate.ts як значення", () => {
+  for (const file of ["browser.ts", "apply.ts"]) {
+    const source = readFileSync(join(import.meta.dirname, "..", "src", file), "utf8");
+    assert.ok(!source.includes("@faker-js"), `${file}: faker`);
+    const generateImports = source.split("\n").filter((line) => line.includes("generate.ts"));
+    assert.ok(generateImports.every((line) => /^\s*(import|export) type /.test(line)), `${file}: generate.ts лише як тип`);
   }
 });
