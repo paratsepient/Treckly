@@ -24,6 +24,7 @@
     "@index/ui-patterns": "workspace:*",
     "@tanstack/react-query": "5.105.0",
     "@tanstack/react-router": "1.170.46",
+    "docx": "9.15.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "react-hook-form": "7.91.0"

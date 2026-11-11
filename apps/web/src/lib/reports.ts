@@ -22,13 +22,28 @@ export interface FinalReportInput {
   readonly unitName: (id: string) => string;
 }
 
-const row = (cells: readonly unknown[], tag: "td" | "th" = "td"): string => `<tr>${cells.map((c) => `<${tag}>${escapeHtml(c)}</${tag}>`).join("")}</tr>`;
+export interface ExtractBlock {
+  readonly heading: string;
+  readonly requests: string;
+  readonly head: readonly string[];
+  readonly rows: readonly (readonly string[])[];
+}
 
 /**
- * Остаточний перелік і витяги для друку. Окремий мінімальний документ: його друкують із
- * прихованого iframe, тож розкладка застосунку (фіксована оболонка, панелі) на друк не впливає.
+ * Зміст звіту без розмітки: з нього будуються і друк (HTML), і Word (.docx), тож обидва
+ * формати завжди показують те саме.
  */
-export function buildFinalReport(input: FinalReportInput): string {
+export interface FinalReportModel {
+  readonly title: string;
+  readonly subtitle: string;
+  readonly summary: string;
+  readonly requestHead: readonly string[];
+  /** Порожній список — «Затверджених заявок немає». */
+  readonly requestRows: readonly (readonly string[])[];
+  readonly extracts: readonly ExtractBlock[];
+}
+
+export function finalReportModel(input: FinalReportInput): FinalReportModel {
   const { requests, lists, extracts, positions } = input;
   const sedoOf = (id: string): string => {
     const list = lists.find((l) => l.requestIds.includes(id));
@@ -37,25 +52,42 @@ export function buildFinalReport(input: FinalReportInput): string {
   const nameOf = (positionId: string): string => positions.find((p) => p.id === positionId)?.name ?? positionId;
   const total = requests.reduce((sum, r) => sum + requestTotal(r, positions), 0);
 
-  const requestRows =
-    requests.length === 0
-      ? `<tr><td colspan="6">Затверджених заявок немає.</td></tr>`
-      : requests
-          .map((r) => row([requestLabel(r.id), input.unitName(r.route[0]), sedoOf(r.id), r.lines.length, formatMoney(requestTotal(r, positions)), statusText(r.status, r.level)]))
-          .join("");
+  return {
+    title: input.title,
+    subtitle: `Станом на ${formatDate(input.today)}. Демонстраційні дані, СЕДО імітується.`,
+    summary: `Заявок: ${requests.length}, на суму ${formatMoney(total)}.`,
+    requestHead: ["Номер", "в/ч", "СЕДО №", "Рядків", "Сума", "Статус"],
+    requestRows: requests.map((r) => [requestLabel(r.id), input.unitName(r.route[0]), sedoOf(r.id), String(r.lines.length), formatMoney(requestTotal(r, positions)), statusText(r.status, r.level)]),
+    extracts: extracts.map((x) => ({
+      heading: `Витяг по ${input.unitName(x.unitId)} від ${formatDateShort(x.date)}`,
+      requests: `Заявки: ${x.requestIds.map(requestLabel).join(", ")}`,
+      head: ["Заявка", "Позиція", "Кількість", "Тип", "Статус"],
+      rows: x.lines.map((l) => [requestLabel(l.requestId), nameOf(l.positionId), String(l.qty), l.kind === "replacement" ? "Заміна" : "За переліком", LINE_STATUS_LABELS[l.status]]),
+    })),
+  };
+}
 
+const cells = (values: readonly string[], tag: "td" | "th" = "td"): string => `<tr>${values.map((c) => `<${tag}>${escapeHtml(c)}</${tag}>`).join("")}</tr>`;
+
+/**
+ * Остаточний перелік і витяги для друку. Окремий мінімальний документ: його друкують із
+ * прихованого iframe, тож розкладка застосунку (фіксована оболонка, панелі) на друк не впливає.
+ */
+export function buildFinalReport(input: FinalReportInput): string {
+  const m = finalReportModel(input);
+  const requestRows = m.requestRows.length === 0 ? `<tr><td colspan="${m.requestHead.length}">Затверджених заявок немає.</td></tr>` : m.requestRows.map((r) => cells(r)).join("");
   const extractBlocks =
-    extracts.length === 0
+    m.extracts.length === 0
       ? "<p>Витягів ще немає.</p>"
-      : extracts
+      : m.extracts
           .map(
             (x) => `
     <section>
-      <h3>Витяг по ${escapeHtml(input.unitName(x.unitId))} від ${escapeHtml(formatDateShort(x.date))}</h3>
-      <p>Заявки: ${escapeHtml(x.requestIds.map(requestLabel).join(", "))}</p>
+      <h3>${escapeHtml(x.heading)}</h3>
+      <p>${escapeHtml(x.requests)}</p>
       <table>
-        <thead>${row(["Заявка", "Позиція", "Кількість", "Тип", "Статус"], "th")}</thead>
-        <tbody>${x.lines.map((l) => row([requestLabel(l.requestId), nameOf(l.positionId), l.qty, l.kind === "replacement" ? "Заміна" : "За переліком", LINE_STATUS_LABELS[l.status]])).join("")}</tbody>
+        <thead>${cells(x.head, "th")}</thead>
+        <tbody>${x.rows.map((r) => cells(r)).join("")}</tbody>
       </table>
     </section>`,
           )
@@ -65,7 +97,7 @@ export function buildFinalReport(input: FinalReportInput): string {
 <html lang="uk">
 <head>
 <meta charset="utf-8">
-<title>${escapeHtml(input.title)}</title>
+<title>${escapeHtml(m.title)}</title>
 <style>
   body { font: 12pt/1.4 system-ui, sans-serif; margin: 2cm; color: CanvasText; background: Canvas; }
   h1 { font-size: 18pt; margin: 0 0 0.2cm; }
@@ -78,12 +110,12 @@ export function buildFinalReport(input: FinalReportInput): string {
 </style>
 </head>
 <body>
-  <h1>${escapeHtml(input.title)}</h1>
-  <p>Станом на ${escapeHtml(formatDate(input.today))}. Демонстраційні дані, СЕДО імітується.</p>
+  <h1>${escapeHtml(m.title)}</h1>
+  <p>${escapeHtml(m.subtitle)}</p>
   <h2>Остаточний перелік</h2>
-  <p>Заявок: ${requests.length}, на суму ${escapeHtml(formatMoney(total))}.</p>
+  <p>${escapeHtml(m.summary)}</p>
   <table>
-    <thead>${row(["Номер", "в/ч", "СЕДО №", "Рядків", "Сума", "Статус"], "th")}</thead>
+    <thead>${cells(m.requestHead, "th")}</thead>
     <tbody>${requestRows}</tbody>
   </table>
   <h2>Витяги по в/ч</h2>

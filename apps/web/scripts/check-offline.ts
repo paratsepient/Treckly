@@ -15,6 +15,12 @@ const dist = join(root, "dist");
 /** Хости, що трапляються в бандлі як текст і не запитуються. */
 const ALLOWED_IN_JS = new Set(["www.w3.org", "json-schema.org", "react.dev", "localhost", "app.local"]);
 
+/**
+ * Лише для чанка експорту в Word: імена просторів XML формату OOXML та довідкове посилання в
+ * коді бібліотеки `docx`. Це ідентифікатори в документі .docx, їх ніхто не запитує.
+ */
+const ALLOWED_IN_DOCX_CHUNK = new Set(["schemas.openxmlformats.org", "schemas.microsoft.com", "purl.org", "purl.oclc.org", "answers.microsoft.com"]);
+
 /** У CSS і HTML зовнішнім вважається й посилання без протоколу (`//хост/…`); у JS — лише явний http(s)://, бо `//i.test(` там — регулярний вираз. */
 const CSS_URL = /(?:https?:)?\/\/([a-z0-9-]+(?:\.[a-z0-9-]+)+)/gi;
 const JS_URL = /https?:\/\/([a-z0-9-]+(?:\.[a-z0-9-]+)*)/gi;
@@ -34,7 +40,8 @@ for (const file of readdirSync(dist)) {
     for (const host of externalHosts(css, CSS_URL)) problems.push(`${file}: зовнішній хост у CSS — ${host}`);
   } else if (file.endsWith(".js")) {
     for (const host of externalHosts(readFileSync(path, "utf8"), JS_URL)) {
-      if (!ALLOWED_IN_JS.has(host)) problems.push(`${file}: невідомий хост у JS — ${host}`);
+      const allowedHere = ALLOWED_IN_JS.has(host) || (file.startsWith("docx-export") && ALLOWED_IN_DOCX_CHUNK.has(host));
+      if (!allowedHere) problems.push(`${file}: невідомий хост у JS — ${host}`);
     }
   }
 }

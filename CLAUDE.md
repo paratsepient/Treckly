@@ -21,6 +21,7 @@ faker з фіксованим seed · тести `node:test` (jsdom + axe-core) 
 > - Лінтера і форматера в IndeX **немає** — тут теж не додано (перевірка якості: `tsc` strict).
 > - Стилі: звичайний CSS на токенах `--ix-*`, теми через `data-theme="light|dark"` (не CSS Modules).
 > - Пакети збираються `tsc` у `dist` і підключаються через `exports`; Nx не використовуємо, збірка — `pnpm -r`.
+> - Додано за згодою користувача: `docx` 9.15.0 (експорт у Word; вантажиться окремим чанком лише при експорті). Друк у PDF — через прихований iframe без бібліотек.
 > - Ще не встановлено (немає в IndeX, додаємо за згодою): TanStack Router/Query, Zod, Hono, PGlite, Drizzle,
 >   React Hook Form, faker, Playwright. Імена внутрішніх пакетів: `@dsp/domain|contract|api|db|seed|web`.
 

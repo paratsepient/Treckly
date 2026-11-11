@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Badge, Button, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
+import { useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
@@ -19,6 +20,8 @@ export function FinalScreen() {
   const reference = useApiQuery("reference");
   const positions = useApiQuery("positions");
   const query = useApiQuery("final");
+  const feedback = useFeedback();
+  const [exporting, setExporting] = useState(false);
   const isAuthor = session.data?.user.roleKind === "author";
 
   const requests = query.data?.requests ?? [];
@@ -48,14 +51,32 @@ export function FinalScreen() {
   ];
 
   const state = query.isPending ? "loading" : query.isError ? "error" : requests.length === 0 ? "empty" : "ready";
-  const print = () =>
-    printHtml(buildFinalReport({ title, today: session.data?.today ?? "", requests, lists, extracts, positions: priced, unitName }));
+  const report = { title, today: session.data?.today ?? "", requests, lists, extracts, positions: priced, unitName };
+  const print = () => printHtml(buildFinalReport(report));
+  /** Word вантажиться лише тут: бібліотека `docx` не збільшує початкове завантаження. */
+  const exportDocx = async () => {
+    setExporting(true);
+    try {
+      const { buildFinalDocx, downloadBlob } = await import("../lib/docx-export.ts");
+      downloadBlob(await buildFinalDocx(report), `${isAuthor ? "vytiahy" : "ostatochnyi-perelik"}-${report.today}.docx`);
+      feedback.notify({ key: "docx", tone: "success", title: "Документ Word збережено", description: "Файл .docx завантажено на цей комп'ютер." });
+    } catch {
+      feedback.notify({ key: "docx", tone: "error", title: "Не вдалося створити документ Word" });
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <ScreenFrame
       title={title}
       meta={query.data ? `${requests.length} затверджених · ${formatMoney(total)}` : undefined}
       surfaceLabel={title}
+      actions={
+        <Button iconStart={<Icon name="save" />} disabled={query.data === undefined} loading={exporting} loadingLabel="Створення документа Word" onClick={() => void exportDocx()}>
+          Word (.docx)
+        </Button>
+      }
       primaryAction={
         <Button iconStart={<Icon name="share" />} disabled={query.data === undefined} onClick={print}>
           Друк / PDF

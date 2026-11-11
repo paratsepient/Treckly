@@ -8,7 +8,7 @@
  * з main.js: усе локально, без CDN.
  */
 import * as esbuild from "esbuild";
-import { copyFileSync, mkdirSync } from "node:fs";
+import { copyFileSync, mkdirSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -30,6 +30,8 @@ const options: esbuild.BuildOptions = {
   outdir,
   bundle: true,
   format: "esm",
+  // Розділення: бібліотека Word вантажиться лише при експорті, а не з першим екраном.
+  splitting: true,
   jsx: "automatic",
   sourcemap: true,
   target: "es2022",
@@ -38,6 +40,9 @@ const options: esbuild.BuildOptions = {
   logOverride: { "module-level-directive": "silent" },
 };
 
+// Збірка починається з чистої папки: чанки мають хеші в назвах, і старі файли від попередніх
+// збірок (або dev-сервера) лишалися б у dist та потрапляли в перевірку й розповсюдження.
+if (process.argv.includes("--build")) rmSync(outdir, { recursive: true, force: true });
 copyPgliteAssets();
 
 if (process.argv.includes("--build")) {
