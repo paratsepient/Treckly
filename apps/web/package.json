@@ -10,11 +10,15 @@
     "dev": "node scripts/serve.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "6.0.2",
     "@index/design-tokens": "workspace:*",
     "@index/ui": "workspace:*",
     "@index/ui-patterns": "workspace:*",
+    "@tanstack/react-query": "5.105.0",
+    "@tanstack/react-router": "1.170.46",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "react-hook-form": "7.91.0"
   },
   "devDependencies": {
     "@types/node": "24.10.1",

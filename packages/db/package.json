@@ -14,5 +14,12 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.12",
+    "drizzle-orm": "0.45.4"
+  },
+  "devDependencies": {
+    "drizzle-kit": "0.31.11"
   }
 }
