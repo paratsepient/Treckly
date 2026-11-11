@@ -360,3 +360,101 @@
 .journal__item {
   padding-block: var(--ix-space-1);
 }
+
+/* ── Черга рівня й денні переліки ──────────────────────────────────────────── */
+
+.queue__select-all {
+  display: flex;
+}
+
+.lists {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+}
+
+.lists__title {
+  margin: 0;
+  font: var(--ix-font-heading-md);
+}
+
+.list-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+  padding: var(--ix-space-4);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+}
+
+.list-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.list-card__title {
+  margin: 0;
+  font: var(--ix-font-heading-sm);
+}
+
+.list-card__items {
+  margin: 0;
+  padding-inline-start: var(--ix-space-5);
+}
+
+.list-card__note {
+  margin: 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.list-requests,
+.list-requests__lines,
+.done-lists,
+.inbox {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list-requests__item,
+.done-lists__item,
+.inbox__item {
+  padding-block: var(--ix-space-2);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.list-requests__item p,
+.inbox__item p {
+  margin: 0 0 var(--ix-space-1);
+}
+
+.list-requests__name,
+.inbox__title {
+  font: var(--ix-font-body-strong);
+}
+
+.list-requests__meta,
+.list-requests__lines,
+.inbox__detail,
+.inbox__time {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.list-requests__lines {
+  padding-inline-start: var(--ix-space-4);
+  list-style: disc;
+}
+
+/* Нове сповіщення виділено тлом і словом «Нове», а не лише кольором. */
+.inbox__item[data-unread="true"] {
+  margin-block-end: var(--ix-space-1);
+  padding-inline: var(--ix-space-3);
+  border-radius: var(--ix-radius-compact);
+  background: var(--ix-info-surface);
+}

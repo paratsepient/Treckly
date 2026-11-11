@@ -2,9 +2,12 @@ import { createHashHistory, createRootRoute, createRoute, createRouter, Navigate
 import { MyRequestsScreen } from "../screens/MyRequestsScreen.tsx";
 import { NewRequestScreen } from "../screens/NewRequestScreen.tsx";
 import { PropertyScreen } from "../screens/PropertyScreen.tsx";
-import { RoleHomeScreen } from "../screens/RoleHomeScreen.tsx";
+import { DailyListScreen } from "../screens/DailyListScreen.tsx";
+import { JournalScreen } from "../screens/JournalScreen.tsx";
+import { LevelQueueScreen } from "../screens/LevelQueueScreen.tsx";
+import { NotificationsScreen } from "../screens/NotificationsScreen.tsx";
 import { useApiQuery } from "../api/hooks.tsx";
-import { AuthorOnly, Root } from "./Root.tsx";
+import { homePath, RoleOnly, Root } from "./Root.tsx";
 
 const optionalString = (value: unknown): string | undefined => (typeof value === "string" && value !== "" ? value : undefined);
 
@@ -12,8 +15,8 @@ const rootRoute = createRootRoute({ component: Root });
 
 function Home() {
   const session = useApiQuery("session");
-  if (session.data?.user.roleKind === "author") return <Navigate to="/property" />;
-  return <RoleHomeScreen />;
+  const role = session.data?.user.roleKind;
+  return role ? <Navigate to={homePath(role)} /> : null;
 }
 
 const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/", component: Home });
@@ -22,9 +25,9 @@ const propertyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/property",
   component: () => (
-    <AuthorOnly>
+    <RoleOnly roles={["author"]}>
       <PropertyScreen />
-    </AuthorOnly>
+    </RoleOnly>
   ),
 });
 
@@ -35,9 +38,9 @@ const newRoute = createRoute({
   component: function NewRoute() {
     const { id } = newRoute.useSearch();
     return (
-      <AuthorOnly>
+      <RoleOnly roles={["author"]}>
         <NewRequestScreen requestId={id} />
-      </AuthorOnly>
+      </RoleOnly>
     );
   },
 });
@@ -49,14 +52,54 @@ const myRoute = createRoute({
   component: function MyRoute() {
     const { selected } = myRoute.useSearch();
     return (
-      <AuthorOnly>
+      <RoleOnly roles={["author"]}>
         <MyRequestsScreen selected={selected} />
-      </AuthorOnly>
+      </RoleOnly>
     );
   },
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, propertyRoute, newRoute, myRoute]);
+const queueRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/queue",
+  component: () => (
+    <RoleOnly roles={["preparer"]}>
+      <LevelQueueScreen />
+    </RoleOnly>
+  ),
+});
+
+const listsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/lists",
+  component: () => (
+    <RoleOnly roles={["approver"]}>
+      <DailyListScreen />
+    </RoleOnly>
+  ),
+});
+
+const notificationsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/notifications",
+  component: () => (
+    <RoleOnly roles={["author", "preparer", "approver"]}>
+      <NotificationsScreen />
+    </RoleOnly>
+  ),
+});
+
+const journalRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/journal",
+  component: () => (
+    <RoleOnly roles={["admin"]}>
+      <JournalScreen />
+    </RoleOnly>
+  ),
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, notificationsRoute, journalRoute]);
 
 /** Хеш-історія: застосунок відкривається зі статичних файлів на localhost без налаштування сервера. */
 export const router = createRouter({ routeTree, history: createHashHistory() });

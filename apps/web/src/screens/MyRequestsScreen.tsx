@@ -6,29 +6,13 @@ import type { ApiOutput } from "@dsp/contract";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
-import { Track } from "../components/Track.tsx";
+import { requestTabs } from "../components/RequestTabs.tsx";
 import { daysAtLevel } from "@dsp/domain";
-import {
-  formatDateShort,
-  formatMoney,
-  LINE_STATUS_LABELS,
-  LINE_STATUS_TONES,
-  requestLabel,
-  STATUS_TONES,
-  statusText,
-} from "../lib/format.ts";
+import { formatDateShort, formatMoney, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
+import { requestTotal } from "../lib/totals.ts";
 
 type Request = ApiOutput<"myRequests">["requests"][number];
 type Positions = ApiOutput<"positions">["positions"];
-
-/** Сума заявки: за переліком — ціна позиції, заміна — ціна нового предмета. */
-function requestTotal(request: Request, positions: Positions): number {
-  const byId = new Map(positions.map((p) => [p.id, p]));
-  return request.lines.reduce((sum, line) => {
-    const unit = line.kind === "replacement" ? line.newItem.priceMinor : (byId.get(line.positionId)?.priceMinor ?? 0);
-    return sum + unit * line.qty;
-  }, 0);
-}
 
 /** «Де зараз»: рівень, на якому заявка, або що з нею сталося. */
 function whereNow(request: Request, levelNames: ReadonlyMap<number, string>): string {
@@ -121,57 +105,11 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
       }
       tabs={
         detail.data
-          ? [
-              {
-                value: "track",
-                label: "Трек",
-                content: (
-                  <Track
-                    steps={detail.data.track.steps}
-                    levels={(reference.data?.levels ?? []).map((l) => ({ level: l.level, name: l.name }))}
-                    returned={detail.data.request.returnInfo ? { level: detail.data.request.returnInfo.level, note: detail.data.request.returnInfo.note } : null}
-                  />
-                ),
-              },
-              {
-                value: "lines",
-                label: "Рядки",
-                content: (
-                  <ul className="request-lines">
-                    {detail.data.request.lines.map((line) => {
-                      const status = detail.data.lineStatuses[line.id];
-                      const position = positions.data?.positions.find((p) => p.id === line.positionId);
-                      return (
-                        <li key={line.id} className="request-lines__item">
-                          <p className="request-lines__name">
-                            {position?.name ?? line.positionId} × {line.qty}
-                          </p>
-                          {line.kind === "replacement" ? (
-                            <p className="request-lines__meta">
-                              Заміна на: {line.newItem.name} · КЕКВ {line.newItem.kekv}
-                            </p>
-                          ) : null}
-                          {status ? <Badge tone={LINE_STATUS_TONES[status]}>{LINE_STATUS_LABELS[status]}</Badge> : null}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ),
-              },
-              {
-                value: "journal",
-                label: "Журнал",
-                content: (
-                  <ol className="journal">
-                    {detail.data.journal.map((event, index) => (
-                      <li key={index} className="journal__item">
-                        <span className="journal__time">{event.at.slice(0, 10)}</span> {journalText(event.type)}
-                      </li>
-                    ))}
-                  </ol>
-                ),
-              },
-            ]
+          ? requestTabs({
+              detail: detail.data,
+              positions: positions.data?.positions ?? [],
+              levels: (reference.data?.levels ?? []).map((l) => ({ level: l.level, name: l.name })),
+            })
           : undefined
       }
     >
@@ -235,19 +173,3 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
     </>
   );
 }
-
-const EVENT_TEXT: Record<string, string> = {
-  "request.created": "Заявку створено",
-  "request.edited": "Рядки змінено",
-  "request.submitted": "Подано на рівень 1",
-  "request.resubmitted": "Подано нову версію",
-  "request.listed": "Увійшла до денного переліку",
-  "request.delisted": "Повернулась у чергу рівня",
-  "request.advanced": "Погоджено рівнем, передано далі",
-  "request.approved": "Затверджено Головою",
-  "request.returned": "Повернуто автору",
-  "request.withdrawn": "Відкликано",
-  "request.extract_issued": "Витяг сформовано",
-};
-
-const journalText = (type: string): string => EVENT_TEXT[type] ?? type;

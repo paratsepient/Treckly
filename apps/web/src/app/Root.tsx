@@ -6,19 +6,37 @@ import { useApiQuery, useBackend } from "../api/hooks.tsx";
 import { initialTheme, THEME_KEY, writeSetting, type Theme } from "../lib/storage.ts";
 import { ShellContext } from "./shell-context.tsx";
 
-const authorGroups: NavGroup[] = [
-  {
-    id: "requests",
-    label: "Заявки",
-    items: [
-      { id: "property", label: "Моє майно", href: "#/property", icon: <Icon name="registry" /> },
-      { id: "new", label: "Нова заявка", href: "#/new", icon: <Icon name="add" /> },
-      { id: "my", label: "Мої заявки", href: "#/my", icon: <Icon name="document" /> },
-    ],
-  },
-];
+type Role = "author" | "preparer" | "approver" | "admin";
 
-const otherGroups: NavGroup[] = [{ id: "overview", items: [{ id: "home", label: "Огляд", href: "#/", icon: <Icon name="info" /> }] }];
+/** Навігація за роллю: пункти вже відфільтровані, sidebar прав не обчислює. */
+function groupsFor(role: Role, unread: number): NavGroup[] {
+  const inbox = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
+  switch (role) {
+    case "author":
+      return [
+        {
+          id: "requests",
+          label: "Заявки",
+          items: [
+            { id: "property", label: "Моє майно", href: "#/property", icon: <Icon name="registry" /> },
+            { id: "new", label: "Нова заявка", href: "#/new", icon: <Icon name="add" /> },
+            { id: "my", label: "Мої заявки", href: "#/my", icon: <Icon name="document" /> },
+            inbox,
+          ],
+        },
+      ];
+    case "preparer":
+      return [{ id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, inbox] }];
+    case "approver":
+      return [{ id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] }];
+    case "admin":
+      return [{ id: "admin", label: "Адміністрування", items: [{ id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> }] }];
+  }
+}
+
+/** Початковий екран ролі. */
+export const homePath = (role: Role): "/property" | "/queue" | "/lists" | "/journal" =>
+  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? "/lists" : "/journal";
 
 const initials = (name: string): string =>
   name
@@ -36,6 +54,7 @@ function FullPage({ children }: { readonly children: ReactNode }) {
 export function Root() {
   const session = useApiQuery("session");
   const reference = useApiQuery("reference");
+  const notifications = useApiQuery("notifications");
   const backend = useBackend();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
@@ -78,8 +97,8 @@ export function Root() {
 
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
-  const isAuthor = user.roleKind === "author";
-  const active = pathname.startsWith("/property") ? "property" : pathname.startsWith("/new") ? "new" : pathname.startsWith("/my") ? "my" : "home";
+  const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
+  const active = ["property", "new", "my", "queue", "lists", "notifications", "journal"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
 
   return (
     <ShellContext.Provider value={shell}>
@@ -87,7 +106,7 @@ export function Root() {
         sidebar={
           <AppSidebar
             brand={{ name: "Замовлення", mark: <Emblem decorative /> }}
-            groups={isAuthor ? authorGroups : otherGroups}
+            groups={groupsFor(user.roleKind, unread)}
             activeItemId={active}
             roleContext={{ label: "Роль", value: `${user.title}${unit ? ` · ${unit.name}` : ""}` }}
             user={{ name: user.name, role: user.title, initials: initials(user.name) }}
@@ -100,9 +119,10 @@ export function Root() {
   );
 }
 
-/** Екрани автора доступні лише автору; інших ролей повертає на їхній початковий екран. */
-export function AuthorOnly({ children }: { readonly children: ReactNode }) {
+/** Екран доступний лише вказаним ролям; інших повертає на початковий екран їхньої ролі. */
+export function RoleOnly({ roles, children }: { readonly roles: readonly Role[]; readonly children: ReactNode }) {
   const session = useApiQuery("session");
-  if (session.data && session.data.user.roleKind !== "author") return <Navigate to="/" />;
+  const role = session.data?.user.roleKind;
+  if (role && !roles.includes(role)) return <Navigate to={homePath(role)} />;
   return <>{children}</>;
 }

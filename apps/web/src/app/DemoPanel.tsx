@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button, Icon, Popover, SegmentedControl, Select } from "@index/ui";
 import { useFeedback } from "@index/ui-patterns";
 import { useApiMutation, useApiQuery, useBackend } from "../api/hooks.tsx";
+import { formatDate } from "../lib/format.ts";
 import type { Theme } from "../lib/storage.ts";
 import { useShell } from "./shell-context.tsx";
 
@@ -21,6 +22,7 @@ export function DemoPanel() {
   const session = useApiQuery("session");
   const reference = useApiQuery("reference");
   const reset = useApiMutation("resetDemo");
+  const nextDay = useApiMutation("nextDay");
 
   const unitName = (id: string | null) => reference.data?.units.find((u) => u.id === id)?.name ?? "";
   const users = [...(session.data?.users ?? [])].sort(
@@ -61,6 +63,25 @@ export function DemoPanel() {
             { value: "dark", label: "Темна", icon: <Icon name="theme-dark" /> },
           ]}
         />
+        <Button
+          loading={nextDay.isPending}
+          loadingLabel="Перехід на наступний день"
+          iconStart={<Icon name="calendar" />}
+          onClick={() =>
+            nextDay.mutate(
+              {},
+              {
+                onSuccess: ({ today }) => {
+                  feedback.notify({ key: "next-day", tone: "info", title: `Наступний день: ${formatDate(today)}`, description: "Усі, у кого є заявки, отримали щоденні нагадування." });
+                  setOpen(false);
+                },
+                onError: () => feedback.notify({ key: "next-day", tone: "error", title: "Не вдалося перейти на наступний день" }),
+              },
+            )
+          }
+        >
+          Наступний день
+        </Button>
         <Button
           loading={reset.isPending}
           loadingLabel="Скидання демо"
