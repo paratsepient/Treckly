@@ -4,6 +4,7 @@ import type { z } from "zod";
 import {
   approveList,
   createDraft,
+  buildTrack,
   createManualClock,
   createSequentialIds,
   formList,
@@ -24,6 +25,7 @@ import {
   type NotificationKind as DomainNotificationKind,
   type Position,
   type Request as DomainRequest,
+  type TrackStepState as DomainTrackStepState,
   type RequestLine as DomainRequestLine,
   type RequestStatus as DomainRequestStatus,
   type Route as DomainRoute,
@@ -40,6 +42,7 @@ assertTrue<Equal<z.infer<typeof c.RequestStatus>, DomainRequestStatus>>();
 assertTrue<Equal<z.infer<typeof c.LineStatus>, DomainLineStatus>>();
 assertTrue<Equal<z.infer<typeof c.NotificationKind>, DomainNotificationKind>>();
 assertTrue<Equal<z.infer<typeof c.Level>, DomainLevel>>();
+assertTrue<Equal<z.infer<typeof c.TrackStepState>, DomainTrackStepState>>();
 // Усі коди помилок домену є в контракті.
 assertTrue<DomainErrorCode extends z.infer<typeof c.ErrorCode> ? true : false>();
 
@@ -169,4 +172,16 @@ test("трек: рівно 5 кроків", () => {
   const step = (level: number) => ({ level, state: "pending", enteredOn: null, daysAtLevel: null, sedoNumber: null, inList: false });
   assert.doesNotThrow(() => c.RequestTrack.parse({ steps: [1, 2, 3, 4, 5].map(step) }));
   assert.throws(() => c.RequestTrack.parse({ steps: [1, 2, 3, 4].map(step) }));
+});
+
+test("трек, який будує домен, проходить схему контракту на кожному етапі шляху", () => {
+  const outcomes = allOutcomes();
+  const events = outcomes.flatMap((o) => o.events);
+  const byId = new Map<string, DomainRequest>();
+  for (const o of outcomes) for (const r of o.requests) byId.set(`${r.id}@${r.revision}`, r);
+  assert.ok(byId.size >= 8);
+  for (const request of byId.values()) {
+    const track = buildTrack(request, events, "2027-02-10");
+    assert.doesNotThrow(() => c.RequestTrack.parse({ steps: track }), `${request.id}@${request.revision} (${request.status})`);
+  }
 });

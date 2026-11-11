@@ -266,7 +266,7 @@ export function generateSeed(): SeedData {
   const r1 = sim.newSubmitted("unit-a", [by(1, 10), by(9, 20), by(33, 2), rep(20, 3, "Бінокль польовий 8×32")]);
   const r2 = sim.newSubmitted("unit-b", [by(22, 40), by(23, 50), rep(6, 1, "Антенна система мобільна")]);
   const r5 = sim.newSubmitted("unit-b", [by(30, 1), by(32, 1)]);
-  const r9 = sim.newSubmitted("unit-b", [by(2, 20), by(11, 5), by(31, 1)]);
+  const r9 = sim.newSubmitted("unit-b", [by(2, 20), by(11, 5), by(32, 1)]); // станція керування — як у примітці повернення
   const r10 = sim.newSubmitted("unit-c", [by(15, 10), by(16, 6)]);
   sim.pass(1, "unit-a", [r1]);
   sim.pass(1, "unit-b", [r2, r5, r9]);

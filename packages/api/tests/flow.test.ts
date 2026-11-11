@@ -1,0 +1,171 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { dailyLists } from "@dsp/db";
+import { AUTHOR_A, AUTHOR_B, boot, lineOf, positionByName, seed, type Harness } from "./harness.ts";
+
+const itemNamed = async (h: Harness, name: string) => {
+  const { items } = await h.call("reference", AUTHOR_A);
+  const found = items.find((i) => i.name === name);
+  assert.ok(found, `предмета «${name}» немає`);
+  return found;
+};
+
+async function replacementLine(h: Harness, positionName: string, candidateName: string, qty = 1) {
+  const position = await positionByName(h, positionName);
+  const candidate = await itemNamed(h, candidateName);
+  return {
+    kind: "replacement" as const,
+    id: "ln-rep",
+    positionId: position.id,
+    qty,
+    kekv: position.kekv,
+    newItem: { code: candidate.code, name: candidate.name, kekv: candidate.kekv, priceMinor: candidate.priceMinor },
+  };
+}
+
+test("E1: заміна на інший КЕКВ — автоперевірка показує вплив на бюджет, заявка подається й видна в «Моїх заявках»", async () => {
+  const h = await boot();
+  const line = await replacementLine(h, "Антена всеспрямована 2,4 ГГц", "Антенна система мобільна");
+
+  const { report } = await h.call("checkRequest", AUTHOR_A, { body: { lines: [line] } });
+  assert.equal(report.ok, true);
+  assert.deepEqual(report.impact.perKekv, { "3110": 48_000_00, "2210": -900_00 }, "новий КЕКВ витрачається, старий вивільняється");
+  assert.equal(report.impact.total, 48_000_00 - 900_00);
+  assert.ok(report.warnings.some((w) => w.details["scope"] === "3110"), "разом із заявками «у роботі» перевищено залишок 3110");
+
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line] } });
+  assert.equal(request.status, "draft");
+  assert.deepEqual(request.route, ["unit-a", "brig-1", "ru-1", "dir-1", "vor"]);
+  assert.equal(request.createdOn, seed.now.slice(0, 10), "дата — із симульованого часу, а не з системного годинника");
+
+  const submitted = await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  assert.equal(submitted.request.status, "at_level");
+  assert.equal(submitted.request.level, 1);
+  assert.equal(submitted.request.levelEnteredOn, seed.now.slice(0, 10));
+
+  const mine = await h.call("myRequests", AUTHOR_A);
+  assert.equal(mine.requests[0]?.id, request.id, "нова заявка згори");
+
+  const detail = await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } });
+  assert.deepEqual(detail.track.steps.map((s) => s.state), ["current", "pending", "pending", "pending", "pending"]);
+  assert.equal(detail.lineStatuses["ln-rep"], "awaits_replacement_approval");
+  assert.deepEqual(detail.journal.map((e) => e.type), ["request.created", "request.submitted"]);
+});
+
+test("автоперевірки: кожен код помилки показано в звіті, подання з помилкою відхиляється й чернетка лишається", async () => {
+  const h = await boot();
+  const drone = await positionByName(h, "Квадрокоптер розвідувальний"); // 185 000 грн, КЕКВ 3110
+  const battery = await positionByName(h, "Акумулятор літій-полімерний 6S"); // КЕКВ 2210
+
+  const cases = [
+    { line: lineOf("pos-zzz", "2210"), code: "NOT_IN_LIST" },
+    { line: lineOf(battery.id, "2210", battery.availableQty + 1), code: "QTY_EXCEEDED" },
+    { line: lineOf(battery.id, "3110"), code: "KEKV_MISMATCH" },
+    { line: lineOf(drone.id, "3110"), code: "BUDGET_EXCEEDED" },
+  ];
+  for (const { line, code } of cases) {
+    const { report } = await h.call("checkRequest", AUTHOR_A, { body: { lines: [line] } });
+    assert.equal(report.ok, false, code);
+    assert.ok(report.errors.some((e) => e.code === code), `очікували ${code}, є ${report.errors.map((e) => e.code)}`);
+  }
+
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [cases[3]!.line] } });
+  const error = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  assert.equal(error.code, "BUDGET_EXCEEDED");
+  const after = await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } });
+  assert.equal(after.request.status, "draft");
+  assert.equal(after.request.revision, request.revision);
+});
+
+test("перевірка не змінює стан: ні заявок, ні журналу", async () => {
+  const h = await boot();
+  const [requests, journal] = [await h.count("requests"), await h.count("journal")];
+  const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
+  await h.call("checkRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")] } });
+  assert.equal(await h.count("requests"), requests);
+  assert.equal(await h.count("journal"), journal);
+});
+
+test("автор редагує чернетку; заявка в черзі вже не редагується", async () => {
+  const h = await boot();
+  const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)] } });
+  const edited = await h.call("editLines", AUTHOR_A, { params: { id: request.id }, body: { lines: [lineOf(battery.id, "2210", 5)], expectedRevision: request.revision } });
+  assert.equal(edited.request.lines[0]?.qty, 5);
+  assert.equal(edited.request.revision, request.revision + 1);
+
+  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: edited.request.revision } });
+  const current = (await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request;
+  const refused = await h.fail("editLines", AUTHOR_A, 409, { params: { id: request.id }, body: { lines: [], expectedRevision: current.revision } });
+  assert.equal(refused.code, "INVALID_TRANSITION");
+});
+
+test("повернута заявка: автор виправляє й подає нову версію — вона йде з першого рівня", async () => {
+  const h = await boot();
+  const returned = (await h.call("myRequests", AUTHOR_B)).requests.find((r) => r.status === "returned")!;
+  assert.equal(returned.version, 1);
+
+  const lines = returned.lines.map((l) => ({ ...l, qty: Math.max(1, Math.floor(l.qty / 2)) }));
+  const edited = await h.call("editLines", AUTHOR_B, { params: { id: returned.id }, body: { lines, expectedRevision: returned.revision } });
+  const resubmitted = await h.call("newVersion", AUTHOR_B, { params: { id: returned.id }, body: { expectedRevision: edited.request.revision } });
+  assert.equal(resubmitted.request.version, 2);
+  assert.equal(resubmitted.request.status, "at_level");
+  assert.equal(resubmitted.request.level, 1);
+  assert.equal(resubmitted.request.returnInfo, null);
+
+  const detail = await h.call("requestDetail", AUTHOR_B, { params: { id: returned.id } });
+  assert.deepEqual(detail.track.steps.map((s) => s.state), ["current", "pending", "pending", "pending", "pending"]);
+  assert.ok(detail.journal.some((e) => e.type === "request.resubmitted" && e.requestVersion === 2));
+});
+
+test("«Подати» для повернутої й «Нова версія» для чернетки — різні операції: помилкова відхиляється", async () => {
+  const h = await boot();
+  const returned = (await h.call("myRequests", AUTHOR_B)).requests.find((r) => r.status === "returned")!;
+  assert.equal((await h.fail("submitRequest", AUTHOR_B, 409, { params: { id: returned.id }, body: { expectedRevision: returned.revision } })).code, "INVALID_TRANSITION");
+  const draft = (await h.call("myRequests", AUTHOR_A)).requests.find((r) => r.status === "draft")!;
+  assert.equal((await h.fail("newVersion", AUTHOR_A, 409, { params: { id: draft.id }, body: { expectedRevision: draft.revision } })).code, "INVALID_TRANSITION");
+});
+
+test("відкликання: з черги — одразу; із сформованого переліку — спершу розформовує його; після затвердження — ні", async () => {
+  const h = await boot();
+  const mine = (await h.call("myRequests", AUTHOR_A)).requests;
+
+  const queued = mine.find((r) => r.status === "at_level")!;
+  const w1 = await h.call("withdrawRequest", AUTHOR_A, { params: { id: queued.id }, body: { expectedRevision: queued.revision } });
+  assert.equal(w1.request.status, "withdrawn");
+
+  const listed = mine.find((r) => r.status === "in_list")!;
+  const w2 = await h.call("withdrawRequest", AUTHOR_A, { params: { id: listed.id }, body: { expectedRevision: listed.revision } });
+  assert.equal(w2.request.status, "withdrawn");
+  const lists = await h.db.select().from(dailyLists);
+  assert.equal(lists.find((l) => l.id === listed.listId)?.status, "disbanded");
+
+  const approved = mine.find((r) => r.status === "extract_issued")!;
+  assert.equal((await h.fail("withdrawRequest", AUTHOR_A, 409, { params: { id: approved.id }, body: { expectedRevision: approved.revision } })).code, "INVALID_TRANSITION");
+});
+
+test("ролі: не автор і адміністратор заявок не створюють; чужу заявку редагувати не можна", async () => {
+  const h = await boot();
+  const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
+  const body = { lines: [lineOf(battery.id, "2210")] };
+  assert.equal((await h.fail("createRequest", "prep-1-unit-a", 403, { body })).code, "FORBIDDEN_ROLE");
+  assert.equal((await h.fail("createRequest", "admin-demo", 403, { body })).code, "FORBIDDEN_ROLE");
+
+  const foreign = (await h.call("myRequests", AUTHOR_A)).requests.find((r) => r.status === "draft")!;
+  const error = await h.fail("editLines", AUTHOR_B, 403, { params: { id: foreign.id }, body: { lines: [], expectedRevision: foreign.revision } });
+  assert.equal(error.code, "FORBIDDEN_ROLE");
+  assert.equal((await h.fail("withdrawRequest", AUTHOR_B, 403, { params: { id: foreign.id }, body: { expectedRevision: foreign.revision } })).code, "FORBIDDEN_ROLE");
+});
+
+test("«Скинути демо» повертає початковий стан і викликає скидання", async () => {
+  let resets = 0;
+  const h = await boot({ onReset: () => (resets += 1) });
+  const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
+  const before = (await h.call("registry", AUTHOR_A)).requests;
+  await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")] } });
+  assert.equal((await h.call("registry", AUTHOR_A)).requests.length, before.length + 1);
+
+  await h.call("resetDemo", AUTHOR_A);
+  assert.equal(resets, 1);
+  assert.deepEqual((await h.call("registry", AUTHOR_A)).requests, before);
+});
