@@ -458,3 +458,51 @@
   border-radius: var(--ix-radius-compact);
   background: var(--ix-info-surface);
 }
+
+/* ── Зведення, реєстр, витяги ──────────────────────────────────────────────── */
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--ix-space-3);
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: var(--ix-space-4);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-3);
+}
+
+.filters > * {
+  min-width: 12rem;
+}
+
+.extract-lines {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.extract-lines__item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--ix-space-2);
+  border-bottom: 1px solid var(--ix-border);
+}

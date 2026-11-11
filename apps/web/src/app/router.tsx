@@ -3,6 +3,8 @@ import { MyRequestsScreen } from "../screens/MyRequestsScreen.tsx";
 import { NewRequestScreen } from "../screens/NewRequestScreen.tsx";
 import { PropertyScreen } from "../screens/PropertyScreen.tsx";
 import { DailyListScreen } from "../screens/DailyListScreen.tsx";
+import { FinalScreen } from "../screens/FinalScreen.tsx";
+import { RegistryScreen } from "../screens/RegistryScreen.tsx";
 import { JournalScreen } from "../screens/JournalScreen.tsx";
 import { LevelQueueScreen } from "../screens/LevelQueueScreen.tsx";
 import { NotificationsScreen } from "../screens/NotificationsScreen.tsx";
@@ -79,6 +81,26 @@ const listsRoute = createRoute({
   ),
 });
 
+const finalRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/final",
+  component: () => (
+    <RoleOnly roles={["author", "preparer", "approver"]}>
+      <FinalScreen />
+    </RoleOnly>
+  ),
+});
+
+const registryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/registry",
+  component: () => (
+    <RoleOnly roles={["preparer", "approver", "admin"]}>
+      <RegistryScreen />
+    </RoleOnly>
+  ),
+});
+
 const notificationsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/notifications",
@@ -99,7 +121,7 @@ const journalRoute = createRoute({
   ),
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, notificationsRoute, journalRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, finalRoute, registryRoute, notificationsRoute, journalRoute]);
 
 /** Хеш-історія: застосунок відкривається зі статичних файлів на localhost без налаштування сервера. */
 export const router = createRouter({ routeTree, history: createHashHistory() });

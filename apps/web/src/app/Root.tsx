@@ -9,8 +9,10 @@ import { ShellContext } from "./shell-context.tsx";
 type Role = "author" | "preparer" | "approver" | "admin";
 
 /** Навігація за роллю: пункти вже відфільтровані, sidebar прав не обчислює. */
-function groupsFor(role: Role, unread: number): NavGroup[] {
+function groupsFor(role: Role, unread: number, level: number | null): NavGroup[] {
   const inbox = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
+  const registry = { id: "registry", label: "Реєстр і зведення", href: "#/registry", icon: <Icon name="kpi" /> };
+  const final = (label: string) => ({ id: "final", label, href: "#/final", icon: <Icon name="sheet" /> });
   switch (role) {
     case "author":
       return [
@@ -21,16 +23,23 @@ function groupsFor(role: Role, unread: number): NavGroup[] {
             { id: "property", label: "Моє майно", href: "#/property", icon: <Icon name="registry" /> },
             { id: "new", label: "Нова заявка", href: "#/new", icon: <Icon name="add" /> },
             { id: "my", label: "Мої заявки", href: "#/my", icon: <Icon name="document" /> },
+            final("Витяги по в/ч"),
             inbox,
           ],
         },
       ];
     case "preparer":
-      return [{ id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, inbox] }];
+      return [
+        { id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
+        { id: "overview", label: "Зведення", items: [registry] },
+      ];
     case "approver":
-      return [{ id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] }];
+      return [
+        { id: "work", label: "Робота рівня", items: [{ id: "lists", label: level === 5 ? "Затвердження" : "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
+        { id: "overview", label: "Зведення", items: [registry] },
+      ];
     case "admin":
-      return [{ id: "admin", label: "Адміністрування", items: [{ id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> }] }];
+      return [{ id: "admin", label: "Адміністрування", items: [registry, { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> }] }];
   }
 }
 
@@ -98,7 +107,7 @@ export function Root() {
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
-  const active = ["property", "new", "my", "queue", "lists", "notifications", "journal"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
+  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
 
   return (
     <ShellContext.Provider value={shell}>
@@ -106,7 +115,7 @@ export function Root() {
         sidebar={
           <AppSidebar
             brand={{ name: "Замовлення", mark: <Emblem decorative /> }}
-            groups={groupsFor(user.roleKind, unread)}
+            groups={groupsFor(user.roleKind, unread, user.level)}
             activeItemId={active}
             roleContext={{ label: "Роль", value: `${user.title}${unit ? ` · ${unit.name}` : ""}` }}
             user={{ name: user.name, role: user.title, initials: initials(user.name) }}
