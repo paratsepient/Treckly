@@ -94,6 +94,8 @@ export interface Request {
   /** Денний перелік: для `in_list`, а після затвердження — остаточний перелік. */
   readonly listId: string | null;
   readonly lines: readonly RequestLine[];
+  /** Обґрунтування потреби: автор пише його сам, решта рапорту — шаблон. */
+  readonly justification: string;
   readonly returnInfo: ReturnInfo | null;
   /** З якого дня заявка на поточному рівні (для лічильника днів). */
   readonly levelEnteredOn: IsoDate | null;

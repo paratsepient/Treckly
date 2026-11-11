@@ -10,7 +10,7 @@ import { all, apply, approver, author, get, getList, meta, POSITIONS, preparer, 
 
 /** Створює й подає заявку; повертає її id. */
 export function submitted(world: World, lines: readonly RequestLine[]): string {
-  const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines })).requests;
+  const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." })).requests;
   if (!draft) throw new Error("немає чернетки");
   apply(world, submit(world.ctx, meta(author), { request: draft, positions: POSITIONS, budget: world.budget, requests: all(world) }));
   return draft.id;

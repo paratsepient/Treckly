@@ -50,3 +50,15 @@ test("axe: діалоги (повернення, СЕДО) і демо-пане�
     expect(await axeViolations(page), `демо-панель, тема ${theme}`).toEqual([]);
   }
 });
+
+test("axe: діалог рапорту з переглядом аркуша у двох темах", async ({ page }) => {
+  await openAs(page, "author-unit-a", "/my?selected=req-0008");
+  await page.getByRole("button", { name: "Рапорт", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Рапорт ЗМ-0008" });
+  await expect(dialog.frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
+  for (const theme of ["light", "dark"] as const) {
+    await setTheme(page, theme);
+    await page.waitForTimeout(400);
+    expect(await axeViolations(page), `діалог рапорту, тема ${theme}`).toEqual([]);
+  }
+});

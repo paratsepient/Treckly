@@ -20,7 +20,26 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   await expect(page.getByText("Перевірки пройдено")).toBeVisible();
   await expect(page.getByText(/Інший КЕКВ: списується з ліміту 3110/)).toBeVisible();
 
-  await page.getByRole("button", { name: "Подати" }).click();
+  // Без обґрунтування заявку не подати: автор пише лише його, решту рапорту дає шаблон.
+  const submit = page.getByRole("button", { name: "Подати", exact: true });
+  await expect(submit).toBeDisabled();
+  await page.getByLabel("Обґрунтування потреби").fill("Антена в підрозділі зношена, потрібна мобільна система зв'язку.");
+
+  // Рапорт за шаблоном: адресат, назва, позиції й обґрунтування на аркуші; Word завантажується.
+  await page.getByRole("button", { name: "Переглянути рапорт" }).click();
+  const dialog = page.getByRole("dialog", { name: /Рапорт ЗМ-/ });
+  const sheet = dialog.frameLocator("iframe");
+  await expect(sheet.getByText("РАПОРТ", { exact: true })).toBeVisible();
+  await expect(sheet.getByText("Командиру військової частини А0001")).toBeVisible();
+  await expect(sheet.getByText("Антенна система мобільна", { exact: false })).toBeVisible();
+  await expect(sheet.getByText(/мобільна система зв'язку/)).toBeVisible();
+  const download = page.waitForEvent("download");
+  await dialog.getByRole("button", { name: "Завантажити Word" }).click();
+  expect((await download).suggestedFilename()).toMatch(/^Рапорт ЗМ-.+\.docx$/);
+  await page.keyboard.press("Escape");
+
+  await expect(submit).toBeEnabled();
+  await submit.click();
   await expect(toast(page, "Заявку подано")).toBeVisible();
 
   // Заявка в «Моїх заявках» на рівні 1; трек показує, що вона зараз там.
@@ -29,4 +48,9 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   const track = page.getByRole("list", { name: "Трек заявки за рівнями погодження" });
   await expect(track.getByRole("listitem").first()).toContainText("Зараз тут");
   await expect(track.getByRole("listitem").nth(1)).toContainText("Попереду");
+
+  // Обґрунтування видно в картці заявки, рапорт можна відкрити й звідти.
+  await page.getByRole("tab", { name: "Зміст" }).click();
+  await expect(page.getByText(/мобільна система зв'язку/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Рапорт", exact: true })).toBeEnabled();
 });

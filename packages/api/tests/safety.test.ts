@@ -24,7 +24,7 @@ test("зміна без ключа ідемпотентності відхиля
 test("VERSION_CONFLICT: застаріла версія → 409; паралельні зміни — проходить рівно одна", async () => {
   const h = await boot();
   const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)] } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)], justification: "Потреба підрозділу на 2027 рік." } });
   const edit = (qty: number, expectedRevision: number) =>
     h.raw(AUTHOR_A, "PUT", `/api/requests/${request.id}/lines`, { lines: [lineOf(battery.id, "2210", qty)], expectedRevision });
 
@@ -67,7 +67,7 @@ test("запис про неіснуючу заявку → 404", async () => {
 test("відкат: збій під час запису скасовує й попередні записи тієї ж команди, ключ не зберігається", async () => {
   const h = await boot();
   const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)] }, key: "create" });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)], justification: "Потреба підрозділу на 2027 рік." }, key: "create" });
   const journalBefore = await h.count("journal");
 
   // Кількість поза діапазоном цілого типу бази: домен і контракт її приймають, а вставка рядків падає —
@@ -94,7 +94,7 @@ test("дублікат id рядків відхиляється доменом �
   assert.equal(created.details?.["reason"], "DUPLICATE_LINE_ID");
   assert.equal(await h.count("requests"), requests);
 
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line] } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line], justification: "Потреба підрозділу на 2027 рік." } });
   const edited = await h.fail("editLines", AUTHOR_A, 409, { params: { id: request.id }, body: { lines: [line, line], expectedRevision: request.revision } });
   assert.equal(edited.details?.["reason"], "DUPLICATE_LINE_ID");
   assert.equal((await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request.revision, request.revision);

@@ -3,7 +3,8 @@ import test from "node:test";
 import { inflateRawSync } from "node:zlib";
 import { Packer } from "docx";
 import type { DailyList, Extract, Request } from "@dsp/domain";
-import { buildFinalDocument } from "../src/lib/docx-export.ts";
+import { buildFinalDocument, buildRaportDocument } from "../src/lib/docx-export.ts";
+import type { RaportInput } from "../src/lib/raport.ts";
 import { finalReportModel } from "../src/lib/reports.ts";
 
 /** Мінімальне читання zip (.docx — це zip): записи з центрального каталогу, стиснення deflate. */
@@ -41,6 +42,7 @@ const request: Request = {
   level: 5,
   listId: "list-1",
   lines: [{ kind: "by_list", id: "l1", positionId: "p1", qty: 2, kekv: "2210" }],
+  justification: "Потреба підрозділу.",
   returnInfo: null,
   levelEnteredOn: "2027-02-06",
   createdOn: "2027-02-01",
@@ -86,4 +88,21 @@ test("Word і друк показують однакові дані: обидв�
   assert.equal(model.requestRows[0]?.[2], "7240123");
   assert.equal(model.extracts[0]?.rows[0]?.[4], "Заміна погоджена");
   assert.match(model.summary, /Заявок: 1/);
+});
+
+const raportInput: RaportInput = {
+  request: { ...request, status: "draft", justification: ["Перший абзац <важливо>.", "Другий абзац."].join("\n") },
+  author: { name: "Савицький Роксолан Корнилович", title: "Автор заявок" },
+  unitName: (id: string) => (id === "unit-a" ? "в/ч А0001" : id),
+  positions: [{ id: "p1", code: "ПМ-001", name: "Акумулятор <6S>", kekv: "2210", priceMinor: 100_00 }],
+  items: [{ code: "ПМ-001", measure: "шт." }],
+  date: "2027-02-16",
+};
+
+test("Word: рапорт містить адресата, назву, позиції, обґрунтування і підпис", async () => {
+  const files = readZip(await Packer.toBuffer(buildRaportDocument(raportInput)));
+  const xml = (files.get("word/document.xml") as Buffer).toString("utf8");
+  for (const expected of ["Командиру військової частини А0001", "РАПОРТ", "ПМ-001", "Акумулятор &lt;6S&gt;", "Перший абзац &lt;важливо&gt;.", "Другий абзац.", "Роксолан САВИЦЬКИЙ", "16 лютого 2027 р.", "Times New Roman"]) {
+    assert.ok(xml.includes(expected), `у рапорті немає «${expected}»`);
+  }
 });

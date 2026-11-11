@@ -75,7 +75,7 @@ function allOutcomes() {
   const ctx = { clock: createManualClock("2027-02-01T09:00:00Z"), ids: createSequentialIds() };
   const outcomes = [];
   const lines = [{ kind: "replacement" as const, id: "l1", positionId: "p1", qty: 1, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", priceMinor: 90_00 } }];
-  const created = createDraft(ctx, meta(author), { route: ROUTE, lines });
+  const created = createDraft(ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." });
   outcomes.push(created);
   let req = created.requests[0]!;
   const submitted = submit(ctx, meta(author), { request: req, positions, budget, requests: [] });

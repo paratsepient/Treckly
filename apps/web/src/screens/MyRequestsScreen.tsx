@@ -8,6 +8,7 @@ import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
+import { RaportButton } from "../components/RaportDialog.tsx";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { daysAtLevel } from "@dsp/domain";
 import { formatDateShort, formatMoney, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
@@ -98,6 +99,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
                 {request.status === "returned" ? "Виправити й подати" : "Продовжити заповнення"}
               </Button>
             ) : null}
+            <RaportButton request={request} />
             {canWithdraw ? (
               <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
                 Відкликати

@@ -14,6 +14,7 @@ const request = (id: string, patch: Partial<Request> = {}): Request => ({
   level: 5,
   listId: "list-1",
   lines: [{ kind: "by_list", id: "l1", positionId: "p1", qty: 2, kekv: "2210" }],
+  justification: "Потреба підрозділу.",
   returnInfo: null,
   levelEnteredOn: "2027-02-06",
   createdOn: "2027-02-01",

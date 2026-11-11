@@ -44,6 +44,7 @@ function assertUniqueLineIds(lines: readonly RequestLine[]): void {
 export interface CreateDraftInput {
   readonly route: Route;
   readonly lines: readonly RequestLine[];
+  readonly justification?: string;
 }
 
 /** Чернетка: автор в/ч (рівень 1) заповнює заявку. */
@@ -64,6 +65,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
     level: null,
     listId: null,
     lines: input.lines,
+    justification: input.justification ?? "",
     returnInfo: null,
     levelEnteredOn: null,
     createdOn: today,
@@ -77,7 +79,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
 }
 
 /** Зміни вносить лише автор, і лише в чернетці або повернутій заявці. */
-export function editLines(ctx: DomainContext, meta: Meta, input: { request: Request; lines: readonly RequestLine[] }): Outcome {
+export function editLines(ctx: DomainContext, meta: Meta, input: { request: Request; lines: readonly RequestLine[]; justification?: string }): Outcome {
   const { request } = input;
   assertAuthor(meta.actor, request);
   guardRevision(meta, request);
@@ -85,7 +87,7 @@ export function editLines(ctx: DomainContext, meta: Meta, input: { request: Requ
     throw invalid("Заявку можна редагувати лише в чернетці або після повернення.", { status: request.status });
   }
   assertUniqueLineIds(input.lines);
-  const next = bumped(request, { lines: input.lines });
+  const next = bumped(request, { lines: input.lines, justification: input.justification ?? request.justification });
   return {
     requests: [next],
     lists: [],
@@ -108,6 +110,10 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
   guardRevision(meta, request);
   if (request.lines.length === 0) {
     throw invalid("У заявці немає рядків.", { reason: "EMPTY_REQUEST" });
+  }
+  if (request.justification.trim() === "") {
+    // Рапорт без обґрунтування неповний: решту тексту дає шаблон, а потребу пояснює лише автор.
+    throw invalid("Напишіть обґрунтування: без нього рапорт не можна подати.", { reason: "EMPTY_JUSTIFICATION" });
   }
   const report = checkRequest({
     lines: request.lines,

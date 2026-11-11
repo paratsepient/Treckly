@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Button, DataState, Icon, IconButton } from "@index/ui";
+import { Button, DataState, Icon, IconButton, Textarea } from "@index/ui";
 import { ToolbarGroup, useFeedback, WorkspaceToolbar, type SaveStatusProps } from "@index/ui-patterns";
 import type { RequestStatus } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
@@ -9,6 +9,7 @@ import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { CheckPanel, issueText } from "../components/CheckPanel.tsx";
 import { LinesEditor } from "../components/LinesEditor.tsx";
+import { RaportButton } from "../components/RaportDialog.tsx";
 import {
   canRedo,
   canUndo,
@@ -34,9 +35,13 @@ interface ServerState {
   revision: number;
   status: RequestStatus | null;
   version: number;
-  /** Канонічний ключ рядків, які вже збережено. */
+  /** Канонічний ключ рядків і обґрунтування, які вже збережено. */
   savedKey: string;
 }
+
+/** Ключ збереження: рядки й обґрунтування разом — зміна будь-чого з них зберігається. */
+const draftKey = (linesKeyValue: string, justification: string): string => JSON.stringify([linesKeyValue, justification]);
+const EMPTY_KEY = draftKey(linesKey([]), "");
 
 /**
  * Нова заявка (і виправлення повернутої). Чернетка зберігається автоматично, дія одна явна —
@@ -61,21 +66,23 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const [saveState, setSaveState] = useState<SaveStatusProps["state"]>("idle");
   const [savedAt, setSavedAt] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
-  const server = useRef<ServerState>({ id: null, revision: 0, status: null, version: 1, savedKey: linesKey([]) });
+  const [justification, setJustification] = useState("");
+  const server = useRef<ServerState>({ id: null, revision: 0, status: null, version: 1, savedKey: EMPTY_KEY });
 
   const items = useMemo<readonly CatalogItem[]>(() => reference.data?.items ?? [], [reference.data]);
   const positions = useMemo<readonly CatalogPosition[]>(() => positionsQuery.data?.positions ?? [], [positionsQuery.data]);
   const positionMap = useMemo(() => new Map(positions.map((p) => [p.id, p])), [positions]);
   const itemMap = useMemo(() => new Map(items.map((i) => [i.id, i])), [items]);
   const converted = useMemo(() => toRequestLines(history.present, positionMap, itemMap), [history.present, positionMap, itemMap]);
-  const key = linesKey(converted.lines);
+  const key = draftKey(linesKey(converted.lines), justification);
 
   // Інша заявка в адресі (або «Нова заявка» після відкритої): редактор починається заново.
   // Адреса, яку ми самі щойно виставили після створення чернетки, збігається з server.id й пропускається.
   useEffect(() => {
     if (requestId === server.current.id) return;
-    server.current = { id: null, revision: 0, status: null, version: 1, savedKey: linesKey([]) };
+    server.current = { id: null, revision: 0, status: null, version: 1, savedKey: EMPTY_KEY };
     dispatch({ type: "load", lines: [] });
+    setJustification("");
     setLoaded(requestId === undefined);
     setSaveState("idle");
   }, [requestId]);
@@ -84,8 +91,9 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   useEffect(() => {
     const request = detail.data?.request;
     if (!request || reference.data === undefined || request.id === server.current.id) return;
-    server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: linesKey(request.lines) };
+    server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: draftKey(linesKey(request.lines), request.justification) };
     dispatch({ type: "load", lines: fromRequestLines(request.lines, items) });
+    setJustification(request.justification);
     setLoaded(true);
   }, [detail.data, reference.data, items]);
 
@@ -100,28 +108,28 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   );
   const report = debouncedLines.length > 0 ? (check.data?.report ?? null) : null;
 
-  const latest = useRef(converted);
-  latest.current = converted;
+  const latest = useRef({ lines: converted.lines, justification });
+  latest.current = { lines: converted.lines, justification };
   const chain = useRef<Promise<void>>(Promise.resolve());
 
   const saveOnce = useCallback(async (): Promise<void> => {
-    const { lines } = latest.current;
+    const { lines, justification: text } = latest.current;
     const s = server.current;
-    const lineKey = linesKey(lines);
+    const lineKey = draftKey(linesKey(lines), text);
     if (lineKey === s.savedKey) {
       setSaveState((prev) => (prev === "dirty" ? "saved" : prev));
       return;
     }
-    if (s.id === null && lines.length === 0) return;
+    if (s.id === null && lines.length === 0 && text.trim() === "") return;
     setSaveState("saving");
     try {
       if (s.id === null) {
-        const { request } = await create.mutateAsync({ body: { lines: [...lines] } });
+        const { request } = await create.mutateAsync({ body: { lines: [...lines], justification: text } });
         server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: lineKey };
         // Адреса запам'ятовує заявку: після перезавантаження сторінки чернетка знайдеться.
         void navigate({ to: "/new", search: { id: request.id }, replace: true });
       } else {
-        const { request } = await edit.mutateAsync({ params: { id: s.id }, body: { lines: [...lines], expectedRevision: s.revision } });
+        const { request } = await edit.mutateAsync({ params: { id: s.id }, body: { lines: [...lines], justification: text, expectedRevision: s.revision } });
         server.current = { ...s, revision: request.revision, savedKey: lineKey };
       }
       setSaveState("saved");
@@ -160,7 +168,9 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const returned = detail.data?.request.status === "returned" ? detail.data.request.returnInfo : null;
   const isResubmit = server.current.status === "returned";
   const hasErrors = (report?.errors.length ?? 0) > 0;
-  const blocked = history.present.length === 0 || converted.incomplete.length > 0 || hasErrors || check.isFetching || linesKey(debouncedLines) !== key;
+  const noJustification = justification.trim() === "";
+  const blocked =
+    history.present.length === 0 || converted.incomplete.length > 0 || noJustification || hasErrors || check.isFetching || linesKey(debouncedLines) !== linesKey(converted.lines);
 
   const onSubmit = async () => {
     setSubmitting(true);
@@ -193,6 +203,9 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const title = requestId ? `Заявка ${requestLabel(requestId)}` : "Нова заявка";
   const documentState = isResubmit ? `Повернуто · версія ${server.current.version}` : "Чернетка · зберігається автоматично";
   const dataReady = reference.data !== undefined && positionsQuery.data !== undefined;
+  // Рапорт показує те, що зараз на екрані: збережена заявка дає маршрут і номер, редактор — рядки й текст.
+  const saved = detail.data?.request;
+  const raportRequest = saved && saved.id === server.current.id ? { ...saved, lines: converted.lines, justification } : undefined;
   const failed = reference.isError || positionsQuery.isError || (requestId !== undefined && detail.isError);
 
   return (
@@ -208,12 +221,17 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
         )
       }
       actions={
-        <WorkspaceToolbar label="Дії редактора заявки">
-          <ToolbarGroup label="Історія змін">
-            <IconButton label="Відмінити" icon={<Icon name="undo" />} disabled={readOnly || !canUndo(history)} onClick={() => dispatch({ type: "undo" })} />
-            <IconButton label="Повторити" icon={<Icon name="redo" />} disabled={readOnly || !canRedo(history)} onClick={() => dispatch({ type: "redo" })} />
-          </ToolbarGroup>
-        </WorkspaceToolbar>
+        readOnly ? undefined : (
+          <>
+            <WorkspaceToolbar label="Дії редактора заявки">
+              <ToolbarGroup label="Історія змін">
+                <IconButton label="Відмінити" icon={<Icon name="undo" />} disabled={!canUndo(history)} onClick={() => dispatch({ type: "undo" })} />
+                <IconButton label="Повторити" icon={<Icon name="redo" />} disabled={!canRedo(history)} onClick={() => dispatch({ type: "redo" })} />
+              </ToolbarGroup>
+            </WorkspaceToolbar>
+            <RaportButton request={raportRequest} label="Переглянути рапорт" />
+          </>
+        )
       }
       inspector={
         <DetailPanel title="Перевірки і бюджет" subtitle="Оновлюються, поки ви заповнюєте заявку">
@@ -247,9 +265,25 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
             </p>
           ) : null}
           <p className="screen__hint">
-            Оберіть позиції з Попереднього переліку 2027 вашого напрямку. Для заміни виберіть схожий предмет: у межах одного КЕКВ ліміт не витрачається, на інший КЕКВ — списується.
+            Оберіть позиції з Попереднього переліку 2027 вашого напрямку й напишіть обґрунтування — решту рапорту система заповнить за шаблоном. Для заміни виберіть
+            схожий предмет: у межах одного КЕКВ ліміт не витрачається, на інший КЕКВ — списується.
           </p>
           <LinesEditor lines={history.present} positions={positions} items={items} dispatch={dispatch} problems={problems} newLineId={newId} />
+          <section className="justification" aria-labelledby="justification-title">
+            <h2 id="justification-title" className="justification__title">
+              Обґрунтування
+            </h2>
+            <Textarea
+              label="Обґрунтування потреби"
+              hideLabel
+              description="Навіщо підрозділу це майно: стан наявного, зміни в штаті, втрати. Текст піде в рапорт без змін; без нього заявку не подати."
+              required
+              rows={6}
+              maxLength={4000}
+              value={justification}
+              onChange={(event) => setJustification(event.currentTarget.value)}
+            />
+          </section>
         </>
       )}
     </ScreenFrame>

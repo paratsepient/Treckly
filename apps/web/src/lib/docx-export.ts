@@ -1,4 +1,5 @@
-import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from "docx";
+import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TabStopType, TextRun, WidthType } from "docx";
+import { raportModel, type RaportInput } from "./raport.ts";
 import { finalReportModel, type FinalReportInput } from "./reports.ts";
 
 const cell = (text: string, bold = false): TableCell =>
@@ -45,6 +46,78 @@ export function buildFinalDocument(input: FinalReportInput): Document {
 
 export async function buildFinalDocx(input: FinalReportInput): Promise<Blob> {
   return Packer.toBlob(buildFinalDocument(input));
+}
+
+// ── Рапорт ───────────────────────────────────────────────────────────────────
+
+const FONT = "Times New Roman";
+/** Розміри в docx — у половинах пункту: 28 = 14 pt. */
+const SIZE = 28;
+const TABLE_SIZE = 22;
+const INDENT = 709; // 1,25 см у twip
+
+const text = (value: string, options: { bold?: boolean; size?: number; italics?: boolean } = {}): TextRun =>
+  new TextRun({ text: value, font: FONT, size: options.size ?? SIZE, bold: options.bold ?? false, italics: options.italics ?? false });
+
+const body = (value: string, indent = true): Paragraph =>
+  new Paragraph({ alignment: AlignmentType.JUSTIFIED, indent: indent ? { firstLine: INDENT } : {}, spacing: { after: 80 }, children: [text(value)] });
+
+const raportTable = (head: readonly string[], rows: readonly (readonly string[])[], numeric: readonly number[]): Table =>
+  new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({
+        tableHeader: true,
+        children: head.map((h) => new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [text(h, { bold: true, size: TABLE_SIZE })] })] })),
+      }),
+      ...rows.map(
+        (r) =>
+          new TableRow({
+            cantSplit: true,
+            children: r.map(
+              (c, i) => new TableCell({ children: [new Paragraph({ alignment: numeric.includes(i) ? AlignmentType.RIGHT : AlignmentType.LEFT, children: [text(c, { size: TABLE_SIZE })] })] }),
+            ),
+          }),
+      ),
+    ],
+  });
+
+/** Рапорт у Word: той самий зміст, що й у перегляді та друку, на полях службового документа. */
+export function buildRaportDocument(input: RaportInput): Document {
+  const m = raportModel(input);
+  return new Document({
+    creator: "Прототип обліку майна",
+    title: m.documentTitle,
+    styles: { default: { document: { run: { font: FONT, size: SIZE } } } },
+    sections: [
+      {
+        properties: { page: { margin: { top: 1134, bottom: 1134, left: 1701, right: 851 } } },
+        children: [
+          ...m.addressee.map((line) => new Paragraph({ indent: { left: 4677 }, children: [text(line)] })),
+          new Paragraph({ spacing: { before: 480, after: 240 }, alignment: AlignmentType.CENTER, children: [text(m.title, { bold: true })] }),
+          body(m.request),
+          ...m.tables.flatMap((t) => [
+            new Paragraph({ spacing: { before: 200, after: 80 }, children: [text(t.heading, { bold: true })] }),
+            raportTable(t.head, t.rows, t.numeric),
+          ]),
+          new Paragraph({ spacing: { before: 160, after: 80 }, children: [text(m.total, { bold: true }), ...(m.byKekv ? [text(` ${m.byKekv}`)] : [])] }),
+          new Paragraph({ spacing: { before: 200, after: 80 }, children: [text(m.justificationHeading, { bold: true })] }),
+          ...(m.justification.length > 0 ? m.justification.map((p) => body(p)) : [new Paragraph({ indent: { firstLine: INDENT }, children: [text("Обґрунтування ще не написано.", { italics: true })] })]),
+          new Paragraph({ spacing: { before: 720 }, children: [text(m.signature.position)] }),
+          new Paragraph({
+            tabStops: [{ type: TabStopType.RIGHT, position: 9354 }],
+            children: [text(m.signature.rank), text(`\t${m.signature.name}`)],
+          }),
+          new Paragraph({ children: [text(m.signature.date)] }),
+          new Paragraph({ spacing: { before: 480 }, children: [text(m.footnote, { size: 20 })] }),
+        ],
+      },
+    ],
+  });
+}
+
+export async function buildRaportDocx(input: RaportInput): Promise<Blob> {
+  return Packer.toBlob(buildRaportDocument(input));
 }
 
 /** Збереження файла без мережі: тимчасове посилання на Blob у пам'яті браузера. */

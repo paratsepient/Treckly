@@ -32,5 +32,11 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
       "-- Журнал лише доповнюється: змінювати й видаляти записи не можна на рівні бази.\nCREATE OR REPLACE FUNCTION journal_append_only() RETURNS trigger AS $$\nBEGIN\n  RAISE EXCEPTION 'journal is append-only';\nEND;\n$$ LANGUAGE plpgsql;",
       "CREATE TRIGGER journal_no_change BEFORE UPDATE OR DELETE ON journal\n  FOR EACH ROW EXECUTE FUNCTION journal_append_only();"
     ]
+  },
+  {
+    "tag": "0002_youthful_rumiko_fujikawa",
+    "statements": [
+      "ALTER TABLE \"requests\" ADD COLUMN \"justification\" text DEFAULT '' NOT NULL;"
+    ]
   }
 ];

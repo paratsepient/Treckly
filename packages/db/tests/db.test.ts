@@ -112,7 +112,7 @@ function approveFrom(s: Setup, st: State, listId: string): Outcome {
 }
 
 async function newSubmitted(s: Setup, l: RequestLine[]): Promise<string> {
-  const draft = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: l }));
+  const draft = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: l, justification: "Потреба підрозділу на 2027 рік." }));
   const id = draft.requests[0]!.id;
   await run(s, (st) => submit(s.ctx, meta(author), { request: st.requests.find((r) => r.id === id)!, positions: st.positions, budget: st.budget, requests: st.requests }));
   return id;
@@ -138,7 +138,7 @@ test("журнал лише доповнюється: UPDATE і DELETE відх�
 test("заявка зберігається й читається без втрат (рядки за переліком і заміни)", async () => {
   const s = await setup();
   const replacement: RequestLine = { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "N-9", name: "Інший", kekv: "3110", priceMinor: 150_00 } };
-  const outcome = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: lines(byList("l1", "p2", 1), replacement) }));
+  const outcome = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: lines(byList("l1", "p2", 1), replacement), justification: "Потреба підрозділу на 2027 рік." }));
   const saved = await loadRequest(s.db, outcome.requests[0]!.id);
   assert.deepEqual(saved, outcome.requests[0]);
 });

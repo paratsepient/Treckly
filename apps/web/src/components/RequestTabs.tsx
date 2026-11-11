@@ -25,8 +25,23 @@ export function requestTabs({ detail, positions, levels }: RequestTabsInput): De
     },
     {
       value: "lines",
-      label: "Рядки",
+      label: "Зміст",
       content: (
+        <div className="request-content">
+          <section aria-labelledby={`justification-${request.id}`}>
+            <h3 id={`justification-${request.id}`} className="request-content__title">
+              Обґрунтування
+            </h3>
+            {request.justification.trim() ? (
+              <p className="request-justification">{request.justification}</p>
+            ) : (
+              <p className="request-lines__meta">Автор ще не написав обґрунтування.</p>
+            )}
+          </section>
+          <section aria-labelledby={`lines-${request.id}`}>
+            <h3 id={`lines-${request.id}`} className="request-content__title">
+              Позиції
+            </h3>
         <ul className="request-lines">
           {request.lines.map((line) => {
             const status = detail.lineStatuses[line.id];
@@ -46,6 +61,8 @@ export function requestTabs({ detail, positions, levels }: RequestTabsInput): De
             );
           })}
         </ul>
+          </section>
+        </div>
       ),
     },
     {

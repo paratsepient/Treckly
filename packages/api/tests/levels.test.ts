@@ -9,7 +9,7 @@ const APPR_1A = "appr-1-unit-a";
 /** Подає нову заявку автора в/ч А0001 з одним дешевим рядком і повертає її. */
 async function submitCheap(h: Harness, qty = 1) {
   const battery = await positionByName(h, "Акумулятор літій-полімерний 4S");
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", qty)] } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", qty)], justification: "Потреба підрозділу на 2027 рік." } });
   return (await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision } })).request;
 }
 

@@ -168,3 +168,51 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ── Обґрунтування й перегляд рапорту ─────────────────────────────────────── */
+
+.justification {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-2);
+  max-width: 72ch;
+}
+
+.justification__title {
+  margin: 0;
+  font: var(--ix-font-heading-sm);
+}
+
+/* Аркуш А4 у справжній ширині, зменшений під діалог: так видно, як рапорт ляже на папір. */
+.raport-preview {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-compact);
+  background: var(--ix-surface-inset);
+}
+
+.raport-preview__page {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  border: 0;
+  background: var(--ix-surface);
+  transform-origin: 0 0;
+}
+
+.request-justification {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.request-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-5);
+}
+
+.request-content__title {
+  margin: 0 0 var(--ix-space-2);
+  font: var(--ix-font-body-strong);
+}

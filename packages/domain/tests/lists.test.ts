@@ -167,7 +167,7 @@ test("заявка іншої в/ч не потрапляє в перелік ц
   const own = submitted(world, [byList("l1", "p1", 1)]);
   const route2 = ["unit-vch-2", "unit-brig", "unit-ru", "unit-adm", "unit-vodr"] as const;
   const author2 = { userId: "u-author-2", role: { kind: "author", unitId: "unit-vch-2" } } as const;
-  const [draft] = apply(world, createDraft(world.ctx, meta(author2), { route: route2, lines: [byList("l1", "p2", 1)] })).requests;
+  const [draft] = apply(world, createDraft(world.ctx, meta(author2), { route: route2, lines: [byList("l1", "p2", 1)], justification: "Потреба підрозділу на 2027 рік." })).requests;
   apply(world, submit(world.ctx, meta(author2), { request: draft!, positions: POSITIONS, budget: world.budget, requests: all(world) }));
 
   // Уповноважений в/ч №1 не може сформувати перелік із заявкою в/ч №2.

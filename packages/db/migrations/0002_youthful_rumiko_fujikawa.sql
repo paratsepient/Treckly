@@ -1,0 +1,1 @@
+ALTER TABLE "requests" ADD COLUMN "justification" text DEFAULT '' NOT NULL;

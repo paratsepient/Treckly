@@ -69,6 +69,14 @@ const START = "2027-02-01T09:00:00Z";
 const PREFIX = { "2210": "ПМ", "2220": "МД", "3110": "ОБ" } as const;
 const kopecks = (uah: number): number => uah * 100;
 
+/** Типові обґрунтування рапортів (синтетичні). */
+const JUSTIFICATIONS = [
+  "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+  "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
+  "Запланована позиція переліку не відповідає умовам експлуатації в підрозділі, тому замість неї просимо схожий предмет. Решта позицій — планове поповнення.",
+  "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+] as const;
+
 const itemId = (n: number): string => `item-${String(n).padStart(3, "0")}`;
 const positionId = (n: number): string => `pos-${String(n).padStart(3, "0")}`;
 
@@ -162,7 +170,9 @@ class Simulation {
   }
 
   draft(unit: UnitKey, lines: RequestLine[]): string {
-    const out = this.record(createDraft(this.ctx, this.meta(this.authorOf(unit)), { route: routeOf(unit), lines }));
+    // Обґрунтування — з короткого набору типових формулювань, по черзі: дані відтворювані.
+    const justification = JUSTIFICATIONS[this.requests.size % JUSTIFICATIONS.length] as string;
+    const out = this.record(createDraft(this.ctx, this.meta(this.authorOf(unit)), { route: routeOf(unit), lines, justification }));
     return (out.requests[0] as Request).id;
   }
 

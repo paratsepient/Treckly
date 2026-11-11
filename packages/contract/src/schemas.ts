@@ -85,6 +85,7 @@ export const Request = z.object({
   level: Level.nullable(),
   listId: Id.nullable(),
   lines: z.array(RequestLine),
+  justification: z.string(),
   returnInfo: ReturnInfo.nullable(),
   levelEnteredOn: IsoDate.nullable(),
   createdOn: IsoDate,

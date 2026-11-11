@@ -6,7 +6,7 @@ import { advanceTo, approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
 function draftOf(world: ReturnType<typeof createWorld>, lines = [byList("l1", "p1", 2)]): string {
-  const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines })).requests;
+  const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." })).requests;
   return draft!.id;
 }
 
@@ -218,4 +218,21 @@ test("дублікат id рядків відхиляється при ство�
   assert.equal(get(world, id), before, "заявка не змінилась");
   apply(world, editLines(world.ctx, meta(author), { request: before, lines: [byList("a", "p1", 1), byList("b", "p1", 1)] }));
   assert.equal(get(world, id).lines.length, 2, "різні id приймаються, навіть для однієї позиції");
+});
+
+test("обґрунтування: без нього заявку не подати; редагування рядків його не стирає", () => {
+  const world = createWorld();
+  const [blank] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines: [byList("l1", "p1", 1)] })).requests;
+  assert.equal(blank?.justification, "");
+  const error = throwsCode(() => submit(world.ctx, meta(author), submitInput(world, blank!.id)), "INVALID_TRANSITION");
+  assert.equal(error.details["reason"], "EMPTY_JUSTIFICATION");
+
+  apply(world, editLines(world.ctx, meta(author), { request: get(world, blank!.id), lines: [byList("l1", "p1", 1)], justification: "   " }));
+  throwsCode(() => submit(world.ctx, meta(author), submitInput(world, blank!.id)), "INVALID_TRANSITION");
+
+  apply(world, editLines(world.ctx, meta(author), { request: get(world, blank!.id), lines: [byList("l1", "p1", 1)], justification: "Заміна зношеного майна." }));
+  apply(world, editLines(world.ctx, meta(author), { request: get(world, blank!.id), lines: [byList("l1", "p1", 2)] }));
+  assert.equal(get(world, blank!.id).justification, "Заміна зношеного майна.");
+  apply(world, submit(world.ctx, meta(author), submitInput(world, blank!.id)));
+  assert.equal(get(world, blank!.id).status, "at_level");
 });

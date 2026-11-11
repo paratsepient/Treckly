@@ -32,9 +32,11 @@ const expectedRevisions = z.record(Id, expectedRevision);
 // ── Команди ───────────────────────────────────────────────────────────────────
 
 export const SwitchRoleInput = z.object({ userId: Id });
-export const CreateRequestInput = z.object({ lines: z.array(RequestLine) });
+/** Обґрунтування до 4000 знаків: це один абзац-два рапорту, а не окремий документ. */
+const Justification = z.string().max(4000);
+export const CreateRequestInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional() });
 export const CheckRequestInput = z.object({ lines: z.array(RequestLine), requestId: Id.optional() });
-export const EditLinesInput = z.object({ lines: z.array(RequestLine), expectedRevision });
+export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), expectedRevision });
 export const RevisionInput = z.object({ expectedRevision });
 export const ReturnInput = z.object({ note: z.string(), expectedRevision });
 export const FormListInput = z.object({ level: Level, unitId: Id, requestIds: z.array(Id).min(1), expectedRevisions: expectedRevisions.optional() });

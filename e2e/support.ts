@@ -62,6 +62,7 @@ export async function submitSimpleRequest(page: Page, positionId = "pos-002"): P
   await page.getByRole("button", { name: "Додати рядок" }).click();
   await page.getByLabel("Позиція, рядок 1").selectOption(positionId);
   await expect(page.getByText("Перевірки пройдено")).toBeVisible();
+  await page.getByLabel("Обґрунтування потреби").fill("Майно зношене, потрібне поповнення.");
   const submit = page.getByRole("button", { name: "Подати", exact: true });
   await expect(submit).toBeEnabled();
   const before = new URL(page.url()).hash;

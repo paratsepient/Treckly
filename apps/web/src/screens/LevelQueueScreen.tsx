@@ -8,6 +8,7 @@ import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
+import { RaportButton } from "../components/RaportDialog.tsx";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { ReturnDialog } from "../components/ReturnDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
@@ -176,6 +177,7 @@ export function LevelQueueScreen() {
             subtitle={request ? `Версія ${request.version}` : undefined}
             empty={!inspected}
             emptyText="Оберіть заявку в таблиці, щоб побачити рядки й трек."
+            actions={request ? <RaportButton request={request} /> : undefined}
             tabs={
               detail.data
                 ? requestTabs({ detail: detail.data, positions: priced, levels: (reference.data?.levels ?? []).map((l) => ({ level: l.level, name: l.name })) })

@@ -7,6 +7,7 @@ import { useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
+import { RaportButton } from "../components/RaportDialog.tsx";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { formatDateShort, formatMoney, formatMoneyShort, requestLabel, STATUS_LABELS, STATUS_TONES, statusText } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
@@ -97,6 +98,7 @@ export function RegistryScreen() {
           subtitle={request ? `Версія ${request.version} · ${statusText(request.status, request.level)}` : undefined}
           empty={!selected}
           emptyText="Оберіть заявку в реєстрі, щоб побачити її трек."
+          actions={request ? <RaportButton request={request} /> : undefined}
           tabs={detail.data ? requestTabs({ detail: detail.data, positions: priced, levels: levels.map((l) => ({ level: l.level, name: l.name })) }) : undefined}
         >
           {selected && detail.isPending ? <DataState kind="loading" size="compact" /> : null}

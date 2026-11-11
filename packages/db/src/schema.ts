@@ -75,6 +75,7 @@ export const requests = pgTable(
     status: text("status").notNull(),
     level: integer("level"),
     listId: text("list_id"),
+    justification: text("justification").notNull().default(""),
     returnInfo: jsonb("return_info").$type<ReturnInfo>(),
     levelEnteredOn: text("level_entered_on"),
     createdOn: text("created_on").notNull(),
