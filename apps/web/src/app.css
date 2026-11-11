@@ -39,8 +39,7 @@
 .return-note {
   margin: 0;
   padding: var(--ix-space-3);
-  border: 1px solid var(--ix-border);
-  border-inline-start: 4px solid var(--ix-warning);
+  border: 1px solid var(--ix-warning);
   border-radius: var(--ix-radius-control);
   background: var(--ix-warning-surface);
 }
@@ -149,7 +148,8 @@
 .track__note {
   margin: var(--ix-space-2) 0 0;
   padding: var(--ix-space-2) var(--ix-space-3);
-  border-inline-start: 3px solid var(--ix-warning);
+  border: 1px solid var(--ix-warning);
+  border-radius: var(--ix-radius-compact);
   background: var(--ix-warning-surface);
   color: var(--ix-foreground);
 }
@@ -267,17 +267,17 @@
 .check__item {
   margin-bottom: var(--ix-space-2);
   padding: var(--ix-space-2) var(--ix-space-3);
-  border-inline-start: 3px solid var(--ix-border-strong);
+  border: 1px solid var(--ix-border);
   border-radius: var(--ix-radius-compact);
 }
 
 .check__item[data-tone="error"] {
-  border-inline-start-color: var(--ix-error);
+  border-color: var(--ix-error);
   background: var(--ix-error-surface);
 }
 
 .check__item[data-tone="warning"] {
-  border-inline-start-color: var(--ix-warning);
+  border-color: var(--ix-warning);
   background: var(--ix-warning-surface);
 }
 
