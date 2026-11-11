@@ -39,6 +39,16 @@ createServer((request, response) => {
   }
   response.writeHead(200, { "content-type": TYPES[extname(candidate)] ?? "application/octet-stream", "cache-control": "no-cache" });
   createReadStream(candidate).pipe(response);
-}).listen(port, "127.0.0.1", () => {
-  console.log(`Прототип: http://localhost:${port}/  (Ctrl+C — зупинити)`);
-});
+})
+  .on("error", (error: NodeJS.ErrnoException) => {
+    if (error.code !== "EADDRINUSE") throw error;
+    // Найчастіше порт тримає вже запущений `pnpm dev` або `pnpm start` в іншому вікні.
+    console.error(
+      `Порт ${port} уже зайнятий: імовірно, прототип уже запущено (pnpm dev або pnpm start в іншому вікні).\n` +
+        `Відкрийте http://localhost:${port}/ або зупиніть той сервер (Ctrl+C). Інший порт: PORT=4341 pnpm start`,
+    );
+    process.exit(1);
+  })
+  .listen(port, "127.0.0.1", () => {
+    console.log(`Прототип: http://localhost:${port}/  (Ctrl+C — зупинити)`);
+  });
