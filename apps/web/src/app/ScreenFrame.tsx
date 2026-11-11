@@ -51,8 +51,9 @@ export function ScreenFrame(props: ScreenFrameProps) {
       {...(props.onInspectorOpenChange ? { onInspectorOpenChange: props.onInspectorOpenChange } : {})}
       {...(props.inspectorKey !== undefined ? { inspectorKey: props.inspectorKey } : {})}
     >
-      <WorkspaceSurface variant="dashboard" label={props.surfaceLabel}>
-        <div className="screen">
+      {/* Префікс робить назву унікальною: таблиці й секції всередині мають власні назви (landmark-unique). */}
+      <WorkspaceSurface variant="dashboard" label={`Робоча область: ${props.surfaceLabel}`}>
+        <div className="screen" data-inspector={props.inspector && props.inspectorOpen !== false ? "open" : undefined}>
           <p className="demo-banner" role="note">
             <strong>Демонстраційні дані, СЕДО імітується.</strong>
             {session.data ? ` Сьогодні: ${formatDate(session.data.today)}` : ""}

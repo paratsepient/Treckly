@@ -19,6 +19,16 @@
   padding: var(--ix-space-4);
 }
 
+/*
+ * Закріплений інспектор набору плаває над полотном (від 1280 px; нижче — Drawer), і вміст під
+ * ним закритий. Відступ справа на ширину панелі (її змінює перетягування краю) лишає вміст видимим.
+ */
+@media (min-width: 1280px) {
+  .screen[data-inspector="open"] {
+    padding-inline-end: calc(var(--ixp-inspector-width, var(--ix-layout-inspector-width)) + var(--ix-space-6));
+  }
+}
+
 .screen__hint {
   margin: 0;
   max-width: 72ch;
@@ -162,9 +172,29 @@
   gap: var(--ix-space-3);
 }
 
+/*
+ * Фіксована розкладка: таблиця завжди вміщується в доступну ширину (з відкритою правою
+ * панеллю теж), а довгий вибір позиції стискається замість того, щоб виштовхнути
+ * колонки «Сума» й «Видалити» за край.
+ */
 .lines__table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
+}
+
+.lines__table select,
+.lines__table input[type="text"] {
+  width: 100%;
+  min-width: 0;
+}
+
+.lines__type {
+  width: 15.5rem;
+}
+
+.lines__kekv {
+  width: 5rem;
 }
 
 .lines__caption {
@@ -192,17 +222,18 @@
 }
 
 .lines__qty {
-  width: 7rem;
+  width: 6.5rem;
 }
 
 .lines__money {
+  width: 8.5rem;
   text-align: end;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .lines__actions {
-  width: 3rem;
+  width: 3.5rem;
 }
 
 .lines__muted {
@@ -505,4 +536,11 @@
   justify-content: space-between;
   padding-block: var(--ix-space-2);
   border-bottom: 1px solid var(--ix-border);
+}
+
+/* Посилання в сповіщеннях: колір тексту з токенів (стандартний колір посилання не мав контрасту на тлі «Нове»). */
+.inbox a {
+  color: var(--ix-foreground);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }

@@ -178,7 +178,7 @@ export function RegistryScreen() {
           </Select>
         </div>
         <DataTable
-          label="Реєстр заявок"
+          label="Таблиця реєстру заявок"
           columns={columns}
           rows={rows}
           getRowId={(r) => r.id}

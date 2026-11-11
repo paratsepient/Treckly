@@ -41,14 +41,16 @@ export function useApiQuery<K extends ApiName>(name: K, init?: CallInit<K>, opti
   });
 }
 
-/** Усе, що залежить від стану заявок і бюджету, після будь-якої команди запитується заново. */
-const AFFECTED: readonly ApiName[] = ["myRequests", "requestDetail", "registry", "budget", "positions", "checkRequest", "journal", "levelQueue", "final", "kpi", "lists"];
-
+/**
+ * Після будь-якої команди всі активні запити оновлюються: стан заявок, бюджет, сповіщення, дата
+ * «Наступного дня» й лічильники в меню залежать один від одного. Бекенд локальний, тож це дешево,
+ * а список запитів, який легко забути доповнити, прибрано.
+ */
 export function useApiMutation<K extends ApiName>(name: K) {
   const { call } = useBackend();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (init: CallInit<K>) => call(name, init),
-    onSuccess: () => Promise.all(AFFECTED.map((key) => queryClient.invalidateQueries({ queryKey: [key] }))),
+    onSuccess: () => queryClient.invalidateQueries(),
   });
 }

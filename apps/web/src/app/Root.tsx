@@ -10,7 +10,8 @@ type Role = "author" | "preparer" | "approver" | "admin";
 
 /** Навігація за роллю: пункти вже відфільтровані, sidebar прав не обчислює. */
 function groupsFor(role: Role, unread: number, level: number | null): NavGroup[] {
-  const inbox = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
+  // Лічильник у вузькому меню видимий як «4»; щоб назва посилання його містила (WCAG 2.5.3), він є і в назві.
+  const inbox = { id: "notifications", label: unread > 0 ? `Сповіщення · ${unread}` : "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
   const registry = { id: "registry", label: "Реєстр і зведення", href: "#/registry", icon: <Icon name="kpi" /> };
   const final = (label: string) => ({ id: "final", label, href: "#/final", icon: <Icon name="sheet" /> });
   switch (role) {

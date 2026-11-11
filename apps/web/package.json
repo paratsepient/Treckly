@@ -9,7 +9,8 @@
     "check": "pnpm run typecheck && pnpm run test",
     "dev": "node scripts/serve.ts",
     "test": "tsc -p tsconfig.test.json && node --test \"dist/test-build/tests/**/*.test.js\"",
-    "check:offline": "node scripts/check-offline.ts"
+    "check:offline": "node scripts/check-offline.ts",
+    "start": "node scripts/static.ts"
   },
   "dependencies": {
     "@dsp/api": "workspace:*",

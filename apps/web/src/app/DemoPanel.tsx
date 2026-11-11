@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { Button, Icon, Popover, SegmentedControl, Select } from "@index/ui";
 import { useFeedback } from "@index/ui-patterns";
 import { useApiMutation, useApiQuery, useBackend } from "../api/hooks.tsx";
@@ -17,7 +16,6 @@ export function DemoPanel() {
   const { theme, setTheme: onThemeChange, goHome: onHome } = useShell();
   const [open, setOpen] = useState(false);
   const backend = useBackend();
-  const queryClient = useQueryClient();
   const feedback = useFeedback();
   const session = useApiQuery("session");
   const reference = useApiQuery("reference");
@@ -90,8 +88,8 @@ export function DemoPanel() {
             reset.mutate(
               {},
               {
-                onSuccess: async () => {
-                  await queryClient.resetQueries();
+                onSuccess: () => {
+                  // Кеш не скидається: порожній кеш показав би лоадер на весь екран і прибрав би це повідомлення.
                   feedback.notify({ key: "demo-reset", tone: "success", title: "Демо скинуто до початкового стану" });
                   setOpen(false);
                   onHome();

@@ -12,7 +12,7 @@
 ## Стек
 pnpm workspaces (pnpm 11.23.0) · esbuild + React 19.3.1 + TypeScript 5.9.3 strict · TanStack Router + Query ·
 Zod (контракт) · Hono у браузері як мок-бекенд · PGlite + Drizzle (запасний варіант — Dexie) · React Hook Form ·
-faker з фіксованим seed · тести `node:test` (jsdom + axe-core) · Playwright (e2e, ще не додано).
+faker з фіксованим seed · тести `node:test` (jsdom + axe-core) · Playwright на встановленому Chrome (e2e + axe у `e2e/`).
 Версії React/TS, збирач, лінтер — як в IndeX (див. `UPSTREAM.md`). Якщо IndeX відрізняється — перемагає IndeX.
 
 > **Змінено 2026-11-11 за стеком IndeX (origin/main 0450585):**
@@ -22,8 +22,10 @@ faker з фіксованим seed · тести `node:test` (jsdom + axe-core) 
 > - Стилі: звичайний CSS на токенах `--ix-*`, теми через `data-theme="light|dark"` (не CSS Modules).
 > - Пакети збираються `tsc` у `dist` і підключаються через `exports`; Nx не використовуємо, збірка — `pnpm -r`.
 > - Додано за згодою користувача: `docx` 9.15.0 (експорт у Word; вантажиться окремим чанком лише при експорті). Друк у PDF — через прихований iframe без бібліотек.
-> - Ще не встановлено (немає в IndeX, додаємо за згодою): TanStack Router/Query, Zod, Hono, PGlite, Drizzle,
->   React Hook Form, faker, Playwright. Імена внутрішніх пакетів: `@dsp/domain|contract|api|db|seed|web`.
+> - Playwright (`@playwright/test` 1.64.1) додано за згодою користувача: **без завантаження браузера**, тести йдуть на встановленому в системі Chrome
+>   (`channel: "chrome"`). axe — той самий `axe-core`, що в IndeX, підключений у сторінку.
+> - Решта бібліотек з документа (TanStack Router/Query, Zod, Hono, PGlite, Drizzle, React Hook Form, faker) встановлена за згодою.
+>   Імена внутрішніх пакетів: `@dsp/domain|contract|api|db|seed|web|e2e`.
 
 ## Структура
 ```
@@ -36,7 +38,8 @@ packages/contract      Zod-схеми API
 packages/api           маршрути Hono
 packages/db            схема і міграції Drizzle
 packages/seed          генератор демо-даних
-e2e/                   сценарії Playwright
+e2e/                   сценарії Playwright (E1–E7) і axe
+docs/session-guide.md  інструкція для ведучого сесії
 UPSTREAM.md            коміт IndeX, з якого скопійовано UI Kit
 ```
 
@@ -66,7 +69,9 @@ UPSTREAM.md            коміт IndeX, з якого скопійовано UI
 ## Команди
 - `pnpm install` — встановити залежності
 - `pnpm dev` — dev-сервер (http://localhost:4340/, `PORT` змінює порт)
-- `pnpm build` — збірка всіх пакетів і `apps/web` (результат у `apps/web/public/dist`)
+- `pnpm build` — збірка всіх пакетів і `apps/web` (результат у `apps/web/public/dist`; папка очищається перед збіркою)
+- `pnpm start` — готова збірка на http://localhost:4340/ (статичний сервер без залежностей); для показу, не для розробки
+- `pnpm test:e2e` — сценарії E1–E7 і axe у Chrome (потрібна `pnpm build`; сервер береться з уже запущеного `pnpm start` або `pnpm dev`)
 - `pnpm typecheck` / `pnpm check` — перевірка типів / повна перевірка пакетів
 - `pnpm check` — типи й тести всіх пакетів (`node:test`); один пакет: `pnpm --filter @dsp/domain check`
 - `pnpm --filter @dsp/db generate` — нова міграція Drizzle після зміни схеми, потім `pnpm --filter @dsp/db embed`

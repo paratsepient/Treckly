@@ -4,3 +4,5 @@ apps/web/public/dist/
 .env
 .env.*
 !.env.example
+e2e/test-results/
+e2e/playwright-report/

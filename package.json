@@ -6,7 +6,9 @@
     "dev": "pnpm --filter @dsp/web dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
-    "check": "pnpm -r check"
+    "check": "pnpm -r check",
+    "start": "pnpm --filter @dsp/web start",
+    "test:e2e": "pnpm --filter @dsp/e2e test"
   },
   "packageManager": "pnpm@11.23.0",
   "devDependencies": {

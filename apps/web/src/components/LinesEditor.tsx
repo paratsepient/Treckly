@@ -40,12 +40,16 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
             <th scope="col" className="lines__num">
               №
             </th>
-            <th scope="col">Тип рядка</th>
+            <th scope="col" className="lines__type">
+              Тип рядка
+            </th>
             <th scope="col">Позиція Попереднього переліку</th>
             <th scope="col" className="lines__qty">
               Кількість
             </th>
-            <th scope="col">КЕКВ</th>
+            <th scope="col" className="lines__kekv">
+              КЕКВ
+            </th>
             <th scope="col" className="lines__money">
               Сума
             </th>
