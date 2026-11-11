@@ -4,6 +4,7 @@ import { useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { formatDateShort, formatMoney, LINE_STATUS_LABELS, LINE_STATUS_TONES, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
 import { buildFinalReport, printHtml } from "../lib/reports.ts";
 import { requestTotal } from "../lib/totals.ts";
@@ -17,6 +18,7 @@ type Request = Final["requests"][number];
  */
 export function FinalScreen() {
   const session = useApiQuery("session");
+  const narrow = useMedia(NARROW);
   const reference = useApiQuery("reference");
   const positions = useApiQuery("positions");
   const query = useApiQuery("final");
@@ -89,7 +91,7 @@ export function FinalScreen() {
         </h2>
         <DataTable
           label="Затверджені заявки"
-          columns={columns}
+          columns={visibleColumns(columns, narrow, ["on", "lines", "status"])}
           rows={requests}
           getRowId={(r) => r.id}
           rowHeaderKey="id"

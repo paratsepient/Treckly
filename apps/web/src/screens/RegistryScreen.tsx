@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import { Badge, BarChart, DataState, DataTable, DonutChart, KpiTile, Select, type DataTableColumn } from "@index/ui";
-import { InspectorPanel } from "@index/ui-patterns";
+
 import type { ApiOutput } from "@dsp/contract";
 import { daysAtLevel } from "@dsp/domain";
 import { useApiQuery } from "../api/hooks.tsx";
+import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { formatDateShort, formatMoney, formatMoneyShort, requestLabel, STATUS_LABELS, STATUS_TONES, statusText } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
@@ -20,6 +22,7 @@ const ALL = "all";
  */
 export function RegistryScreen() {
   const session = useApiQuery("session");
+  const narrow = useMedia(NARROW);
   const reference = useApiQuery("reference");
   const positions = useApiQuery("positions");
   const registry = useApiQuery("registry");
@@ -89,7 +92,7 @@ export function RegistryScreen() {
       meta={registry.data ? `${rows.length} із ${all.length}` : undefined}
       surfaceLabel="Реєстр заявок і зведення"
       inspector={
-        <InspectorPanel
+        <DetailPanel
           title={selected ? requestLabel(selected) : "Заявка"}
           subtitle={request ? `Версія ${request.version} · ${statusText(request.status, request.level)}` : undefined}
           empty={!selected}
@@ -98,7 +101,7 @@ export function RegistryScreen() {
         >
           {selected && detail.isPending ? <DataState kind="loading" size="compact" /> : null}
           {selected && detail.isError ? <DataState kind="error" size="compact" title="Не вдалося завантажити заявку" /> : null}
-        </InspectorPanel>
+        </DetailPanel>
       }
       inspectorLabel="Картка заявки"
       inspectorOpen={selected !== undefined}
@@ -139,7 +142,6 @@ export function RegistryScreen() {
                 title="Затверджений бюджет за КЕКВ"
                 formatValue={(v) => `${formatMoneyShort(v * 100)} грн`}
                 data={budgetLines.filter((l) => l.approvedMinor > 0).map((l) => ({ label: `КЕКВ ${l.scope}`, value: l.approvedMinor / 100 }))}
-                centerLabel={`${formatMoneyShort(kpi.data.budgetByKekv.find((l) => l.scope === "TOTAL")?.approvedMinor ?? 0)} грн`}
               />
             </div>
             <DataTable label="Бюджет напрямку за КЕКВ" columns={budgetColumns} rows={budgetLines} getRowId={(l) => l.scope} rowHeaderKey="scope" variant="well" />
@@ -179,7 +181,7 @@ export function RegistryScreen() {
         </div>
         <DataTable
           label="Таблиця реєстру заявок"
-          columns={columns}
+          columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["where", "days", "total", "created"] : ["where", "created"])}
           rows={rows}
           getRowId={(r) => r.id}
           rowHeaderKey="id"

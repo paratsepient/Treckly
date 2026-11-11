@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Button, DataState, Icon, IconButton } from "@index/ui";
-import { InspectorPanel, ToolbarGroup, useFeedback, WorkspaceToolbar, type SaveStatusProps } from "@index/ui-patterns";
+import { ToolbarGroup, useFeedback, WorkspaceToolbar, type SaveStatusProps } from "@index/ui-patterns";
 import type { RequestStatus } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
+import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { CheckPanel, issueText } from "../components/CheckPanel.tsx";
 import { LinesEditor } from "../components/LinesEditor.tsx";
@@ -59,7 +60,6 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const [loaded, setLoaded] = useState(requestId === undefined);
   const [saveState, setSaveState] = useState<SaveStatusProps["state"]>("idle");
   const [savedAt, setSavedAt] = useState<string | undefined>();
-  const [inspectorOpen, setInspectorOpen] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const server = useRef<ServerState>({ id: null, revision: 0, status: null, version: 1, savedKey: linesKey([]) });
 
@@ -198,7 +198,6 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   return (
     <ScreenFrame
       title={title}
-      breadcrumbs={[{ label: "Заявки" }, { label: title }]}
       surfaceLabel="Заповнення заявки"
       {...(readOnly || failed ? {} : { documentState, saveStatus })}
       primaryAction={
@@ -217,13 +216,12 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
         </WorkspaceToolbar>
       }
       inspector={
-        <InspectorPanel title="Перевірки і бюджет" subtitle="Оновлюються під час заповнення">
+        <DetailPanel title="Перевірки і бюджет" subtitle="Оновлюються, поки ви заповнюєте заявку">
           <CheckPanel report={report} budget={budgetQuery.data} rowOf={rowOf} pending={check.isFetching} incompleteCount={converted.incomplete.length} />
-        </InspectorPanel>
+        </DetailPanel>
       }
       inspectorLabel="Перевірки і бюджет"
-      inspectorOpen={inspectorOpen}
-      onInspectorOpenChange={setInspectorOpen}
+      inspectorPlacement="aside"
     >
       {failed ? (
         <DataState kind="error" title="Не вдалося завантажити дані заявки" description="Оновіть сторінку або скиньте демо в демо-панелі." />

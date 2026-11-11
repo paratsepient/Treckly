@@ -1,69 +1,4 @@
-/*
- * Стилі застосунку: лише семантичні токени набору (жодних колірних літералів).
- * Каркас екранів — з @index/ui-patterns; тут тільки вміст: банер, трек, таблиця рядків заявки.
- */
-
-.boot {
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  padding: var(--ix-space-6);
-  background: var(--ix-background);
-  color: var(--ix-foreground);
-}
-
-.screen {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ix-space-4);
-  padding: var(--ix-space-4);
-}
-
-/*
- * Закріплений інспектор набору плаває над полотном (від 1280 px; нижче — Drawer), і вміст під
- * ним закритий. Відступ справа на ширину панелі (її змінює перетягування краю) лишає вміст видимим.
- */
-@media (min-width: 1280px) {
-  .screen[data-inspector="open"] {
-    padding-inline-end: calc(var(--ixp-inspector-width, var(--ix-layout-inspector-width)) + var(--ix-space-6));
-  }
-}
-
-.screen__hint {
-  margin: 0;
-  max-width: 72ch;
-  color: var(--ix-foreground-secondary);
-}
-
-/* Банер «Демонстраційні дані»: видно на всіх екранах. */
-.demo-banner {
-  margin: 0;
-  padding: var(--ix-space-2) var(--ix-space-3);
-  border: 1px solid var(--ix-border);
-  border-radius: var(--ix-radius-control);
-  background: var(--ix-info-surface);
-  color: var(--ix-foreground);
-  font: var(--ix-font-caption);
-}
-
-.return-note {
-  margin: 0;
-  padding: var(--ix-space-3);
-  border: 1px solid var(--ix-warning);
-  border-radius: var(--ix-radius-control);
-  background: var(--ix-warning-surface);
-}
-
-.return-note__hint {
-  color: var(--ix-foreground-secondary);
-}
-
-.demo-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ix-space-4);
-  min-width: 18rem;
-}
+/* Стилі вмісту: трек, рядки заявки, перевірки, переліки. Оболонка — shell.css, сітки — content.css. Лише токени набору. */
 
 /* ── Трек 5 рівнів ─────────────────────────────────────────────────────────── */
 
@@ -190,7 +125,7 @@
 }
 
 .lines__type {
-  width: 15.5rem;
+  width: 14rem;
 }
 
 .lines__kekv {
@@ -320,7 +255,7 @@
 
 .check__table th,
 .check__table td {
-  padding: var(--ix-space-1) var(--ix-space-2);
+  padding: var(--ix-space-1) 0 var(--ix-space-1) var(--ix-space-2);
   border-bottom: 1px solid var(--ix-border);
   text-align: start;
 }
@@ -394,20 +329,8 @@
 
 /* ── Черга рівня й денні переліки ──────────────────────────────────────────── */
 
-.queue__select-all {
-  display: flex;
-}
 
-.lists {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ix-space-3);
-}
 
-.lists__title {
-  margin: 0;
-  font: var(--ix-font-heading-md);
-}
 
 .list-card {
   display: flex;
@@ -492,33 +415,10 @@
 
 /* ── Зведення, реєстр, витяги ──────────────────────────────────────────────── */
 
-.summary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ix-space-4);
-}
 
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  gap: var(--ix-space-3);
-}
 
-.chart-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: var(--ix-space-4);
-}
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ix-space-3);
-}
 
-.filters > * {
-  min-width: 12rem;
-}
 
 .extract-lines {
   display: flex;
@@ -543,4 +443,9 @@
   color: var(--ix-foreground);
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+.check__table th:first-child,
+.check__table td:first-child {
+  padding-inline-start: 0;
 }

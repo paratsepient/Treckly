@@ -183,7 +183,7 @@ test("таблиця рядків: сума рахується від ціни �
   const rowsEls = [...container.querySelectorAll("tr.lines__row")];
   assert.equal(rowsEls.length, 2);
   assert.match(text(rowsEls[0]!.querySelector(".lines__money")).replace(/\s/g, " "), /300,00/);
-  assert.equal(text(rowsEls[1]!.querySelector(".lines__money")), "—");
+  assert.match(text(rowsEls[1]!.querySelector(".lines__money")), /—$/);
   unmount();
 });
 

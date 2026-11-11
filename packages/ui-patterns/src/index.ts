@@ -29,6 +29,9 @@ export { Dialog, type DialogProps } from "./dialog/Dialog.tsx";
 // Form Builder: впорядкована таблиця полів (Notion «09», ЗАТВЕРДЖЕНО).
 export { FormFieldTable, type FormFieldChange, type FormFieldRow, type FormFieldTableProps, type FormFieldType } from "./form-builder/FormFieldTable.tsx";
 export {
+  // ЛОКАЛЬНА ЗМІНА (dsp-orders, див. UPSTREAM.md): провайдер і шар повідомлень відкрито для власної оболонки застосунку.
+  FeedbackLayer,
+  FeedbackProvider,
   MAX_VISIBLE_FEEDBACK,
   useFeedback,
   type FeedbackAction,

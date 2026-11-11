@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
-import { InspectorPanel, useFeedback } from "@index/ui-patterns";
+import { useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
+import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { SedoDialog } from "../components/SedoDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
@@ -21,6 +23,7 @@ type Request = Queue["listed"][number];
 export function DailyListScreen() {
   const feedback = useFeedback();
   const session = useApiQuery("session");
+  const narrow = useMedia(NARROW);
   const reference = useApiQuery("reference");
   const positions = useApiQuery("positions");
   const user = session.data?.user;
@@ -86,7 +89,7 @@ export function DailyListScreen() {
   const state = queue.isPending ? "loading" : queue.isError ? "error" : waiting.length === 0 ? "empty" : "ready";
 
   const inspector = (
-    <InspectorPanel
+    <DetailPanel
       title={current ? `Перелік від ${formatDateShort(current.date)}` : "Перелік"}
       subtitle={current ? `${current.requestIds.length} заявок · ${formatMoney(totalOf(current))}` : undefined}
       empty={!current}
@@ -120,14 +123,13 @@ export function DailyListScreen() {
           })}
         </ul>
       ) : null}
-    </InspectorPanel>
+    </DetailPanel>
   );
 
   return (
     <>
       <ScreenFrame
         title={final ? "Затвердження переліку" : "Денний перелік"}
-        breadcrumbs={[{ label: levelConfig?.name ?? "Рівень" }, { label: unitName(user?.unitId ?? "") }]}
         meta={queue.data ? `${waiting.length} чекає` : undefined}
         surfaceLabel="Денні переліки на погодження"
         primaryAction={
@@ -146,7 +148,25 @@ export function DailyListScreen() {
         inspector={inspector}
         inspectorLabel="Склад переліку"
         inspectorOpen={current !== undefined}
-        onInspectorOpenChange={() => undefined}
+        inspectorPlacement="aside"
+        footer={
+          <section className="lists" aria-labelledby="done-title">
+            <h2 id="done-title" className="lists__title">
+              Погоджені переліки
+            </h2>
+            {done.length === 0 ? (
+              <DataState kind="empty" size="compact" title="Погоджених переліків ще немає" />
+            ) : (
+              <ul className="done-lists">
+                {done.map((l) => (
+                  <li key={l.id} className="done-lists__item">
+                    <Badge tone="success">Погоджено</Badge> {formatDateShort(l.date)} · СЕДО № {l.sedoNumber} · заявок {l.requestIds.length}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        }
         {...(current ? { inspectorKey: current.id } : {})}
       >
         <p className="screen__hint">
@@ -156,7 +176,7 @@ export function DailyListScreen() {
         </p>
         <DataTable
           label="Переліки, що чекають погодження"
-          columns={columns}
+          columns={visibleColumns(columns, narrow, ["by", "status"])}
           rows={waiting}
           getRowId={(l) => l.id}
           rowHeaderKey="date"
@@ -168,22 +188,6 @@ export function DailyListScreen() {
           {...(state === "empty" ? { stateDescription: "Перелік з'явиться, коли уповноважена особа сформує його з обраних заявок." } : {})}
         />
 
-        <section className="lists" aria-labelledby="done-title">
-          <h2 id="done-title" className="lists__title">
-            Погоджені переліки
-          </h2>
-          {done.length === 0 ? (
-            <DataState kind="empty" size="compact" title="Погоджених переліків ще немає" />
-          ) : (
-            <ul className="done-lists">
-              {done.map((l) => (
-                <li key={l.id} className="done-lists__item">
-                  <Badge tone="success">Погоджено</Badge> {formatDateShort(l.date)} · СЕДО № {l.sedoNumber} · заявок {l.requestIds.length}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
       </ScreenFrame>
 
       <SedoDialog

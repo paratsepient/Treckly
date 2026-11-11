@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Checkbox, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
-import { Dialog, InspectorPanel, useFeedback } from "@index/ui-patterns";
+import { Dialog, useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { daysAtLevel } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
+import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { ReturnDialog } from "../components/ReturnDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
@@ -25,6 +27,7 @@ const errorText = (error: unknown): string => (error instanceof ApiClientError ?
 export function LevelQueueScreen() {
   const feedback = useFeedback();
   const session = useApiQuery("session");
+  const narrow = useMedia(NARROW);
   const reference = useApiQuery("reference");
   const positions = useApiQuery("positions");
   const user = session.data?.user;
@@ -160,7 +163,6 @@ export function LevelQueueScreen() {
     <>
       <ScreenFrame
         title={`Черга рівня ${level}`}
-        breadcrumbs={[{ label: levelConfig?.name ?? "Рівень" }, { label: unitName(unitId) }]}
         meta={queue.data ? `${rows.length} у черзі` : undefined}
         surfaceLabel="Черга рівня"
         primaryAction={
@@ -169,7 +171,7 @@ export function LevelQueueScreen() {
           </Button>
         }
         inspector={
-          <InspectorPanel
+          <DetailPanel
             title={inspected ? requestLabel(inspected) : "Заявка"}
             subtitle={request ? `Версія ${request.version}` : undefined}
             empty={!inspected}
@@ -182,7 +184,7 @@ export function LevelQueueScreen() {
           >
             {inspected && detail.isPending ? <DataState kind="loading" size="compact" /> : null}
             {inspected && detail.isError ? <DataState kind="error" size="compact" title="Не вдалося завантажити заявку" /> : null}
-          </InspectorPanel>
+          </DetailPanel>
         }
         inspectorLabel="Картка заявки"
         inspectorOpen={inspected !== undefined}
@@ -205,7 +207,7 @@ export function LevelQueueScreen() {
         </div>
         <DataTable
           label="Заявки в черзі рівня"
-          columns={columns}
+          columns={visibleColumns(columns, narrow || inspected !== undefined, narrow ? ["unit", "lines", "days"] : ["lines"])}
           rows={rows}
           getRowId={(r) => r.id}
           rowHeaderKey="id"

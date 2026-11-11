@@ -1,7 +1,9 @@
 // Точка входу: спершу запускається бекенд у браузері (Hono + PGlite), потім — застосунок.
 // Стилі підключаються через публічні exports пакетів, як у будь-якого споживача.
 import "@index/ui-patterns/styles.css";
+import "./shell.css";
 import "./app.css";
+import "./content.css";
 import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Button, DataState } from "@index/ui";

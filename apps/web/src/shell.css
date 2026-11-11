@@ -1,0 +1,468 @@
+/*
+ * Оболонка застосунку: лише семантичні токени набору (жодних колірних літералів).
+ * Навігація з підписами ліворуч, смуга демо вгорі, сторінка в сітці, бічна картка —
+ * окрема колонка. Документ прокручується звичайно.
+ * Межі: 1024 px — навігація закріплена; 1280 px — картка колонкою; до 720 px — телефон.
+ */
+
+html {
+  background: var(--ix-background);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body);
+  scrollbar-color: var(--ix-scrollbar-thumb) var(--ix-scrollbar-track);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+::selection {
+  background: var(--ix-selection-background);
+  color: var(--ix-selection-foreground);
+}
+
+.boot {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: var(--ix-space-6);
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--ix-space-2);
+  left: var(--ix-space-2);
+  z-index: 1100;
+  padding: var(--ix-space-2) var(--ix-space-3);
+  border-radius: var(--ix-radius-control);
+  background: var(--ix-surface-overlay);
+  box-shadow: var(--ix-shadow-floating);
+  color: var(--ix-foreground);
+  font: var(--ix-font-body-strong);
+  transform: translateY(calc(-100% - var(--ix-space-4)));
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ── Оболонка ──────────────────────────────────────────────────────────────── */
+
+.app {
+  --sidebar-width: 16rem;
+  --topbar-height: 3.5rem;
+  --detail-width: 25rem;
+  --page-gutter: clamp(var(--ix-space-4), 3vw, var(--ix-space-8));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100dvh;
+}
+
+@media (min-width: 1024px) {
+  .app {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+}
+
+.app__sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  border-inline-end: 1px solid var(--ix-border);
+  background: var(--ix-surface);
+}
+
+.app__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-5);
+  height: 100%;
+  min-height: 0;
+  padding: var(--ix-space-4) var(--ix-space-3);
+  box-sizing: border-box;
+  background: var(--ix-surface);
+}
+
+.sidebar__brand {
+  display: flex;
+  gap: var(--ix-space-3);
+  align-items: center;
+  padding: var(--ix-space-1) var(--ix-space-2);
+  border-radius: var(--ix-radius-control);
+  color: var(--ix-foreground);
+  font: var(--ix-font-heading-sm);
+  text-decoration: none;
+}
+
+.sidebar__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--ix-space-5);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sidebar__group-label {
+  margin: 0 0 var(--ix-space-1);
+  padding-inline: var(--ix-space-2);
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-overline);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar__link {
+  display: flex;
+  gap: var(--ix-space-3);
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0 var(--ix-space-2);
+  border-radius: var(--ix-radius-control);
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-body-strong);
+  text-decoration: none;
+  transition:
+    background-color var(--ix-duration-fast) var(--ix-easing-standard),
+    color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.sidebar__link:hover {
+  background: var(--ix-surface-hover);
+  color: var(--ix-foreground);
+}
+
+.sidebar__link[aria-current="page"] {
+  background: var(--ix-selection-background);
+  color: var(--ix-selection-foreground);
+}
+
+.sidebar__link:focus-visible,
+.sidebar__brand:focus-visible,
+.inbox a:focus-visible {
+  outline: var(--ix-focus-width) solid var(--ix-focus-ring);
+  outline-offset: var(--ix-focus-offset);
+}
+
+.sidebar__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.sidebar__label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sidebar__badge {
+  flex: none;
+  min-width: 1.25rem;
+  padding: 0 var(--ix-space-1);
+  border-radius: var(--ix-radius-round);
+  background: var(--ix-action-primary);
+  color: var(--ix-action-primary-foreground);
+  font: var(--ix-font-overline);
+  line-height: 1.25rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.sidebar__user {
+  display: flex;
+  gap: var(--ix-space-3);
+  align-items: center;
+  padding: var(--ix-space-3) var(--ix-space-2) 0;
+  border-top: 1px solid var(--ix-border);
+}
+
+.sidebar__avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--ix-border-strong);
+  border-radius: var(--ix-radius-round);
+  background: var(--ix-surface-muted);
+  font: var(--ix-font-overline);
+}
+
+.sidebar__user-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sidebar__user-name {
+  overflow: hidden;
+  font: var(--ix-font-body-strong);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar__user-role {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+/* Смуга демо: позначка даних і дата (видно на всіх екранах), роль і демо-панель. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: var(--ix-space-3);
+  align-items: center;
+  min-height: var(--topbar-height);
+  padding: var(--ix-space-2) var(--page-gutter);
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--ix-border);
+  background: var(--ix-background);
+}
+
+.topbar__note {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.topbar__note strong {
+  color: var(--ix-foreground);
+  font-weight: var(--ix-font-weight-medium);
+}
+
+.topbar__date {
+  white-space: nowrap;
+}
+
+.topbar__role {
+  flex: 0 1 auto;
+  max-width: 22rem;
+  overflow: hidden;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 719px) {
+  .topbar__role {
+    display: none;
+  }
+}
+
+/* ── Сторінка ──────────────────────────────────────────────────────────────── */
+
+.page {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.page[data-detail="docked"] {
+  grid-template-columns: minmax(0, 1fr) var(--detail-width);
+}
+
+.page__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-6);
+  width: 100%;
+  max-width: 80rem;
+  min-width: 0;
+  margin-inline: auto;
+  padding: var(--ix-space-6) var(--page-gutter) var(--ix-space-12);
+  box-sizing: border-box;
+}
+
+.page__content:focus {
+  outline: none;
+}
+
+.page__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-3) var(--ix-space-4);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.page__heading {
+  display: flex;
+  flex: 1 1 16rem;
+  flex-direction: column;
+  gap: var(--ix-space-1);
+  min-width: 0;
+}
+
+.page__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2) var(--ix-space-3);
+  align-items: center;
+}
+
+.page__title {
+  margin: 0;
+  font: var(--ix-font-heading-lg);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-1) var(--ix-space-3);
+  align-items: center;
+  color: var(--ix-foreground-secondary);
+}
+
+.page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
+  align-items: center;
+}
+
+/* Картка колонкою: липне під смугою демо й прокручується сама, тож вміст вона не накриває. */
+.page__detail {
+  position: sticky;
+  top: var(--topbar-height);
+  height: calc(100dvh - var(--topbar-height));
+  border-inline-start: 1px solid var(--ix-border);
+  background: var(--ix-surface);
+}
+
+.page__stacked {
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+}
+
+.page__drawer {
+  height: 100%;
+}
+
+.detail__tabs-root,
+.detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.detail__head {
+  display: flex;
+  gap: var(--ix-space-3);
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--ix-space-4) var(--ix-space-4) var(--ix-space-3);
+}
+
+.detail__heading {
+  min-width: 0;
+}
+
+.detail__title {
+  margin: 0;
+  font: var(--ix-font-heading-md);
+}
+
+.detail__subtitle {
+  margin: var(--ix-space-1) 0 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.detail__tabs {
+  padding: 0 var(--ix-space-4) var(--ix-space-3);
+}
+
+.detail__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--ix-space-4);
+  overflow-y: auto;
+  border-top: 1px solid var(--ix-border);
+}
+
+.detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
+  justify-content: flex-end;
+  padding: var(--ix-space-3) var(--ix-space-4);
+  border-top: 1px solid var(--ix-border);
+}
+
+.screen__hint {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--ix-foreground-secondary);
+}
+
+.return-note {
+  margin: 0;
+  max-width: 70ch;
+  padding: var(--ix-space-3) var(--ix-space-4);
+  border: 1px solid var(--ix-warning);
+  border-radius: var(--ix-radius-control);
+  background: var(--ix-warning-surface);
+}
+
+.return-note__hint {
+  color: var(--ix-foreground-secondary);
+}
+
+.demo-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+  width: min(20rem, calc(100vw - var(--ix-space-12)));
+}
+
+/* На телефоні позначка демо коротша: смуга лишається в один-два рядки. */
+.topbar__short {
+  display: none;
+}
+
+@media (max-width: 719px) {
+  .topbar__full {
+    display: none;
+  }
+
+  .topbar__short {
+    display: inline;
+  }
+}

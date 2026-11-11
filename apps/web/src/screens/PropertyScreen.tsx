@@ -3,6 +3,7 @@ import { Badge, DataTable, Tab, TabList, TabPanel, Tabs, type DataTableColumn } 
 import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { formatMoney, TAB_LABELS } from "../lib/format.ts";
 
 type Row = ApiOutput<"property">["items"][number];
@@ -23,6 +24,7 @@ export function PropertyScreen() {
   const [tab, setTab] = useState<TabKey>("planned");
   const query = useApiQuery("property");
   const session = useApiQuery("session");
+  const narrow = useMedia(NARROW);
   const reference = useApiQuery("reference");
   const items = query.data?.items ?? [];
   const unit = reference.data?.units.find((u) => u.id === session.data?.user.unitId);
@@ -31,7 +33,7 @@ export function PropertyScreen() {
   const state = query.isPending ? "loading" : query.isError ? "error" : "ready";
 
   return (
-    <ScreenFrame title="Моє майно" breadcrumbs={[{ label: unit?.name ?? "Підрозділ" }, { label: "Моє майно" }]} surfaceLabel="Майно підрозділу">
+    <ScreenFrame title="Моє майно" surfaceLabel="Майно підрозділу">
       <Tabs value={tab} onValueChange={(value) => setTab(value as TabKey)}>
         <TabList aria-label="Вкладки майна" variant="line">
           {TABS.map((t) => (
@@ -46,7 +48,7 @@ export function PropertyScreen() {
             <TabPanel key={t} value={t}>
               <DataTable
                 label={`Майно: ${TAB_LABELS[t].toLowerCase()}`}
-                columns={columns}
+                columns={visibleColumns(columns, narrow, ["code", "price"])}
                 rows={rows}
                 getRowId={(row) => row.id}
                 rowHeaderKey="name"

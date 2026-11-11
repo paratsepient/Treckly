@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Badge, Button, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
-import { Dialog, InspectorPanel, useFeedback } from "@index/ui-patterns";
+import { Dialog, useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
+import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { daysAtLevel } from "@dsp/domain";
 import { formatDateShort, formatMoney, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
@@ -34,6 +36,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
   const positions = useApiQuery("positions");
   const reference = useApiQuery("reference");
   const session = useApiQuery("session");
+  const narrow = useMedia(NARROW);
   const detail = useApiQuery("requestDetail", { params: { id: selected ?? "" } }, { enabled: selected !== undefined });
   const withdraw = useApiMutation("withdrawRequest");
 
@@ -78,7 +81,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
   };
 
   const inspector = (
-    <InspectorPanel
+    <DetailPanel
       title={selected ? requestLabel(selected) : "Заявка"}
       subtitle={request ? `Версія ${request.version} · ${statusText(request.status, request.level)}` : undefined}
       empty={!selected}
@@ -115,14 +118,13 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
     >
       {selected && detail.isPending ? <DataState kind="loading" size="compact" /> : null}
       {selected && detail.isError ? <DataState kind="error" size="compact" title="Не вдалося завантажити заявку" /> : null}
-    </InspectorPanel>
+    </DetailPanel>
   );
 
   return (
     <>
       <ScreenFrame
         title="Мої заявки"
-        breadcrumbs={[{ label: "Заявки" }, { label: "Мої заявки" }]}
         meta={mine.data ? `${rows.length} заявок` : undefined}
         surfaceLabel="Мої заявки"
         primaryAction={
@@ -140,7 +142,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
       >
         <DataTable
           label="Мої заявки"
-          columns={columns}
+          columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["where", "days", "lines", "total", "created"] : ["lines", "created"])}
           rows={rows}
           getRowId={(r) => r.id}
           variant="well"

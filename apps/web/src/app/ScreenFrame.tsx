@@ -1,66 +1,91 @@
 import type { ReactNode } from "react";
-import { WorkspaceHeader, WorkspaceLayout, WorkspaceSurface, type Breadcrumb, type SaveStatusProps } from "@index/ui-patterns";
-import { useApiQuery } from "../api/hooks.tsx";
-import { formatDate } from "../lib/format.ts";
-import { DemoPanel } from "./DemoPanel.tsx";
+import { Badge } from "@index/ui";
+import { Drawer, SaveStatus, type SaveStatusProps } from "@index/ui-patterns";
+import { useMedia, WIDE } from "../lib/useMedia.ts";
+import { DetailCloseContext } from "./DetailPanel.tsx";
 
 export interface ScreenFrameProps {
   readonly title: string;
-  readonly breadcrumbs?: readonly Breadcrumb[];
+  /** Контекст під назвою: кількість записів, сума. */
   readonly meta?: ReactNode;
+  /** Стан документа біля назви («Чернетка · зберігається автоматично»). */
   readonly documentState?: string;
   readonly saveStatus?: SaveStatusProps;
+  /** Головна дія екрана: завжди остання праворуч у шапці сторінки. */
   readonly primaryAction?: ReactNode;
-  /** Другорядні дії екрана (WorkspaceToolbar); демо-панель додається після них. */
+  /** Другорядні дії екрана. */
   readonly actions?: ReactNode;
+  /** Бічна картка (DetailPanel). */
   readonly inspector?: ReactNode;
   readonly inspectorOpen?: boolean;
+  /** Є — картку можна закрити (кнопка в картці, Escape у висувній панелі). */
   readonly onInspectorOpenChange?: (open: boolean) => void;
   readonly inspectorKey?: string;
   readonly inspectorLabel?: string;
+  /**
+   * detail — картка вибраного запису: на вузькому екрані висувається поверх сторінки.
+   * aside — постійний супровід вмісту (перевірки, склад переліку): на вузькому екрані стає блоком під вмістом.
+   */
+  readonly inspectorPlacement?: "detail" | "aside";
   readonly surfaceLabel: string;
+  /** Другорядний вміст після супровідної картки: на вузькому екрані картка стоїть одразу під головним вмістом. */
+  readonly footer?: ReactNode;
   readonly children: ReactNode;
 }
 
 /**
- * Каркас екрана: заголовок, демо-панель, банер «Демонстраційні дані» з симульованою датою
- * (видно на всіх екранах) і робоча поверхня, що прокручується.
+ * Каркас сторінки: шапка (назва, стан, дії) і вміст у сітці. Бічна картка на широкому
+ * екрані — окрема колонка сітки, тож нічого не накладається на вміст.
  */
 export function ScreenFrame(props: ScreenFrameProps) {
-  const session = useApiQuery("session");
+  const wide = useMedia(WIDE);
+  const placement = props.inspectorPlacement ?? "detail";
+  const open = props.inspector !== undefined && props.inspectorOpen !== false;
+  const close = props.onInspectorOpenChange ? () => props.onInspectorOpenChange?.(false) : null;
+  const panel = <DetailCloseContext.Provider value={close}>{props.inspector}</DetailCloseContext.Provider>;
+  const docked = open && wide;
+  const stacked = open && !wide && placement === "aside";
+  const drawer = props.inspector !== undefined && !wide && placement === "detail";
+
   return (
-    <WorkspaceLayout
-      header={
-        <WorkspaceHeader
-          title={props.title}
-          {...(props.breadcrumbs ? { breadcrumbs: props.breadcrumbs } : {})}
-          {...(props.meta !== undefined ? { meta: props.meta } : {})}
-          {...(props.documentState ? { documentState: props.documentState } : {})}
-          {...(props.saveStatus ? { saveStatus: props.saveStatus } : {})}
-          {...(props.primaryAction ? { primaryAction: props.primaryAction } : {})}
-          actions={
-            <>
+    <div className="page" data-detail={docked ? "docked" : undefined}>
+      <main id="content" className="page__content" tabIndex={-1} aria-label={props.surfaceLabel}>
+        <header className="page__head">
+          <div className="page__heading">
+            <div className="page__title-row">
+              <h1 className="page__title">{props.title}</h1>
+              {props.documentState ? <Badge>{props.documentState}</Badge> : null}
+            </div>
+            {props.meta !== undefined || props.saveStatus ? (
+              <div className="page__meta">
+                {props.meta !== undefined ? <span>{props.meta}</span> : null}
+                {props.saveStatus ? <SaveStatus {...props.saveStatus} /> : null}
+              </div>
+            ) : null}
+          </div>
+          {props.actions || props.primaryAction ? (
+            <div className="page__actions">
               {props.actions}
-              <DemoPanel />
-            </>
-          }
-        />
-      }
-      {...(props.inspector ? { inspector: props.inspector, inspectorLabel: props.inspectorLabel ?? "Картка" } : {})}
-      {...(props.inspectorOpen !== undefined ? { inspectorOpen: props.inspectorOpen } : {})}
-      {...(props.onInspectorOpenChange ? { onInspectorOpenChange: props.onInspectorOpenChange } : {})}
-      {...(props.inspectorKey !== undefined ? { inspectorKey: props.inspectorKey } : {})}
-    >
-      {/* Префікс робить назву унікальною: таблиці й секції всередині мають власні назви (landmark-unique). */}
-      <WorkspaceSurface variant="dashboard" label={`Робоча область: ${props.surfaceLabel}`}>
-        <div className="screen" data-inspector={props.inspector && props.inspectorOpen !== false ? "open" : undefined}>
-          <p className="demo-banner" role="note">
-            <strong>Демонстраційні дані, СЕДО імітується.</strong>
-            {session.data ? ` Сьогодні: ${formatDate(session.data.today)}` : ""}
-          </p>
-          {props.children}
-        </div>
-      </WorkspaceSurface>
-    </WorkspaceLayout>
+              {props.primaryAction}
+            </div>
+          ) : null}
+        </header>
+        {props.children}
+        {stacked ? <div className="page__stacked">{panel}</div> : null}
+        {props.footer}
+      </main>
+      {docked ? (
+        <aside className="page__detail" key={props.inspectorKey} aria-label={props.inspectorLabel ?? "Картка"}>
+          {panel}
+        </aside>
+      ) : null}
+      {drawer ? (
+        <Drawer side="end" label={props.inspectorLabel ?? "Картка"} open={open} onClose={() => props.onInspectorOpenChange?.(false)}>
+          <div className="page__drawer" key={props.inspectorKey}>
+            {panel}
+          </div>
+        </Drawer>
+      ) : null}
+    </div>
   );
 }

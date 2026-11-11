@@ -114,7 +114,7 @@ export function CheckPanel({ report, budget, rowOf, pending = false, incompleteC
               <tr>
                 <th scope="col">КЕКВ</th>
                 <th scope="col" className="check__num">
-                  Залишок, грн
+                  Залишок
                 </th>
                 <th scope="col" className="check__num">
                   Ця заявка

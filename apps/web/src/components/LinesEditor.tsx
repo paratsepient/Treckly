@@ -43,7 +43,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
             <th scope="col" className="lines__type">
               Тип рядка
             </th>
-            <th scope="col">Позиція Попереднього переліку</th>
+            <th scope="col">Позиція переліку</th>
             <th scope="col" className="lines__qty">
               Кількість
             </th>
@@ -75,7 +75,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                 <th scope="row" className="lines__num">
                   {row}
                 </th>
-                <td>
+                <td className="lines__cell-type">
                   <SegmentedControl
                     label={`Тип рядка ${row}`}
                     hideLabel
@@ -88,7 +88,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                     ]}
                   />
                 </td>
-                <td>
+                <td className="lines__cell-position">
                   <Select
                     label={`Позиція, рядок ${row}`}
                     hideLabel
@@ -115,8 +115,14 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                     onChange={(event) => dispatch({ type: "update", id: line.id, patch: { qty: event.target.value }, group: `qty:${line.id}` })}
                   />
                 </td>
-                <td>{position ? <Badge>{position.kekv}</Badge> : <span className="lines__muted">—</span>}</td>
-                <td className="lines__money">{sum !== null ? formatMoney(sum) : <span className="lines__muted">—</span>}</td>
+                <td className="lines__cell-kekv">
+                  <span className="lines__cell-label" aria-hidden="true">КЕКВ</span>
+                  {position ? <Badge>{position.kekv}</Badge> : <span className="lines__muted">—</span>}
+                </td>
+                <td className="lines__money">
+                  <span className="lines__cell-label" aria-hidden="true">Сума</span>
+                  {sum !== null ? formatMoney(sum) : <span className="lines__muted">—</span>}
+                </td>
                 <td className="lines__actions">
                   <IconButton
                     label={`Видалити рядок ${row}`}

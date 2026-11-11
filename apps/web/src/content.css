@@ -1,0 +1,170 @@
+/* Розкладка вмісту екранів: сітки, панелі, адаптивність. Лише токени набору. */
+
+/* Розділ сторінки: заголовок і вміст із власним ритмом. */
+.lists,
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+}
+
+.lists__title {
+  margin: 0;
+  font: var(--ix-font-heading-md);
+}
+
+/* Показники: рівна сітка, 4 → 2 → 1 колонки. */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--ix-space-3);
+}
+
+.kpi-row > * {
+  padding: var(--ix-space-4);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+}
+
+/* Діаграми: однакові панелі, що переносяться в один стовпець на вузькому екрані. */
+.chart-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: var(--ix-space-3);
+}
+
+.chart-row > * {
+  min-width: 0;
+  padding: var(--ix-space-4);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 16rem));
+  gap: var(--ix-space-3);
+}
+
+.queue__select-all {
+  display: flex;
+}
+
+/* Перелік як картка: кнопка дії не розтягується на всю ширину. */
+.list-card > button {
+  align-self: flex-start;
+}
+
+/* ── Таблиця рядків заявки: на вузькому місці рядок стає карткою ───────────── */
+
+.lines {
+  container-type: inline-size;
+}
+
+.lines__cell-label {
+  display: none;
+}
+
+@container (max-width: 60rem) {
+  .lines__table,
+  .lines__table tbody {
+    display: block;
+  }
+
+  .lines__table thead {
+    display: none;
+  }
+
+  .lines__table caption {
+    display: block;
+  }
+
+  .lines__row {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "num type type type"
+      "position position position position"
+      "qty kekv money actions";
+    gap: var(--ix-space-2) var(--ix-space-3);
+    align-items: center;
+    padding: var(--ix-space-3) 0;
+    border-top: 1px solid var(--ix-border);
+  }
+
+  .lines__table .lines__row > * {
+    width: auto;
+    padding: 0;
+    border: 0;
+  }
+
+  .lines__row > .lines__num {
+    grid-area: num;
+  }
+
+  .lines__row > .lines__cell-type {
+    grid-area: type;
+  }
+
+  .lines__row > .lines__actions {
+    grid-area: actions;
+  }
+
+  .lines__row > .lines__cell-position {
+    grid-area: position;
+  }
+
+  .lines__row > .lines__qty {
+    grid-area: qty;
+    width: 6.5rem;
+  }
+
+  .lines__row > .lines__cell-kekv {
+    grid-area: kekv;
+  }
+
+  .lines__row > .lines__money {
+    grid-area: money;
+    text-align: end;
+  }
+
+  .lines__cell-label {
+    display: block;
+    color: var(--ix-foreground-secondary);
+    font: var(--ix-font-caption);
+  }
+
+  .lines__detail-row,
+  .lines__detail-row > td {
+    display: block;
+    padding: 0 0 var(--ix-space-3);
+    border: 0;
+  }
+}
+
+/* ── Телефон ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 719px) {
+  /* Дії сторінки займають рядок і діляться порівну: великі зручні кнопки. */
+  .page__actions {
+    flex: 1 1 100%;
+  }
+
+  .page__actions > button:last-child {
+    flex: 1 1 auto;
+  }
+
+  .extract-lines__item {
+    align-items: flex-start;
+  }
+}
+
+/* Довга назва позиції у виборі обрізається трьома крапками, а не переноситься й не обрізається по висоті. */
+.lines__table select,
+.filters select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -2,6 +2,7 @@ import { DataTable, type DataTableColumn } from "@index/ui";
 import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { formatDateShort, requestLabel } from "../lib/format.ts";
 import { journalText } from "../lib/journal-text.ts";
 
@@ -11,6 +12,7 @@ type Event = ApiOutput<"journal">["journal"][number];
 export function JournalScreen() {
   const query = useApiQuery("journal");
   const session = useApiQuery("session");
+  const narrow = useMedia(NARROW);
   const who = (id: string) => (id === "system" ? "Система" : (session.data?.users.find((u) => u.id === id)?.name ?? id));
   const rows = query.data?.journal ?? [];
 
@@ -27,7 +29,7 @@ export function JournalScreen() {
     <ScreenFrame title="Журнал дій" meta={query.data ? `${rows.length} записів` : undefined} surfaceLabel="Журнал дій">
       <DataTable
         label="Журнал дій"
-        columns={columns}
+        columns={visibleColumns(columns, narrow, ["actor", "key"])}
         rows={rows}
         getRowId={(e) => `${e.idempotencyKey}:${e.type}:${e.requestId ?? ""}:${e.at}`}
         rowHeaderKey="type"

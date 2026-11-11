@@ -1,5 +1,5 @@
+import type { DetailTab } from "../app/DetailPanel.tsx";
 import { Badge, DataState } from "@index/ui";
-import type { InspectorTab } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { LINE_STATUS_LABELS, LINE_STATUS_TONES } from "../lib/format.ts";
 import { journalText } from "../lib/journal-text.ts";
@@ -15,7 +15,7 @@ export interface RequestTabsInput {
 }
 
 /** Вкладки картки заявки: трек, рядки зі статусами й журнал. Спільні для всіх екранів, де заявку відкривають. */
-export function requestTabs({ detail, positions, levels }: RequestTabsInput): InspectorTab[] {
+export function requestTabs({ detail, positions, levels }: RequestTabsInput): DetailTab[] {
   const { request } = detail;
   return [
     {
