@@ -1,6 +1,6 @@
 import { evaluateBudget, inWorkImpact, requestImpact, type BudgetImpact, type BudgetIssue } from "./budget.ts";
 import { DomainError, type DomainErrorCode } from "./errors.ts";
-import type { Budget, Positions, Request, RequestLine } from "./types.ts";
+import { isApprovedStatus, type Budget, type Positions, type Request, type RequestLine } from "./types.ts";
 
 export interface CheckIssue {
   readonly code: DomainErrorCode;
@@ -27,6 +27,8 @@ export interface CheckInput {
    * Автор може замовити лише те, що заплановано на його частину, і не більше запланованого.
    */
   readonly unitPlan: Readonly<Record<string, number>>;
+  /** В/ч автора: план рахується разом з іншими її заявками, а зайняті позиції не можна взяти вдруге. */
+  readonly unitId: string;
   readonly budget: Budget;
   /** Усі заявки напрямку: з них береться сума «у роботі». */
   readonly requests: readonly Request[];
@@ -48,6 +50,23 @@ export function checkRequest(input: CheckInput): CheckReport {
   const warnings: CheckIssue[] = [];
   const qtyByPosition = new Map<string, number>();
 
+  // Інші заявки цієї в/ч: що вже замовлено (з планом в/ч рахується все, крім чернеток, відкликаних і незакуплених),
+  // які позиції зайняті незавершеними заявками і де закупівля вже почалась.
+  const others = input.requests.filter((r) => r.id !== input.requestId && r.route[0] === input.unitId);
+  const ordered = new Map<string, number>();
+  const busy = new Map<string, string>();
+  const started = new Map<string, string>();
+  for (const r of others) {
+    const counts = !["draft", "withdrawn", "not_procured"].includes(r.status);
+    const unfinished = r.status === "at_level" || r.status === "in_list" || r.status === "returned";
+    const purchasing = isApprovedStatus(r.status) && r.status !== "issued";
+    for (const line of r.lines) {
+      if (counts) ordered.set(line.positionId, (ordered.get(line.positionId) ?? 0) + line.qty);
+      if (unfinished && !busy.has(line.positionId)) busy.set(line.positionId, r.id);
+      if (purchasing && !started.has(line.positionId)) started.set(line.positionId, r.id);
+    }
+  }
+
   for (const line of input.lines) {
     const position = input.positions[line.positionId];
     if (!position) {
@@ -64,17 +83,39 @@ export function checkRequest(input: CheckInput): CheckReport {
       });
       continue;
     }
+    const busyIn = busy.get(line.positionId);
+    if (busyIn) {
+      errors.push({
+        code: "POSITION_BUSY",
+        lineId: line.id,
+        message: "Позиція вже в іншій незавершеній заявці вашої в/ч.",
+        details: { positionId: line.positionId, requestId: busyIn },
+      });
+      continue;
+    }
+    const startedIn = started.get(line.positionId);
+    if (startedIn) {
+      // Закупівля вже почалась: попередження, але заміну подати можна (розділ 10 концепції).
+      warnings.push({
+        code: "POSITION_BUSY",
+        lineId: line.id,
+        message: "Закупівля цієї позиції за іншою заявкою вже почалась.",
+        details: { positionId: line.positionId, requestId: startedIn, reason: "PURCHASE_STARTED" },
+      });
+    }
     if (!Number.isInteger(line.qty) || line.qty <= 0) {
       errors.push({ code: "QTY_EXCEEDED", lineId: line.id, message: "Кількість — додатне ціле число.", details: { qty: line.qty, reason: "QTY_INVALID" } });
     } else {
       const total = (qtyByPosition.get(line.positionId) ?? 0) + line.qty;
       qtyByPosition.set(line.positionId, total);
-      if (total > planned) {
+      const already = ordered.get(line.positionId) ?? 0;
+      const left = Math.max(0, planned - already);
+      if (total > left) {
         errors.push({
           code: "QTY_EXCEEDED",
           lineId: line.id,
-          message: "Кількість перевищує заплановану для вашої в/ч.",
-          details: { positionId: line.positionId, requested: total, available: planned, reason: "UNIT_PLAN_EXCEEDED" },
+          message: "Кількість перевищує те, що лишилось у плані вашої в/ч.",
+          details: { positionId: line.positionId, requested: total, available: left, planned, alreadyOrdered: already, reason: "UNIT_PLAN_EXCEEDED" },
         });
       } else if (total > position.availableQty) {
         errors.push({

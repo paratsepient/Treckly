@@ -11,7 +11,9 @@ export type DomainErrorCode =
   | "FORBIDDEN_ROLE"
   | "VERSION_CONFLICT"
   | "SEDO_NUMBER_INVALID"
-  | "NOTE_REQUIRED";
+  | "NOTE_REQUIRED"
+  /** Позиція вже в іншій незавершеній заявці в/ч: її не можна обрати вдруге. */
+  | "POSITION_BUSY";
 
 export class DomainError extends Error {
   readonly code: DomainErrorCode;

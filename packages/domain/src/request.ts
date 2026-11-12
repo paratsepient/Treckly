@@ -125,6 +125,7 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
     lines: request.lines,
     positions: input.positions,
     unitPlan: input.unitPlan,
+    unitId: request.route[0],
     budget: input.budget,
     requests: input.requests,
     requestId: request.id,

@@ -166,7 +166,7 @@ const unitPlanA: Record<string, number> = Object.fromEntries(
 );
 
 function checkNew(lines: RequestLine[], positions: Awaited<ReturnType<typeof loadPositions>>) {
-  return checkRequest({ lines, positions, unitPlan: unitPlanA, budget: seed.budget, requests: [...final.requests.values()] });
+  return checkRequest({ lines, positions, unitPlan: unitPlanA, unitId: "unit-a", budget: seed.budget, requests: [...final.requests.values()] });
 }
 
 test("демо-перевірки: велика заявка на 3110 блокується бюджетом, середня дає попередження", async () => {

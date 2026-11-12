@@ -182,12 +182,16 @@ class Simulation {
   /** План в/ч: підрозділ → позиція → заплановано. Росте разом зі сценарієм: те, що просять, має бути заплановано. */
   readonly plan = new Map<string, Map<string, number>>();
 
-  /** Доводить план в/ч до потреб заявки (із запасом) і повертає його для автоперевірок. */
+  /**
+   * Доводить план в/ч до потреб (із запасом) і повертає його для автоперевірок. План рахується разом з
+   * іншими заявками в/ч, тож потреба — це все, що в/ч уже замовила, плюс ця заявка.
+   */
   private planFor(unit: string, request: Request): Record<string, number> {
     const own = this.plan.get(unit) ?? new Map<string, number>();
     this.plan.set(unit, own);
     const need = new Map<string, number>();
-    for (const line of request.lines) need.set(line.positionId, (need.get(line.positionId) ?? 0) + line.qty);
+    const counted = [...this.requests.values()].filter((r) => r.route[0] === unit && r.id !== request.id && !["draft", "withdrawn", "not_procured"].includes(r.status));
+    for (const line of [...counted.flatMap((r) => r.lines), ...request.lines]) need.set(line.positionId, (need.get(line.positionId) ?? 0) + line.qty);
     for (const [positionKey, qty] of need) own.set(positionKey, Math.max(own.get(positionKey) ?? 0, qty + Math.ceil(qty / 5) + 1));
     return Object.fromEntries(own);
   }
@@ -293,7 +297,7 @@ export function generateSeed(): SeedData {
   sim.day(0);
   const r1 = sim.newSubmitted("unit-a", [by(1, 10), by(9, 20), by(33, 2), rep(20, 3, "Бінокль польовий 8×32")]);
   const r2 = sim.newSubmitted("unit-b", [by(22, 40), by(23, 50), rep(6, 1, "Антенна система мобільна")]);
-  const r5 = sim.newSubmitted("unit-b", [by(30, 1), by(32, 1)]);
+  const r5 = sim.newSubmitted("unit-b", [by(30, 1), by(33, 1)]); // станція керування — лише в r9: одна позиція не може бути у двох незавершених заявках
   const r9 = sim.newSubmitted("unit-b", [by(2, 20), by(11, 5), by(32, 1)]); // станція керування — як у примітці повернення
   const r10 = sim.newSubmitted("unit-c", [by(15, 10), by(16, 6)]);
   sim.pass(1, "unit-a", [r1]);

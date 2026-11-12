@@ -104,7 +104,7 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
     const unitId = c.get("user").unitId ?? "";
     const direction = directionOf(await loadUnits(db), unitId);
     const state = await checkState(db, direction, unitId);
-    return c.json({ report: checkRequest({ lines, ...state, ...(requestId ? { requestId } : {}) }) });
+    return c.json({ report: checkRequest({ lines, ...state, unitId, ...(requestId ? { requestId } : {}) }) });
   });
 
   app.post("/api/requests/:id/submit", async (c) => {

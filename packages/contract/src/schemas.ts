@@ -28,6 +28,7 @@ export const ErrorCode = z.enum([
   "VERSION_CONFLICT",
   "SEDO_NUMBER_INVALID",
   "NOTE_REQUIRED",
+  "POSITION_BUSY",
   // Службові коди транспорту (не з домену):
   "VALIDATION",
   "NOT_FOUND",

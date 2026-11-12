@@ -39,8 +39,14 @@ function describe(issue: Issue, rowOf: ReadonlyMap<string, number>, warning: boo
     case "QTY_EXCEEDED":
       if (d["reason"] === "QTY_INVALID") return `${where}кількість має бути цілим числом більше нуля.`;
       return d["reason"] === "UNIT_PLAN_EXCEEDED"
-        ? `${where}запитано ${String(d["requested"])}, а в плані вашої в/ч ${String(d["available"])}.`
+        ? Number(d["alreadyOrdered"] ?? 0) > 0
+          ? `${where}запитано ${String(d["requested"])}, а в плані вашої в/ч лишилось ${String(d["available"])} (уже замовлено ${String(d["alreadyOrdered"])} з ${String(d["planned"])}).`
+          : `${where}запитано ${String(d["requested"])}, а в плані вашої в/ч ${String(d["available"])}.`
         : `${where}запитано ${String(d["requested"])}, а доступно ${String(d["available"])}.`;
+    case "POSITION_BUSY":
+      return d["reason"] === "PURCHASE_STARTED"
+        ? `${where}закупівля цієї позиції за іншою заявкою вже почалась; заміну подати можна.`
+        : `${where}позиція вже в іншій незавершеній заявці вашої в/ч — її не можна обрати вдруге.`;
     case "KEKV_MISMATCH":
       return `${where}КЕКВ рядка (${String(d["lineKekv"])}) не збігається з КЕКВ позиції (${String(d["positionKekv"])}).`;
     case "BUDGET_EXCEEDED": {

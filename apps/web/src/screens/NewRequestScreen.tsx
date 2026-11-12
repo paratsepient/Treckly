@@ -58,6 +58,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const reference = useApiQuery("reference");
   const positionsQuery = useApiQuery("positions");
   const propertyQuery = useApiQuery("property");
+  const mineQuery = useApiQuery("myRequests");
   const budgetQuery = useApiQuery("budget");
   const detail = useApiQuery("requestDetail", { params: { id: requestId ?? "" } }, { enabled: requestId !== undefined });
 
@@ -87,12 +88,27 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
     return map;
   }, [propertyQuery.data]);
   const allPositions = useMemo<readonly CatalogPosition[]>(() => positionsQuery.data?.positions ?? [], [positionsQuery.data]);
+  // Інші заявки в/ч: скільки вже замовлено (план рахується разом із ними) і які позиції зайняті незавершеними.
+  const { ordered, busy } = useMemo(() => {
+    const orderedMap = new Map<string, number>();
+    const busySet = new Set<string>();
+    for (const r of mineQuery.data?.requests ?? []) {
+      if (r.id === requestId) continue;
+      const counts = r.status !== "draft" && r.status !== "withdrawn" && r.status !== "not_procured";
+      const unfinished = r.status === "at_level" || r.status === "in_list" || r.status === "returned";
+      for (const line of r.lines) {
+        if (counts) orderedMap.set(line.positionId, (orderedMap.get(line.positionId) ?? 0) + line.qty);
+        if (unfinished) busySet.add(line.positionId);
+      }
+    }
+    return { ordered: orderedMap, busy: busySet };
+  }, [mineQuery.data, requestId]);
   const positions = useMemo<readonly CatalogPosition[]>(() => {
     const inEditor = new Set(history.present.map((l) => l.positionId));
     return allPositions
-      .filter((p) => plannedByCode.has(p.code) || inEditor.has(p.id))
-      .map((p) => ({ ...p, availableQty: Math.min(p.availableQty, plannedByCode.get(p.code) ?? p.availableQty) }));
-  }, [allPositions, plannedByCode, history.present]);
+      .filter((p) => inEditor.has(p.id) || (plannedByCode.has(p.code) && !busy.has(p.id)))
+      .map((p) => ({ ...p, availableQty: Math.max(0, Math.min(p.availableQty, (plannedByCode.get(p.code) ?? p.availableQty) - (ordered.get(p.id) ?? 0))) }));
+  }, [allPositions, plannedByCode, history.present, ordered, busy]);
   const positionMap = useMemo(() => new Map(allPositions.map((p) => [p.id, p])), [allPositions]);
   const itemMap = useMemo(() => new Map(items.map((i) => [i.id, i])), [items]);
   const converted = useMemo(() => toRequestLines(history.present, positionMap, itemMap), [history.present, positionMap, itemMap]);
@@ -227,7 +243,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const number = requestId ? requestLabel(requestId) : undefined;
   const title = name.trim() !== "" ? name.trim() : number ? `Заявка ${number}` : "Нова заявка";
   const documentState = isResubmit ? `Повернуто · версія ${server.current.version}` : "Чернетка · зберігається автоматично";
-  const dataReady = reference.data !== undefined && positionsQuery.data !== undefined && propertyQuery.data !== undefined;
+  const dataReady = reference.data !== undefined && positionsQuery.data !== undefined && propertyQuery.data !== undefined && mineQuery.data !== undefined;
   // Рапорт показує те, що зараз на екрані: збережена заявка дає маршрут і номер, редактор — рядки й текст.
   const saved = detail.data?.request;
   const raportRequest = saved && saved.id === server.current.id ? { ...saved, lines: converted.lines, justification } : undefined;

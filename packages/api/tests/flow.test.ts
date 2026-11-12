@@ -99,10 +99,17 @@ test("план в/ч: позиція напрямку, якої немає в п
     const other = await h.call("checkRequest", "author-unit-b", { body: { lines: [lineOf(onlyA.id, onlyA.kekv)] } });
     assert.equal(other.report.errors[0]?.details["reason"], "NOT_IN_UNIT_PLAN");
   }
-  const planned = items.find((i) => i.tab === "planned")!;
+  // Позиція плану, якої немає в жодній незавершеній заявці в/ч (інакше спрацює POSITION_BUSY).
+  const planned = items.find((i) => i.tab === "planned" && i.item.name === "Павербанк 20 000 мА·год")!;
   const position = positions.find((p) => p.name === planned.item.name)!;
   const over = await h.call("checkRequest", AUTHOR_A, { body: { lines: [lineOf(position.id, position.kekv, planned.qty + 1)] } });
   assert.ok(over.report.errors.some((e) => e.code === "QTY_EXCEEDED"));
+
+  // Позиція з іншої незавершеної заявки в/ч — POSITION_BUSY.
+  const mine = (await h.call("myRequests", AUTHOR_A)).requests.find((r) => r.status === "at_level" || r.status === "in_list")!;
+  const busyLine = mine.lines[0]!;
+  const busy = await h.call("checkRequest", AUTHOR_A, { body: { lines: [lineOf(busyLine.positionId, busyLine.kekv, 1)] } });
+  assert.equal(busy.report.errors[0]?.code, "POSITION_BUSY");
 });
 
 test("перевірка не змінює стан: ні заявок, ні журналу", async () => {

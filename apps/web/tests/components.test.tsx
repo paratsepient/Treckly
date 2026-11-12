@@ -97,6 +97,12 @@ test("тексти проблем: кожен код пояснено людсь
     "Рядок 2: запитано 9, а в плані вашої в/ч 4.",
   );
   assert.equal(issueText(issue("NOT_IN_LIST", { reason: "NOT_IN_UNIT_PLAN" }), rows), "Рядок 2: позиції немає в плані вашої в/ч на 2027 рік.");
+  assert.equal(issueText(issue("POSITION_BUSY", { requestId: "req-1" }), rows), "Рядок 2: позиція вже в іншій незавершеній заявці вашої в/ч — її не можна обрати вдруге.");
+  assert.match(issueText(issue("POSITION_BUSY", { reason: "PURCHASE_STARTED" }), rows, true), /закупівля цієї позиції за іншою заявкою вже почалась/);
+  assert.equal(
+    issueText(issue("QTY_EXCEEDED", { requested: 5, available: 2, planned: 10, alreadyOrdered: 8, reason: "UNIT_PLAN_EXCEEDED" }), rows),
+    "Рядок 2: запитано 5, а в плані вашої в/ч лишилось 2 (уже замовлено 8 з 10).",
+  );
   assert.match(issueText(issue("QTY_EXCEEDED", { reason: "QTY_INVALID" }), rows), /цілим числом більше нуля/);
   assert.match(issueText(issue("KEKV_MISMATCH", { lineKekv: "3110", positionKekv: "2210" }), rows), /КЕКВ рядка \(3110\).*КЕКВ позиції \(2210\)/);
   assert.match(
