@@ -24,3 +24,5 @@ export { issueExtracts } from "./extracts.ts";
 export { dailyReminders, daysAtLevel } from "./reminders.ts";
 export { buildTrack, type Track, type TrackStep, type TrackStepState } from "./track.ts";
 export { computeKpi, type Kpi } from "./kpi.ts";
+
+export { closeNotProcured, confirmProcurement, issueProcured, type ConfirmProcurementInput, type IssueInput, type NotProcuredInput } from "./procurement.ts";

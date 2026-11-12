@@ -10,6 +10,7 @@ import {
   type Notification,
   type Outcome,
   type Positions,
+  type PropertyChange,
   type Request,
   type RequestLine,
   type RequestStatus,
@@ -59,6 +60,7 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
       justification: r.justification,
       title: r.title,
       returnInfo: r.returnInfo,
+      procurement: r.procurement,
       levelEnteredOn: r.levelEnteredOn,
       createdOn: r.createdOn,
     };
@@ -122,6 +124,7 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
   }
 
   await saveNotifications(tx, outcome.notifications);
+  for (const change of outcome.property ?? []) await applyPropertyChange(tx, change);
 
   if (outcome.events.length > 0) {
     await tx.insert(journal).values(
@@ -139,6 +142,25 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
 }
 
 /** Сповіщення в системі: адресат зберігається і структурою, і колонками для швидкого відбору «моїх». */
+/**
+ * Зміна майна в/ч за кодом предмета: «На базі» після закупівлі, «Отримано» після видачі (і списання старого
+ * із замін). Кількість не стає від'ємною; рядок з нулем видаляється.
+ */
+async function applyPropertyChange(tx: Queryable, change: PropertyChange): Promise<void> {
+  const [item] = await tx.select({ id: nomenclature.id }).from(nomenclature).where(eq(nomenclature.code, change.code));
+  if (!item) return;
+  const where = and(eq(propertyItems.unitId, change.unitId), eq(propertyItems.itemId, item.id), eq(propertyItems.tab, change.tab));
+  const [row] = await tx.select().from(propertyItems).where(where);
+  const qty = Math.max(0, (row?.qty ?? 0) + change.delta);
+  if (!row) {
+    if (qty > 0) await tx.insert(propertyItems).values({ id: `prop-${change.unitId}-${change.tab}-${item.id}`, unitId: change.unitId, itemId: item.id, tab: change.tab, qty });
+  } else if (qty === 0) {
+    await tx.delete(propertyItems).where(eq(propertyItems.id, row.id));
+  } else {
+    await tx.update(propertyItems).set({ qty }).where(eq(propertyItems.id, row.id));
+  }
+}
+
 export async function saveNotifications(tx: Queryable, notes: readonly Notification[]): Promise<void> {
   if (notes.length === 0) return;
   await tx.insert(notifications).values(
@@ -228,7 +250,7 @@ export async function loadBudget(q: Queryable, directionId: string): Promise<Bud
 export async function loadPositions(q: Queryable, directionId: string): Promise<Positions> {
   const reserved = sql<number>`coalesce((
     select sum(rl.qty) from ${requestLines} rl join ${requests} r on r.id = rl.request_id
-    where rl.position_id = ${listPositions.id} and r.status in ('approved', 'extract_issued')
+    where rl.position_id = ${listPositions.id} and r.status in ('approved', 'extract_issued', 'procured', 'issued')
   ), 0)::int`;
   const rows = await q
     .select({
@@ -270,7 +292,7 @@ export async function loadUnitPlan(q: Queryable, unitId: string, directionId: st
 export async function loadPlannedList(q: Queryable, directionId: string) {
   const reserved = sql<number>`coalesce((
     select sum(rl.qty) from ${requestLines} rl join ${requests} r on r.id = rl.request_id
-    where rl.position_id = ${listPositions.id} and r.status in ('approved', 'extract_issued')
+    where rl.position_id = ${listPositions.id} and r.status in ('approved', 'extract_issued', 'procured', 'issued')
   ), 0)::int`;
   const [rows, plans] = await Promise.all([
     q
@@ -323,6 +345,7 @@ function toRequest(row: RequestRow, lines: readonly LineRow[]): Request {
     justification: row.justification,
     title: row.title,
     returnInfo: row.returnInfo,
+    procurement: row.procurement ?? null,
     levelEnteredOn: row.levelEnteredOn,
     createdOn: row.createdOn,
   };

@@ -44,5 +44,11 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "ALTER TABLE \"requests\" ADD COLUMN \"title\" text DEFAULT '' NOT NULL;"
     ]
+  },
+  {
+    "tag": "0004_skinny_runaways",
+    "statements": [
+      "ALTER TABLE \"requests\" ADD COLUMN \"procurement\" jsonb;"
+    ]
   }
 ];

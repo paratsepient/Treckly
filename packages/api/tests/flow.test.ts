@@ -213,3 +213,39 @@ test("«Скинути демо» очищає всі рапорти; «з пр�
   assert.equal(resets, 2);
   assert.deepEqual((await h.call("registry", AUTHOR_A)).requests, before);
 });
+
+test("закупівля через API: адміністрація підтверджує, видає актом; майно в/ч змінюється; інші ролі — відмова", async () => {
+  const h = await boot();
+  // ЗМ-0001 (в/ч А0001) затверджена з витягом у демо-даних.
+  const request = (await h.call("requestDetail", "admin-demo", { params: { id: "req-0001" } })).request;
+  assert.equal(request.status, "extract_issued");
+  const quantities = Object.fromEntries(request.lines.map((l) => [l.id, l.qty]));
+  const body = { acceptanceDoc: "АП-2027-17", recipient: "Склад бази", quantities, expectedRevision: request.revision };
+  assert.equal((await h.fail("procureRequest", "prep-5-vor", 403, { params: { id: request.id }, body })).code, "FORBIDDEN_ROLE");
+  const wrong = await h.fail("procureRequest", "admin-demo", 409, { params: { id: request.id }, body: { ...body, quantities: { ...quantities, [request.lines[0]!.id]: 0 } } });
+  assert.equal(wrong.details?.["reason"], "QTY_MISMATCH");
+
+  const onBaseBefore = (await h.call("property", AUTHOR_A)).items.filter((i) => i.tab === "on_base").reduce((s, i) => s + i.qty, 0);
+  const procured = (await h.call("procureRequest", "admin-demo", { params: { id: request.id }, body })).request;
+  assert.equal(procured.status, "procured");
+  const onBaseAfter = (await h.call("property", AUTHOR_A)).items.filter((i) => i.tab === "on_base").reduce((s, i) => s + i.qty, 0);
+  assert.equal(onBaseAfter - onBaseBefore, request.lines.reduce((s, l) => s + l.qty, 0), "нове — на складі бази, закріплене за в/ч");
+
+  const issued = (await h.call("issueRequest", "admin-demo", { params: { id: request.id }, body: { act: "АВ-5", expectedRevision: procured.revision } })).request;
+  assert.equal(issued.status, "issued");
+  const onBaseIssued = (await h.call("property", AUTHOR_A)).items.filter((i) => i.tab === "on_base").reduce((s, i) => s + i.qty, 0);
+  assert.equal(onBaseIssued, onBaseBefore, "видане зникає зі складу бази");
+  assert.ok((await h.call("notifications", AUTHOR_A)).notifications.some((n) => n.kind === "request_issued"));
+  // Резерв бюджету не змінюється: закуплене й видане лишаються затвердженими.
+  assert.ok((await h.call("final", "prep-5-vor")).requests.some((r) => r.id === request.id));
+});
+
+test("не виконано через API: резерв вивільняється, заявка зникає з затверджених", async () => {
+  const h = await boot();
+  const request = (await h.call("requestDetail", "admin-demo", { params: { id: "req-0002" } })).request;
+  const before = (await h.call("budget", AUTHOR_A)).lines.find((l) => l.scope === "TOTAL")!.approvedMinor;
+  await h.call("notProcuredRequest", "admin-demo", { params: { id: request.id }, body: { note: "Постачальник не виконав договір", expectedRevision: request.revision } });
+  const after = (await h.call("budget", AUTHOR_A)).lines.find((l) => l.scope === "TOTAL")!.approvedMinor;
+  assert.ok(after < before, "резерв вивільнено");
+  assert.ok(!(await h.call("final", "prep-5-vor")).requests.some((r) => r.id === request.id));
+});

@@ -45,6 +45,7 @@ const request: Request = {
   justification: "Потреба підрозділу.",
   title: "",
   returnInfo: null,
+  procurement: null,
   levelEnteredOn: "2027-02-06",
   createdOn: "2027-02-01",
 };

@@ -14,8 +14,8 @@ export const Kekv = z.string().min(1);
 export const Money = z.number().int();
 export const Id = z.string().min(1);
 
-export const RequestStatus = z.enum(["draft", "at_level", "in_list", "returned", "approved", "extract_issued", "withdrawn"]);
-export const LineStatus = z.enum(["awaits_approval", "approved", "awaits_replacement_approval", "replacement_agreed"]);
+export const RequestStatus = z.enum(["draft", "at_level", "in_list", "returned", "approved", "extract_issued", "procured", "issued", "not_procured", "withdrawn"]);
+export const LineStatus = z.enum(["awaits_approval", "approved", "awaits_replacement_approval", "replacement_agreed", "purchased", "replaced", "not_procured"]);
 export const DailyListStatus = z.enum(["formed", "approved", "disbanded"]);
 
 export const ErrorCode = z.enum([
@@ -75,6 +75,16 @@ export const ReturnInfo = z.object({
   cascade: z.array(Audience),
 });
 
+export const Procurement = z.object({
+  acceptanceDoc: z.string().nullable(),
+  recipient: z.string().nullable(),
+  procuredAt: IsoTimestamp.nullable(),
+  issueAct: z.string().nullable(),
+  issuedAt: IsoTimestamp.nullable(),
+  note: z.string().nullable(),
+  byUserId: Id,
+});
+
 export const Request = z.object({
   id: Id,
   authorId: Id,
@@ -88,6 +98,7 @@ export const Request = z.object({
   justification: z.string(),
   title: z.string(),
   returnInfo: ReturnInfo.nullable(),
+  procurement: Procurement.nullable(),
   levelEnteredOn: IsoDate.nullable(),
   createdOn: IsoDate,
 });
@@ -126,6 +137,9 @@ export const NotificationKind = z.enum([
   "request_withdrawn",
   "request_approved",
   "extract_issued",
+  "request_procured",
+  "request_issued",
+  "request_not_procured",
   "reminder",
 ]);
 

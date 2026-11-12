@@ -35,6 +35,12 @@ export function notificationText(n: NotificationLike): NotificationView {
       return { title: `${label}: заявку затверджено Головою`, detail: null };
     case "extract_issued":
       return { title: `${label}: витяг по в/ч сформовано`, detail: null };
+    case "request_procured":
+      return { title: `${label}: закупівлю підтверджено, нове на складі бази`, detail: n.note };
+    case "request_issued":
+      return { title: `${label}: нове видано в/ч`, detail: n.note };
+    case "request_not_procured":
+      return { title: `${label}: закупівля не відбулася`, detail: n.note ? `Примітка: ${n.note}` : null };
     case "reminder":
       return { title: `${label}: заявка чекає на вашу дію`, detail: n.note };
   }

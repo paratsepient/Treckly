@@ -57,7 +57,7 @@ test("зведення: лише ролі рівнів і адміністрат
 test("зведення: статуси, дні на рівнях, частка повернень і бюджет за КЕКВ відповідають демо-даним", async () => {
   const h = await boot();
   const k = await h.call("kpi", "appr-5-vor");
-  assert.deepEqual(k.byStatus, { draft: 1, at_level: 5, in_list: 1, returned: 1, approved: 0, extract_issued: 2, withdrawn: 1 });
+  assert.deepEqual(k.byStatus, { draft: 1, at_level: 5, in_list: 1, returned: 1, approved: 0, extract_issued: 2, procured: 0, issued: 0, not_procured: 0, withdrawn: 1 });
   assert.equal(Object.values(k.byStatus).reduce((a, b) => a + b, 0), 11);
   assert.equal(k.returnShare, 0.1, "1 повернута із 10 поданих");
   // Рівень 3 пройшли за 2, 2, 1 і 1 день, а одна заявка лежить там 13 днів: (2+2+13+1+1)/5.

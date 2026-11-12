@@ -20,7 +20,10 @@ type Positions = ApiOutput<"positions">["positions"];
 function whereNow(request: Request, levelNames: ReadonlyMap<number, string>): string {
   if (request.level !== null && (request.status === "at_level" || request.status === "in_list")) return `${request.level}. ${levelNames.get(request.level) ?? ""}`;
   if (request.status === "returned") return request.returnInfo ? `Автор (повернув рівень ${request.returnInfo.level})` : "Автор";
-  if (request.status === "approved" || request.status === "extract_issued") return "Затверджено Головою";
+  if (request.status === "approved" || request.status === "extract_issued") return "Затверджено Головою, чекає закупівлі";
+  if (request.status === "procured") return "На складі бази";
+  if (request.status === "issued") return "Видано в/ч";
+  if (request.status === "not_procured") return "Закупівля не відбулася";
   return "—";
 }
 

@@ -37,6 +37,7 @@ export const BUDGET: Budget = {
 export const author: Actor = { userId: "u-author", role: { kind: "author", unitId: "unit-vch" } };
 export const otherAuthor: Actor = { userId: "u-other", role: { kind: "author", unitId: "unit-vch" } };
 export const system: Actor = { userId: "system", role: { kind: "system" } };
+export const admin: Actor = { userId: "admin", role: { kind: "admin" } };
 
 export function preparer(level: Level, userId = `u-prep-${level}`): Actor {
   return { userId, role: { kind: "preparer", level, unitId: ROUTE[level - 1] as string } };

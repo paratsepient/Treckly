@@ -42,6 +42,10 @@ export const CheckRequestInput = z.object({ lines: z.array(RequestLine), request
 export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), expectedRevision });
 export const RevisionInput = z.object({ expectedRevision });
 export const ResetDemoInput = z.object({ withExamples: z.boolean().optional() });
+/** Закупівля (адміністрація): документ приймання, отримувач і фактична кількість по рядках. */
+export const ProcureInput = z.object({ acceptanceDoc: z.string(), recipient: z.string(), quantities: z.record(z.string(), z.number().int()), expectedRevision });
+export const IssueInput = z.object({ act: z.string(), expectedRevision });
+export const NotProcuredInput = z.object({ note: z.string(), expectedRevision });
 export const ReturnInput = z.object({ note: z.string(), expectedRevision });
 export const FormListInput = z.object({ level: Level, unitId: Id, requestIds: z.array(Id).min(1), expectedRevisions: expectedRevisions.optional() });
 export const DisbandListInput = z.object({ expectedRevisions: expectedRevisions.optional() });
@@ -106,6 +110,10 @@ export const API = {
   submitRequest: endpoint({ method: "POST", path: "/api/requests/:id/submit", input: RevisionInput, output: RequestResponse }),
   withdrawRequest: endpoint({ method: "POST", path: "/api/requests/:id/withdraw", input: RevisionInput, output: RequestResponse }),
   newVersion: endpoint({ method: "POST", path: "/api/requests/:id/new-version", input: RevisionInput, output: RequestResponse }),
+  // Закупівля й видача (адміністрація)
+  procureRequest: endpoint({ method: "POST", path: "/api/requests/:id/procure", input: ProcureInput, output: RequestResponse }),
+  issueRequest: endpoint({ method: "POST", path: "/api/requests/:id/issue", input: IssueInput, output: RequestResponse }),
+  notProcuredRequest: endpoint({ method: "POST", path: "/api/requests/:id/not-procured", input: NotProcuredInput, output: RequestResponse }),
   myRequests: endpoint({ method: "GET", path: "/api/requests/mine", output: RequestsResponse }),
   requestDetail: endpoint({ method: "GET", path: "/api/requests/:id", output: RequestDetail }),
   // Рівень

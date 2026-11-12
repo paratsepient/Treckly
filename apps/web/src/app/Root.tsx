@@ -62,13 +62,23 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
         { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "admin":
-      return [{ id: "admin", label: "Адміністрування", items: [registry, { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> }] }];
+      return [
+        {
+          id: "admin",
+          label: "Адміністрування",
+          items: [
+            { id: "procurement", label: "Закупівлі й видача", href: "#/procurement", icon: <Icon name="records" /> },
+            registry,
+            { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> },
+          ],
+        },
+      ];
   }
 }
 
 /** Початковий екран ролі. */
-export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/journal" | "/registry" =>
-  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/registry" : "/lists") : "/journal";
+export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/procurement" | "/registry" =>
+  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/registry" : "/lists") : "/procurement";
 
 const initials = (name: string): string =>
   name
@@ -196,7 +206,7 @@ export function Root() {
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
-  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
+  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned", "procurement"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
   const role = `${user.title}${unit ? ` · ${unit.name}` : ""}`;
   const demo = (
     <div className="sidebar__demo">

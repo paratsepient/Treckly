@@ -33,6 +33,9 @@ export const STATUS_LABELS: Record<RequestStatus, string> = {
   returned: "Повернуто автору",
   approved: "Затверджено",
   extract_issued: "Витяг сформовано",
+  procured: "Виконано · на складі бази",
+  issued: "Виконано · видано",
+  not_procured: "Не виконано",
   withdrawn: "Відкликано",
 };
 
@@ -43,6 +46,9 @@ export const STATUS_TONES: Record<RequestStatus, BadgeTone> = {
   returned: "warning",
   approved: "success",
   extract_issued: "success",
+  procured: "success",
+  issued: "success",
+  not_procured: "error",
   withdrawn: "neutral",
 };
 
@@ -57,6 +63,9 @@ export const LINE_STATUS_LABELS: Record<LineStatus, string> = {
   approved: "Затверджено",
   awaits_replacement_approval: "Очікує затвердження на заміну",
   replacement_agreed: "Заміна погоджена",
+  purchased: "Закуплено",
+  replaced: "Замінено",
+  not_procured: "Не виконано",
 };
 
 export const LINE_STATUS_TONES: Record<LineStatus, BadgeTone> = {
@@ -64,6 +73,9 @@ export const LINE_STATUS_TONES: Record<LineStatus, BadgeTone> = {
   approved: "success",
   awaits_replacement_approval: "warning",
   replacement_agreed: "success",
+  purchased: "success",
+  replaced: "success",
+  not_procured: "error",
 };
 
 export const TAB_LABELS = { planned: "Заплановано", on_base: "На базі", received: "Отримано" } as const;

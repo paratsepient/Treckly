@@ -10,7 +10,7 @@ export interface Kpi {
   readonly returnShare: number;
 }
 
-const STATUSES: readonly RequestStatus[] = ["draft", "at_level", "in_list", "returned", "approved", "extract_issued", "withdrawn"];
+const STATUSES: readonly RequestStatus[] = ["draft", "at_level", "in_list", "returned", "approved", "extract_issued", "procured", "issued", "not_procured", "withdrawn"];
 
 /**
  * Зведення для реєстру: заявки за статусами, середні дні на рівнях і частка повернень.

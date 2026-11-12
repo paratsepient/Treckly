@@ -8,8 +8,8 @@ const kpi = (world: ReturnType<typeof createWorld>) => computeKpi(all(world), wo
 
 test("KPI порожньої системи: усі статуси присутні з нулями, дні й частка повернень — нулі", () => {
   const k = computeKpi([], [], "2027-01-10");
-  assert.deepEqual(Object.values(k.byStatus), [0, 0, 0, 0, 0, 0, 0]);
-  assert.equal(Object.keys(k.byStatus).length, 7);
+  assert.deepEqual(Object.values(k.byStatus), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  assert.equal(Object.keys(k.byStatus).length, 10);
   assert.deepEqual(k.avgDaysByLevel, { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 });
   assert.equal(k.returnShare, 0);
 });

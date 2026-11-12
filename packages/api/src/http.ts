@@ -66,6 +66,7 @@ export function actorOf(user: UserRow): Actor {
   if ((user.roleKind === "preparer" || user.roleKind === "approver") && user.unitId && user.level) {
     return { userId: user.id, role: { kind: user.roleKind, level: user.level as 1 | 2 | 3 | 4 | 5, unitId: user.unitId } };
   }
+  if (user.roleKind === "admin") return { userId: user.id, role: { kind: "admin" } };
   throw new DomainError("FORBIDDEN_ROLE", "Ця роль не виконує дій над заявками.", { role: user.roleKind });
 }
 

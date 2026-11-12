@@ -72,6 +72,9 @@ export function buildTrack(request: Request, events: readonly JournalEvent[], to
         return level < (request.level as Level) ? "done" : level === request.level ? "current" : "pending";
       case "approved":
       case "extract_issued":
+      case "procured":
+      case "issued":
+      case "not_procured":
         return "done";
       case "returned":
         return level <= (request.returnInfo?.level ?? 0) ? "returned" : "pending";

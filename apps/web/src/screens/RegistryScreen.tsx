@@ -53,7 +53,7 @@ export function RegistryScreen() {
   const byStatus = kpi.data?.byStatus;
   const total = byStatus ? Object.values(byStatus).reduce((a, b) => a + b, 0) : 0;
   const inWork = byStatus ? byStatus.at_level + byStatus.in_list : 0;
-  const approved = byStatus ? byStatus.approved + byStatus.extract_issued : 0;
+  const approved = byStatus ? byStatus.approved + byStatus.extract_issued + byStatus.procured + byStatus.issued : 0;
   const budgetLines = (kpi.data?.budgetByKekv ?? []).filter((l) => l.scope !== "TOTAL");
 
   const columns: readonly DataTableColumn<Request>[] = [

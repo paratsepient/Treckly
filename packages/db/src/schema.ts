@@ -1,5 +1,5 @@
 import { bigint, index, integer, jsonb, pgTable, primaryKey, serial, text } from "drizzle-orm/pg-core";
-import type { Audience, JournalEvent, ReturnInfo } from "@dsp/domain";
+import type { Audience, JournalEvent, ReturnInfo, Procurement } from "@dsp/domain";
 
 /**
  * Схема прототипу. Та сама схема піде на PostgreSQL пілоту (міграції — у `migrations/`).
@@ -78,6 +78,7 @@ export const requests = pgTable(
     justification: text("justification").notNull().default(""),
     title: text("title").notNull().default(""),
     returnInfo: jsonb("return_info").$type<ReturnInfo>(),
+    procurement: jsonb("procurement").$type<Procurement>(),
     levelEnteredOn: text("level_entered_on"),
     createdOn: text("created_on").notNull(),
   },

@@ -12,7 +12,7 @@ import {
   loadUnits,
   type DspDb,
 } from "@dsp/db";
-import { computeKpi, DomainError } from "@dsp/domain";
+import { computeKpi, DomainError, isApprovedStatus } from "@dsp/domain";
 import { budgetSummary } from "../views.ts";
 import type { Env } from "../http.ts";
 
@@ -26,7 +26,8 @@ export function summaryRoutes(db: DspDb) {
   app.get("/api/final", async (c) => {
     const user = c.get("user");
     const [requests, lists, extracts] = await Promise.all([loadRequests(db), loadLists(db), loadExtracts(db)]);
-    const final = requests.filter((r) => r.status === "approved" || r.status === "extract_issued");
+    // Затверджені Головою (разом із закупленими й виданими) — те, що лишається в остаточному переліку.
+    const final = requests.filter((r) => isApprovedStatus(r.status));
     const own = user.roleKind === "author" ? (r: { route: readonly string[] }) => r.route[0] === user.unitId : () => true;
     const visible = final.filter(own);
     const visibleIds = new Set(visible.map((r) => r.id));
@@ -73,7 +74,7 @@ export function summaryRoutes(db: DspDb) {
     const reserved = new Map<string, number>();
     const inWork = new Map<string, number>();
     for (const r of requests.filter(inScope)) {
-      const target = r.status === "approved" || r.status === "extract_issued" ? reserved : r.status === "at_level" || r.status === "in_list" ? inWork : null;
+      const target = isApprovedStatus(r.status) ? reserved : r.status === "at_level" || r.status === "in_list" ? inWork : null;
       if (!target) continue;
       for (const line of r.lines) target.set(line.positionId, (target.get(line.positionId) ?? 0) + line.qty);
     }

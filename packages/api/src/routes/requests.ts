@@ -20,6 +20,9 @@ import {
 import {
   buildTrack,
   checkRequest,
+  closeNotProcured,
+  confirmProcurement,
+  issueProcured,
   createDraft,
   editLines,
   lineStatus,
@@ -27,6 +30,7 @@ import {
   returnRequest,
   submit,
   withdraw,
+  DomainError,
   type DomainContext,
   type Meta,
   type Outcome,
@@ -76,6 +80,8 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
     const { lines, justification, title } = await parseBody(c, API.createRequest.input);
     const user = c.get("user");
     const meta = metaOf(c);
+    // Маршрут будується від в/ч автора: інші ролі (зокрема адміністрація) заявок не створюють.
+    if (meta.actor.role.kind !== "author") throw new DomainError("FORBIDDEN_ROLE", "Заявку створює автор у своїй в/ч.");
     const reply = await run(meta.idempotencyKey, async (tx, ctx) => {
       const route = routeFor(await loadUnits(tx), user.unitId ?? "");
       const outcome = createDraft(ctx, meta, { route, lines, ...(justification !== undefined ? { justification } : {}), ...(title !== undefined ? { title } : {}) });
@@ -131,6 +137,29 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
         if (list) return withdraw(ctx, { ...meta, expectedRevisions: { ...meta.expectedRevisions, [list.id]: list.revision } }, { ...input, list, listRequests: await loadRequests(tx, list.requestIds) });
       }
       return withdraw(ctx, meta, input);
+    });
+  });
+
+  /** Закупівля після затвердження: адміністрація підтверджує, видає одним актом або закриває як не виконано. */
+  app.post("/api/requests/:id/procure", async (c) => {
+    const { acceptanceDoc, recipient, quantities, expectedRevision } = await parseBody(c, API.procureRequest.input);
+    return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
+      confirmProcurement(ctx, meta, { request, acceptanceDoc, recipient, quantities, positions: await loadPositions(tx, request.route[3]) }),
+    );
+  });
+
+  app.post("/api/requests/:id/issue", async (c) => {
+    const { act, expectedRevision } = await parseBody(c, API.issueRequest.input);
+    return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
+      issueProcured(ctx, meta, { request, act, positions: await loadPositions(tx, request.route[3]) }),
+    );
+  });
+
+  app.post("/api/requests/:id/not-procured", async (c) => {
+    const { note, expectedRevision } = await parseBody(c, API.notProcuredRequest.input);
+    return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) => {
+      const [positions, budget] = await Promise.all([loadPositions(tx, request.route[3]), loadBudget(tx, request.route[3])]);
+      return closeNotProcured(ctx, meta, { request, note, positions, budget });
     });
   });
 

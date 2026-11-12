@@ -2,6 +2,7 @@ import { assertChecksPass, checkRequest } from "./checks.ts";
 import { bumped, guardRevision, levelAudience, makeEvent, stamp, type DomainContext } from "./context.ts";
 import { DomainError } from "./errors.ts";
 import { assertAuthor, assertLevelRole } from "./permissions.ts";
+import { isApprovedStatus } from "./types.ts";
 import type {
   Audience,
   Budget,
@@ -69,6 +70,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
     justification: input.justification ?? "",
     title: (input.title ?? "").trim(),
     returnInfo: null,
+    procurement: null,
     levelEnteredOn: null,
     createdOn: today,
   };
@@ -235,7 +237,7 @@ export function withdraw(ctx: DomainContext, meta: Meta, input: WithdrawInput): 
   const { request } = input;
   assertAuthor(meta.actor, request);
   guardRevision(meta, request);
-  if (request.status === "approved" || request.status === "extract_issued" || request.status === "withdrawn") {
+  if (isApprovedStatus(request.status) || request.status === "not_procured" || request.status === "withdrawn") {
     throw invalid("Відкликати можна лише до затвердження на останньому рівні.", { status: request.status });
   }
   const { today } = stamp(ctx);
@@ -287,6 +289,8 @@ export function withdraw(ctx: DomainContext, meta: Meta, input: WithdrawInput): 
 
 /** Статус рядка похідний від статусу заявки (правило 11: «Заміна погоджена» — лише з витягом). */
 export function lineStatus(request: Pick<Request, "status">, line: RequestLine): LineStatus {
+  if (request.status === "not_procured") return "not_procured";
+  if (request.status === "procured" || request.status === "issued") return line.kind === "replacement" ? "replaced" : "purchased";
   const approved = request.status === "approved" || request.status === "extract_issued";
   if (line.kind === "by_list") return approved ? "approved" : "awaits_approval";
   return request.status === "extract_issued" ? "replacement_agreed" : "awaits_replacement_approval";

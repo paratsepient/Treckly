@@ -56,7 +56,7 @@ test("клієнт: шлях і метод беруться з реєстру; �
 });
 
 test("клієнт: кожна зміна отримує власний ключ ідемпотентності, змінні шляху підставляються", async () => {
-  const request = { id: "req-1", authorId: "u", route: ["a", "b", "c", "d", "e"], version: 1, revision: 2, status: "draft", level: null, listId: null, lines: [], justification: "", title: "", returnInfo: null, levelEnteredOn: null, createdOn: "2027-02-15" };
+  const request = { id: "req-1", authorId: "u", route: ["a", "b", "c", "d", "e"], version: 1, revision: 2, status: "draft", level: null, listId: null, lines: [], justification: "", title: "", returnInfo: null, procurement: null, levelEnteredOn: null, createdOn: "2027-02-15" };
   const { fetch, calls } = fakeFetch(() => ({ status: 200, json: { request } }));
   const call = createClient({ fetch, getUserId: () => undefined });
   await call("editLines", { params: { id: "req-1" }, body: { lines: [], expectedRevision: 1 } });

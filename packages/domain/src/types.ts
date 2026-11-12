@@ -32,7 +32,17 @@ export type RequestStatus =
   | "returned"
   | "approved"
   | "extract_issued"
+  /** Закупівлю підтверджено: нове на складі бази, закріплене за в/ч («Виконано»). */
+  | "procured"
+  /** Нове видано в/ч одним актом, старе із замін передано на інший облік. */
+  | "issued"
+  /** Закупівля не відбулася: статус заміни знято, резерв бюджету вивільнено. */
+  | "not_procured"
   | "withdrawn";
+
+/** Статуси, у яких заявка затверджена Головою й тримає резерв бюджету. */
+export const APPROVED_STATUSES: readonly RequestStatus[] = ["approved", "extract_issued", "procured", "issued"];
+export const isApprovedStatus = (status: RequestStatus): boolean => APPROVED_STATUSES.includes(status);
 
 export interface NewItem {
   readonly code: string;
@@ -66,7 +76,13 @@ export type LineStatus =
   | "awaits_approval"
   | "approved"
   | "awaits_replacement_approval"
-  | "replacement_agreed";
+  | "replacement_agreed"
+  /** Закуплено (рядок за переліком після підтвердження закупівлі). */
+  | "purchased"
+  /** Замінено (рядок заміни після підтвердження закупівлі). */
+  | "replaced"
+  /** Не виконано: закупівля не відбулася. */
+  | "not_procured";
 
 export type Audience =
   | { readonly kind: "author"; readonly userId: UserId }
@@ -106,9 +122,23 @@ export interface Request {
   /** Назва заявки від автора (необов'язкова): щоб у списках її було легко впізнати. */
   readonly title: string;
   readonly returnInfo: ReturnInfo | null;
+  /** Закупівля й видача після затвердження Головою (адміністрація); null — ще не було. */
+  readonly procurement: Procurement | null;
   /** З якого дня заявка на поточному рівні (для лічильника днів). */
   readonly levelEnteredOn: IsoDate | null;
   readonly createdOn: IsoDate;
+}
+
+/** Закупівля після затвердження: документ приймання, отримувач, видача одним актом або примітка про зрив. */
+export interface Procurement {
+  readonly acceptanceDoc: string | null;
+  readonly recipient: string | null;
+  readonly procuredAt: IsoTimestamp | null;
+  readonly issueAct: string | null;
+  readonly issuedAt: IsoTimestamp | null;
+  /** Примітка, чому закупівля не відбулася. */
+  readonly note: string | null;
+  readonly byUserId: UserId;
 }
 
 export type DailyListStatus = "formed" | "approved" | "disbanded";
@@ -168,6 +198,8 @@ export type Role =
   | { readonly kind: "author"; readonly unitId: UnitId }
   | { readonly kind: "preparer"; readonly level: Level; readonly unitId: UnitId }
   | { readonly kind: "approver"; readonly level: Level; readonly unitId: UnitId }
+  /** Адміністрація: підтверджує закупівлю, видає нове, закриває як не виконано. */
+  | { readonly kind: "admin" }
   | { readonly kind: "system" };
 
 export interface Actor {
@@ -194,6 +226,9 @@ export type EventType =
   | "request.advanced"
   | "request.approved"
   | "request.extract_issued"
+  | "request.procured"
+  | "request.issued"
+  | "request.not_procured"
   | "list.formed"
   | "list.disbanded"
   | "list.approved";
@@ -221,6 +256,9 @@ export type NotificationKind =
   | "request_withdrawn"
   | "request_approved"
   | "extract_issued"
+  | "request_procured"
+  | "request_issued"
+  | "request_not_procured"
   | "reminder";
 
 export interface Notification {
@@ -241,4 +279,13 @@ export interface Outcome {
   /** Новий стан бюджету (лише при затвердженні Головою). */
   readonly budget?: Budget;
   readonly extracts?: readonly Extract[];
+  /** Зміни в майні в/ч (вкладки «На базі» й «Отримано»): за кодом предмета, з плюсом або мінусом. */
+  readonly property?: readonly PropertyChange[];
+}
+
+export interface PropertyChange {
+  readonly unitId: UnitId;
+  readonly code: string;
+  readonly tab: "on_base" | "received";
+  readonly delta: number;
 }
