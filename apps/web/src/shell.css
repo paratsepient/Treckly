@@ -49,6 +49,24 @@ body {
   transform: none;
 }
 
+/*
+ * М'яка тінь карток застосунку (заявки, переліки, сповіщення, показники): тінь картки набору
+ * задовга й темна для щільних сіток. Лише токени кольору; у темній темі тінь трохи глибша, бо тло темне.
+ */
+:root {
+  --app-card-shadow: 0 1px 2px color-mix(in srgb, var(--ix-color-black) 6%, transparent), 0 2px 6px color-mix(in srgb, var(--ix-color-black) 4%, transparent);
+}
+
+:root[data-theme="dark"] {
+  --app-card-shadow: 0 1px 2px color-mix(in srgb, var(--ix-color-black) 20%, transparent), 0 2px 6px color-mix(in srgb, var(--ix-color-black) 12%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --app-card-shadow: 0 1px 2px color-mix(in srgb, var(--ix-color-black) 20%, transparent), 0 2px 6px color-mix(in srgb, var(--ix-color-black) 12%, transparent);
+  }
+}
+
 /* ── Оболонка ──────────────────────────────────────────────────────────────── */
 
 .app {

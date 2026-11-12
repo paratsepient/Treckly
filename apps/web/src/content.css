@@ -683,7 +683,7 @@
   border: 1px solid var(--ix-border);
   border-radius: var(--ix-radius-container);
   background: var(--ix-surface);
-  box-shadow: var(--ix-shadow-card);
+  box-shadow: var(--app-card-shadow);
 }
 
 .inbox .inbox__item[data-unread="true"] {
@@ -693,7 +693,7 @@
 /* Картки показників і діаграм — з тінню картки набору, як сповіщення й заявки. */
 .kpi-row > *,
 .chart-row > * {
-  box-shadow: var(--ix-shadow-card);
+  box-shadow: var(--app-card-shadow);
 }
 
 /* Сума в центрі кільцевої діаграми дрібніша: вміщується в отвір і не спорить із заголовком. */
@@ -711,7 +711,7 @@
   border: 1px solid var(--ix-border);
   border-radius: var(--ix-radius-container);
   background: var(--ix-surface);
-  box-shadow: var(--ix-shadow-card);
+  box-shadow: var(--app-card-shadow);
 }
 
 .queue-card .plan {
@@ -744,7 +744,7 @@
   border: 1px solid var(--ix-border);
   border-radius: var(--ix-radius-container);
   background: var(--ix-surface);
-  box-shadow: var(--ix-shadow-card);
+  box-shadow: var(--app-card-shadow);
 }
 
 .done-card__head {
