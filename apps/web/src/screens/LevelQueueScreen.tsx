@@ -240,14 +240,27 @@ export function LevelQueueScreen() {
         onClose={() => setReading(null)}
         extraActions={
           reading ? (
-            <Button
-              onClick={() => {
-                startReturn(reading);
-                setReading(null);
-              }}
-            >
-              Повернути…
-            </Button>
+            <>
+              <Button
+                onClick={() => {
+                  startReturn(reading);
+                  setReading(null);
+                }}
+              >
+                Повернути…
+              </Button>
+              {/* Рішення після читання: заявка йде в добірку для денного переліку (як галочка в таблиці) або з неї виходить. */}
+              <Button
+                variant={checked.has(reading.id) ? "secondary" : "primary"}
+                iconStart={<Icon name={checked.has(reading.id) ? "close" : "add"} />}
+                onClick={() => {
+                  toggle(reading.id, !checked.has(reading.id));
+                  setReading(null);
+                }}
+              >
+                {checked.has(reading.id) ? "Прибрати з переліку" : "Додати до переліку"}
+              </Button>
+            </>
           ) : undefined
         }
       />

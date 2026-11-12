@@ -24,8 +24,14 @@ test("E2: перелік із двох заявок із трьох, погод�
   await expect(raport.getByText(/Рапорт для ознайомлення/)).toBeVisible();
   await expect(raport.frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
   await raport.getByRole("button", { name: "Повернути…" }).waitFor();
-  await page.keyboard.press("Escape");
+  // Після читання заявку можна одразу додати до переліку: діалог закривається, заявка позначена в таблиці.
+  await raport.getByRole("button", { name: "Додати до переліку" }).click();
   await expect(raport).toHaveCount(0);
+  await expect(page.getByRole("checkbox", { name: "Обрати ЗМ-0010 до переліку" })).toBeChecked();
+  await expect(page.getByRole("button", { name: "Сформувати перелік (1)" })).toBeEnabled();
+  await row(page, /ЗМ-0010/).getByRole("button", { name: "ЗМ-0010" }).click();
+  await page.getByRole("dialog", { name: "Рапорт ЗМ-0010" }).getByRole("button", { name: "Прибрати з переліку" }).click();
+  await expect(page.getByRole("checkbox", { name: "Обрати ЗМ-0010 до переліку" })).not.toBeChecked();
   await picks.nth(1).check();
   await picks.nth(2).check();
   await page.getByRole("button", { name: "Сформувати перелік (2)" }).click();
