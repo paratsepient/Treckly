@@ -202,6 +202,15 @@ export const User = z.object({
   title: z.string(),
 });
 
+export const ActingAssignment = z.object({
+  id: Id,
+  deputyId: Id,
+  principalId: Id,
+  assignedBy: Id,
+  assignedAt: z.string(),
+  revokedAt: z.string().nullable(),
+});
+
 export const UnitKind = z.enum(["authority", "direction", "ru", "brigade", "unit", "department"]);
 export const Unit = z.object({ id: Id, parentId: Id.nullable(), kind: UnitKind, name: z.string() });
 

@@ -4,7 +4,7 @@ import { useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { formatDateShort, requestLabel } from "../lib/format.ts";
-import { journalText } from "../lib/journal-text.ts";
+import { actorText, journalText } from "../lib/journal-text.ts";
 
 type Event = ApiOutput<"journal">["journal"][number];
 
@@ -20,7 +20,7 @@ export function JournalScreen() {
     { key: "at", header: "Коли", render: (e) => `${formatDateShort(e.at)} ${e.at.slice(11, 16)}`, width: 170 },
     { key: "type", header: "Подія", render: (e) => journalText(e.type) },
     { key: "request", header: "Заявка", mono: true, render: (e) => (e.requestId ? requestLabel(e.requestId) : "—"), width: 160 },
-    { key: "actor", header: "Виконавець", render: (e) => who(e.actorId) },
+    { key: "actor", header: "Виконавець", render: (e) => actorText(e, who) },
     { key: "key", header: "Ключ ідемпотентності", mono: true, render: (e) => e.idempotencyKey.slice(0, 13), width: 190 },
   ];
 

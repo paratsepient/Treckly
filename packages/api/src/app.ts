@@ -1,3 +1,4 @@
+import { actingRoutes } from "./routes/acting.ts";
 import { Hono } from "hono";
 import { API } from "@dsp/contract";
 import { loadNow, loadRequests, loadUser, loadUsers, saveNotifications, saveNow, type DspDb } from "@dsp/db";
@@ -6,7 +7,7 @@ import { ApiError, createCommandRunner, metaOf, parseBody, STATUS, type Env } fr
 import { inboxRoutes } from "./routes/inbox.ts";
 import { levelRoutes } from "./routes/levels.ts";
 import { summaryRoutes } from "./routes/summary.ts";
-import { readRoutes, sessionOf } from "./routes/read.ts";
+import { effectiveUser, readRoutes, sessionOf } from "./routes/read.ts";
 import { requestRoutes } from "./routes/requests.ts";
 
 export interface AppOptions {
@@ -46,11 +47,14 @@ export function createApp(options: AppOptions) {
     const id = c.req.header("x-user-id");
     const user = id ? await loadUser(db, id) : ((await loadUsers(db)).find((u) => u.roleKind === "author") ?? null);
     if (!user) throw new ApiError(400, "VALIDATION", id ? `Невідомий користувач ${id}.` : "У базі немає користувачів.");
-    c.set("user", user);
+    const effective = await effectiveUser(db, user);
+    c.set("user", effective.user);
+    c.set("actingFor", effective.actingFor);
     await next();
   });
 
   app.route("/", readRoutes(db));
+  app.route("/", actingRoutes(db, run));
   app.route("/", requestRoutes(db, run));
   app.route("/", levelRoutes(db, run));
   app.route("/", inboxRoutes(db));
@@ -61,7 +65,8 @@ export function createApp(options: AppOptions) {
     const { userId } = await parseBody(c, API.switchRole.input);
     const user = await loadUser(db, userId);
     if (!user) throw new ApiError(404, "NOT_FOUND", `Невідомий користувач ${userId}.`);
-    return c.json(await sessionOf(db, user));
+    const effective = await effectiveUser(db, user);
+    return c.json(await sessionOf(db, effective.user, effective.actingFor));
   });
 
   /**
@@ -74,7 +79,7 @@ export function createApp(options: AppOptions) {
       const next = new Date(Date.parse(await loadNow(tx)) + 86_400_000).toISOString();
       await saveNow(tx, next);
       await saveNotifications(tx, dailyReminders({ clock: createManualClock(next), ids: options.ids }, await loadRequests(tx)));
-      return { status: 200, body: await sessionOf(tx, c.get("user")) };
+      return { status: 200, body: await sessionOf(tx, c.get("user"), c.get("actingFor")) };
     });
     return c.json(reply.body, reply.status as 200);
   });
@@ -85,7 +90,7 @@ export function createApp(options: AppOptions) {
     const parsed = API.resetDemo.input.safeParse(text.trim() === "" ? {} : JSON.parse(text));
     if (!parsed.success) throw new ApiError(400, "VALIDATION", "Некоректне тіло запиту.", parsed.error.issues);
     await options.resetDemo({ withExamples: parsed.data.withExamples ?? false });
-    return c.json(await sessionOf(db, c.get("user")));
+    return c.json(await sessionOf(db, c.get("user"), c.get("actingFor")));
   });
 
   return app;

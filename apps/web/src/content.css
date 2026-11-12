@@ -884,3 +884,28 @@
   margin: 0;
   color: var(--ix-error);
 }
+
+/* ТВО: форма призначення — картка; два вибори й кнопка в ряд, на вузькому екрані — стовпцем. */
+.acting-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+  padding: var(--ix-space-4);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+  box-shadow: var(--app-card-shadow);
+}
+
+.acting-form__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: var(--ix-space-4);
+  align-items: end;
+}
+
+@media (max-width: 720px) {
+  .acting-form__fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

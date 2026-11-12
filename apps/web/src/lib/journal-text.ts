@@ -17,7 +17,15 @@ const EVENT_TEXT: Record<string, string> = {
   "list.disbanded": "Перелік розформовано",
   "list.not_signed": "Голова не підписав перелік, заявки повернуто авторам",
   "list.approved": "Перелік погоджено",
+  "acting.assigned": "Призначено ТВО",
+  "acting.revoked": "Призначення ТВО знято",
 };
 
 /** Подія журналу людською мовою; невідомий тип показується як є, щоб нічого не зникало. */
 export const journalText = (type: string): string => EVENT_TEXT[type] ?? type;
+
+/** Виконавець події; якщо діяв як ТВО — «Ім'я (ТВО за Ім'я)». */
+export function actorText(event: { readonly actorId: string; readonly data: Readonly<Record<string, unknown>> }, who: (id: string) => string): string {
+  const actingFor = event.data["actingFor"];
+  return typeof actingFor === "string" ? `${who(event.actorId)} (ТВО за ${who(actingFor)})` : who(event.actorId);
+}

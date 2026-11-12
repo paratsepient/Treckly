@@ -69,6 +69,7 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
           items: [
             { id: "procurement", label: "Закупівлі й видача", href: "#/procurement", icon: <Icon name="records" /> },
             registry,
+            { id: "acting", label: "ТВО", href: "#/acting", icon: <Icon name="role" /> },
             { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> },
           ],
         },
@@ -206,7 +207,7 @@ export function Root() {
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
-  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned", "procurement"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
+  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned", "procurement", "acting"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
   const role = `${user.title}${unit ? ` · ${unit.name}` : ""}`;
   const demo = (
     <div className="sidebar__demo">

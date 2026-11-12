@@ -1,7 +1,7 @@
 export * from "./types.ts";
 export * from "./errors.ts";
 export * from "./clock.ts";
-export { createSequentialIds, type DomainContext, type IdGenerator } from "./context.ts";
+export { createSequentialIds, makeEvent, stamp, type DomainContext, type IdGenerator } from "./context.ts";
 export * from "./levels.ts";
 export * from "./sedo.ts";
 export * from "./budget.ts";
@@ -27,3 +27,4 @@ export { computeKpi, type Kpi } from "./kpi.ts";
 
 export { closeNotProcured, confirmProcurement, issueProcured, type ConfirmProcurementInput, type IssueInput, type NotProcuredInput } from "./procurement.ts";
 export { allocationIssues, type AllocationIssue } from "./allocation.ts";
+export { actingOf, assertAssignable, isActive, type ActingAssignment, type ActingPerson } from "./acting.ts";

@@ -17,6 +17,7 @@ const SCREENS: readonly { role: string; hash: string; name: string; ready: (page
   { role: "appr-5-vor", hash: "/final", name: "Затверджені закупівлі", ready: (p) => expect(p.getByRole("article").first()).toBeVisible() },
   { role: "prep-5-vor", hash: "/planned", name: "Запланований перелік", ready: (p) => expect(p.getByRole("table", { name: "Запланований перелік закупівель" })).toBeVisible() },
   { role: "admin-demo", hash: "/procurement", name: "Закупівлі й видача", ready: (p) => expect(p.getByRole("article").first()).toBeVisible() },
+  { role: "admin-demo", hash: "/acting", name: "ТВО", ready: (p) => expect(p.getByRole("heading", { name: "Призначити ТВО" })).toBeVisible() },
   { role: "admin-demo", hash: "/journal", name: "Журнал дій", ready: (p) => expect(p.getByRole("table", { name: "Журнал дій" })).toBeVisible() },
 ];
 

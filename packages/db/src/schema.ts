@@ -25,6 +25,16 @@ export const users = pgTable("users", {
   title: text("title").notNull(),
 });
 
+/** ТВО: хто чиї обов'язки тимчасово виконує; зняте призначення лишається в історії. */
+export const acting = pgTable("acting", {
+  id: text("id").primaryKey(),
+  deputyId: text("deputy_id").notNull(),
+  principalId: text("principal_id").notNull(),
+  assignedBy: text("assigned_by").notNull(),
+  assignedAt: text("assigned_at").notNull(),
+  revokedAt: text("revoked_at"),
+});
+
 export const kekv = pgTable("kekv", {
   code: text("code").primaryKey(),
   name: text("name").notNull(),

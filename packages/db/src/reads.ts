@@ -1,7 +1,7 @@
 import { asc, eq } from "drizzle-orm";
-import type { JournalEvent, Route } from "@dsp/domain";
+import type { ActingAssignment, JournalEvent, Route } from "@dsp/domain";
 import type { Queryable } from "./client.ts";
-import { journal, kekv, nomenclature, propertyItems, units, users } from "./schema.ts";
+import { acting, journal, kekv, nomenclature, propertyItems, units, users } from "./schema.ts";
 
 export type UnitRow = typeof units.$inferSelect;
 export type UserRow = typeof users.$inferSelect;
@@ -58,4 +58,10 @@ export function directionOf(allUnits: readonly UnitRow[], unitId: string): strin
   const only = allUnits.find((u) => u.kind === "direction");
   if (!only) throw new Error("У структурі немає напрямку");
   return only.id;
+}
+
+/** Призначення ТВО (чинні й зняті), найновіші першими. */
+export async function loadActing(q: Queryable): Promise<ActingAssignment[]> {
+  const rows = await q.select().from(acting);
+  return rows.sort((a, b) => b.assignedAt.localeCompare(a.assignedAt) || b.id.localeCompare(a.id));
 }

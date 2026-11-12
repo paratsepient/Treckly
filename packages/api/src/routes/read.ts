@@ -12,12 +12,14 @@ import {
   loadRequests,
   loadUnits,
   loadUsers,
+  loadUser,
+  loadActing,
   type DspDb,
   type Queryable,
   type UserRow,
 } from "@dsp/db";
 import { budgetSummary, userView } from "../views.ts";
-import { DEFAULT_LEVELS, DomainError } from "@dsp/domain";
+import { actingOf, DEFAULT_LEVELS, DomainError } from "@dsp/domain";
 import type { Env } from "../http.ts";
 
 const itemView = (i: Awaited<ReturnType<typeof loadItems>>[number]) => ({
@@ -30,9 +32,17 @@ const itemView = (i: Awaited<ReturnType<typeof loadItems>>[number]) => ({
   group: i.groupKey,
 });
 
-export async function sessionOf(db: Queryable, user: UserRow) {
+/** ТВО: поки призначення чинне, особа діє з роллю того, кого заміщає; посада — «ТВО: …». */
+export async function effectiveUser(q: Queryable, user: UserRow): Promise<{ user: UserRow; actingFor: string | null }> {
+  const assignment = actingOf(user.id, await loadActing(q));
+  const principal = assignment ? await loadUser(q, assignment.principalId) : null;
+  if (!assignment || !principal) return { user, actingFor: null };
+  return { user: { ...user, roleKind: principal.roleKind, level: principal.level, unitId: principal.unitId, title: `ТВО: ${principal.title}` }, actingFor: principal.id };
+}
+
+export async function sessionOf(db: Queryable, user: UserRow, actingFor: string | null = null) {
   const [users, now] = await Promise.all([loadUsers(db), loadNow(db)]);
-  return { user: userView(user), users: users.map(userView), today: now.slice(0, 10) };
+  return { user: userView(user), users: users.map(userView), today: now.slice(0, 10), actingFor };
 }
 
 /** Читання довідників і зведень: без змін стану, ключ ідемпотентності не потрібен. */
@@ -41,7 +51,7 @@ export function readRoutes(db: DspDb) {
 
   const directionFor = async (user: UserRow): Promise<string> => directionOf(await loadUnits(db), user.unitId ?? "");
 
-  app.get("/api/session", async (c) => c.json(await sessionOf(db, c.get("user"))));
+  app.get("/api/session", async (c) => c.json(await sessionOf(db, c.get("user"), c.get("actingFor"))));
 
   app.get("/api/reference", async (c) => {
     const [units, kekv, items] = await Promise.all([loadUnits(db), loadKekv(db), loadItems(db)]);

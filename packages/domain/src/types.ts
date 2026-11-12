@@ -221,6 +221,8 @@ export type Role =
 export interface Actor {
   readonly userId: UserId;
   readonly role: Role;
+  /** ТВО: чиї обов'язки особа зараз виконує (роль — того, кого заміщає). */
+  readonly actingFor?: UserId;
 }
 
 /** Метадані команди: хто, ключ ідемпотентності, очікувані версії записів. */
@@ -249,7 +251,9 @@ export type EventType =
   | "list.disbanded"
   /** Голова не підписав остаточний перелік: заявки повернуто авторам. */
   | "list.not_signed"
-  | "list.approved";
+  | "list.approved"
+  | "acting.assigned"
+  | "acting.revoked";
 
 /** Запис журналу (лише доповнюється). */
 export interface JournalEvent {

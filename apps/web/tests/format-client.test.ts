@@ -41,7 +41,7 @@ function fakeFetch(respond: (seen: Seen) => { status: number; json: unknown }): 
   return { fetch: impl as typeof fetch, calls };
 }
 
-const emptySession = { user: { id: "u", name: "n", roleKind: "author", level: null, unitId: "unit-a", title: "t" }, users: [], today: "2027-02-15" };
+const emptySession = { user: { id: "u", name: "n", roleKind: "author", level: null, unitId: "unit-a", title: "t" }, users: [], today: "2027-02-15", actingFor: null };
 
 test("клієнт: шлях і метод беруться з реєстру; читання без ключа ідемпотентності, але з користувачем", async () => {
   const { fetch, calls } = fakeFetch(() => ({ status: 200, json: emptySession }));

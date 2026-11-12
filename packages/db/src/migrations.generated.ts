@@ -64,5 +64,11 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
       "ALTER TABLE \"requests\" ADD COLUMN \"service\" text DEFAULT '' NOT NULL;",
       "ALTER TABLE \"requests\" ADD COLUMN \"funding\" text DEFAULT 'general' NOT NULL;"
     ]
+  },
+  {
+    "tag": "0007_aromatic_maggott",
+    "statements": [
+      "CREATE TABLE \"acting\" (\n\t\"id\" text PRIMARY KEY NOT NULL,\n\t\"deputy_id\" text NOT NULL,\n\t\"principal_id\" text NOT NULL,\n\t\"assigned_by\" text NOT NULL,\n\t\"assigned_at\" text NOT NULL,\n\t\"revoked_at\" text\n);"
+    ]
   }
 ];

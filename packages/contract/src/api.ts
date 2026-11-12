@@ -19,6 +19,7 @@ import {
   Request,
   RequestDetail,
   RequestLine,
+  ActingAssignment,
   FundingSource,
   Unit,
   User,
@@ -62,7 +63,16 @@ export const MarkReadInput = z.object({ ids: z.array(z.number().int()).optional(
 
 // ── Відповіді ─────────────────────────────────────────────────────────────────
 
-export const SessionResponse = z.object({ user: User, users: z.array(User), today: z.string() });
+export const SessionResponse = z.object({
+  user: User,
+  users: z.array(User),
+  today: z.string(),
+  /** ТВО: чиї обов'язки зараз виконує користувач (роль у `user` — уже того, кого заміщає). */
+  actingFor: Id.nullable(),
+});
+export const AssignActingInput = z.object({ principalId: Id, deputyId: Id });
+export const ActingResponse = z.object({ assignment: ActingAssignment });
+export const ActingListResponse = z.object({ assignments: z.array(ActingAssignment) });
 export const ReferenceResponse = z.object({
   units: z.array(Unit),
   kekv: z.array(KekvInfo),
@@ -101,6 +111,9 @@ const endpoint = <T extends Endpoint>(e: T): T => e;
 export const API = {
   // Сесія
   session: endpoint({ method: "GET", path: "/api/session", output: SessionResponse }),
+  actingList: endpoint({ method: "GET", path: "/api/acting", output: ActingListResponse }),
+  assignActing: endpoint({ method: "POST", path: "/api/acting", input: AssignActingInput, output: ActingResponse }),
+  revokeActing: endpoint({ method: "POST", path: "/api/acting/:id/revoke", input: z.object({}), output: ActingResponse }),
   switchRole: endpoint({ method: "POST", path: "/api/session/role", input: SwitchRoleInput, output: SessionResponse }),
   // Довідники
   reference: endpoint({ method: "GET", path: "/api/reference", output: ReferenceResponse }),

@@ -38,7 +38,7 @@ export async function boot(options: { seeded?: boolean; ids?: { next(prefix: str
   async function call<K extends ApiName>(name: K, userId: string, init: Init & { status?: number } = {}) {
     const res = await raw(userId, API[name].method, pathOf(name, init.params), init.body, init.key);
     const json: unknown = await res.json();
-    assert.equal(res.status, init.status ?? (name === "createRequest" || name === "formList" ? 201 : 200), `${name}: статус ${res.status}, тіло ${JSON.stringify(json).slice(0, 300)}`);
+    assert.equal(res.status, init.status ?? (name === "createRequest" || name === "formList" || name === "assignActing" ? 201 : 200), `${name}: статус ${res.status}, тіло ${JSON.stringify(json).slice(0, 300)}`);
     return API[name].output.parse(json) as z.infer<(typeof API)[K]["output"]>;
   }
 

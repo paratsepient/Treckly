@@ -40,7 +40,8 @@ export class ApiError extends Error {
 }
 
 export interface Env {
-  Variables: { user: UserRow };
+  /** `user` — уже з роллю того, кого особа заміщає як ТВО; `actingFor` — кого саме. */
+  Variables: { user: UserRow; actingFor: string | null };
 }
 
 export interface Reply {
@@ -62,10 +63,14 @@ export async function parseBody<S extends z.ZodType>(c: Context<Env>, schema: S)
 }
 
 /** Користувач, від імені якого діє команда. Адміністратор демо дій над заявками не виконує. */
-export function actorOf(user: UserRow): Actor {
+export function actorOf(user: UserRow, actingFor: string | null = null): Actor {
   if (user.roleKind === "author" && user.unitId) return { userId: user.id, role: { kind: "author", unitId: user.unitId } };
   if ((user.roleKind === "preparer" || user.roleKind === "approver") && user.unitId && user.level) {
-    return { userId: user.id, role: { kind: user.roleKind, level: user.level as 1 | 2 | 3 | 4 | 5, unitId: user.unitId } };
+    return {
+      userId: user.id,
+      role: { kind: user.roleKind, level: user.level as 1 | 2 | 3 | 4 | 5, unitId: user.unitId },
+      ...(actingFor ? { actingFor } : {}),
+    };
   }
   if (user.roleKind === "admin") return { userId: user.id, role: { kind: "admin" } };
   throw new DomainError("FORBIDDEN_ROLE", "Ця роль не виконує дій над заявками.", { role: user.roleKind });
@@ -73,7 +78,7 @@ export function actorOf(user: UserRow): Actor {
 
 export function metaOf(c: Context<Env>, expectedRevisions?: Record<string, number>): Meta {
   return {
-    actor: actorOf(c.get("user")),
+    actor: actorOf(c.get("user"), c.get("actingFor")),
     idempotencyKey: c.req.header("idempotency-key") ?? "",
     ...(expectedRevisions ? { expectedRevisions } : {}),
   };

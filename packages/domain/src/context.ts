@@ -68,7 +68,8 @@ export function makeEvent(ctx: DomainContext, meta: Meta, init: EventInit): Jour
     to: init.to ?? null,
     requestVersion: init.requestVersion ?? null,
     revision: init.revision ?? null,
-    data: init.data ?? {},
+    // ТВО: у журналі видно, чиї обов'язки виконувала особа.
+    data: meta.actor.actingFor ? { ...(init.data ?? {}), actingFor: meta.actor.actingFor } : (init.data ?? {}),
   };
 }
 

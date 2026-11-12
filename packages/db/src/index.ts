@@ -24,6 +24,7 @@ export {
 export {
   loadUsers,
   loadUser,
+  loadActing,
   loadUnits,
   loadKekv,
   loadItems,
