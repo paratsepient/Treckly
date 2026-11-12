@@ -22,6 +22,7 @@ import {
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { applySeed, generateSeed, resetDemo, type SeedData } from "../src/index.ts";
+import { allocationIssues } from "@dsp/domain";
 import { seedData } from "../src/browser.ts";
 
 const seed = generateSeed();
@@ -275,4 +276,20 @@ test("браузерна збірка не тягне генератор: browse
     const generateImports = source.split("\n").filter((line) => line.includes("generate.ts"));
     assert.ok(generateImports.every((line) => /^\s*(import|export) type /.test(line)), `${file}: generate.ts лише як тип`);
   }
+});
+
+test("розподіл по в/ч: сума планів в/ч за кожною позицією не більша за план напрямку", () => {
+  const planOf = Object.fromEntries(seed.listPositions.map((p) => [p.id, p.plannedQty]));
+  const rows = seed.property.filter((p) => p.tab === "planned").map((p) => ({ positionId: seed.listPositions.find((l) => l.itemId === p.itemId)!.id, qty: p.qty }));
+  assert.deepEqual(allocationIssues(planOf, rows), []);
+});
+
+test("applySeed відхиляє план в/ч, що перевищує Попередній перелік напрямку", async () => {
+  const position = seed.listPositions[0]!;
+  const broken: SeedData = {
+    ...seed,
+    property: [...seed.property, { id: "prop-over", unitId: seed.property.find((p) => p.tab === "planned")!.unitId, itemId: position.itemId, tab: "planned", qty: position.plannedQty + 1 }],
+  };
+  const { db } = await openDb();
+  await assert.rejects(applySeed(db, broken), /перевищує Попередній перелік/);
 });

@@ -26,3 +26,4 @@ export { buildTrack, type Track, type TrackStep, type TrackStepState } from "./t
 export { computeKpi, type Kpi } from "./kpi.ts";
 
 export { closeNotProcured, confirmProcurement, issueProcured, type ConfirmProcurementInput, type IssueInput, type NotProcuredInput } from "./procurement.ts";
+export { allocationIssues, type AllocationIssue } from "./allocation.ts";

@@ -69,7 +69,14 @@ export function PlannedListScreen() {
     {
       key: "state",
       header: "Стан",
-      render: (p) => (p.inWorkQty > availableOf(p) ? <Badge tone="warning">Заявок більше, ніж вільно</Badge> : <Badge tone="success">У межах плану</Badge>),
+      render: (p) =>
+        scope?.wholeDirection && distributedOf(p) > p.plannedQty ? (
+          <Badge tone="error">Розподілено більше, ніж за напрямком</Badge>
+        ) : p.inWorkQty > availableOf(p) ? (
+          <Badge tone="warning">Заявок більше, ніж вільно</Badge>
+        ) : (
+          <Badge tone="success">У межах плану</Badge>
+        ),
       width: 230,
     },
   ];

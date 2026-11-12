@@ -370,6 +370,11 @@ export function generateSeed(): SeedData {
   const itemOfPosition = new Map(catalog.positions.map((p) => [p.id, p.itemId]));
   const plannedOfPosition = new Map(catalog.positions.map((p) => [p.id, p.plannedQty]));
   const property: SeedProperty[] = [];
+  // Розподіл по в/ч не перевищує план напрямку: типовий набір — рівна частка на в/ч, випадкові позиції — у межах залишку.
+  const allocated = new Map<string, number>();
+  const room = (positionKey: string) => (plannedOfPosition.get(positionKey) ?? 0) - (allocated.get(positionKey) ?? 0);
+  const allocate = (positionKey: string, qty: number) => allocated.set(positionKey, (allocated.get(positionKey) ?? 0) + qty);
+  for (const unit of UNIT_IDS) for (const [positionKey, qty] of sim.plan.get(unit) ?? []) allocate(positionKey, qty);
   for (const unit of UNIT_IDS) {
     for (const tab of ["planned", "on_base", "received"] as const) {
       const rows: { itemId: string; qty: number }[] = [];
@@ -377,7 +382,12 @@ export function generateSeed(): SeedData {
         const plan = new Map(sim.plan.get(unit) ?? []);
         for (const index of CORE_POSITIONS) {
           const key = positionId(index);
-          plan.set(key, Math.max(plan.get(key) ?? 0, plannedOfPosition.get(key) ?? 0));
+          const share = Math.floor((plannedOfPosition.get(key) ?? 0) / UNIT_IDS.length);
+          const extra = Math.max(0, Math.min(share - (plan.get(key) ?? 0), room(key)));
+          if (extra > 0) {
+            plan.set(key, (plan.get(key) ?? 0) + extra);
+            allocate(key, extra);
+          }
         }
         for (const [positionKey, qty] of [...plan].sort(([a], [b]) => a.localeCompare(b))) rows.push({ itemId: itemOfPosition.get(positionKey) as string, qty });
       }
@@ -385,7 +395,17 @@ export function generateSeed(): SeedData {
         catalog.positions.filter((p) => !rows.some((row) => row.itemId === p.itemId)),
         Math.max(0, 5 - rows.length),
       );
-      for (const p of fillers) rows.push({ itemId: p.itemId, qty: faker.number.int({ min: 2, max: 40 }) });
+      for (const p of fillers) {
+        const wanted = faker.number.int({ min: 2, max: 40 });
+        if (tab !== "planned") {
+          rows.push({ itemId: p.itemId, qty: wanted });
+          continue;
+        }
+        const qty = Math.min(wanted, room(p.id));
+        if (qty <= 0) continue;
+        allocate(p.id, qty);
+        rows.push({ itemId: p.itemId, qty });
+      }
       rows.forEach((row, n) => property.push({ id: `prop-${unit}-${tab}-${n + 1}`, unitId: unit, itemId: row.itemId, tab, qty: row.qty }));
     }
   }

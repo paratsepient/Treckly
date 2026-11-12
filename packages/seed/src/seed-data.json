@@ -1057,35 +1057,35 @@
    "unitId": "unit-a",
    "itemId": "item-001",
    "tab": "planned",
-   "qty": 120
+   "qty": 40
   },
   {
    "id": "prop-unit-a-planned-2",
    "unitId": "unit-a",
    "itemId": "item-002",
    "tab": "planned",
-   "qty": 150
+   "qty": 50
   },
   {
    "id": "prop-unit-a-planned-3",
    "unitId": "unit-a",
    "itemId": "item-003",
    "tab": "planned",
-   "qty": 60
+   "qty": 20
   },
   {
    "id": "prop-unit-a-planned-4",
    "unitId": "unit-a",
    "itemId": "item-004",
    "tab": "planned",
-   "qty": 90
+   "qty": 30
   },
   {
    "id": "prop-unit-a-planned-5",
    "unitId": "unit-a",
    "itemId": "item-006",
    "tab": "planned",
-   "qty": 100
+   "qty": 33
   },
   {
    "id": "prop-unit-a-planned-6",
@@ -1134,7 +1134,7 @@
    "unitId": "unit-a",
    "itemId": "item-030",
    "tab": "planned",
-   "qty": 24
+   "qty": 8
   },
   {
    "id": "prop-unit-a-planned-13",
@@ -1225,35 +1225,35 @@
    "unitId": "unit-b",
    "itemId": "item-001",
    "tab": "planned",
-   "qty": 120
+   "qty": 40
   },
   {
    "id": "prop-unit-b-planned-2",
    "unitId": "unit-b",
    "itemId": "item-002",
    "tab": "planned",
-   "qty": 150
+   "qty": 50
   },
   {
    "id": "prop-unit-b-planned-3",
    "unitId": "unit-b",
    "itemId": "item-003",
    "tab": "planned",
-   "qty": 60
+   "qty": 20
   },
   {
    "id": "prop-unit-b-planned-4",
    "unitId": "unit-b",
    "itemId": "item-004",
    "tab": "planned",
-   "qty": 90
+   "qty": 30
   },
   {
    "id": "prop-unit-b-planned-5",
    "unitId": "unit-b",
    "itemId": "item-006",
    "tab": "planned",
-   "qty": 100
+   "qty": 33
   },
   {
    "id": "prop-unit-b-planned-6",
@@ -1281,7 +1281,7 @@
    "unitId": "unit-b",
    "itemId": "item-030",
    "tab": "planned",
-   "qty": 24
+   "qty": 8
   },
   {
    "id": "prop-unit-b-planned-10",
@@ -1372,35 +1372,35 @@
    "unitId": "unit-c",
    "itemId": "item-001",
    "tab": "planned",
-   "qty": 120
+   "qty": 40
   },
   {
    "id": "prop-unit-c-planned-2",
    "unitId": "unit-c",
    "itemId": "item-002",
    "tab": "planned",
-   "qty": 150
+   "qty": 50
   },
   {
    "id": "prop-unit-c-planned-3",
    "unitId": "unit-c",
    "itemId": "item-003",
    "tab": "planned",
-   "qty": 60
+   "qty": 20
   },
   {
    "id": "prop-unit-c-planned-4",
    "unitId": "unit-c",
    "itemId": "item-004",
    "tab": "planned",
-   "qty": 90
+   "qty": 30
   },
   {
    "id": "prop-unit-c-planned-5",
    "unitId": "unit-c",
    "itemId": "item-006",
    "tab": "planned",
-   "qty": 100
+   "qty": 33
   },
   {
    "id": "prop-unit-c-planned-6",
@@ -1421,7 +1421,7 @@
    "unitId": "unit-c",
    "itemId": "item-030",
    "tab": "planned",
-   "qty": 24
+   "qty": 8
   },
   {
    "id": "prop-unit-c-planned-9",
