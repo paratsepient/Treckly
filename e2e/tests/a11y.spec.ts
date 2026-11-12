@@ -31,7 +31,7 @@ for (const screen of SCREENS) {
   });
 }
 
-test("axe: діалоги (повернення, СЕДО) і демо-панель у двох темах", async ({ page }) => {
+test("axe: діалоги (повернення, СЕДО) і демо-середовище у двох темах", async ({ page }) => {
   await openAs(page, "prep-1-unit-a", "/queue");
   await page.getByRole("button", { name: "Повернути…" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -42,12 +42,12 @@ test("axe: діалоги (повернення, СЕДО) і демо-пане�
   }
   await page.keyboard.press("Escape");
 
-  await page.getByRole("button", { name: /Демо-панель/ }).click();
-  await expect(page.getByRole("button", { name: "Скинути демо" })).toBeVisible();
+  await page.getByRole("button", { name: /Демо-середовище/ }).click();
+  await expect(page.getByRole("heading", { name: "Оберіть роль" })).toBeVisible();
   for (const theme of ["light", "dark"] as const) {
     await setTheme(page, theme);
     await page.waitForTimeout(400);
-    expect(await axeViolations(page), `демо-панель, тема ${theme}`).toEqual([]);
+    expect(await axeViolations(page), `демо-середовище, тема ${theme}`).toEqual([]);
   }
 });
 

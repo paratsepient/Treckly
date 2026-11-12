@@ -6,7 +6,6 @@ import { useApiQuery, useBackend } from "../api/hooks.tsx";
 import { formatDate } from "../lib/format.ts";
 import { initialTheme, THEME_KEY, writeSetting, type Theme } from "../lib/storage.ts";
 import { DESKTOP, useMedia } from "../lib/useMedia.ts";
-import { DemoPanel } from "./DemoPanel.tsx";
 import { ShellContext } from "./shell-context.tsx";
 
 type Role = "author" | "preparer" | "approver" | "admin";
@@ -190,7 +189,7 @@ export function Root() {
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
-  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
+  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
   const role = `${user.title}${unit ? ` · ${unit.name}` : ""}`;
   const sidebar = { groups: groupsFor(user.roleKind, unread, user.level), active, user: { name: user.name, role } };
 
@@ -222,7 +221,15 @@ export function Root() {
               <span className="topbar__role" title={role}>
                 {role}
               </span>
-              <DemoPanel />
+              <Button
+                variant={active === "demo" ? "primary" : "secondary"}
+                iconStart={<Icon name="role" />}
+                aria-label={`Демо-середовище: змінити роль. Зараз: ${user.title}`}
+                aria-current={active === "demo" ? "page" : undefined}
+                onClick={() => void navigate({ to: "/demo" })}
+              >
+                Демо
+              </Button>
             </header>
             <Outlet />
           </div>

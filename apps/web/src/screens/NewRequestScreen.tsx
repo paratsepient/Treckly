@@ -242,7 +242,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
       inspectorPlacement="aside"
     >
       {failed ? (
-        <DataState kind="error" title="Не вдалося завантажити дані заявки" description="Оновіть сторінку або скиньте демо в демо-панелі." />
+        <DataState kind="error" title="Не вдалося завантажити дані заявки" description="Оновіть сторінку або скиньте демо в демо-середовищі (кнопка «Демо» вгорі)." />
       ) : !dataReady || !loaded ? (
         <DataState kind="loading" title="Завантаження заявки…" />
       ) : readOnly ? (

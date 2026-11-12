@@ -8,6 +8,7 @@ import { RegistryScreen } from "../screens/RegistryScreen.tsx";
 import { JournalScreen } from "../screens/JournalScreen.tsx";
 import { LevelQueueScreen } from "../screens/LevelQueueScreen.tsx";
 import { NotificationsScreen } from "../screens/NotificationsScreen.tsx";
+import { DemoScreen } from "../screens/DemoScreen.tsx";
 import { useApiQuery } from "../api/hooks.tsx";
 import { homePath, RoleOnly, Root } from "./Root.tsx";
 
@@ -121,7 +122,10 @@ const journalRoute = createRoute({
   ),
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, finalRoute, registryRoute, notificationsRoute, journalRoute]);
+/** Демо-середовище доступне з будь-якої ролі: тут її й обирають. */
+const demoRoute = createRoute({ getParentRoute: () => rootRoute, path: "/demo", component: DemoScreen });
+
+const routeTree = rootRoute.addChildren([indexRoute, demoRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, finalRoute, registryRoute, notificationsRoute, journalRoute]);
 
 /** Хеш-історія: застосунок відкривається зі статичних файлів на localhost без налаштування сервера. */
 export const router = createRouter({ routeTree, history: createHashHistory() });

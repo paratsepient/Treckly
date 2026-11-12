@@ -233,7 +233,7 @@ body {
   font: var(--ix-font-caption);
 }
 
-/* Смуга демо: позначка даних і дата (видно на всіх екранах), роль і демо-панель. */
+/* Смуга демо: позначка даних і дата (видно на всіх екранах), роль і кнопка демо-середовища. */
 .topbar {
   position: sticky;
   top: 0;
@@ -445,12 +445,6 @@ body {
   color: var(--ix-foreground-secondary);
 }
 
-.demo-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ix-space-4);
-  width: min(20rem, calc(100vw - var(--ix-space-12)));
-}
 
 /* На телефоні позначка демо коротша: смуга лишається в один-два рядки. */
 .topbar__short {

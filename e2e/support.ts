@@ -21,7 +21,7 @@ export async function openAs(page: Page, userId: string, hash = "/"): Promise<vo
   await waitReady(page);
 }
 
-/** Зміна ролі посеред сценарію: так само, як у демо-панелі, але без кліків по її елементах. */
+/** Зміна ролі посеред сценарію: так само, як у демо-середовищі, але без кліків по картках ролей. */
 export async function switchTo(page: Page, userId: string, hash = "/"): Promise<void> {
   await page.evaluate((id) => localStorage.setItem("dsp.userId", id), userId);
   // Повне завантаження через порожню сторінку: перехід лише за хешем спрацював би ще у сторінці
@@ -75,8 +75,8 @@ export async function submitSimpleRequest(page: Page, positionId = "pos-002"): P
 /** Рядок таблиці за текстом (номер заявки тощо). */
 export const row = (page: Page, text: string | RegExp) => page.getByRole("row", { name: text });
 
-/** Відкриває демо-панель і натискає кнопку в ній. */
+/** Переходить у демо-середовище кнопкою «Демо» у верхній смузі й натискає дію там. */
 export async function demoAction(page: Page, label: string): Promise<void> {
-  await page.getByRole("button", { name: /Демо-панель/ }).click();
-  await page.getByRole("button", { name: label }).click();
+  await page.getByRole("button", { name: /Демо-середовище/ }).click();
+  await page.getByRole("button", { name: label, exact: true }).click();
 }
