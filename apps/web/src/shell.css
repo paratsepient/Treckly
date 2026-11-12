@@ -38,13 +38,14 @@ body {
   padding: var(--ix-space-2) var(--ix-space-3);
   border-radius: var(--ix-radius-control);
   background: var(--ix-surface-overlay);
-  box-shadow: var(--ix-shadow-floating);
   color: var(--ix-foreground);
   font: var(--ix-font-body-strong);
+  /* Поза фокусом — без тіні: вона визирала б з-за верхнього краю розмитою плямою. */
   transform: translateY(calc(-100% - var(--ix-space-4)));
 }
 
 .skip-link:focus-visible {
+  box-shadow: var(--ix-shadow-floating);
   transform: none;
 }
 
