@@ -19,7 +19,7 @@ const qtyOf = (world: ReturnType<typeof createWorld>, id: string) => Object.from
 
 test("закупівля: адміністрація підтверджує — «Виконано», нове на складі бази, рядки «Закуплено» / «Замінено»", () => {
   const { world, id } = withExtract([byList("l1", "p1", 2), replacement("l2", "p2", 1, "2210", 60_00)]);
-  const outcome = apply(world, confirmProcurement(world.ctx, meta(admin), { request: get(world, id), acceptanceDoc: "АП-17", recipient: "Склад бази", quantities: qtyOf(world, id), positions: POSITIONS }));
+  const outcome = apply(world, confirmProcurement(world.ctx, meta(preparer(5)), { request: get(world, id), acceptanceDoc: "АП-17", recipient: "Склад бази", quantities: qtyOf(world, id), positions: POSITIONS }));
   const request = get(world, id);
   assert.equal(request.status, "procured");
   assert.equal(request.procurement?.acceptanceDoc, "АП-17");
@@ -28,22 +28,23 @@ test("закупівля: адміністрація підтверджує — 
   assert.equal(outcome.notifications[0]?.kind, "request_procured");
 });
 
-test("закупівля: лише адміністрація; документ і отримувач обов'язкові; кількість має збігатися", () => {
+test("закупівля: лише Відділ оборонних ресурсів (рівень 5); документ і отримувач обов'язкові; кількість має збігатися", () => {
   const { world, id } = withExtract([byList("l1", "p1", 2)]);
   const input = (patch = {}) => ({ request: get(world, id), acceptanceDoc: "АП-1", recipient: "Склад", quantities: qtyOf(world, id), positions: POSITIONS, ...patch });
-  throwsCode(() => confirmProcurement(world.ctx, meta(preparer(5)), input()), "FORBIDDEN_ROLE");
+  throwsCode(() => confirmProcurement(world.ctx, meta(admin), input()), "FORBIDDEN_ROLE");
+  throwsCode(() => confirmProcurement(world.ctx, meta(preparer(4)), input()), "FORBIDDEN_ROLE");
   throwsCode(() => confirmProcurement(world.ctx, meta(author), input()), "FORBIDDEN_ROLE");
-  throwsCode(() => confirmProcurement(world.ctx, meta(admin), input({ acceptanceDoc: " " })), "NOTE_REQUIRED");
-  const error = throwsCode(() => confirmProcurement(world.ctx, meta(admin), input({ quantities: { l1: 1 } })), "INVALID_TRANSITION");
+  throwsCode(() => confirmProcurement(world.ctx, meta(preparer(5)), input({ acceptanceDoc: " " })), "NOTE_REQUIRED");
+  const error = throwsCode(() => confirmProcurement(world.ctx, meta(preparer(5)), input({ quantities: { l1: 1 } })), "INVALID_TRANSITION");
   assert.equal(error.details["reason"], "QTY_MISMATCH");
   assert.equal(get(world, id).status, "extract_issued");
 });
 
 test("видача: одним актом — нове в «Отримано», старе із заміни списується; лише після закупівлі", () => {
   const { world, id } = withExtract([byList("l1", "p1", 2), replacement("l2", "p2", 1, "2210", 60_00)]);
-  throwsCode(() => issueProcured(world.ctx, meta(admin), { request: get(world, id), act: "А-1", positions: POSITIONS }), "INVALID_TRANSITION");
-  apply(world, confirmProcurement(world.ctx, meta(admin), { request: get(world, id), acceptanceDoc: "АП-1", recipient: "Склад", quantities: qtyOf(world, id), positions: POSITIONS }));
-  const outcome = apply(world, issueProcured(world.ctx, meta(admin), { request: get(world, id), act: "А-1", positions: POSITIONS }));
+  throwsCode(() => issueProcured(world.ctx, meta(preparer(5)), { request: get(world, id), act: "А-1", positions: POSITIONS }), "INVALID_TRANSITION");
+  apply(world, confirmProcurement(world.ctx, meta(preparer(5)), { request: get(world, id), acceptanceDoc: "АП-1", recipient: "Склад", quantities: qtyOf(world, id), positions: POSITIONS }));
+  const outcome = apply(world, issueProcured(world.ctx, meta(preparer(5)), { request: get(world, id), act: "А-1", positions: POSITIONS }));
   assert.equal(get(world, id).status, "issued");
   assert.equal(get(world, id).procurement?.issueAct, "А-1");
   const moves = outcome.property?.map((p) => [p.tab, p.delta]);
@@ -54,8 +55,8 @@ test("не виконано: примітка обов'язкова, резер�
   const { world, id } = withExtract([byList("l1", "p1", 2)]);
   const reserved = world.budget.total.approvedMinor;
   assert.equal(reserved, 200_00);
-  throwsCode(() => closeNotProcured(world.ctx, meta(admin), { request: get(world, id), note: "", positions: POSITIONS, budget: world.budget }), "NOTE_REQUIRED");
-  apply(world, closeNotProcured(world.ctx, meta(admin), { request: get(world, id), note: "Постачальник не виконав договір", positions: POSITIONS, budget: world.budget }));
+  throwsCode(() => closeNotProcured(world.ctx, meta(preparer(5)), { request: get(world, id), note: "", positions: POSITIONS, budget: world.budget }), "NOTE_REQUIRED");
+  apply(world, closeNotProcured(world.ctx, meta(preparer(5)), { request: get(world, id), note: "Постачальник не виконав договір", positions: POSITIONS, budget: world.budget }));
   const request = get(world, id);
   assert.equal(request.status, "not_procured");
   assert.equal(lineStatus(request, request.lines[0]!), "not_procured");

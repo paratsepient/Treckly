@@ -50,7 +50,16 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
       ];
     case "preparer":
       return [
-        { id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, ...(level === 5 ? [final("Затверджені закупівлі")] : []), inbox] },
+        {
+          id: "work",
+          label: "Робота рівня",
+          items: [
+            { id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> },
+            // Відділ оборонних ресурсів: після підпису Голови — затверджені закупівлі, далі закупівля й видача.
+            ...(level === 5 ? [final("Затверджені закупівлі"), { id: "procurement", label: "Закупівлі й видача", href: "#/procurement", icon: <Icon name="success" /> }] : []),
+            inbox,
+          ],
+        },
         { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "approver":
@@ -67,7 +76,6 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
           id: "admin",
           label: "Адміністрування",
           items: [
-            { id: "procurement", label: "Закупівлі й видача", href: "#/procurement", icon: <Icon name="records" /> },
             registry,
             { id: "acting", label: "ТВО", href: "#/acting", icon: <Icon name="role" /> },
             { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> },
@@ -78,8 +86,8 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
 }
 
 /** Початковий екран ролі. */
-export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/procurement" | "/registry" =>
-  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/registry" : "/lists") : "/procurement";
+export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/registry" =>
+  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/registry" : "/lists") : "/registry";
 
 const initials = (name: string): string =>
   name

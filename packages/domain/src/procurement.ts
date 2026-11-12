@@ -4,13 +4,16 @@ import { DomainError } from "./errors.ts";
 import type { Actor, Budget, Meta, Notification, Outcome, Positions, PropertyChange, Request } from "./types.ts";
 
 /**
- * Після затвердження Головою: адміністрація підтверджує закупівлю (нове — на склад бази, закріплене за в/ч),
+ * Після затвердження Головою: Відділ оборонних ресурсів (рівень 5) підтверджує закупівлю (нове — на склад бази, закріплене за в/ч),
  * видає його одним актом (нове — в «Отримано», старе із замін — на інший облік) або закриває як не виконано
  * (статус заміни знімається, резерв бюджету вивільняється). Розділ 10 концепції, «Адміністрація».
  */
 
-function assertAdmin(actor: Actor): void {
-  if (actor.role.kind !== "admin") throw new DomainError("FORBIDDEN_ROLE", "Закупівлю підтверджує лише адміністрація.");
+/** Закупівлю й видачу веде Відділ оборонних ресурсів — уповноважена особа рівня 5 (рішення користувача 2026-11-12). */
+function assertDefenseDept(actor: Actor): void {
+  if (actor.role.kind !== "preparer" || actor.role.level !== 5) {
+    throw new DomainError("FORBIDDEN_ROLE", "Закупівлю й видачу веде Відділ оборонних ресурсів.");
+  }
 }
 
 function invalid(message: string, details: Readonly<Record<string, unknown>> = {}): DomainError {
@@ -50,7 +53,7 @@ export interface ConfirmProcurementInput {
 
 /** Підтвердити закупівлю: нове — на складі бази, закріплене за в/ч; заявка — «Виконано». */
 export function confirmProcurement(ctx: DomainContext, meta: Meta, input: ConfirmProcurementInput): Outcome {
-  assertAdmin(meta.actor);
+  assertDefenseDept(meta.actor);
   const { request } = input;
   guardRevision(meta, request);
   if (request.status !== "extract_issued") {
@@ -87,7 +90,7 @@ export interface IssueInput {
 
 /** Видати нове одним актом: нове — в «Отримано»; старе із замін МВО здає, воно йде на інший облік. */
 export function issueProcured(ctx: DomainContext, meta: Meta, input: IssueInput): Outcome {
-  assertAdmin(meta.actor);
+  assertDefenseDept(meta.actor);
   const { request } = input;
   guardRevision(meta, request);
   if (request.status !== "procured" || !request.procurement) {
@@ -128,7 +131,7 @@ export interface NotProcuredInput {
 
 /** Закрити як не виконано: закупівля не відбулася — статус заміни знімається, резерв бюджету вивільняється. */
 export function closeNotProcured(ctx: DomainContext, meta: Meta, input: NotProcuredInput): Outcome {
-  assertAdmin(meta.actor);
+  assertDefenseDept(meta.actor);
   const { request } = input;
   guardRevision(meta, request);
   if (request.status !== "extract_issued") {

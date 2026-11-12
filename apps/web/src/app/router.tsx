@@ -129,7 +129,7 @@ const procurementRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/procurement",
   component: () => (
-    <RoleOnly roles={["admin"]}>
+    <RoleOnly roles={["preparer"]} levels={[5]}>
       <ProcurementScreen />
     </RoleOnly>
   ),

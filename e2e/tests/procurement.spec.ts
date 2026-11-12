@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { AUTHOR_A, openAs, requestCard, switchTo, toast } from "../support.ts";
 
-/** Після підпису Голови: адміністрація підтверджує закупівлю, видає нове актом; автор бачить статус і майно. */
+/** Після підпису Голови: Відділ оборонних ресурсів підтверджує закупівлю, видає нове актом; автор бачить статус і майно. */
 test("закупівля й видача: «Виконано · на складі бази» → «Виконано · видано», майно в/ч оновлюється", async ({ page }) => {
-  await openAs(page, "admin-demo", "/");
+  await openAs(page, "prep-5-vor", "/queue");
+  await page.getByRole("link", { name: "Закупівлі й видача" }).click();
   await expect(page).toHaveURL(/#\/procurement$/);
   const card = page.getByRole("article", { name: /ЗМ-0001/ });
   await expect(card).toBeVisible();
