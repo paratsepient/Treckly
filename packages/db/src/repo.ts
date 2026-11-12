@@ -27,6 +27,7 @@ import {
   listPositions,
   nomenclature,
   notifications,
+  propertyItems,
   requestLines,
   requests,
 } from "./schema.ts";
@@ -244,6 +245,21 @@ export async function loadPositions(q: Queryable, directionId: string): Promise<
   return Object.fromEntries(
     rows.map((r) => [r.id, { id: r.id, code: r.code, name: r.name, kekv: r.kekv, priceMinor: r.priceMinor, availableQty: r.planned - r.reserved }]),
   );
+}
+
+/**
+ * План в/ч на 2027 рік: id позиції переліку напрямку → скільки заплановано в підрозділі (вкладка «Заплановано»
+ * в «Моєму майні»). Позиції, якої немає в плані в/ч, у відповіді немає.
+ */
+export async function loadUnitPlan(q: Queryable, unitId: string, directionId: string): Promise<Record<string, number>> {
+  const rows = await q
+    .select({ positionId: listPositions.id, qty: propertyItems.qty })
+    .from(propertyItems)
+    .innerJoin(listPositions, eq(listPositions.itemId, propertyItems.itemId))
+    .where(and(eq(propertyItems.unitId, unitId), eq(propertyItems.tab, "planned"), eq(listPositions.directionId, directionId)));
+  const plan: Record<string, number> = {};
+  for (const row of rows) plan[row.positionId] = (plan[row.positionId] ?? 0) + row.qty;
+  return plan;
 }
 
 type RequestRow = typeof requests.$inferSelect;

@@ -33,10 +33,13 @@ function describe(issue: Issue, rowOf: ReadonlyMap<string, number>, warning: boo
   const where = row !== undefined ? `Рядок ${row}: ` : "";
   switch (issue.code) {
     case "NOT_IN_LIST":
-      return `${where}позиції немає в Попередньому переліку напрямку.`;
+      return d["reason"] === "NOT_IN_UNIT_PLAN"
+        ? `${where}позиції немає в плані вашої в/ч на 2027 рік.`
+        : `${where}позиції немає в Попередньому переліку напрямку.`;
     case "QTY_EXCEEDED":
-      return d["reason"] === "QTY_INVALID"
-        ? `${where}кількість має бути цілим числом більше нуля.`
+      if (d["reason"] === "QTY_INVALID") return `${where}кількість має бути цілим числом більше нуля.`;
+      return d["reason"] === "UNIT_PLAN_EXCEEDED"
+        ? `${where}запитано ${String(d["requested"])}, а в плані вашої в/ч ${String(d["available"])}.`
         : `${where}запитано ${String(d["requested"])}, а доступно ${String(d["available"])}.`;
     case "KEKV_MISMATCH":
       return `${where}КЕКВ рядка (${String(d["lineKekv"])}) не збігається з КЕКВ позиції (${String(d["positionKekv"])}).`;

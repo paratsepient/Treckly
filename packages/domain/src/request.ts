@@ -99,6 +99,8 @@ export function editLines(ctx: DomainContext, meta: Meta, input: { request: Requ
 export interface SubmitInput {
   readonly request: Request;
   readonly positions: Positions;
+  /** План в/ч автора: позиція → кількість (див. `CheckInput.unitPlan`). */
+  readonly unitPlan: Readonly<Record<string, number>>;
   readonly budget: Budget;
   /** Усі заявки напрямку (для суми «у роботі»). */
   readonly requests: readonly Request[];
@@ -118,6 +120,7 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
   const report = checkRequest({
     lines: request.lines,
     positions: input.positions,
+    unitPlan: input.unitPlan,
     budget: input.budget,
     requests: input.requests,
     requestId: request.id,

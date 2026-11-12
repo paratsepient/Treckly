@@ -77,6 +77,34 @@ test("автоперевірки: кожен код помилки показа�
   assert.equal(after.request.revision, request.revision);
 });
 
+test("план в/ч: позиція напрямку, якої немає в плані в/ч, не проходить; більше за план — теж", async () => {
+  const h = await boot();
+  const { items } = await h.call("property", AUTHOR_A);
+  const plannedNames = new Set(items.filter((i) => i.tab === "planned").map((i) => i.item.name));
+  const { positions } = await h.call("positions", AUTHOR_A);
+  const outside = positions.find((p) => !plannedNames.has(p.name) && p.availableQty > 0);
+  assert.ok(outside, "у демо-даних є позиція напрямку поза планом в/ч А0001");
+
+  const notPlanned = await h.call("checkRequest", AUTHOR_A, { body: { lines: [lineOf(outside.id, outside.kekv)] } });
+  assert.deepEqual(notPlanned.report.errors.map((e) => [e.code, e.details["reason"]]), [["NOT_IN_LIST", "NOT_IN_UNIT_PLAN"]]);
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(outside.id, outside.kekv)], justification: "Потреба підрозділу на 2027 рік." } });
+  const refused = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  assert.equal(refused.code, "NOT_IN_LIST");
+  assert.equal((await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request.status, "draft");
+
+  // Інша в/ч має власний план: що заплановано в А0001, не означає, що можна в А0002.
+  const planB = new Set((await h.call("property", "author-unit-b")).items.filter((i) => i.tab === "planned").map((i) => i.item.name));
+  const onlyA = positions.find((p) => plannedNames.has(p.name) && !planB.has(p.name));
+  if (onlyA) {
+    const other = await h.call("checkRequest", "author-unit-b", { body: { lines: [lineOf(onlyA.id, onlyA.kekv)] } });
+    assert.equal(other.report.errors[0]?.details["reason"], "NOT_IN_UNIT_PLAN");
+  }
+  const planned = items.find((i) => i.tab === "planned")!;
+  const position = positions.find((p) => p.name === planned.item.name)!;
+  const over = await h.call("checkRequest", AUTHOR_A, { body: { lines: [lineOf(position.id, position.kekv, planned.qty + 1)] } });
+  assert.ok(over.report.errors.some((e) => e.code === "QTY_EXCEEDED"));
+});
+
 test("перевірка не змінює стан: ні заявок, ні журналу", async () => {
   const h = await boot();
   const [requests, journal] = [await h.count("requests"), await h.count("journal")];

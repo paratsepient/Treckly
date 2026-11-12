@@ -78,7 +78,7 @@ function allOutcomes() {
   const created = createDraft(ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." });
   outcomes.push(created);
   let req = created.requests[0]!;
-  const submitted = submit(ctx, meta(author), { request: req, positions, budget, requests: [] });
+  const submitted = submit(ctx, meta(author), { request: req, positions, unitPlan: { p1: 5 }, budget, requests: [] });
   outcomes.push(submitted);
   req = submitted.requests[0]!;
   const returned = returnRequest(ctx, meta(prep(1)), { request: req, note: "Уточніть" });

@@ -22,6 +22,11 @@ export interface CheckReport {
 export interface CheckInput {
   readonly lines: readonly RequestLine[];
   readonly positions: Positions;
+  /**
+   * План в/ч автора на 2027 рік: скільки кожної позиції переліку заплановано в підрозділі (id позиції → кількість).
+   * Автор може замовити лише те, що заплановано на його частину, і не більше запланованого.
+   */
+  readonly unitPlan: Readonly<Record<string, number>>;
   readonly budget: Budget;
   /** Усі заявки напрямку: з них береться сума «у роботі». */
   readonly requests: readonly Request[];
@@ -34,8 +39,9 @@ function budgetIssue(code: "BUDGET_EXCEEDED", issue: BudgetIssue, message: strin
 }
 
 /**
- * Автоперевірки при створенні (правило 7): позиція є в переліку; кількість не
- * перевищує доступну; КЕКВ рядка збігається з КЕКВ позиції; сума не перевищує залишок.
+ * Автоперевірки при створенні (правило 7): позиція є в переліку напрямку й у плані в/ч;
+ * кількість не перевищує ні плану в/ч, ні доступної за переліком; КЕКВ рядка збігається
+ * з КЕКВ позиції; сума не перевищує залишок.
  */
 export function checkRequest(input: CheckInput): CheckReport {
   const errors: CheckIssue[] = [];
@@ -48,12 +54,29 @@ export function checkRequest(input: CheckInput): CheckReport {
       errors.push({ code: "NOT_IN_LIST", lineId: line.id, message: "Позиції немає в Попередньому переліку напрямку.", details: { positionId: line.positionId } });
       continue;
     }
+    const planned = input.unitPlan[line.positionId];
+    if (planned === undefined) {
+      errors.push({
+        code: "NOT_IN_LIST",
+        lineId: line.id,
+        message: "Позиції немає в плані вашої в/ч на 2027 рік.",
+        details: { positionId: line.positionId, reason: "NOT_IN_UNIT_PLAN" },
+      });
+      continue;
+    }
     if (!Number.isInteger(line.qty) || line.qty <= 0) {
       errors.push({ code: "QTY_EXCEEDED", lineId: line.id, message: "Кількість — додатне ціле число.", details: { qty: line.qty, reason: "QTY_INVALID" } });
     } else {
       const total = (qtyByPosition.get(line.positionId) ?? 0) + line.qty;
       qtyByPosition.set(line.positionId, total);
-      if (total > position.availableQty) {
+      if (total > planned) {
+        errors.push({
+          code: "QTY_EXCEEDED",
+          lineId: line.id,
+          message: "Кількість перевищує заплановану для вашої в/ч.",
+          details: { positionId: line.positionId, requested: total, available: planned, reason: "UNIT_PLAN_EXCEEDED" },
+        });
+      } else if (total > position.availableQty) {
         errors.push({
           code: "QTY_EXCEEDED",
           lineId: line.id,

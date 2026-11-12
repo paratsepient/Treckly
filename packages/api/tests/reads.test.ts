@@ -61,15 +61,20 @@ test("«Моє майно»: лише своя в/ч, три вкладки (п�
   assert.deepEqual(noUnit.items, []);
 });
 
-test("майно іншої в/ч: автор лише своєї, рівні погодження — будь-якої, і план узгоджено із заявкою", async () => {
+test("майно іншої в/ч: автор лише своєї, рівні погодження — будь-якої, і план охоплює подані заявки", async () => {
   const h = await boot();
   const own = await h.call("unitProperty", AUTHOR_A, { params: { id: "unit-a" } });
   assert.ok(own.items.length >= 15 && own.items.every((i) => i.unitId === "unit-a"));
   assert.equal((await h.fail("unitProperty", AUTHOR_A, 403, { params: { id: "unit-b" } })).code, "FORBIDDEN_ROLE");
   const seen = await h.call("unitProperty", "prep-2-brig-1", { params: { id: "unit-b" } });
   assert.ok(seen.items.length >= 15 && seen.items.every((i) => i.unitId === "unit-b"));
-  // Навмисна розбіжність для показу: тепловізор в/ч А0001 не заплановано.
-  assert.ok(!own.items.some((i) => i.tab === "planned" && i.item.name.startsWith("Тепловізор")));
+  // План в/ч охоплює все, що просили заявки підрозділу (заявка подається лише за планом).
+  const planned = new Set(own.items.filter((i) => i.tab === "planned").map((i) => i.item.name));
+  const { requests } = await h.call("myRequests", AUTHOR_A);
+  const { positions } = await h.call("positions", AUTHOR_A);
+  for (const r of requests.filter((x) => x.status !== "draft")) {
+    for (const line of r.lines) assert.ok(planned.has(positions.find((p) => p.id === line.positionId)!.name), `${r.id}: ${line.positionId} є в плані в/ч`);
+  }
 });
 
 test("мої заявки: лише власні, нові згори; реєстр — усі", async () => {

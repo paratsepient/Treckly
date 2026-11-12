@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { approveList, createDraft, disbandList, formList, submit } from "../src/index.ts";
-import { all, apply, approver, byList, createWorld, get, getList, meta, POSITIONS, preparer, ROUTE } from "./fixtures.ts";
+import { all, apply, approver, byList, createWorld, get, getList, meta, POSITIONS, preparer, ROUTE, UNIT_PLAN } from "./fixtures.ts";
 import { approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
@@ -168,7 +168,7 @@ test("заявка іншої в/ч не потрапляє в перелік ц
   const route2 = ["unit-vch-2", "unit-brig", "unit-ru", "unit-adm", "unit-vodr"] as const;
   const author2 = { userId: "u-author-2", role: { kind: "author", unitId: "unit-vch-2" } } as const;
   const [draft] = apply(world, createDraft(world.ctx, meta(author2), { route: route2, lines: [byList("l1", "p2", 1)], justification: "Потреба підрозділу на 2027 рік." })).requests;
-  apply(world, submit(world.ctx, meta(author2), { request: draft!, positions: POSITIONS, budget: world.budget, requests: all(world) }));
+  apply(world, submit(world.ctx, meta(author2), { request: draft!, positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: all(world) }));
 
   // Уповноважений в/ч №1 не може сформувати перелік із заявкою в/ч №2.
   throwsCode(() => formAt(world, 1, [own, draft!.id]), "INVALID_TRANSITION");

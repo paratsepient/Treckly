@@ -6,13 +6,13 @@ import {
   type Level,
   type RequestLine,
 } from "../src/index.ts";
-import { all, apply, approver, author, get, getList, meta, POSITIONS, preparer, ROUTE, type World } from "./fixtures.ts";
+import { all, apply, approver, author, get, getList, meta, POSITIONS, preparer, ROUTE, type World, UNIT_PLAN } from "./fixtures.ts";
 
 /** Створює й подає заявку; повертає її id. */
 export function submitted(world: World, lines: readonly RequestLine[]): string {
   const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." })).requests;
   if (!draft) throw new Error("немає чернетки");
-  apply(world, submit(world.ctx, meta(author), { request: draft, positions: POSITIONS, budget: world.budget, requests: all(world) }));
+  apply(world, submit(world.ctx, meta(author), { request: draft, positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: all(world) }));
   return draft.id;
 }
 

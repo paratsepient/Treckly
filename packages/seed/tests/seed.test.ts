@@ -160,8 +160,13 @@ test("бюджет: ліміти не менші за затверджене; л
   assert.equal(remaining3110, 100_000_00);
 });
 
+/** План в/ч А0001 з демо-даних: позиція переліку → заплановано. */
+const unitPlanA: Record<string, number> = Object.fromEntries(
+  seed.property.filter((p) => p.unitId === "unit-a" && p.tab === "planned").map((p) => [seed.listPositions.find((l) => l.itemId === p.itemId)!.id, p.qty]),
+);
+
 function checkNew(lines: RequestLine[], positions: Awaited<ReturnType<typeof loadPositions>>) {
-  return checkRequest({ lines, positions, budget: seed.budget, requests: [...final.requests.values()] });
+  return checkRequest({ lines, positions, unitPlan: unitPlanA, budget: seed.budget, requests: [...final.requests.values()] });
 }
 
 test("демо-перевірки: велика заявка на 3110 блокується бюджетом, середня дає попередження", async () => {

@@ -92,6 +92,11 @@ const rows = new Map([["l1", 2]]);
 test("тексти проблем: кожен код пояснено людською мовою, з номером рядка", () => {
   assert.equal(issueText(issue("NOT_IN_LIST", {}), rows), "Рядок 2: позиції немає в Попередньому переліку напрямку.");
   assert.equal(issueText(issue("QTY_EXCEEDED", { requested: 500, available: 24 }), rows), "Рядок 2: запитано 500, а доступно 24.");
+  assert.equal(
+    issueText(issue("QTY_EXCEEDED", { requested: 9, available: 4, reason: "UNIT_PLAN_EXCEEDED" }), rows),
+    "Рядок 2: запитано 9, а в плані вашої в/ч 4.",
+  );
+  assert.equal(issueText(issue("NOT_IN_LIST", { reason: "NOT_IN_UNIT_PLAN" }), rows), "Рядок 2: позиції немає в плані вашої в/ч на 2027 рік.");
   assert.match(issueText(issue("QTY_EXCEEDED", { reason: "QTY_INVALID" }), rows), /цілим числом більше нуля/);
   assert.match(issueText(issue("KEKV_MISMATCH", { lineKekv: "3110", positionKekv: "2210" }), rows), /КЕКВ рядка \(3110\).*КЕКВ позиції \(2210\)/);
   assert.match(

@@ -23,6 +23,9 @@ export const POSITIONS: Positions = {
   p3: { id: "p3", code: "B-001", name: "Станція зв'язку", kekv: "3110", priceMinor: 200_00, availableQty: 3 },
 };
 
+/** План в/ч у тестах: усе, що є в переліку, заплановано з великим запасом, тож обмежує перелік напрямку (окремі тести звужують план). */
+export const UNIT_PLAN: Readonly<Record<string, number>> = Object.fromEntries(Object.values(POSITIONS).map((p) => [p.id, p.availableQty * 10]));
+
 export const BUDGET: Budget = {
   total: { limitMinor: 1_000_00, approvedMinor: 0 },
   perKekv: {

@@ -69,6 +69,9 @@ const START = "2027-02-01T09:00:00Z";
 const PREFIX = { "2210": "ПМ", "2220": "МД", "3110": "ОБ" } as const;
 const kopecks = (uah: number): number => uah * 100;
 
+/** Позиції, які заплановано в кожній в/ч для показу: акумулятори, зарядка, антени, квадрокоптер. */
+const CORE_POSITIONS = [1, 2, 3, 4, 6, 30] as const;
+
 /** Типові обґрунтування рапортів (синтетичні). */
 const JUSTIFICATIONS = [
   "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
@@ -176,12 +179,26 @@ class Simulation {
     return (out.requests[0] as Request).id;
   }
 
+  /** План в/ч: підрозділ → позиція → заплановано. Росте разом зі сценарієм: те, що просять, має бути заплановано. */
+  readonly plan = new Map<string, Map<string, number>>();
+
+  /** Доводить план в/ч до потреб заявки (із запасом) і повертає його для автоперевірок. */
+  private planFor(unit: string, request: Request): Record<string, number> {
+    const own = this.plan.get(unit) ?? new Map<string, number>();
+    this.plan.set(unit, own);
+    const need = new Map<string, number>();
+    for (const line of request.lines) need.set(line.positionId, (need.get(line.positionId) ?? 0) + line.qty);
+    for (const [positionKey, qty] of need) own.set(positionKey, Math.max(own.get(positionKey) ?? 0, qty + Math.ceil(qty / 5) + 1));
+    return Object.fromEntries(own);
+  }
+
   submit(id: string): void {
     const request = this.get(id);
     this.record(
       submit(this.ctx, this.meta(this.authorOf(request.route[0] as UnitKey)), {
         request,
         positions: this.positions(),
+        unitPlan: this.planFor(request.route[0], request),
         budget: this.budget,
         requests: [...this.requests.values()],
       }),
@@ -343,31 +360,24 @@ export function generateSeed(): SeedData {
   };
 
   // ── «Моє майно» ─────────────────────────────────────────────────────────────
-  // План в/ч (вкладка «Заплановано») узгоджено із заявками підрозділу: те, що просили, заплановано з запасом.
-  // Навмисні розбіжності для показу звірки: тепловізор (поз. 39) в/ч А0001 не заплановано взагалі,
-  // а акумуляторів 4S (поз. 4) в/ч А0003 заплановано менше, ніж у заявці.
+  // План в/ч (вкладка «Заплановано») — це те, що підрозділ може замовляти: заявка подається лише за планом.
+  // У план потрапляє все, що просили заявки в/ч (із запасом), типовий набір для демо й кілька випадкових позицій.
   const itemOfPosition = new Map(catalog.positions.map((p) => [p.id, p.itemId]));
-  const planOverride: Record<string, number | null> = { "unit-a:pos-039": null, "unit-c:pos-004": 4 };
-  const requestedBy = new Map<string, Map<string, number>>();
-  for (const r of sim.requests.values()) {
-    const unit = r.route[0];
-    const own = requestedBy.get(unit) ?? new Map<string, number>();
-    for (const line of r.lines) own.set(line.positionId, (own.get(line.positionId) ?? 0) + line.qty);
-    requestedBy.set(unit, own);
-  }
+  const plannedOfPosition = new Map(catalog.positions.map((p) => [p.id, p.plannedQty]));
   const property: SeedProperty[] = [];
   for (const unit of UNIT_IDS) {
     for (const tab of ["planned", "on_base", "received"] as const) {
       const rows: { itemId: string; qty: number }[] = [];
       if (tab === "planned") {
-        for (const [positionKey, requested] of [...(requestedBy.get(unit) ?? new Map<string, number>())].sort(([a], [b]) => a.localeCompare(b))) {
-          const override = planOverride[`${unit}:${positionKey}`];
-          if (override === null) continue;
-          rows.push({ itemId: itemOfPosition.get(positionKey) as string, qty: override ?? requested + faker.number.int({ min: 2, max: 12 }) });
+        const plan = new Map(sim.plan.get(unit) ?? []);
+        for (const index of CORE_POSITIONS) {
+          const key = positionId(index);
+          plan.set(key, Math.max(plan.get(key) ?? 0, plannedOfPosition.get(key) ?? 0));
         }
+        for (const [positionKey, qty] of [...plan].sort(([a], [b]) => a.localeCompare(b))) rows.push({ itemId: itemOfPosition.get(positionKey) as string, qty });
       }
       const fillers = faker.helpers.arrayElements(
-        catalog.positions.filter((p) => !rows.some((row) => row.itemId === p.itemId) && planOverride[`${unit}:${p.id}`] !== null),
+        catalog.positions.filter((p) => !rows.some((row) => row.itemId === p.itemId)),
         Math.max(0, 5 - rows.length),
       );
       for (const p of fillers) rows.push({ itemId: p.itemId, qty: faker.number.int({ min: 2, max: 40 }) });

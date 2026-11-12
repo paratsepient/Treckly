@@ -12,6 +12,7 @@ export {
   type StoredNotification,
   loadBudget,
   loadPositions,
+  loadUnitPlan,
   loadRequests,
   loadRequest,
   loadLists,

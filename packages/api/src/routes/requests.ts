@@ -6,6 +6,7 @@ import {
   loadList,
   loadNow,
   loadPositions,
+  loadUnitPlan,
   loadRequest,
   loadRequests,
   loadRequestJournal,
@@ -45,9 +46,9 @@ async function requireRequest(q: Queryable, id: string): Promise<Request> {
 }
 
 /** Довідники напрямку, потрібні автоперевіркам. */
-async function checkState(q: Queryable, direction: string): Promise<Pick<SubmitInput, "positions" | "budget" | "requests">> {
-  const [positions, budget, requests] = await Promise.all([loadPositions(q, direction), loadBudget(q, direction), loadRequests(q)]);
-  return { positions, budget, requests };
+async function checkState(q: Queryable, direction: string, unitId: string): Promise<Pick<SubmitInput, "positions" | "unitPlan" | "budget" | "requests">> {
+  const [positions, unitPlan, budget, requests] = await Promise.all([loadPositions(q, direction), loadUnitPlan(q, unitId, direction), loadBudget(q, direction), loadRequests(q)]);
+  return { positions, unitPlan, budget, requests };
 }
 
 export function requestRoutes(db: DspDb, run: CommandRunner) {
@@ -94,22 +95,23 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   /** Автоперевірки без збереження: показують проблеми й вплив на бюджет під час заповнення. */
   app.post("/api/requests/check", async (c) => {
     const { lines, requestId } = await parseBody(c, API.checkRequest.input);
-    const direction = directionOf(await loadUnits(db), c.get("user").unitId ?? "");
-    const state = await checkState(db, direction);
+    const unitId = c.get("user").unitId ?? "";
+    const direction = directionOf(await loadUnits(db), unitId);
+    const state = await checkState(db, direction, unitId);
     return c.json({ report: checkRequest({ lines, ...state, ...(requestId ? { requestId } : {}) }) });
   });
 
   app.post("/api/requests/:id/submit", async (c) => {
     const { expectedRevision } = await parseBody(c, API.submitRequest.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
-      submit(ctx, meta, { request, ...(await checkState(tx, request.route[3])) }),
+      submit(ctx, meta, { request, ...(await checkState(tx, request.route[3], request.route[0])) }),
     );
   });
 
   app.post("/api/requests/:id/new-version", async (c) => {
     const { expectedRevision } = await parseBody(c, API.newVersion.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
-      resubmit(ctx, meta, { request, ...(await checkState(tx, request.route[3])) }),
+      resubmit(ctx, meta, { request, ...(await checkState(tx, request.route[3], request.route[0])) }),
     );
   });
 

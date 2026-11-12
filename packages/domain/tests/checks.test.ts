@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { checkRequest, parseSedoNumber } from "../src/index.ts";
-import { all, BUDGET, byList, createWorld, POSITIONS } from "./fixtures.ts";
+import { all, BUDGET, byList, createWorld, POSITIONS, UNIT_PLAN } from "./fixtures.ts";
 import { submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
-const base = { positions: POSITIONS, budget: BUDGET, requests: [] };
+const base = { positions: POSITIONS, unitPlan: UNIT_PLAN, budget: BUDGET, requests: [] };
 
 test("автоперевірки: коректна заявка проходить без помилок і попереджень", () => {
   const report = checkRequest({ ...base, lines: [byList("l1", "p1", 2), byList("l2", "p3", 1)] });
@@ -91,4 +91,35 @@ test("СЕДО: приймає лише числа", () => {
   for (const bad of ["", "  ", "12a", "12-34", "0", "-5", "1.5", "1 000", "9".repeat(16), null, undefined]) {
     throwsCode(() => parseSedoNumber(bad), "SEDO_NUMBER_INVALID");
   }
+});
+
+test("план в/ч: позиції немає в плані підрозділу — NOT_IN_LIST, хоча в переліку напрямку вона є", () => {
+  const { p3: _omitted, ...plan } = UNIT_PLAN;
+  const report = checkRequest({ ...base, unitPlan: plan, lines: [byList("l1", "p3", 1), byList("l2", "p1", 1)] });
+  assert.equal(report.ok, false);
+  assert.equal(report.errors.length, 1);
+  const [issue] = report.errors;
+  assert.equal(issue?.code, "NOT_IN_LIST");
+  assert.equal(issue?.lineId, "l1");
+  assert.equal(issue?.details["reason"], "NOT_IN_UNIT_PLAN");
+});
+
+test("план в/ч: кількість більша за заплановану в підрозділі — QTY_EXCEEDED, навіть якщо за переліком напрямку її вистачає", () => {
+  const report = checkRequest({ ...base, unitPlan: { ...UNIT_PLAN, p1: 2 }, lines: [byList("l1", "p1", 3)] }); // за переліком доступно 10
+  assert.equal(report.ok, false);
+  const [issue] = report.errors;
+  assert.equal(issue?.code, "QTY_EXCEEDED");
+  assert.deepEqual([issue?.details["reason"], issue?.details["requested"], issue?.details["available"]], ["UNIT_PLAN_EXCEEDED", 3, 2]);
+});
+
+test("план в/ч: у межах плану, але більше за доступне за переліком напрямку — теж помилка (діє менша межа)", () => {
+  const report = checkRequest({ ...base, lines: [byList("l1", "p3", 4)] }); // план 30, доступно 3
+  assert.equal(report.errors[0]?.code, "QTY_EXCEEDED");
+  assert.equal(report.errors[0]?.details["available"], 3);
+});
+
+test("план в/ч: кількість однієї позиції в кількох рядках підсумовується з планом", () => {
+  const report = checkRequest({ ...base, unitPlan: { ...UNIT_PLAN, p1: 3 }, lines: [byList("l1", "p1", 2), byList("l2", "p1", 2)] });
+  // Накопичувальна сума, як і для переліку напрямку: перший рядок (2 з 3) проходить, другий (разом 4) — ні.
+  assert.deepEqual(report.errors.map((e) => [e.lineId, e.details["reason"]]), [["l2", "UNIT_PLAN_EXCEEDED"]]);
 });

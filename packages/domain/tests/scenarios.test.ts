@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { editLines, issueExtracts, resubmit, returnRequest, withdraw } from "../src/index.ts";
-import { all, apply, author, byList, createWorld, get, getList, meta, POSITIONS, preparer, replacement, system } from "./fixtures.ts";
+import { all, apply, author, byList, createWorld, get, getList, meta, POSITIONS, preparer, replacement, system, UNIT_PLAN } from "./fixtures.ts";
 import { advanceTo, approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
@@ -25,7 +25,7 @@ test("E3: повернення на рівні 3, автор виправляє 
   assert.deepEqual(recipients, [2, 1, "author"]);
 
   apply(world, editLines(world.ctx, meta(author), { request: get(world, id), lines: [byList("l1", "p1", 1)] }));
-  apply(world, resubmit(world.ctx, meta(author), { request: get(world, id), positions: POSITIONS, budget: world.budget, requests: all(world) }));
+  apply(world, resubmit(world.ctx, meta(author), { request: get(world, id), positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: all(world) }));
   const request = get(world, id);
   assert.equal(request.version, 2);
   assert.equal(request.level, 1);

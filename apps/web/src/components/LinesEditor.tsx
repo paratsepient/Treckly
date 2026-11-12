@@ -99,7 +99,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                   >
                     {positions.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.code} · {p.name} (доступно {p.availableQty})
+                        {p.code} · {p.name} (можна замовити {p.availableQty})
                       </option>
                     ))}
                   </Select>

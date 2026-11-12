@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createDraft, editLines, resubmit, returnRequest, submit, withdraw } from "../src/index.ts";
-import { all, apply, approver, author, byList, createWorld, get, getList, meta, otherAuthor, POSITIONS, preparer, ROUTE } from "./fixtures.ts";
+import { all, apply, approver, author, byList, createWorld, get, getList, meta, otherAuthor, POSITIONS, preparer, ROUTE, UNIT_PLAN } from "./fixtures.ts";
 import { advanceTo, approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
@@ -13,6 +13,7 @@ function draftOf(world: ReturnType<typeof createWorld>, lines = [byList("l1", "p
 const submitInput = (world: ReturnType<typeof createWorld>, id: string) => ({
   request: get(world, id),
   positions: POSITIONS,
+  unitPlan: UNIT_PLAN,
   budget: world.budget,
   requests: all(world),
 });
@@ -235,4 +236,13 @@ test("обґрунтування: без нього заявку не подат
   assert.equal(get(world, blank!.id).justification, "Заміна зношеного майна.");
   apply(world, submit(world.ctx, meta(author), submitInput(world, blank!.id)));
   assert.equal(get(world, blank!.id).status, "at_level");
+});
+
+test("подати: заявку за позицією, якої немає в плані в/ч, не прийнято, чернетка лишається", () => {
+  const world = createWorld();
+  const id = draftOf(world, [byList("l1", "p1", 1)]);
+  const { p1: _omitted, ...plan } = UNIT_PLAN;
+  const error = throwsCode(() => submit(world.ctx, meta(author), { ...submitInput(world, id), unitPlan: plan }), "NOT_IN_LIST");
+  assert.ok(Array.isArray(error.details["issues"]));
+  assert.equal(get(world, id).status, "draft");
 });

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { buildTrack, editLines, resubmit, returnRequest, withdraw, type Track } from "../src/index.ts";
-import { all, apply, author, byList, createWorld, get, meta, POSITIONS, preparer } from "./fixtures.ts";
+import { all, apply, author, byList, createWorld, get, meta, POSITIONS, preparer, UNIT_PLAN } from "./fixtures.ts";
 import { advanceTo, approveAt, formAt, submitted } from "./flow.ts";
 
 const states = (track: Track) => track.map((s) => s.state);
@@ -54,7 +54,7 @@ test("нова версія: трек починається знову з пе�
   apply(world, returnRequest(world.ctx, meta(preparer(3)), { request: get(world, id), note: "ні" }));
   apply(world, editLines(world.ctx, meta(author), { request: get(world, id), lines: [byList("l1", "p1", 2)] }));
   world.clock.advanceDays(2);
-  apply(world, resubmit(world.ctx, meta(author), { request: get(world, id), positions: POSITIONS, budget: world.budget, requests: all(world) }));
+  apply(world, resubmit(world.ctx, meta(author), { request: get(world, id), positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: all(world) }));
   const track = trackOf(world, id);
   assert.equal(get(world, id).version, 2);
   assert.deepEqual(states(track), ["current", "pending", "pending", "pending", "pending"]);

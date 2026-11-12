@@ -53,6 +53,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
 
   const reference = useApiQuery("reference");
   const positionsQuery = useApiQuery("positions");
+  const propertyQuery = useApiQuery("property");
   const budgetQuery = useApiQuery("budget");
   const detail = useApiQuery("requestDetail", { params: { id: requestId ?? "" } }, { enabled: requestId !== undefined });
 
@@ -70,8 +71,21 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const server = useRef<ServerState>({ id: null, revision: 0, status: null, version: 1, savedKey: EMPTY_KEY });
 
   const items = useMemo<readonly CatalogItem[]>(() => reference.data?.items ?? [], [reference.data]);
-  const positions = useMemo<readonly CatalogPosition[]>(() => positionsQuery.data?.positions ?? [], [positionsQuery.data]);
-  const positionMap = useMemo(() => new Map(positions.map((p) => [p.id, p])), [positions]);
+  // Автор може замовити лише те, що заплановано на його в/ч: у виборі лише позиції плану, а «можна замовити» —
+  // менше з плану в/ч і доступного за переліком напрямку. Позиції рядків, що вже є в заявці, лишаються (їх покаже перевірка).
+  const plannedByCode = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const row of propertyQuery.data?.items ?? []) if (row.tab === "planned") map.set(row.item.code, (map.get(row.item.code) ?? 0) + row.qty);
+    return map;
+  }, [propertyQuery.data]);
+  const allPositions = useMemo<readonly CatalogPosition[]>(() => positionsQuery.data?.positions ?? [], [positionsQuery.data]);
+  const positions = useMemo<readonly CatalogPosition[]>(() => {
+    const inEditor = new Set(history.present.map((l) => l.positionId));
+    return allPositions
+      .filter((p) => plannedByCode.has(p.code) || inEditor.has(p.id))
+      .map((p) => ({ ...p, availableQty: Math.min(p.availableQty, plannedByCode.get(p.code) ?? p.availableQty) }));
+  }, [allPositions, plannedByCode, history.present]);
+  const positionMap = useMemo(() => new Map(allPositions.map((p) => [p.id, p])), [allPositions]);
   const itemMap = useMemo(() => new Map(items.map((i) => [i.id, i])), [items]);
   const converted = useMemo(() => toRequestLines(history.present, positionMap, itemMap), [history.present, positionMap, itemMap]);
   const key = draftKey(linesKey(converted.lines), justification);
@@ -202,11 +216,11 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
 
   const title = requestId ? `Заявка ${requestLabel(requestId)}` : "Нова заявка";
   const documentState = isResubmit ? `Повернуто · версія ${server.current.version}` : "Чернетка · зберігається автоматично";
-  const dataReady = reference.data !== undefined && positionsQuery.data !== undefined;
+  const dataReady = reference.data !== undefined && positionsQuery.data !== undefined && propertyQuery.data !== undefined;
   // Рапорт показує те, що зараз на екрані: збережена заявка дає маршрут і номер, редактор — рядки й текст.
   const saved = detail.data?.request;
   const raportRequest = saved && saved.id === server.current.id ? { ...saved, lines: converted.lines, justification } : undefined;
-  const failed = reference.isError || positionsQuery.isError || (requestId !== undefined && detail.isError);
+  const failed = reference.isError || positionsQuery.isError || propertyQuery.isError || (requestId !== undefined && detail.isError);
 
   return (
     <ScreenFrame
@@ -265,7 +279,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
             </p>
           ) : null}
           <p className="screen__hint">
-            Оберіть позиції з Попереднього переліку 2027 вашого напрямку й напишіть обґрунтування — решту рапорту система заповнить за шаблоном. Для заміни виберіть
+            Оберіть позиції, заплановані на вашу в/ч у Попередньому переліку 2027, і напишіть обґрунтування — решту рапорту система заповнить за шаблоном. Для заміни виберіть
             схожий предмет: у межах одного КЕКВ ліміт не витрачається, на інший КЕКВ — списується.
           </p>
           <LinesEditor lines={history.present} positions={positions} items={items} dispatch={dispatch} problems={problems} newLineId={newId} />
