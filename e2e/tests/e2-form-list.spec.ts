@@ -14,6 +14,18 @@ test("E2: перелік із двох заявок із трьох, погод�
   await switchTo(page, "prep-1-unit-a", "/queue");
   const picks = page.getByRole("checkbox", { name: /Обрати ЗМ-.* до переліку/ });
   await expect(picks).toHaveCount(3);
+
+  // Клік по заявці відкриває її рапорт для ознайомлення; галочка лише обирає, не відкриваючи його.
+  await picks.nth(1).check();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await picks.nth(1).uncheck();
+  await row(page, /ЗМ-0010/).getByRole("button", { name: "ЗМ-0010" }).click();
+  const raport = page.getByRole("dialog", { name: "Рапорт ЗМ-0010" });
+  await expect(raport.getByText(/Рапорт для ознайомлення/)).toBeVisible();
+  await expect(raport.frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
+  await raport.getByRole("button", { name: "Повернути…" }).waitFor();
+  await page.keyboard.press("Escape");
+  await expect(raport).toHaveCount(0);
   await picks.nth(1).check();
   await picks.nth(2).check();
   await page.getByRole("button", { name: "Сформувати перелік (2)" }).click();
@@ -23,6 +35,13 @@ test("E2: перелік із двох заявок із трьох, погод�
   // Керівник погоджує з числовим СЕДО; нечисловий номер відхиляється.
   await switchTo(page, "appr-1-unit-a", "/lists");
   await expect(page.getByRole("row", { name: /15\.02\.2027/ })).toBeVisible();
+
+  // Керівник відкриває рапорт будь-якої заявки переліку для ознайомлення.
+  await page.getByRole("button", { name: /^ЗМ-.*відкрити рапорт/ }).first().click();
+  const reading = page.getByRole("dialog", { name: /Рапорт ЗМ-/ });
+  await expect(reading.frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(reading).toHaveCount(0);
   await page.getByRole("button", { name: "Погодити", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await dialog.getByLabel("Номер СЕДО").fill("abc");

@@ -5,11 +5,9 @@ import type { ApiOutput } from "@dsp/contract";
 import { daysAtLevel } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
-import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
-import { RaportButton } from "../components/RaportDialog.tsx";
-import { requestTabs } from "../components/RequestTabs.tsx";
+import { RaportDialog } from "../components/RaportDialog.tsx";
 import { ReturnDialog } from "../components/ReturnDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
@@ -37,12 +35,12 @@ export function LevelQueueScreen() {
   const queue = useApiQuery("levelQueue", { params: { level: String(level) } }, { enabled: level > 0 });
 
   const [checked, setChecked] = useState<ReadonlySet<string>>(new Set());
-  const [inspected, setInspected] = useState<string | undefined>();
+  /** Заявка, рапорт якої відкрито для ознайомлення (клік по рядку). */
+  const [reading, setReading] = useState<Request | null>(null);
   const [returning, setReturning] = useState<Request | null>(null);
   const [returnError, setReturnError] = useState<string | undefined>();
   const [disbanding, setDisbanding] = useState<List | null>(null);
 
-  const detail = useApiQuery("requestDetail", { params: { id: inspected ?? "" } }, { enabled: inspected !== undefined });
   const form = useApiMutation("formList");
   const giveBack = useApiMutation("returnRequest");
   const disband = useApiMutation("disbandList");
@@ -103,7 +101,7 @@ export function LevelQueueScreen() {
       {
         onSuccess: () => {
           feedback.notify({ key: "returned", tone: "success", title: `${requestLabel(returning.id)} повернуто автору`, description: "Автор і нижчі рівні отримали сповіщення з приміткою." });
-          if (inspected === returning.id) setInspected(undefined);
+          if (reading?.id === returning.id) setReading(null);
           setReturning(null);
         },
         onError: (error) => setReturnError(errorText(error)),
@@ -121,6 +119,11 @@ export function LevelQueueScreen() {
         onSettled: () => setDisbanding(null),
       },
     );
+  };
+
+  const startReturn = (r: Request) => {
+    setReturnError(undefined);
+    setReturning(r);
   };
 
   const columns: readonly DataTableColumn<Request>[] = [
@@ -145,20 +148,15 @@ export function LevelQueueScreen() {
       header: "Дія",
       width: 140,
       render: (r) => (
-        <Button
-          onClick={() => {
-            setReturnError(undefined);
-            setReturning(r);
-          }}
-        >
-          Повернути…
-        </Button>
+        // Клік по кнопці не відкриває рапорт: подія не спливає до рядка.
+        <span onClick={(event) => event.stopPropagation()}>
+          <Button onClick={() => startReturn(r)}>Повернути…</Button>
+        </span>
       ),
     },
   ];
 
   const state = queue.isPending ? "loading" : queue.isError ? "error" : rows.length === 0 ? "empty" : "ready";
-  const request = detail.data?.request;
 
   return (
     <>
@@ -171,32 +169,9 @@ export function LevelQueueScreen() {
             {`Сформувати перелік${checked.size > 0 ? ` (${checked.size})` : ""}`}
           </Button>
         }
-        inspector={
-          <DetailPanel
-            title={inspected ? requestLabel(inspected) : "Заявка"}
-            subtitle={request ? `Версія ${request.version}` : undefined}
-            empty={!inspected}
-            emptyText="Оберіть заявку в таблиці, щоб побачити рядки й трек."
-            actions={request ? <RaportButton request={request} /> : undefined}
-            tabs={
-              detail.data
-                ? requestTabs({ detail: detail.data, positions: priced, levels: (reference.data?.levels ?? []).map((l) => ({ level: l.level, name: l.name })) })
-                : undefined
-            }
-          >
-            {inspected && detail.isPending ? <DataState kind="loading" size="compact" /> : null}
-            {inspected && detail.isError ? <DataState kind="error" size="compact" title="Не вдалося завантажити заявку" /> : null}
-          </DetailPanel>
-        }
-        inspectorLabel="Картка заявки"
-        inspectorOpen={inspected !== undefined}
-        onInspectorOpenChange={(open) => {
-          if (!open) setInspected(undefined);
-        }}
-        {...(inspected ? { inspectorKey: inspected } : {})}
       >
         <p className="screen__hint">
-          Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
+          Натисніть на заявку, щоб прочитати рапорт. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
         </p>
         <div className="queue__select-all">
           <Checkbox
@@ -209,13 +184,13 @@ export function LevelQueueScreen() {
         </div>
         <DataTable
           label="Заявки в черзі рівня"
-          columns={visibleColumns(columns, narrow || inspected !== undefined, narrow ? ["unit", "lines", "days"] : ["lines"])}
+          columns={visibleColumns(columns, narrow, ["unit", "lines", "days"])}
           rows={rows}
           getRowId={(r) => r.id}
           rowHeaderKey="id"
           variant="well"
-          currentRowId={inspected ?? null}
-          onRowSelect={setInspected}
+          currentRowId={reading?.id ?? null}
+          onRowSelect={(id) => setReading(rows.find((row) => row.id === id) ?? null)}
           state={state}
           stateTitle={state === "error" ? "Не вдалося завантажити чергу" : "Черга порожня"}
           {...(state === "empty" ? { stateDescription: "Нових заявок на вашому рівні немає. Заявки з'являться, коли нижчий рівень погодить свій перелік." } : {})}
@@ -259,6 +234,23 @@ export function LevelQueueScreen() {
         </section>
       </ScreenFrame>
 
+      <RaportDialog
+        request={reading ?? undefined}
+        open={reading !== null}
+        onClose={() => setReading(null)}
+        extraActions={
+          reading ? (
+            <Button
+              onClick={() => {
+                startReturn(reading);
+                setReading(null);
+              }}
+            >
+              Повернути…
+            </Button>
+          ) : undefined
+        }
+      />
       <ReturnDialog
         open={returning !== null}
         label={returning ? requestLabel(returning.id) : ""}

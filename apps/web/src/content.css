@@ -374,3 +374,26 @@
 .role-card__state {
   margin-block-start: var(--ix-space-1);
 }
+
+/* Номер заявки в складі переліку — кнопка, що відкриває рапорт для ознайомлення. */
+.list-requests__open {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ix-foreground);
+  font: inherit;
+  font-weight: var(--ix-font-weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.list-requests__open:hover {
+  background: var(--ix-surface-hover);
+}
+
+.list-requests__open:focus-visible {
+  outline: var(--ix-focus-width) solid var(--ix-focus-ring);
+  outline-offset: var(--ix-focus-offset);
+  border-radius: var(--ix-radius-compact);
+}

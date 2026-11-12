@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Button, DataState, Icon } from "@index/ui";
 import { Dialog, useFeedback } from "@index/ui-patterns";
 import { useApiQuery } from "../api/hooks.tsx";
@@ -65,26 +65,29 @@ function RaportPreview({ html, label }: { readonly html: string; readonly label:
   );
 }
 
-export interface RaportButtonProps {
+export interface RaportDialogProps {
   readonly request: (RaportRequest & { readonly authorId: string }) | undefined;
-  /** Підпис кнопки: «Рапорт» у картці, «Переглянути рапорт» на екрані заявки. */
-  readonly label?: string;
-  readonly variant?: "secondary" | "ghost";
-  readonly disabled?: boolean;
+  readonly open: boolean;
+  readonly onClose: () => void;
+  /** Додаткові кнопки ліворуч від «Завантажити Word» (наприклад, «Повернути…» для того, хто перевіряє). */
+  readonly extraActions?: ReactNode;
 }
 
 /**
- * Кнопка «Рапорт»: відкриває аркуш рапорту за шаблоном. Автор уводив лише позиції й
- * обґрунтування; адресат, текст прохання, таблиці й підпис система заповнює сама.
+ * Діалог рапорту: аркуш за шаблоном, друк і Word. Автор уводив лише позиції й обґрунтування;
+ * адресат, текст прохання, таблиці й підпис система заповнює сама. Той, хто перевіряє чужу
+ * заявку, бачить той самий аркуш для ознайомлення.
  */
-export function RaportButton({ request, label = "Рапорт", variant = "secondary", disabled }: RaportButtonProps) {
+export function RaportDialog({ request, open, onClose, extraActions }: RaportDialogProps) {
   const feedback = useFeedback();
-  const [open, setOpen] = useState(false);
+  const session = useApiQuery("session");
   const [saving, setSaving] = useState(false);
   const input = useRaportInput(request);
   const html = useMemo(() => (open && input ? buildRaportHtml(input) : ""), [open, input]);
   const title = request ? `Рапорт ${requestLabel(request.id)}` : "Рапорт";
   const missingJustification = request !== undefined && request.justification.trim() === "";
+  const foreign = request !== undefined && session.data !== undefined && session.data.user.id !== request.authorId;
+  const authorName = request ? session.data?.users.find((u) => u.id === request.authorId)?.name : undefined;
 
   const download = async () => {
     if (!input) return;
@@ -100,34 +103,53 @@ export function RaportButton({ request, label = "Рапорт", variant = "secon
     }
   };
 
+  const description = missingJustification
+    ? "Обґрунтування ще не написано: у рапорті на його місці буде позначка. Решту заповнено за шаблоном."
+    : foreign
+      ? `Рапорт для ознайомлення${authorName ? `, автор — ${authorName}` : ""}. Позиції й обґрунтування вводить автор, решту заповнено за шаблоном.`
+      : "Позиції й обґрунтування — ваші, решту заповнено за шаблоном. Підпис і військове звання — від руки після друку.";
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title={title}
+      size="medium"
+      description={description}
+      actions={
+        <>
+          {extraActions}
+          <Button variant="secondary" iconStart={<Icon name="save" />} loading={saving} loadingLabel="Формування Word" disabled={!input} onClick={() => void download()}>
+            Завантажити Word
+          </Button>
+          <Button variant="primary" iconStart={<Icon name="share" />} disabled={!input} onClick={() => printHtml(html)}>
+            Друкувати
+          </Button>
+        </>
+      }
+    >
+      {input ? <RaportPreview html={html} label={`Перегляд: ${title}`} /> : <DataState kind="loading" size="compact" title="Готуємо рапорт…" />}
+    </Dialog>
+  );
+}
+
+export interface RaportButtonProps {
+  readonly request: (RaportRequest & { readonly authorId: string }) | undefined;
+  /** Підпис кнопки: «Рапорт» у картці, «Переглянути рапорт» на екрані заявки. */
+  readonly label?: string;
+  readonly variant?: "secondary" | "ghost";
+  readonly disabled?: boolean;
+}
+
+/** Кнопка «Рапорт»: відкриває діалог рапорту. */
+export function RaportButton({ request, label = "Рапорт", variant = "secondary", disabled }: RaportButtonProps) {
+  const [open, setOpen] = useState(false);
   return (
     <>
       <Button variant={variant} iconStart={<Icon name="document" />} disabled={disabled || request === undefined || request.lines.length === 0} onClick={() => setOpen(true)}>
         {label}
       </Button>
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        title={title}
-        size="medium"
-        description={
-          missingJustification
-            ? "Обґрунтування ще не написано: у рапорті на його місці буде позначка. Решту заповнено за шаблоном."
-            : "Позиції й обґрунтування — ваші, решту заповнено за шаблоном. Підпис і військове звання — від руки після друку."
-        }
-        actions={
-          <>
-            <Button variant="secondary" iconStart={<Icon name="save" />} loading={saving} loadingLabel="Формування Word" disabled={!input} onClick={() => void download()}>
-              Завантажити Word
-            </Button>
-            <Button variant="primary" iconStart={<Icon name="share" />} disabled={!input} onClick={() => printHtml(html)}>
-              Друкувати
-            </Button>
-          </>
-        }
-      >
-        {input ? <RaportPreview html={html} label={`Перегляд: ${title}`} /> : <DataState kind="loading" size="compact" title="Готуємо рапорт…" />}
-      </Dialog>
+      <RaportDialog request={request} open={open} onClose={() => setOpen(false)} />
     </>
   );
 }

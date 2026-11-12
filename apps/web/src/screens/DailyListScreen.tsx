@@ -6,6 +6,7 @@ import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { RaportDialog } from "../components/RaportDialog.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { SedoDialog } from "../components/SedoDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
@@ -34,6 +35,8 @@ export function DailyListScreen() {
 
   const [selected, setSelected] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
+  /** Заявка переліку, рапорт якої відкрито для ознайомлення. */
+  const [reading, setReading] = useState<Request | null>(null);
   const [dialogError, setDialogError] = useState<string | undefined>();
 
   const lists = queue.data?.lists ?? [];
@@ -102,7 +105,14 @@ export function DailyListScreen() {
             return (
               <li key={id} className="list-requests__item">
                 <p className="list-requests__name">
-                  {requestLabel(id)}
+                  {r ? (
+                    <button type="button" className="list-requests__open" onClick={() => setReading(r)}>
+                      {requestLabel(id)}
+                      <span className="ix-sr-only">: відкрити рапорт</span>
+                    </button>
+                  ) : (
+                    requestLabel(id)
+                  )}
                   {r ? ` · ${unitName(r.route[0])}` : ""}
                 </p>
                 {r ? (
@@ -190,6 +200,7 @@ export function DailyListScreen() {
 
       </ScreenFrame>
 
+      <RaportDialog request={reading ?? undefined} open={reading !== null} onClose={() => setReading(null)} />
       <SedoDialog
         open={dialogOpen}
         final={final}
