@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Button, DataState, Icon, IconButton, Input, Textarea, Tooltip } from "@index/ui";
+import { Button, DataState, Icon, IconButton, Input, Textarea } from "@index/ui";
+import { InfoHint } from "../components/InfoHint.tsx";
 import { Dialog, ToolbarGroup, useFeedback, WorkspaceToolbar, type SaveStatusProps } from "@index/ui-patterns";
 import type { RequestStatus } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
@@ -257,9 +258,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
             />
           )}
           {/* Пояснення до заповнення — у підказці біля назви: на екрані лишаються лише поля. */}
-          <Tooltip content={HINT} placement="bottom">
-            <IconButton label="Як заповнити заявку" icon={<Icon name="info" />} showTooltip={false} />
-          </Tooltip>
+          <InfoHint label="Як заповнити заявку" text={HINT} />
         </>
       }
       inspector={

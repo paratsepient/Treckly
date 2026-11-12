@@ -6,6 +6,7 @@ import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { InfoHint } from "../components/InfoHint.tsx";
 import { RaportDialog } from "../components/RaportDialog.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { SedoDialog } from "../components/SedoDialog.tsx";
@@ -138,6 +139,7 @@ export function DailyListScreen() {
         title={final ? "Затвердження переліку" : "Денний перелік"}
         meta={queue.data ? `${waiting.length} чекає` : undefined}
         surfaceLabel="Денні переліки на погодження"
+        actions={<InfoHint label="Як погоджують перелік" text={final ? "Затвердження резервує бюджет за заявками переліку й формує витяги по в/ч. Потрібен числовий номер СЕДО." : "Погодження стосується переліку цілком: усі його заявки разом переходять на наступний рівень. Потрібен числовий номер СЕДО."} />}
         primaryAction={
           <Button
             variant="primary"
@@ -175,11 +177,6 @@ export function DailyListScreen() {
         }
         {...(current ? { inspectorKey: current.id } : {})}
       >
-        <p className="screen__hint">
-          {final
-            ? "Затвердження резервує бюджет за заявками переліку й формує витяги по в/ч. Потрібен числовий номер СЕДО."
-            : "Погодження стосується переліку цілком: усі його заявки разом переходять на наступний рівень. Потрібен числовий номер СЕДО."}
-        </p>
         <DataTable
           label="Переліки, що чекають погодження"
           columns={visibleColumns(columns, narrow, ["by", "status"])}

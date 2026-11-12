@@ -4,6 +4,7 @@ import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { InfoHint } from "../components/InfoHint.tsx";
 import { formatMoney, formatMoneyShort } from "../lib/format.ts";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 
@@ -113,6 +114,7 @@ export function PlannedListScreen() {
       title="Запланований перелік"
       meta={query.data ? `${rows.length} позицій · план на ${formatMoney(sums.planned)}` : undefined}
       surfaceLabel="Запланований перелік закупівель напрямку"
+      actions={<InfoHint label="Що означають стовпці" text="Перелік закупівель напрямку на 2027 рік. «Зарезервовано» — під затверджені Головою заявки, «У роботі» — заявки, що зараз на рівнях погодження, «Вільно» — план мінус резерв." />}
       inspector={detail}
       inspectorLabel="Розбивка позиції по в/ч"
       inspectorOpen={selected !== undefined}
@@ -121,9 +123,6 @@ export function PlannedListScreen() {
       }}
       {...(selected ? { inspectorKey: selected } : {})}
     >
-      <p className="screen__hint">
-        Перелік закупівель напрямку на 2027 рік. «Зарезервовано» — під затверджені Головою заявки, «У роботі» — заявки, що зараз на рівнях погодження, «Вільно» — план мінус резерв.
-      </p>
       <div className="kpi-row">
         <KpiTile label="План, грн" value={Math.round(sums.planned / 100)} formatValue={grn} />
         <KpiTile label="Зарезервовано, грн" value={Math.round(sums.reserved / 100)} formatValue={grn} />

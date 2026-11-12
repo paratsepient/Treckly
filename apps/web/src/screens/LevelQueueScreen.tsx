@@ -6,6 +6,7 @@ import { daysAtLevel } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { InfoHint } from "../components/InfoHint.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { PlanComparison } from "../components/PlanComparison.tsx";
 import { RaportDialog } from "../components/RaportDialog.tsx";
@@ -169,15 +170,13 @@ export function LevelQueueScreen() {
         title={`Черга рівня ${level}`}
         meta={queue.data ? `${rows.length} у черзі` : undefined}
         surfaceLabel="Черга рівня"
+        actions={<InfoHint label="Як працює черга" text={"Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення, а під таблицею видно, чи відповідає заявка плану в/ч. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі."} />}
         primaryAction={
           <Button variant="primary" iconStart={<Icon name="add" />} disabled={checked.size === 0} loading={form.isPending} loadingLabel="Формування переліку" onClick={doForm}>
             {`Сформувати перелік${checked.size > 0 ? ` (${checked.size})` : ""}`}
           </Button>
         }
       >
-        <p className="screen__hint">
-          Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення, а під таблицею видно, чи відповідає заявка плану в/ч. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
-        </p>
         <section className="queue-card" aria-label="Заявки в черзі та звірка з переліком">
         <DataTable
           label="Заявки в черзі рівня"
