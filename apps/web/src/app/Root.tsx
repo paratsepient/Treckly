@@ -84,10 +84,12 @@ interface SidebarProps {
   readonly active: string;
   readonly user: { readonly name: string; readonly role: string };
   readonly onNavigate?: () => void;
+  /** Блок демо внизу панелі: позначка даних, дата й кнопка демо-середовища. */
+  readonly demo: ReactNode;
 }
 
 /** Навігація з підписами: назва екрана видна завжди, а не лише в підказці до іконки. */
-function Sidebar({ groups, active, user, onNavigate }: SidebarProps) {
+function Sidebar({ groups, active, user, onNavigate, demo }: SidebarProps) {
   return (
     <div className="sidebar">
       <a className="sidebar__brand" href="#/" onClick={onNavigate}>
@@ -123,6 +125,7 @@ function Sidebar({ groups, active, user, onNavigate }: SidebarProps) {
           </div>
         ))}
       </nav>
+      {demo}
       <div className="sidebar__user">
         <span className="sidebar__avatar" aria-hidden="true">
           {initials(user.name)}
@@ -192,7 +195,28 @@ export function Root() {
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
   const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
   const role = `${user.title}${unit ? ` · ${unit.name}` : ""}`;
-  const sidebar = { groups: groupsFor(user.roleKind, unread, user.level), active, user: { name: user.name, role } };
+  const demo = (
+    <div className="sidebar__demo">
+      <p className="sidebar__demo-note" role="note">
+        <strong>Демонстраційні дані</strong>, СЕДО імітується.
+        <br />
+        <span className="sidebar__demo-date">Сьогодні: {formatDate(session.data.today)}</span>
+      </p>
+      <Button
+        variant={active === "demo" ? "primary" : "secondary"}
+        iconStart={<Icon name="role" />}
+        aria-label={`Демо-середовище: змінити роль. Зараз: ${user.title}`}
+        aria-current={active === "demo" ? "page" : undefined}
+        onClick={() => {
+          setMenuOpen(false);
+          void navigate({ to: "/demo" });
+        }}
+      >
+        Демо
+      </Button>
+    </div>
+  );
+  const sidebar = { groups: groupsFor(user.roleKind, unread, user.level), active, user: { name: user.name, role }, demo };
 
   return (
     <ShellContext.Provider value={shell}>
@@ -211,27 +235,13 @@ export function Root() {
             </Drawer>
           )}
           <div className="app__main">
-            <header className="topbar">
-              {desktop ? null : <IconButton label="Відкрити навігацію" icon={<Icon name="menu" />} aria-expanded={menuOpen} onClick={() => setMenuOpen(true)} />}
-              <p className="topbar__note" role="note">
-                <strong>
-                  <span className="topbar__full">Демонстраційні дані, СЕДО імітується.</span>
-                  <span className="topbar__short">Демо-дані, СЕДО імітується.</span>
-                </strong> <span className="topbar__date">Сьогодні: {formatDate(session.data.today)}</span>
-              </p>
-              <span className="topbar__role" title={role}>
-                {role}
-              </span>
-              <Button
-                variant={active === "demo" ? "primary" : "secondary"}
-                iconStart={<Icon name="role" />}
-                aria-label={`Демо-середовище: змінити роль. Зараз: ${user.title}`}
-                aria-current={active === "demo" ? "page" : undefined}
-                onClick={() => void navigate({ to: "/demo" })}
-              >
-                Демо
-              </Button>
-            </header>
+            {desktop ? null : (
+              <header className="mobilebar">
+                <IconButton label="Відкрити навігацію" icon={<Icon name="menu" />} aria-expanded={menuOpen} onClick={() => setMenuOpen(true)} />
+                <span className="mobilebar__name">Замовлення</span>
+                <span className="mobilebar__date">{formatDate(session.data.today)}</span>
+              </header>
+            )}
             <Outlet />
           </div>
         </div>

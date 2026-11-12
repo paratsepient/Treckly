@@ -52,7 +52,7 @@ body {
 
 .app {
   --sidebar-width: 16rem;
-  --topbar-height: 3.5rem;
+  --topbar-height: 0rem;
   --detail-width: 23rem;
   --page-gutter: clamp(var(--ix-space-4), 3vw, var(--ix-space-8));
   display: grid;
@@ -233,52 +233,53 @@ body {
   font: var(--ix-font-caption);
 }
 
-/* Смуга демо: позначка даних і дата (видно на всіх екранах), роль і кнопка демо-середовища. */
-.topbar {
+/* Блок демо внизу бічної панелі: позначка даних, дата й кнопка демо-середовища. */
+.sidebar__demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-2);
+  padding: var(--ix-space-3) var(--ix-space-2) 0;
+  border-top: 1px solid var(--ix-border);
+}
+
+.sidebar__demo-note {
+  margin: 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.sidebar__demo-note strong {
+  color: var(--ix-foreground);
+  font-weight: var(--ix-font-weight-medium);
+}
+
+.sidebar__demo > button {
+  justify-content: center;
+}
+
+/* Телефон і планшет: замість бічної панелі — тонка смуга з кнопкою меню, назвою й датою демо. */
+.mobilebar {
   position: sticky;
   top: 0;
   z-index: 20;
   display: flex;
   gap: var(--ix-space-3);
   align-items: center;
-  min-height: var(--topbar-height);
-  padding: var(--ix-space-2) var(--page-gutter);
+  min-height: 3rem;
+  padding: var(--ix-space-1) var(--page-gutter);
   box-sizing: border-box;
   border-bottom: 1px solid var(--ix-border);
   background: var(--ix-background);
 }
 
-.topbar__note {
+.mobilebar__name {
   flex: 1 1 auto;
-  min-width: 0;
-  margin: 0;
+  font: var(--ix-font-heading-sm);
+}
+
+.mobilebar__date {
   color: var(--ix-foreground-secondary);
   font: var(--ix-font-caption);
-}
-
-.topbar__note strong {
-  color: var(--ix-foreground);
-  font-weight: var(--ix-font-weight-medium);
-}
-
-.topbar__date {
-  white-space: nowrap;
-}
-
-.topbar__role {
-  flex: 0 1 auto;
-  max-width: 22rem;
-  overflow: hidden;
-  color: var(--ix-foreground-secondary);
-  font: var(--ix-font-caption);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 719px) {
-  .topbar__role {
-    display: none;
-  }
 }
 
 /* ── Сторінка ──────────────────────────────────────────────────────────────── */
@@ -443,20 +444,4 @@ body {
 
 .return-note__hint {
   color: var(--ix-foreground-secondary);
-}
-
-
-/* На телефоні позначка демо коротша: смуга лишається в один-два рядки. */
-.topbar__short {
-  display: none;
-}
-
-@media (max-width: 719px) {
-  .topbar__full {
-    display: none;
-  }
-
-  .topbar__short {
-    display: inline;
-  }
 }
