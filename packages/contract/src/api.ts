@@ -93,6 +93,8 @@ export const API = {
   budget: endpoint({ method: "GET", path: "/api/budget", output: BudgetSummary }),
   // Майно
   property: endpoint({ method: "GET", path: "/api/property", output: PropertyResponse }),
+  /** Майно іншої в/ч: для звірки заявки з тим, що заплановано в підрозділі автора (автор бачить лише свою в/ч). */
+  unitProperty: endpoint({ method: "GET", path: "/api/units/:id/property", output: PropertyResponse }),
   // Заявки
   createRequest: endpoint({ method: "POST", path: "/api/requests", input: CreateRequestInput, output: RequestResponse }),
   editLines: endpoint({ method: "PUT", path: "/api/requests/:id/lines", input: EditLinesInput, output: RequestResponse }),

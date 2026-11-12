@@ -249,7 +249,7 @@ test("«Моє майно»: для кожної в/ч заповнено три
   for (const unit of ["unit-a", "unit-b", "unit-c"]) {
     for (const tab of ["planned", "on_base", "received"]) {
       const rows = seed.property.filter((p) => p.unitId === unit && p.tab === tab);
-      assert.equal(rows.length, 5, `${unit}/${tab}`);
+      assert.ok(rows.length >= 5, `${unit}/${tab}`);
       assert.ok(rows.every((r) => r.qty > 0 && seed.listPositions.some((p) => p.itemId === r.itemId)));
     }
   }

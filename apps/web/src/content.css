@@ -396,3 +396,37 @@
   gap: var(--ix-space-2);
   margin-inline-end: auto;
 }
+
+/* ── Звірка заявки з переліком ───────────────────────────────────────────── */
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+}
+
+.plan__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-1) var(--ix-space-3);
+  align-items: baseline;
+}
+
+.plan__sub {
+  margin: 0;
+  color: var(--ix-foreground-secondary);
+}
+
+.plan__summary {
+  margin: 0;
+}
+
+.plan__item {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan__meta {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}

@@ -49,16 +49,27 @@ test("бюджет: затверджено, у роботі, залишок; з�
   assert.equal(lines[0]!.approvedMinor, kekvLines.reduce((s, l) => s + l.approvedMinor, 0));
 });
 
-test("«Моє майно»: лише своя в/ч, три вкладки по 5 предметів", async () => {
+test("«Моє майно»: лише своя в/ч, три вкладки (план в/ч узгоджено із заявками)", async () => {
   const h = await boot();
   const { items } = await h.call("property", AUTHOR_A);
-  assert.equal(items.length, 15);
+  assert.ok(items.length >= 15);
   assert.ok(items.every((i) => i.unitId === "unit-a"));
   assert.deepEqual([...new Set(items.map((i) => i.tab))].sort(), ["on_base", "planned", "received"]);
   const other = await h.call("property", "author-unit-b");
   assert.ok(other.items.every((i) => i.unitId === "unit-b"));
   const noUnit = await h.call("property", "admin-demo");
   assert.deepEqual(noUnit.items, []);
+});
+
+test("майно іншої в/ч: автор лише своєї, рівні погодження — будь-якої, і план узгоджено із заявкою", async () => {
+  const h = await boot();
+  const own = await h.call("unitProperty", AUTHOR_A, { params: { id: "unit-a" } });
+  assert.ok(own.items.length >= 15 && own.items.every((i) => i.unitId === "unit-a"));
+  assert.equal((await h.fail("unitProperty", AUTHOR_A, 403, { params: { id: "unit-b" } })).code, "FORBIDDEN_ROLE");
+  const seen = await h.call("unitProperty", "prep-2-brig-1", { params: { id: "unit-b" } });
+  assert.ok(seen.items.length >= 15 && seen.items.every((i) => i.unitId === "unit-b"));
+  // Навмисна розбіжність для показу: тепловізор в/ч А0001 не заплановано.
+  assert.ok(!own.items.some((i) => i.tab === "planned" && i.item.name.startsWith("Тепловізор")));
 });
 
 test("мої заявки: лише власні, нові згори; реєстр — усі", async () => {

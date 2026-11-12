@@ -15,6 +15,12 @@ test("E4: розформування переліку, повторне форм
   await expect(row(page, /ЗМ-0009/)).toBeVisible();
   await expect(page.getByRole("article")).toHaveCount(0);
 
+  // Звірка з переліком: заявка ЗМ-0009 відповідає плану в/ч (усі позиції заплановано з запасом).
+  await row(page, /ЗМ-0009/).getByRole("button", { name: "ЗМ-0009", exact: true }).click();
+  const plan = page.getByRole("region", { name: "Звірка з Попереднім переліком" });
+  await expect(plan.getByText("ЗМ-0009 · в/ч А0001")).toBeVisible();
+  await expect(plan.getByText("Усе відповідає плану")).toBeVisible();
+
   // Заявка повернулась у чергу: формуємо перелік знову.
   await page.getByRole("checkbox", { name: "Обрати ЗМ-0009 до переліку" }).check();
   await page.getByRole("button", { name: "Сформувати перелік (1)" }).click();

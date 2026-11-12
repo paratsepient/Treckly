@@ -7,6 +7,7 @@ import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
+import { PlanComparison } from "../components/PlanComparison.tsx";
 import { RaportDialog } from "../components/RaportDialog.tsx";
 import { ReturnDialog } from "../components/ReturnDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
@@ -37,6 +38,8 @@ export function LevelQueueScreen() {
   const [checked, setChecked] = useState<ReadonlySet<string>>(new Set());
   /** Заявка, рапорт якої відкрито для ознайомлення (клік по рядку). */
   const [reading, setReading] = useState<Request | null>(null);
+  /** Заявка, яку звіряють з переліком під таблицею; за замовчуванням — перша в черзі. */
+  const [compared, setCompared] = useState<string | undefined>();
   const [returning, setReturning] = useState<Request | null>(null);
   const [returnError, setReturnError] = useState<string | undefined>();
   const [disbanding, setDisbanding] = useState<List | null>(null);
@@ -59,6 +62,8 @@ export function LevelQueueScreen() {
       return next.size === prev.size ? prev : next;
     });
   }, [rows]);
+
+  const comparedRequest = rows.find((r) => r.id === compared) ?? rows[0];
 
   const formedByMe = useMemo(() => (queue.data?.lists ?? []).filter((l) => l.status === "formed"), [queue.data]);
   const requestById = useMemo(() => new Map([...(queue.data?.queue ?? []), ...(queue.data?.listed ?? [])].map((r) => [r.id, r])), [queue.data]);
@@ -148,7 +153,8 @@ export function LevelQueueScreen() {
       header: "Дія",
       width: 200,
       render: (r) => (
-        <span className="row-actions">
+        // Клік по кнопках не вибирає рядок для звірки: подія не спливає до рядка.
+        <span className="row-actions" onClick={(event) => event.stopPropagation()}>
           <IconButton variant="secondary" label={`Переглянути рапорт ${requestLabel(r.id)}`} icon={<Icon name="view" />} onClick={() => setReading(r)} />
           <Button onClick={() => startReturn(r)}>Повернути…</Button>
         </span>
@@ -171,7 +177,7 @@ export function LevelQueueScreen() {
         }
       >
         <p className="screen__hint">
-          Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
+          Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення, а під таблицею видно, чи відповідає заявка плану в/ч. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
         </p>
         <div className="queue__select-all">
           <Checkbox
@@ -189,10 +195,14 @@ export function LevelQueueScreen() {
           getRowId={(r) => r.id}
           rowHeaderKey="id"
           variant="well"
+          currentRowId={comparedRequest?.id ?? null}
+          onRowSelect={setCompared}
           state={state}
           stateTitle={state === "error" ? "Не вдалося завантажити чергу" : "Черга порожня"}
           {...(state === "empty" ? { stateDescription: "Нових заявок на вашому рівні немає. Заявки з'являться, коли нижчий рівень погодить свій перелік." } : {})}
         />
+
+        <PlanComparison request={comparedRequest} unitName={comparedRequest ? unitName(comparedRequest.route[0]) : ""} />
 
         <section className="lists" aria-labelledby="formed-title">
           <h2 id="formed-title" className="lists__title">

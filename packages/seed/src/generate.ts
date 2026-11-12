@@ -343,13 +343,35 @@ export function generateSeed(): SeedData {
   };
 
   // ── «Моє майно» ─────────────────────────────────────────────────────────────
+  // План в/ч (вкладка «Заплановано») узгоджено із заявками підрозділу: те, що просили, заплановано з запасом.
+  // Навмисні розбіжності для показу звірки: тепловізор (поз. 39) в/ч А0001 не заплановано взагалі,
+  // а акумуляторів 4S (поз. 4) в/ч А0003 заплановано менше, ніж у заявці.
+  const itemOfPosition = new Map(catalog.positions.map((p) => [p.id, p.itemId]));
+  const planOverride: Record<string, number | null> = { "unit-a:pos-039": null, "unit-c:pos-004": 4 };
+  const requestedBy = new Map<string, Map<string, number>>();
+  for (const r of sim.requests.values()) {
+    const unit = r.route[0];
+    const own = requestedBy.get(unit) ?? new Map<string, number>();
+    for (const line of r.lines) own.set(line.positionId, (own.get(line.positionId) ?? 0) + line.qty);
+    requestedBy.set(unit, own);
+  }
   const property: SeedProperty[] = [];
   for (const unit of UNIT_IDS) {
     for (const tab of ["planned", "on_base", "received"] as const) {
-      const picks = faker.helpers.arrayElements(catalog.positions, 5);
-      picks.forEach((p, n) => {
-        property.push({ id: `prop-${unit}-${tab}-${n + 1}`, unitId: unit, itemId: p.itemId, tab, qty: faker.number.int({ min: 2, max: 40 }) });
-      });
+      const rows: { itemId: string; qty: number }[] = [];
+      if (tab === "planned") {
+        for (const [positionKey, requested] of [...(requestedBy.get(unit) ?? new Map<string, number>())].sort(([a], [b]) => a.localeCompare(b))) {
+          const override = planOverride[`${unit}:${positionKey}`];
+          if (override === null) continue;
+          rows.push({ itemId: itemOfPosition.get(positionKey) as string, qty: override ?? requested + faker.number.int({ min: 2, max: 12 }) });
+        }
+      }
+      const fillers = faker.helpers.arrayElements(
+        catalog.positions.filter((p) => !rows.some((row) => row.itemId === p.itemId) && planOverride[`${unit}:${p.id}`] !== null),
+        Math.max(0, 5 - rows.length),
+      );
+      for (const p of fillers) rows.push({ itemId: p.itemId, qty: faker.number.int({ min: 2, max: 40 }) });
+      rows.forEach((row, n) => property.push({ id: `prop-${unit}-${tab}-${n + 1}`, unitId: unit, itemId: row.itemId, tab, qty: row.qty }));
     }
   }
 

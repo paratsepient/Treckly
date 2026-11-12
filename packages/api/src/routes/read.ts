@@ -16,8 +16,8 @@ import {
   type Queryable,
   type UserRow,
 } from "@dsp/db";
-import { DEFAULT_LEVELS } from "@dsp/domain";
 import { budgetSummary, userView } from "../views.ts";
+import { DEFAULT_LEVELS, DomainError } from "@dsp/domain";
 import type { Env } from "../http.ts";
 
 const itemView = (i: Awaited<ReturnType<typeof loadItems>>[number]) => ({
@@ -62,6 +62,17 @@ export function readRoutes(db: DspDb) {
   app.get("/api/property", async (c) => {
     const user = c.get("user");
     const rows = user.unitId ? await loadProperty(db, user.unitId) : [];
+    return c.json({ items: rows.map((r) => ({ id: r.id, unitId: r.unitId, tab: r.tab, qty: r.qty, item: itemView(r.item) })) });
+  });
+
+  app.get("/api/units/:id/property", async (c) => {
+    const user = c.get("user");
+    const unitId = c.req.param("id");
+    // Автор бачить майно лише своєї в/ч; рівні погодження й адміністратор — будь-якої в/ч заявки.
+    if (user.roleKind === "author" && user.unitId !== unitId) {
+      throw new DomainError("FORBIDDEN_ROLE", "Автор бачить майно лише своєї в/ч.", { unitId });
+    }
+    const rows = await loadProperty(db, unitId);
     return c.json({ items: rows.map((r) => ({ id: r.id, unitId: r.unitId, tab: r.tab, qty: r.qty, item: itemView(r.item) })) });
   });
 

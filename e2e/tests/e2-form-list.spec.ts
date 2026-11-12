@@ -15,6 +15,14 @@ test("E2: перелік із двох заявок із трьох, погод�
   const picks = page.getByRole("checkbox", { name: /Обрати ЗМ-.* до переліку/ });
   await expect(picks).toHaveCount(3);
 
+  // Під таблицею — звірка заявки з переліком: за замовчуванням перша в черзі (ЗМ-0010), клік по рядку перемикає.
+  const plan = page.getByRole("region", { name: "Звірка з Попереднім переліком" });
+  await expect(plan.getByText("ЗМ-0010 · в/ч А0001")).toBeVisible();
+  await expect(plan.getByText("Розбіжностей: 1 з 1")).toBeVisible();
+  await expect(plan.getByRole("row", { name: /Тепловізор/ })).toContainText("Не заплановано в в/ч");
+  await page.getByRole("button", { name: /^ЗМ-[0-9A-Z]+$/ }).nth(1).click();
+  await expect(plan.getByText("ЗМ-0010 · в/ч А0001")).toHaveCount(0);
+
   // Рапорт для ознайомлення відкриває кнопка з оком перед «Повернути…»; клік по рядку чи галочці його не відкриває.
   await picks.nth(1).check();
   await expect(page.getByRole("dialog")).toHaveCount(0);
