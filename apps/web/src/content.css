@@ -668,3 +668,24 @@
   font: var(--ix-font-body-strong);
   font-variant-numeric: tabular-nums;
 }
+
+/* ── Сповіщення: окремі картки з тінню й проміжком між ними ─────────────────── */
+
+.inbox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+}
+
+.inbox .inbox__item {
+  margin: 0;
+  padding: var(--ix-space-4);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+  box-shadow: var(--ix-shadow-card);
+}
+
+.inbox .inbox__item[data-unread="true"] {
+  background: var(--ix-info-surface);
+}
