@@ -1,13 +1,9 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Button, DataState, Icon, IconButton } from "@index/ui";
-import { Dialog, useFeedback } from "@index/ui-patterns";
+import { useMemo, useState, type ReactNode } from "react";
+import { Button, Icon } from "@index/ui";
 import { useApiQuery } from "../api/hooks.tsx";
 import { requestLabel } from "../lib/format.ts";
 import { buildRaportHtml, raportModel, type RaportInput } from "../lib/raport.ts";
-import { printHtml } from "../lib/reports.ts";
-
-/** Ширина аркуша А4 у CSS-пікселях: перегляд масштабується під ширину діалогу. */
-const A4_WIDTH = 794;
+import { DocumentDialog } from "./DocumentDialog.tsx";
 
 type RaportRequest = RaportInput["request"];
 
@@ -33,38 +29,6 @@ function useRaportInput(request: (RaportRequest & { readonly authorId: string })
   }, [request, session.data, reference.data, positions.data]);
 }
 
-/** Перегляд аркуша: справжня ширина А4, зменшена під місце в діалозі. */
-function RaportPreview({ html, label }: { readonly html: string; readonly label: string }) {
-  const box = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-  const [height, setHeight] = useState(1123);
-
-  useEffect(() => {
-    const element = box.current;
-    if (!element) return;
-    const update = () => setScale(Math.min(1, element.clientWidth / A4_WIDTH));
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div ref={box} className="raport-preview" style={{ height: height * scale }}>
-      <iframe
-        className="raport-preview__page"
-        title={label}
-        srcDoc={html}
-        style={{ width: A4_WIDTH, height, transform: `scale(${scale})` }}
-        onLoad={(event) => {
-          const doc = event.currentTarget.contentDocument;
-          if (doc) setHeight(Math.max(1123, doc.documentElement.scrollHeight));
-        }}
-      />
-    </div>
-  );
-}
-
 export interface RaportDialogProps {
   readonly request: (RaportRequest & { readonly authorId: string }) | undefined;
   readonly open: boolean;
@@ -79,29 +43,13 @@ export interface RaportDialogProps {
  * заявку, бачить той самий аркуш для ознайомлення.
  */
 export function RaportDialog({ request, open, onClose, extraActions }: RaportDialogProps) {
-  const feedback = useFeedback();
   const session = useApiQuery("session");
-  const [saving, setSaving] = useState(false);
   const input = useRaportInput(request);
-  const html = useMemo(() => (open && input ? buildRaportHtml(input) : ""), [open, input]);
+  const html = useMemo(() => (open && input ? buildRaportHtml(input) : null), [open, input]);
   const title = request ? `Рапорт ${requestLabel(request.id)}` : "Рапорт";
   const missingJustification = request !== undefined && request.justification.trim() === "";
   const foreign = request !== undefined && session.data !== undefined && session.data.user.id !== request.authorId;
   const authorName = request ? session.data?.users.find((u) => u.id === request.authorId)?.name : undefined;
-
-  const download = async () => {
-    if (!input) return;
-    setSaving(true);
-    try {
-      // Бібліотека Word вантажиться окремим шматком лише тут, а не з першим екраном.
-      const { buildRaportDocx, downloadBlob } = await import("../lib/docx-export.ts");
-      downloadBlob(await buildRaportDocx(input), raportModel(input).fileName);
-    } catch (error) {
-      feedback.notify({ key: "raport-docx-error", tone: "error", title: "Не вдалося сформувати Word", description: error instanceof Error ? error.message : "Невідома помилка" });
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const description = missingJustification
     ? "Обґрунтування ще не написано: у рапорті на його місці буде позначка. Решту заповнено за шаблоном."
@@ -110,32 +58,17 @@ export function RaportDialog({ request, open, onClose, extraActions }: RaportDia
       : "Позиції й обґрунтування — ваші, решту заповнено за шаблоном. Підпис і військове звання — від руки після друку.";
 
   return (
-    <Dialog
+    <DocumentDialog
       open={open}
       onClose={onClose}
       title={title}
-      size="medium"
       description={description}
-      actions={
-        <>
-          <span className="raport-tools">
-            <IconButton
-              variant="secondary"
-              label="Завантажити Word"
-              icon={<Icon name="save" />}
-              loading={saving}
-              loadingLabel="Формування Word"
-              disabled={!input}
-              onClick={() => void download()}
-            />
-            <IconButton variant="secondary" label="Друкувати" icon={<Icon name="sheet" />} disabled={!input} onClick={() => printHtml(html)} />
-          </span>
-          {extraActions}
-        </>
-      }
-    >
-      {input ? <RaportPreview html={html} label={`Перегляд: ${title}`} /> : <DataState kind="loading" size="compact" title="Готуємо рапорт…" />}
-    </Dialog>
+      html={html}
+      makeDocx={input ? async () => (await import("../lib/docx-export.ts")).buildRaportDocx(input) : null}
+      fileName={input ? raportModel(input).fileName : "Рапорт.docx"}
+      what="рапорт"
+      extraActions={extraActions}
+    />
   );
 }
 

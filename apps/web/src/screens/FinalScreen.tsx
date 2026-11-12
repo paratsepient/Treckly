@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Badge, Button, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
+import { Badge, Button, DataState, DataTable, Icon, IconButton, type DataTableColumn } from "@index/ui";
 import { useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
@@ -8,6 +8,9 @@ import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { formatDateShort, formatMoney, LINE_STATUS_LABELS, LINE_STATUS_TONES, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
 import { buildFinalReport, printHtml } from "../lib/reports.ts";
 import { requestTotal } from "../lib/totals.ts";
+import { buildExtractHtml, extractDocModel, type ExtractDocInput } from "../lib/extract-doc.ts";
+import { DocumentActions, DocumentDialog } from "../components/DocumentDialog.tsx";
+import { RaportDialog } from "../components/RaportDialog.tsx";
 
 type Final = ApiOutput<"final">;
 type Request = Final["requests"][number];
@@ -25,6 +28,9 @@ export function FinalScreen() {
   const feedback = useFeedback();
   const [exporting, setExporting] = useState(false);
   const isAuthor = session.data?.user.roleKind === "author";
+  /** Відкритий документ: рапорт заявки або витяг по в/ч. */
+  const [reading, setReading] = useState<Request | null>(null);
+  const [viewing, setViewing] = useState<string | null>(null);
 
   const requests = query.data?.requests ?? [];
   const extracts = query.data?.extracts ?? [];
@@ -50,7 +56,20 @@ export function FinalScreen() {
     { key: "lines", header: "Рядків", numeric: true, render: (r) => r.lines.length, width: 90 },
     { key: "total", header: "Сума", numeric: true, render: (r) => formatMoney(requestTotal(r, priced)), width: 160 },
     { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>, width: 190 },
+    {
+      key: "doc",
+      header: "Документ",
+      width: 110,
+      render: (r) => <IconButton variant="secondary" label={`Переглянути рапорт ${requestLabel(r.id)}`} icon={<Icon name="view" />} onClick={() => setReading(r)} />,
+    },
   ];
+
+  const extractInput = (id: string): ExtractDocInput | null => {
+    const extract = extracts.find((x) => x.id === id);
+    if (!extract || !reference.data) return null;
+    return { extract, requests, lists, positions: priced, items: reference.data.items, unitName };
+  };
+  const viewed = viewing ? extractInput(viewing) : null;
 
   const state = query.isPending ? "loading" : query.isError ? "error" : requests.length === 0 ? "empty" : "ready";
   const report = { title, today: session.data?.today ?? "", requests, lists, extracts, positions: priced, unitName };
@@ -80,7 +99,7 @@ export function FinalScreen() {
         </Button>
       }
       primaryAction={
-        <Button iconStart={<Icon name="share" />} disabled={query.data === undefined} onClick={print}>
+        <Button iconStart={<Icon name="sheet" />} disabled={query.data === undefined} onClick={print}>
           Друк / PDF
         </Button>
       }
@@ -117,7 +136,21 @@ export function FinalScreen() {
                 <h3 className="list-card__title">
                   Витяг по {unitName(extract.unitId)} від {formatDateShort(extract.date)}
                 </h3>
-                <Badge tone="success">Сформовано</Badge>
+                <span className="list-card__tools">
+                  <Badge tone="success">Сформовано</Badge>
+                  <IconButton variant="secondary" label={`Переглянути витяг по ${unitName(extract.unitId)}`} icon={<Icon name="view" />} onClick={() => setViewing(extract.id)} />
+                  {(() => {
+                    const input = extractInput(extract.id);
+                    return (
+                      <DocumentActions
+                        what="витяг"
+                        html={input ? buildExtractHtml(input) : null}
+                        makeDocx={input ? async () => (await import("../lib/docx-export.ts")).buildExtractDocx(input) : null}
+                        fileName={input ? extractDocModel(input).fileName : "Витяг.docx"}
+                      />
+                    );
+                  })()}
+                </span>
               </header>
               <p className="list-card__note">Заявки: {extract.requestIds.map(requestLabel).join(", ")}</p>
               <ul className="extract-lines">
@@ -135,6 +168,17 @@ export function FinalScreen() {
           ))
         )}
       </section>
+      <RaportDialog request={reading ?? undefined} open={reading !== null} onClose={() => setReading(null)} />
+      <DocumentDialog
+        open={viewed !== null}
+        onClose={() => setViewing(null)}
+        title={viewed ? extractDocModel(viewed).documentTitle : "Витяг"}
+        description="Витяг з остаточного переліку по в/ч: сформовано після затвердження Головою. Можна роздрукувати або завантажити в Word."
+        html={viewed ? buildExtractHtml(viewed) : null}
+        makeDocx={viewed ? async () => (await import("../lib/docx-export.ts")).buildExtractDocx(viewed) : null}
+        fileName={viewed ? extractDocModel(viewed).fileName : "Витяг.docx"}
+        what="витяг"
+      />
     </ScreenFrame>
   );
 }

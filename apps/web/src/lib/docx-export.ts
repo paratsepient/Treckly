@@ -1,4 +1,5 @@
 import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TabStopType, TextRun, WidthType } from "docx";
+import { extractDocModel, type ExtractDocInput } from "./extract-doc.ts";
 import { raportModel, type RaportInput } from "./raport.ts";
 import { finalReportModel, type FinalReportInput } from "./reports.ts";
 
@@ -114,6 +115,33 @@ export function buildRaportDocument(input: RaportInput): Document {
       },
     ],
   });
+}
+
+/** Витяг по в/ч у Word: той самий зміст, що й у перегляді та друку. */
+export function buildExtractDocument(input: ExtractDocInput): Document {
+  const m = extractDocModel(input);
+  return new Document({
+    creator: "Прототип обліку майна",
+    title: m.documentTitle,
+    styles: { default: { document: { run: { font: FONT, size: SIZE } } } },
+    sections: [
+      {
+        properties: { page: { margin: { top: 1134, bottom: 1134, left: 1701, right: 851 } } },
+        children: [
+          new Paragraph({ alignment: AlignmentType.CENTER, children: [text(m.title, { bold: true })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 240 }, children: [text(m.subtitle)] }),
+          body(m.basis, false),
+          raportTable(m.head, m.rows, m.numeric),
+          new Paragraph({ spacing: { before: 160 }, children: [text(m.total, { bold: true })] }),
+          new Paragraph({ spacing: { before: 480 }, children: [text(m.footnote, { size: 20 })] }),
+        ],
+      },
+    ],
+  });
+}
+
+export async function buildExtractDocx(input: ExtractDocInput): Promise<Blob> {
+  return Packer.toBlob(buildExtractDocument(input));
 }
 
 export async function buildRaportDocx(input: RaportInput): Promise<Blob> {

@@ -537,3 +537,14 @@
   flex-wrap: wrap;
   gap: var(--ix-space-2);
 }
+
+/* Значки документа в заголовку картки витягу: стан, перегляд, Word і друк. */
+.list-card__tools {
+  display: flex;
+  gap: var(--ix-space-2);
+  align-items: center;
+}
+
+.list-card__tools .raport-tools {
+  margin-inline-end: 0;
+}

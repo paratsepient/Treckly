@@ -32,6 +32,23 @@ test("E6: затвердження Головою — резерв бюджет�
   await expect(extract.getByText("Заміна погоджена")).toBeVisible();
   await expect(extract.getByText(/\(заміна\)/)).toBeVisible();
 
+  // Сформований витяг — окремий документ: перегляд, Word і друк прямо з картки витягу.
+  await extract.getByRole("button", { name: /Переглянути витяг по в\/ч А0003/ }).click();
+  const doc = page.getByRole("dialog", { name: /Витяг по в\/ч А0003/ });
+  const sheet = doc.frameLocator("iframe");
+  await expect(sheet.getByText("ВИТЯГ", { exact: true })).toBeVisible();
+  await expect(sheet.getByText(/СЕДО № 7600001/)).toBeVisible();
+  await expect(sheet.getByRole("cell", { name: "Заміна погоджена" })).toBeVisible();
+  const download = page.waitForEvent("download");
+  await doc.getByRole("button", { name: "Завантажити витяг (Word)" }).click();
+  expect((await download).suggestedFilename()).toMatch(/^Витяг в\/ч А0003 .+\.docx$|^Витяг .+\.docx$/);
+  await page.keyboard.press("Escape");
+
+  // Рапорт затвердженої заявки відкривається з рядка остаточного переліку.
+  await row(page, /ЗМ-0007/).getByRole("button", { name: "Переглянути рапорт ЗМ-0007" }).click();
+  await expect(page.getByRole("dialog", { name: "Рапорт ЗМ-0007" }).frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+
   // Бюджет зарезервовано (+37 200 грн у КЕКВ 2210; заміна в межах КЕКВ ліміт не витрачає); зведення оновилось.
   await page.goto("/#/registry");
   await expect(budget.getByRole("row", { name: /^2210/ })).toContainText(/259[\s ]200,00/);

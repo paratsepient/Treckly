@@ -39,7 +39,7 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   await expect(sheet.getByText("Антенна система мобільна", { exact: false })).toBeVisible();
   await expect(sheet.getByText(/мобільна система зв'язку/)).toBeVisible();
   const download = page.waitForEvent("download");
-  await dialog.getByRole("button", { name: "Завантажити Word" }).click();
+  await dialog.getByRole("button", { name: "Завантажити рапорт (Word)" }).click();
   expect((await download).suggestedFilename()).toMatch(/^Рапорт ЗМ-.+\.docx$/);
   await page.keyboard.press("Escape");
 
