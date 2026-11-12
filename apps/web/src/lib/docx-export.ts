@@ -99,7 +99,8 @@ export function buildRaportDocument(input: RaportInput): Document {
           new Paragraph({ spacing: { before: 480, after: 240 }, alignment: AlignmentType.CENTER, children: [text(m.title, { bold: true })] }),
           body(m.request),
           ...m.tables.flatMap((t) => [
-            new Paragraph({ spacing: { before: 200, after: 80 }, children: [text(t.heading, { bold: true })] }),
+            new Paragraph({ spacing: { before: 200, after: 40 }, children: [text(t.heading, { bold: true })] }),
+            new Paragraph({ spacing: { after: 80 }, children: [text(t.note, { italics: true, size: TABLE_SIZE })] }),
             raportTable(t.head, t.rows, t.numeric),
           ]),
           new Paragraph({ spacing: { before: 160, after: 80 }, children: [text(m.total, { bold: true }), ...(m.byKekv ? [text(` ${m.byKekv}`)] : [])] }),

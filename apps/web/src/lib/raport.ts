@@ -24,6 +24,8 @@ export interface RaportInput {
 
 export interface RaportTable {
   readonly heading: string;
+  /** Пояснення під заголовком розділу: що саме в ньому просять. */
+  readonly note: string;
   readonly head: readonly string[];
   readonly rows: readonly (readonly string[])[];
   /** Номери стовпців із числами: вирівнюються праворуч. */
@@ -88,7 +90,8 @@ export function raportModel(input: RaportInput): RaportModel {
       `${line.newItem.code} · ${line.newItem.name}`,
       measureOf.get(line.newItem.code) ?? "шт.",
       NUM(line.qty),
-      line.newItem.kekv,
+      // Зміна КЕКВ видна одразу: «2210 → 3110» означає, що сума списується з ліміту 3110.
+      planned && planned.kekv !== line.newItem.kekv ? `${planned.kekv} → ${line.newItem.kekv}` : line.newItem.kekv,
       MONEY(sum),
     ];
   });
@@ -113,15 +116,17 @@ export function raportModel(input: RaportInput): RaportModel {
   const tables: RaportTable[] = [];
   if (replacementRows.length > 0) {
     tables.push({
-      heading: "1. Заміни позицій Попереднього переліку",
-      head: ["№", "Позиція переліку, що замінюється", "Предмет натомість", "Од. виміру", "Кількість", "КЕКВ", "Сума, грн"],
+      heading: "1. Заміна: замість запланованої позиції — інший предмет",
+      note: "Ці позиції Попереднього переліку не закуповуються; замість кожної просимо схожий предмет. Кількість і сума — предмета, який просимо.",
+      head: ["№", "Замість (позиція переліку)", "Просимо натомість", "Од. виміру", "Кількість", "КЕКВ", "Сума, грн"],
       rows: replacementRows,
       numeric: [4, 6],
     });
   }
   if (listRows.length > 0) {
     tables.push({
-      heading: `${tables.length + 1}. Позиції за Попереднім переліком`,
+      heading: `${tables.length + 1}. Закупівля за переліком (без заміни)`,
+      note: "Позиції Попереднього переліку, які просимо закупити так, як заплановано.",
       head: ["№", "Код", "Найменування", "Од. виміру", "Кількість", "Ціна, грн", "Сума, грн", "КЕКВ"],
       rows: listRows,
       numeric: [4, 5, 6],
@@ -143,7 +148,11 @@ export function raportModel(input: RaportInput): RaportModel {
     request:
       `Прошу Вашого погодження закупівлі майна для потреб ${unit} за Попереднім переліком на 2027 рік, ` +
       `${lowerFirst(direction)}, у кількості та на суму, наведені нижче.` +
-      (replacementRows.length > 0 ? " Позиції, яких немає в переліку, подано як заміни на схожі заплановані." : ""),
+      (replacementRows.length > 0 && listRows.length > 0
+        ? " Розділ 1 — заміна запланованих позицій на схожі предмети, розділ 2 — закупівля запланованих позицій без заміни."
+        : replacementRows.length > 0
+          ? " Усі позиції подано як заміну запланованих на схожі предмети."
+          : ""),
     tables,
     total: `Разом: ${formatMoney(total)}.`,
     byKekv:
@@ -172,6 +181,7 @@ export function buildRaportHtml(input: RaportInput): string {
     .map(
       (t) => `
   <h2>${escapeHtml(t.heading)}</h2>
+  <p class="note">${escapeHtml(t.note)}</p>
   <table>
     <thead>${cellsHtml(t.head, t.numeric, "th")}</thead>
     <tbody>${t.rows.map((r) => cellsHtml(r, t.numeric)).join("")}</tbody>
@@ -200,6 +210,7 @@ export function buildRaportHtml(input: RaportInput): string {
   p { margin: 0 0 0.2cm; text-align: justify; }
   .indent { text-indent: 1.25cm; }
   .missing { font-style: italic; }
+  .note { font-size: 11pt; font-style: italic; margin-bottom: 0.15cm; }
   table { border-collapse: collapse; width: 100%; font-size: 11pt; line-height: 1.25; }
   th, td { border: 1px solid CanvasText; padding: 0.08cm 0.15cm; vertical-align: top; text-align: left; }
   th { font-weight: bold; text-align: center; }
