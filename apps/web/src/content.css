@@ -430,3 +430,24 @@
   color: var(--ix-foreground-secondary);
   font: var(--ix-font-caption);
 }
+
+/* ── Шапки таблиць: темніші за тло сторінки й рядків, текст контрастніший ─────── */
+
+:root {
+  --table-head-shade: 12%;
+}
+
+:root[data-theme="dark"] {
+  --table-head-shade: 65%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --table-head-shade: 65%;
+  }
+}
+
+.ix-table__header {
+  background: color-mix(in srgb, var(--ix-surface-muted), var(--ix-color-ink) var(--table-head-shade));
+  color: var(--ix-foreground-secondary);
+}
