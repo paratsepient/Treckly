@@ -75,7 +75,6 @@ export function LevelQueueScreen() {
       else next.delete(id);
       return next;
     });
-  const allChecked = rows.length > 0 && checked.size === rows.length;
 
   const doForm = () => {
     const requestIds = rows.filter((r) => checked.has(r.id)).map((r) => r.id);
@@ -179,15 +178,7 @@ export function LevelQueueScreen() {
         <p className="screen__hint">
           Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення, а під таблицею видно, чи відповідає заявка плану в/ч. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
         </p>
-        <div className="queue__select-all">
-          <Checkbox
-            label="Обрати всі заявки в черзі"
-            checked={allChecked}
-            indeterminate={checked.size > 0 && !allChecked}
-            disabled={rows.length === 0}
-            onChange={(event) => setChecked(event.target.checked ? new Set(rows.map((r) => r.id)) : new Set())}
-          />
-        </div>
+        <section className="queue-card" aria-label="Заявки в черзі та звірка з переліком">
         <DataTable
           label="Заявки в черзі рівня"
           columns={visibleColumns(columns, narrow, ["unit", "lines", "days"])}
@@ -203,6 +194,7 @@ export function LevelQueueScreen() {
         />
 
         <PlanComparison request={comparedRequest} unitName={comparedRequest ? unitName(comparedRequest.route[0]) : ""} />
+        </section>
 
         <section className="lists" aria-labelledby="formed-title">
           <h2 id="formed-title" className="lists__title">

@@ -701,3 +701,20 @@
   font: var(--ix-font-body-strong);
   font-variant-numeric: tabular-nums;
 }
+
+/* Черга рівня: таблиця заявок і звірка вибраної заявки — одна картка. */
+.queue-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-5);
+  padding: var(--ix-space-4);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+  box-shadow: var(--ix-shadow-card);
+}
+
+.queue-card .plan {
+  padding-top: var(--ix-space-4);
+  border-top: 1px solid var(--ix-border);
+}
