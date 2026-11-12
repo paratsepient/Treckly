@@ -718,3 +718,75 @@
   padding-top: var(--ix-space-4);
   border-top: 1px solid var(--ix-border);
 }
+
+/* Погоджені переліки — окремі картки в сітці, як заявки. */
+.done-lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--ix-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.done-lists > li {
+  padding: 0;
+  border: 0;
+}
+
+.done-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+  height: 100%;
+  padding: var(--ix-space-4);
+  box-sizing: border-box;
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+  box-shadow: var(--ix-shadow-card);
+}
+
+.done-card__head {
+  display: flex;
+  gap: var(--ix-space-2);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.done-card__title {
+  margin: 0;
+  font: var(--ix-font-heading-sm);
+}
+
+.done-card__facts {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-between;
+  gap: var(--ix-space-3);
+  margin: 0;
+}
+
+.done-card__facts dt {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.done-card__facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.done-card__docs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
+  align-items: center;
+  margin-top: auto;
+  padding-top: var(--ix-space-3);
+  border-top: 1px solid var(--ix-border);
+}
+
+.done-card__docs > :last-child {
+  margin-inline-start: auto;
+}

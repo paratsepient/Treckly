@@ -68,6 +68,16 @@ test("E2: перелік із двох заявок із трьох, погод�
   await expect(toast(page, "Перелік погоджено")).toBeVisible();
   await expect(page.getByText(/СЕДО № 7500001/).first()).toBeVisible();
 
+  // Погоджений перелік відкривається як документ, а з нього — рапорти його заявок.
+  await page.getByRole("button", { name: /Переглянути перелік від 15\.02\.2027/ }).click();
+  const listDoc = page.getByRole("dialog", { name: /Денний перелік в\/ч А0001/ });
+  await expect(listDoc.frameLocator("iframe").getByText("ПЕРЕЛІК", { exact: true })).toBeVisible();
+  await expect(listDoc.frameLocator("iframe").getByText(/СЕДО № 7500001/)).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: /^Рапорт ЗМ-/ }).first().click();
+  await expect(page.getByRole("dialog", { name: /Рапорт ЗМ-/ }).frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+
   // Дві заявки пішли на рівень 2, третя лишилась на рівні 1.
   await switchTo(page, "prep-2-brig-1", "/queue");
   await expect(page.getByRole("checkbox", { name: /Обрати ЗМ-.* до переліку/ })).toHaveCount(3, { timeout: 15_000 });

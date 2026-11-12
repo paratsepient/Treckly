@@ -8,6 +8,8 @@ import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { InfoHint } from "../components/InfoHint.tsx";
 import { RaportDialog } from "../components/RaportDialog.tsx";
+import { DocumentDialog } from "../components/DocumentDialog.tsx";
+import { buildListHtml, listDocModel, type ListDocInput } from "../lib/list-doc.ts";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { SedoDialog } from "../components/SedoDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
@@ -38,6 +40,11 @@ export function DailyListScreen() {
   const [dialogOpen, setDialogOpen] = useState(false);
   /** Заявка переліку, рапорт якої відкрито для ознайомлення. */
   const [reading, setReading] = useState<Request | null>(null);
+  /** Погоджений перелік, відкритий як документ. */
+  const [viewingList, setViewingList] = useState<string | null>(null);
+  // Заявки погоджених переліків уже пішли на вищі рівні: їх беремо з реєстру.
+  const registry = useApiQuery("registry");
+  const anyRequest = (id: string): Request | undefined => requests.get(id) ?? registry.data?.requests.find((r) => r.id === id);
   const [dialogError, setDialogError] = useState<string | undefined>();
 
   const lists = queue.data?.lists ?? [];
@@ -167,8 +174,39 @@ export function DailyListScreen() {
             ) : (
               <ul className="done-lists">
                 {done.map((l) => (
-                  <li key={l.id} className="done-lists__item">
-                    <Badge tone="success">Погоджено</Badge> {formatDateShort(l.date)} · СЕДО № {l.sedoNumber} · заявок {l.requestIds.length}
+                  <li key={l.id}>
+                    <article className="done-card" aria-label={`Погоджений перелік від ${formatDateShort(l.date)}`}>
+                      <header className="done-card__head">
+                        <h3 className="done-card__title">Перелік від {formatDateShort(l.date)}</h3>
+                        <Badge tone="success">Погоджено</Badge>
+                      </header>
+                      <dl className="done-card__facts">
+                        <div>
+                          <dt>СЕДО №</dt>
+                          <dd>{l.sedoNumber}</dd>
+                        </div>
+                        <div>
+                          <dt>Заявок</dt>
+                          <dd>{l.requestIds.length}</dd>
+                        </div>
+                        <div>
+                          <dt>Сума</dt>
+                          <dd>{formatMoney(l.requestIds.reduce((sum, id) => sum + (anyRequest(id) ? requestTotal(anyRequest(id) as Request, priced) : 0), 0))}</dd>
+                        </div>
+                      </dl>
+                      {/* Рапорти заявок переліку й сам перелік як документ. */}
+                      <footer className="done-card__docs">
+                        {l.requestIds.map((id) => {
+                          const r = anyRequest(id);
+                          return (
+                            <Button key={id} iconStart={<Icon name="document" />} disabled={!r} onClick={() => r && setReading(r)} aria-label={`Рапорт ${requestLabel(id)}`}>
+                              {requestLabel(id)}
+                            </Button>
+                          );
+                        })}
+                        <IconButton variant="secondary" label={`Переглянути перелік від ${formatDateShort(l.date)}`} icon={<Icon name="view" />} onClick={() => setViewingList(l.id)} />
+                      </footer>
+                    </article>
                   </li>
                 ))}
               </ul>
@@ -194,6 +232,31 @@ export function DailyListScreen() {
       </ScreenFrame>
 
       <RaportDialog request={reading ?? undefined} open={reading !== null} onClose={() => setReading(null)} />
+      {(() => {
+        const list = lists.find((l) => l.id === viewingList);
+        const input: ListDocInput | null = list
+          ? {
+              list,
+              requests: list.requestIds.map(anyRequest).filter((r): r is Request => r !== undefined),
+              positions: priced,
+              unitName,
+              userName,
+              levelName: levelConfig?.name ?? "",
+            }
+          : null;
+        return (
+          <DocumentDialog
+            open={input !== null}
+            onClose={() => setViewingList(null)}
+            title={input ? listDocModel(input).documentTitle : "Перелік"}
+            description="Денний перелік рівня, як його реєструють у СЕДО: заявки, суми, хто сформував і погодив."
+            html={input ? buildListHtml(input) : null}
+            makeDocx={input ? async () => (await import("../lib/docx-export.ts")).buildListDocx(input) : null}
+            fileName={input ? listDocModel(input).fileName : "Перелік.docx"}
+            what="перелік"
+          />
+        );
+      })()}
       <SedoDialog
         open={dialogOpen}
         final={final}

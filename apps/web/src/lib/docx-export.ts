@@ -1,5 +1,6 @@
 import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TabStopType, TextRun, WidthType } from "docx";
 import { extractDocModel, type ExtractDocInput } from "./extract-doc.ts";
+import { listDocModel, type ListDocInput } from "./list-doc.ts";
 import { raportModel, type RaportInput } from "./raport.ts";
 import { finalReportModel, type FinalReportInput } from "./reports.ts";
 
@@ -142,6 +143,30 @@ export function buildExtractDocument(input: ExtractDocInput): Document {
 
 export async function buildExtractDocx(input: ExtractDocInput): Promise<Blob> {
   return Packer.toBlob(buildExtractDocument(input));
+}
+
+/** Денний перелік у Word: той самий зміст, що й у перегляді та друку. */
+export async function buildListDocx(input: ListDocInput): Promise<Blob> {
+  const m = listDocModel(input);
+  const doc = new Document({
+    creator: "Прототип обліку майна",
+    title: m.documentTitle,
+    styles: { default: { document: { run: { font: FONT, size: SIZE } } } },
+    sections: [
+      {
+        properties: { page: { margin: { top: 1134, bottom: 1134, left: 1701, right: 851 } } },
+        children: [
+          new Paragraph({ alignment: AlignmentType.CENTER, children: [text(m.title, { bold: true })] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 240 }, children: [text(m.subtitle)] }),
+          body(m.basis, false),
+          raportTable(m.head, m.rows, m.numeric),
+          new Paragraph({ spacing: { before: 160 }, children: [text(m.total, { bold: true })] }),
+          new Paragraph({ spacing: { before: 720 }, children: [text(m.signature)] }),
+        ],
+      },
+    ],
+  });
+  return Packer.toBlob(doc);
 }
 
 export async function buildRaportDocx(input: RaportInput): Promise<Blob> {
