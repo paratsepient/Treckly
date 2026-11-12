@@ -67,7 +67,7 @@
   display: none;
 }
 
-@container (max-width: 60rem) {
+@container (max-width: 42rem) {
   .lines__table,
   .lines__table tbody {
     display: block;

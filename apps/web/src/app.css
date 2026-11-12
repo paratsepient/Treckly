@@ -125,11 +125,22 @@
 }
 
 .lines__type {
-  width: 14rem;
+  width: 13.5rem;
+}
+
+/* Перемикач типу рядка стискається за шириною колонки, щоб рядок заявки лишався в один ряд. */
+.lines__cell-type .ix-segmented {
+  max-width: 100%;
+}
+
+.lines__cell-type .ix-segmented__option {
+  padding-inline: var(--ix-space-2);
+  font: var(--ix-font-caption);
+  font-weight: var(--ix-font-weight-medium);
 }
 
 .lines__kekv {
-  width: 5rem;
+  width: 4.5rem;
 }
 
 .lines__caption {
@@ -152,23 +163,23 @@
 }
 
 .lines__num {
-  width: 2.5rem;
+  width: 2rem;
   font-variant-numeric: tabular-nums;
 }
 
 .lines__qty {
-  width: 6.5rem;
+  width: 5.5rem;
 }
 
 .lines__money {
-  width: 8.5rem;
+  width: 7.5rem;
   text-align: end;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .lines__actions {
-  width: 3.5rem;
+  width: 3rem;
 }
 
 .lines__muted {

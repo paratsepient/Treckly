@@ -95,6 +95,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                     disabled={disabled}
                     placeholder="Оберіть позицію"
                     value={line.positionId}
+                    {...(position ? { title: `${position.code} · ${position.name} (можна замовити ${position.availableQty})` } : {})}
                     onChange={(event) => dispatch({ type: "update", id: line.id, patch: { positionId: event.target.value } })}
                   >
                     {positions.map((p) => (
