@@ -239,6 +239,25 @@ export const RequestDetail = z.object({
   journal: z.array(JournalEvent),
 });
 
+/** Позиція запланованого переліку закупівель напрямку: скільки заплановано, зарезервовано, у роботі й розподілено по в/ч. */
+export const PlannedPosition = z.object({
+  id: Id,
+  code: z.string(),
+  name: z.string(),
+  kekv: Kekv,
+  priceMinor: Money,
+  measure: z.string(),
+  /** Заплановано за переліком напрямку. */
+  plannedQty: z.number().int(),
+  /** Зарезервовано затвердженими заявками. */
+  reservedQty: z.number().int(),
+  /** У заявках, що йдуть маршрутом (на рівнях і в переліках). */
+  inWorkQty: z.number().int(),
+  /** Заплановано в в/ч: хто скільки може замовити. */
+  units: z.array(z.object({ unitId: Id, qty: z.number().int() })),
+});
+export const PlannedList = z.object({ positions: z.array(PlannedPosition) });
+
 export const Kpi = z.object({
   byStatus: z.record(RequestStatus, z.number().int()),
   /** Середня кількість днів на рівні, по рівнях 1–5. */

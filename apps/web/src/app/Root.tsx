@@ -26,6 +26,7 @@ interface NavGroup {
 
 /** Навігація за роллю: кожна роль бачить лише свої екрани. */
 function groupsFor(role: Role, unread: number, level: number | null): NavGroup[] {
+  const planned: NavItem = { id: "planned", label: "Запланований перелік", href: "#/planned", icon: <Icon name="registry" /> };
   const inbox: NavItem = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
   const registry: NavItem = { id: "registry", label: "Реєстр і зведення", href: "#/registry", icon: <Icon name="kpi" /> };
   const final = (label: string): NavItem => ({ id: "final", label, href: "#/final", icon: <Icon name="sheet" /> });
@@ -50,12 +51,12 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
     case "preparer":
       return [
         { id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
-        { id: "overview", label: "Зведення", items: [registry] },
+        { id: "overview", label: "Зведення", items: [registry, ...(level === 5 ? [planned] : [])] },
       ];
     case "approver":
       return [
         { id: "work", label: "Робота рівня", items: [{ id: "lists", label: level === 5 ? "Затвердження" : "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
-        { id: "overview", label: "Зведення", items: [registry] },
+        { id: "overview", label: "Зведення", items: [registry, ...(level === 5 ? [planned] : [])] },
       ];
     case "admin":
       return [{ id: "admin", label: "Адміністрування", items: [registry, { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> }] }];
@@ -189,7 +190,7 @@ export function Root() {
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
-  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
+  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
   const role = `${user.title}${unit ? ` · ${unit.name}` : ""}`;
   const sidebar = { groups: groupsFor(user.roleKind, unread, user.level), active, user: { name: user.name, role } };
 
@@ -241,9 +242,9 @@ export function Root() {
 }
 
 /** Екран доступний лише вказаним ролям; інших повертає на початковий екран їхньої ролі. */
-export function RoleOnly({ roles, children }: { readonly roles: readonly Role[]; readonly children: ReactNode }) {
+export function RoleOnly({ roles, level, children }: { readonly roles: readonly Role[]; readonly level?: number; readonly children: ReactNode }) {
   const session = useApiQuery("session");
   const role = session.data?.user.roleKind;
-  if (role && !roles.includes(role)) return <Navigate to={homePath(role)} />;
+  if (role && (!roles.includes(role) || (level !== undefined && session.data?.user.level !== level))) return <Navigate to={homePath(role)} />;
   return <>{children}</>;
 }

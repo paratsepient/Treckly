@@ -6,6 +6,7 @@ import {
   loadExtracts,
   loadLists,
   loadNow,
+  loadPlannedList,
   loadPositions,
   loadRequests,
   loadUnits,
@@ -45,6 +46,26 @@ export function summaryRoutes(db: DspDb) {
     const [budget, positions] = await Promise.all([loadBudget(db, direction), loadPositions(db, direction)]);
     const kpi = computeKpi(requests, events, now.slice(0, 10));
     return c.json({ ...kpi, budgetByKekv: budgetSummary(budget, requests, positions).lines });
+  });
+
+  /**
+   * Запланований перелік закупівель напрямку з розбивкою по в/ч. Бачить лише Відділ оборонних ресурсів
+   * і Голова (рівень 5): вони готують і затверджують остаточний перелік.
+   */
+  app.get("/api/planned-list", async (c) => {
+    const user = c.get("user");
+    if (user.level !== 5 || (user.roleKind !== "preparer" && user.roleKind !== "approver")) {
+      throw new DomainError("FORBIDDEN_ROLE", "Запланований перелік бачить Відділ оборонних ресурсів і Голова.", { role: user.roleKind, level: user.level });
+    }
+    const [units, requests] = await Promise.all([loadUnits(db), loadRequests(db)]);
+    const direction = directionOf(units, user.unitId ?? "");
+    const inWork = new Map<string, number>();
+    for (const r of requests) {
+      if (r.status !== "at_level" && r.status !== "in_list") continue;
+      for (const line of r.lines) inWork.set(line.positionId, (inWork.get(line.positionId) ?? 0) + line.qty);
+    }
+    const positions = await loadPlannedList(db, direction);
+    return c.json({ positions: positions.map((p) => ({ ...p, inWorkQty: inWork.get(p.id) ?? 0 })) });
   });
 
   return app;

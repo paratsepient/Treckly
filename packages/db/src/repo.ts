@@ -262,6 +262,40 @@ export async function loadUnitPlan(q: Queryable, unitId: string, directionId: st
   return plan;
 }
 
+/**
+ * Запланований перелік закупівель напрямку: позиції з планом напрямку, резервом під затверджені заявки
+ * і планом кожної в/ч («Заплановано» в її майні). «У роботі» додає API із заявок.
+ */
+export async function loadPlannedList(q: Queryable, directionId: string) {
+  const reserved = sql<number>`coalesce((
+    select sum(rl.qty) from ${requestLines} rl join ${requests} r on r.id = rl.request_id
+    where rl.position_id = ${listPositions.id} and r.status in ('approved', 'extract_issued')
+  ), 0)::int`;
+  const [rows, plans] = await Promise.all([
+    q
+      .select({
+        id: listPositions.id,
+        itemId: listPositions.itemId,
+        code: nomenclature.code,
+        name: nomenclature.name,
+        kekv: nomenclature.kekv,
+        priceMinor: nomenclature.priceMinor,
+        measure: nomenclature.measure,
+        plannedQty: listPositions.plannedQty,
+        reservedQty: reserved,
+      })
+      .from(listPositions)
+      .innerJoin(nomenclature, eq(nomenclature.id, listPositions.itemId))
+      .where(eq(listPositions.directionId, directionId))
+      .orderBy(asc(nomenclature.code)),
+    q.select({ unitId: propertyItems.unitId, itemId: propertyItems.itemId, qty: propertyItems.qty }).from(propertyItems).where(eq(propertyItems.tab, "planned")),
+  ]);
+  return rows.map(({ itemId, ...row }) => ({
+    ...row,
+    units: plans.filter((p) => p.itemId === itemId).map((p) => ({ unitId: p.unitId, qty: p.qty })).sort((a, b) => a.unitId.localeCompare(b.unitId)),
+  }));
+}
+
 type RequestRow = typeof requests.$inferSelect;
 type LineRow = typeof requestLines.$inferSelect;
 

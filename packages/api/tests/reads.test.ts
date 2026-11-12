@@ -111,3 +111,26 @@ test("повернута заявка: трек каскадом, примітк
   assert.deepEqual(detail.track.steps.map((s) => s.state), ["returned", "returned", "returned", "pending", "pending"]);
   assert.equal(detail.request.returnInfo?.level, 3);
 });
+
+test("запланований перелік: лише рівень 5; резерв, «у роботі» й розбивка по в/ч", async () => {
+  const h = await boot();
+  for (const who of [AUTHOR_A, "prep-1-unit-a", "appr-4-dir-1", "admin-demo"]) {
+    assert.equal((await h.fail("plannedList", who, 403)).code, "FORBIDDEN_ROLE", who);
+  }
+  const { positions } = await h.call("plannedList", "prep-5-vor");
+  const head = await h.call("plannedList", "appr-5-vor");
+  assert.deepEqual(head.positions, positions, "Відділ і Голова бачать те саме");
+
+  const direction = (await h.call("positions", "prep-5-vor")).positions;
+  assert.equal(positions.length, direction.length);
+  for (const p of positions) {
+    const own = direction.find((d) => d.id === p.id)!;
+    assert.equal(p.plannedQty - p.reservedQty, own.availableQty, `${p.code}: план − резерв = доступно за переліком`);
+    assert.ok(p.inWorkQty >= 0);
+  }
+  // Затверджені заявки дають резерв, заявки на рівнях — «у роботі»; план в/ч А0001 охоплює її заявки.
+  assert.ok(positions.some((p) => p.reservedQty > 0));
+  assert.ok(positions.some((p) => p.inWorkQty > 0));
+  const withUnits = positions.filter((p) => p.units.some((u) => u.unitId === "unit-a"));
+  assert.ok(withUnits.length >= 5 && withUnits.every((p) => p.units.every((u) => u.qty > 0)));
+});

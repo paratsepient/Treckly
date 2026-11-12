@@ -9,6 +9,7 @@ import {
   JournalEvent,
   KekvInfo,
   Kpi,
+  PlannedList,
   Level,
   LevelConfig,
   Notification,
@@ -117,6 +118,8 @@ export const API = {
   // Зведення
   registry: endpoint({ method: "GET", path: "/api/registry", output: RequestsResponse }),
   kpi: endpoint({ method: "GET", path: "/api/kpi", output: Kpi }),
+  /** Запланований перелік закупівель напрямку: лише для Відділу оборонних ресурсів і Голови (рівень 5). */
+  plannedList: endpoint({ method: "GET", path: "/api/planned-list", output: PlannedList }),
   // Інше
   notifications: endpoint({ method: "GET", path: "/api/notifications", output: NotificationsResponse }),
   markRead: endpoint({ method: "POST", path: "/api/notifications/read", input: MarkReadInput, output: OkResponse }),

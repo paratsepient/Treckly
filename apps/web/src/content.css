@@ -451,3 +451,54 @@
   background: color-mix(in srgb, var(--ix-surface-muted), var(--ix-color-ink) var(--table-head-shade));
   color: var(--ix-foreground-secondary);
 }
+
+/* ── Запланований перелік: факти по позиції й розбивка по в/ч ───────────── */
+
+.planned__facts {
+  display: grid;
+  gap: var(--ix-space-2);
+  margin: 0;
+}
+
+.planned__facts > div {
+  display: flex;
+  gap: var(--ix-space-3);
+  align-items: baseline;
+  justify-content: space-between;
+  padding-block: var(--ix-space-1);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.planned__facts dt {
+  color: var(--ix-foreground-secondary);
+}
+
+.planned__facts dd {
+  margin: 0;
+  font: var(--ix-font-body-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.planned__title {
+  margin: var(--ix-space-5) 0 var(--ix-space-2);
+  font: var(--ix-font-body-strong);
+}
+
+.planned__units {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.planned__units li {
+  display: flex;
+  gap: var(--ix-space-3);
+  justify-content: space-between;
+  padding-block: var(--ix-space-2);
+  border-bottom: 1px solid var(--ix-border);
+}
+
+.planned__qty {
+  font-variant-numeric: tabular-nums;
+}
