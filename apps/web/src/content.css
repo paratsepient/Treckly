@@ -57,7 +57,7 @@
   align-self: flex-start;
 }
 
-/* ── Таблиця рядків заявки: на вузькому місці рядок стає карткою ───────────── */
+/* ── Таблиця рядків заявки: типізовані стовпці; у вузькому блоці рядок стає карткою ─── */
 
 .lines {
   container-type: inline-size;
@@ -67,7 +67,7 @@
   display: none;
 }
 
-@container (max-width: 42rem) {
+@container (max-width: 40rem) {
   .lines__table,
   .lines__table tbody {
     display: block;
@@ -83,15 +83,19 @@
 
   .lines__row {
     display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-areas:
-      "num type type type"
-      "position position position position"
-      "qty kekv money actions";
+      "num type actions"
+      "position position position"
+      "qty kekv money";
     gap: var(--ix-space-2) var(--ix-space-3);
     align-items: center;
-    padding: var(--ix-space-3) 0;
+    padding-block: var(--ix-space-3);
     border-top: 1px solid var(--ix-border);
+  }
+
+  .lines__table tbody > .lines__row:first-child {
+    border-top: 0;
   }
 
   .lines__table .lines__row > * {
@@ -141,6 +145,20 @@
     display: block;
     padding: 0 0 var(--ix-space-3);
     border: 0;
+  }
+
+  .lines__table .lines__row > .ix-table__cell {
+    background: transparent;
+  }
+
+  .lines__row,
+  .lines__detail-row {
+    padding-inline: var(--ix-space-3);
+  }
+
+  .lines__row[data-invalid="true"],
+  .lines__row[data-invalid="true"] + .lines__detail-row {
+    background: var(--ix-error-surface);
   }
 }
 

@@ -1,5 +1,5 @@
 import { Fragment, type Dispatch } from "react";
-import { Badge, Button, IconButton, Icon, Input, SegmentedControl, Select } from "@index/ui";
+import { Badge, Button, IconButton, Icon, Input, Select } from "@index/ui";
 import {
   parseQty,
   replacementCandidates,
@@ -23,8 +23,8 @@ export interface LinesEditorProps {
 }
 
 /**
- * Таблиця рядків заявки. У наборі немає редагованої таблиці, тому вона зібрана з Input,
- * Select і SegmentedControl набору. Рядок — це позиція Попереднього переліку з кількістю,
+ * Таблиця рядків заявки з типізованими стовпцями. У наборі немає редагованої таблиці, тому вона
+ * зібрана з Input і Select набору: тип рядка й позиція — вибір зі списку. Рядок — це позиція Попереднього переліку з кількістю,
  * для заміни ще й предмет, на який міняють, із поясненням, чи витрачається ліміт КЕКВ.
  */
 export function LinesEditor({ lines, positions, items, dispatch, problems, newLineId, disabled = false }: LinesEditorProps) {
@@ -33,27 +33,31 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
 
   return (
     <div className="lines">
-      <table className="lines__table">
-        <caption className="lines__caption">Рядки заявки</caption>
+      <h2 className="lines__title" aria-hidden="true">
+        Рядки заявки
+      </h2>
+      <div className="lines__well">
+      <table className="lines__table ix-table" data-variant="well">
+        <caption className="ix-sr-only">Рядки заявки</caption>
         <thead>
           <tr>
-            <th scope="col" className="lines__num">
+            <th scope="col" className="ix-table__header lines__num">
               №
             </th>
-            <th scope="col" className="lines__type">
+            <th scope="col" className="ix-table__header lines__type">
               Тип рядка
             </th>
-            <th scope="col">Позиція переліку</th>
-            <th scope="col" className="lines__qty">
+            <th scope="col" className="ix-table__header">Позиція переліку</th>
+            <th scope="col" className="ix-table__header lines__qty">
               Кількість
             </th>
-            <th scope="col" className="lines__kekv">
+            <th scope="col" className="ix-table__header lines__kekv">
               КЕКВ
             </th>
-            <th scope="col" className="lines__money">
+            <th scope="col" className="ix-table__header lines__money">
               Сума
             </th>
-            <th scope="col" className="lines__actions">
+            <th scope="col" className="ix-table__header lines__actions">
               <span className="ix-sr-only">Дії</span>
             </th>
           </tr>
@@ -71,24 +75,23 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
             const rule = position && item ? replacementRule(position, item) : null;
             return (
               <Fragment key={line.id}>
-              <tr className="lines__row" data-invalid={issues.length > 0 ? "true" : undefined}>
-                <th scope="row" className="lines__num">
+              <tr className="lines__row ix-table__row" data-invalid={issues.length > 0 ? "true" : undefined}>
+                <th scope="row" className="ix-table__cell lines__num">
                   {row}
                 </th>
-                <td className="lines__cell-type">
-                  <SegmentedControl
+                <td className="ix-table__cell lines__cell-type">
+                  <Select
                     label={`Тип рядка ${row}`}
                     hideLabel
                     disabled={disabled}
                     value={line.kind}
-                    onValueChange={(value) => dispatch({ type: "update", id: line.id, patch: { kind: value as EditorLine["kind"] } })}
-                    options={[
-                      { value: "by_list", label: "За переліком" },
-                      { value: "replacement", label: "Заміна" },
-                    ]}
-                  />
+                    onChange={(event) => dispatch({ type: "update", id: line.id, patch: { kind: event.target.value as EditorLine["kind"] } })}
+                  >
+                    <option value="by_list">За переліком</option>
+                    <option value="replacement">Заміна</option>
+                  </Select>
                 </td>
-                <td className="lines__cell-position">
+                <td className="ix-table__cell lines__cell-position">
                   <Select
                     label={`Позиція, рядок ${row}`}
                     hideLabel
@@ -105,7 +108,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                     ))}
                   </Select>
                 </td>
-                <td className="lines__qty">
+                <td className="ix-table__cell lines__qty">
                   <Input
                     label={`Кількість, рядок ${row}`}
                     hideLabel
@@ -116,15 +119,15 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                     onChange={(event) => dispatch({ type: "update", id: line.id, patch: { qty: event.target.value }, group: `qty:${line.id}` })}
                   />
                 </td>
-                <td className="lines__cell-kekv">
+                <td className="ix-table__cell lines__cell-kekv">
                   <span className="lines__cell-label" aria-hidden="true">КЕКВ</span>
                   {position ? <Badge>{position.kekv}</Badge> : <span className="lines__muted">—</span>}
                 </td>
-                <td className="lines__money">
+                <td className="ix-table__cell lines__money">
                   <span className="lines__cell-label" aria-hidden="true">Сума</span>
                   {sum !== null ? formatMoney(sum) : <span className="lines__muted">—</span>}
                 </td>
-                <td className="lines__actions">
+                <td className="ix-table__cell lines__actions">
                   <IconButton
                     label={`Видалити рядок ${row}`}
                     icon={<Icon name="delete" />}
@@ -135,7 +138,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
               </tr>
               {line.kind === "replacement" || issues.length > 0 ? (
                 <tr className="lines__detail-row">
-                  <td className="lines__detail" colSpan={7}>
+                  <td className="ix-table__cell lines__detail" colSpan={7}>
                     {line.kind === "replacement" ? (
                       <div className="lines__replacement">
                         <Select
@@ -170,6 +173,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
           })}
         </tbody>
       </table>
+      </div>
       <div className="lines__footer">
         <Button iconStart={<Icon name="add" />} disabled={disabled} onClick={() => dispatch({ type: "add", line: { id: newLineId(), kind: "by_list", positionId: "", qty: "1", replacementItemId: "" } })}>
           Додати рядок

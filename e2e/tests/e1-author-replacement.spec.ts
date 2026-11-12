@@ -13,7 +13,7 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   const positionSelect = page.getByLabel("Позиція, рядок 1");
   await expect(positionSelect.locator("option[value='pos-006']")).toHaveCount(1);
   await expect(positionSelect.locator("option[value='pos-005']")).toHaveCount(0);
-  await page.getByRole("radio", { name: "Заміна" }).first().check({ force: true });
+  await page.getByLabel("Тип рядка 1").selectOption("replacement");
   await page.getByLabel("Позиція, рядок 1").selectOption("pos-006") // Антена всеспрямована 2,4 ГГц, КЕКВ 2210;
   await page.getByLabel("Замінити на, рядок 1").selectOption("item-104") // Антенна система мобільна, КЕКВ 3110;
 

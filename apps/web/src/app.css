@@ -125,41 +125,49 @@
 }
 
 .lines__type {
-  width: 13.5rem;
-}
-
-/* Перемикач типу рядка стискається за шириною колонки, щоб рядок заявки лишався в один ряд. */
-.lines__cell-type .ix-segmented {
-  max-width: 100%;
-}
-
-.lines__cell-type .ix-segmented__option {
-  padding-inline: var(--ix-space-2);
-  font: var(--ix-font-caption);
-  font-weight: var(--ix-font-weight-medium);
+  width: 10.5rem;
 }
 
 .lines__kekv {
   width: 4.5rem;
 }
 
-.lines__caption {
-  padding-block-end: var(--ix-space-2);
-  text-align: start;
+.lines__title {
+  margin: 0;
   font: var(--ix-font-heading-sm);
 }
 
-.lines__table th,
-.lines__table td {
-  padding: var(--ix-space-2);
-  border-bottom: 1px solid var(--ix-border);
-  text-align: start;
-  vertical-align: top;
+/* Лунка, як у таблиць набору (DataTable variant="well"): рядки заявки — та сама таблиця, лише з полями в клітинках. */
+.lines__well {
+  overflow: hidden;
+  background: var(--ix-surface-inset);
+  border: var(--ix-control-border-width) solid var(--ix-well-border);
+  border-radius: var(--ix-radius-container);
+  box-shadow: var(--ix-shadow-inset);
 }
 
-.lines__table thead th {
-  color: var(--ix-foreground-secondary);
-  font: var(--ix-font-overline);
+.lines__table .ix-table__cell {
+  white-space: normal;
+}
+
+/* Поля в клітинках вбудовані: без власної лунки й тіні, межа з'являється при наведенні, фокус — від набору. */
+.lines__table .ix-input:not(:focus-visible) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.lines__table .ix-input:not(:focus-visible):hover {
+  border-color: var(--ix-border-strong);
+}
+
+/* Довга назва позиції не заходить під стрілку списку: текст плавно зникає перед нею (маска, а не колір). */
+.lines__table .ix-select__control:not(:focus-visible):not(:hover) {
+  mask-image: linear-gradient(to left, transparent 2rem, currentColor 2.75rem);
+}
+
+.lines__table .ix-table__row:hover > .ix-table__cell {
+  background: transparent;
 }
 
 .lines__num {
@@ -186,12 +194,23 @@
   color: var(--ix-foreground-muted);
 }
 
-.lines__row[data-invalid="true"] > * {
+/* Рядок із проблемою підсвічується разом із рядком пояснень під ним. */
+.lines__table .lines__row[data-invalid="true"] > .ix-table__cell,
+.lines__table .lines__row[data-invalid="true"] + .lines__detail-row > .ix-table__cell {
   background: var(--ix-error-surface);
 }
 
 .lines__detail-row .lines__detail {
   padding-block-start: 0;
+}
+
+/* Рядок пояснень належить до рядка над ним: роздільник лише під парою. */
+.lines__table .lines__row:has(+ .lines__detail-row) > .ix-table__cell {
+  border-bottom-color: transparent;
+}
+
+.lines__table tbody > tr:last-child > .ix-table__cell {
+  border-bottom: 0;
 }
 
 .lines__replacement {
@@ -213,6 +232,12 @@
 
 .lines__footer {
   display: flex;
+}
+
+/* «Додати рядок» на всю ширину таблиці: продовження списку рядків, а не окрема дія збоку. */
+.lines__footer > button {
+  flex: 1 1 auto;
+  justify-content: center;
 }
 
 /* ── Праворуч: перевірки й бюджет ──────────────────────────────────────────── */
