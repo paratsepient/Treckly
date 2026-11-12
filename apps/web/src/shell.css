@@ -445,3 +445,13 @@ body {
 .return-note__hint {
   color: var(--ix-foreground-secondary);
 }
+
+/* Дії картки займають усю ширину підвалу: головна — окремим рядком, решта ділять рядок порівну. */
+.detail__actions > button {
+  flex: 1 1 0;
+  justify-content: center;
+}
+
+.detail__actions > button[data-variant="primary"] {
+  flex-basis: 100%;
+}
