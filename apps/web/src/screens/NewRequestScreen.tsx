@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Button, DataState, Icon, IconButton, Textarea } from "@index/ui";
+import { Button, DataState, Icon, IconButton, Textarea, Tooltip } from "@index/ui";
 import { ToolbarGroup, useFeedback, WorkspaceToolbar, type SaveStatusProps } from "@index/ui-patterns";
 import type { RequestStatus } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
@@ -25,6 +25,9 @@ import { requestLabel } from "../lib/format.ts";
 import { useDebounced } from "../lib/useDebounced.ts";
 
 const EDITABLE: readonly RequestStatus[] = ["draft", "returned"];
+const HINT =
+  "Оберіть позиції, заплановані на вашу в/ч у Попередньому переліку 2027, і напишіть обґрунтування — решту рапорту система заповнить за шаблоном. " +
+  "Для заміни виберіть схожий предмет: у межах одного КЕКВ ліміт не витрачається, на інший КЕКВ — списується.";
 const newId = (): string => `ln-${crypto.randomUUID().slice(0, 8)}`;
 
 const errorText = (error: unknown): string =>
@@ -227,6 +230,12 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
       title={title}
       surfaceLabel="Заповнення заявки"
       {...(readOnly || failed ? {} : { documentState, saveStatus })}
+      actions={
+        // Пояснення до заповнення — у підказці біля назви: на екрані лишаються лише поля.
+        <Tooltip content={HINT} placement="bottom">
+          <IconButton label="Як заповнити заявку" icon={<Icon name="info" />} showTooltip={false} />
+        </Tooltip>
+      }
       inspector={
         <DetailPanel title="Перевірки і бюджет" subtitle="Оновлюються, поки ви заповнюєте заявку">
           <CheckPanel report={report} budget={budgetQuery.data} rowOf={rowOf} pending={check.isFetching} incompleteCount={converted.incomplete.length} />
@@ -258,10 +267,6 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
               <span className="return-note__hint"> Виправте заявку й подайте нову версію: вона піде з першого рівня.</span>
             </p>
           ) : null}
-          <p className="screen__hint">
-            Оберіть позиції, заплановані на вашу в/ч у Попередньому переліку 2027, і напишіть обґрунтування — решту рапорту система заповнить за шаблоном. Для заміни виберіть
-            схожий предмет: у межах одного КЕКВ ліміт не витрачається, на інший КЕКВ — списується.
-          </p>
           <LinesEditor lines={history.present} positions={positions} items={items} dispatch={dispatch} problems={problems} newLineId={newId} />
           <section className="justification" aria-labelledby="justification-title">
             <h2 id="justification-title" className="justification__title">
