@@ -25,16 +25,16 @@ export function SedoDialog(props: SedoDialogProps) {
 
 function SedoDialogBody({ open, final, requestCount, totalText, pending, error, onClose, onConfirm }: SedoDialogProps) {
   const [value, setValue] = useState("");
-  const verb = final ? "Затвердити" : "Погодити";
+  const verb = final ? "Підписано Головою" : "Погодити";
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      title={`${verb} денний перелік?`}
+      title={final ? "Відмітити підпис Голови?" : `${verb} денний перелік?`}
       description={
         final
-          ? `Заявок: ${requestCount}, на суму ${totalText}. Затвердження резервує бюджет і формує витяги по в/ч; після нього заявки вже не відкликати.`
+          ? `Голова підписав роздрукований перелік: заявок ${requestCount}, на суму ${totalText}. Відмітка резервує бюджет і формує витяги по в/ч; після неї заявки вже не відкликати.`
           : `Заявок: ${requestCount}, на суму ${totalText}. Усі вони разом перейдуть на наступний рівень. Часткового погодження немає.`
       }
       kind="confirm"

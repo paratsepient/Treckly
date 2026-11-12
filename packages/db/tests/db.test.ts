@@ -102,7 +102,7 @@ let sedo = 5000;
 function approveFrom(s: Setup, st: State, listId: string): Outcome {
   const list = st.lists.find((l) => l.id === listId);
   if (!list) throw new Error(`Немає переліку ${listId}`);
-  return approveList(s.ctx, meta(appr(list.level)), {
+  return approveList(s.ctx, meta(list.level === 5 ? prep(5) : appr(list.level)), {
     list,
     requests: st.requests.filter((r) => list.requestIds.includes(r.id)),
     sedoNumber: (sedo += 1),

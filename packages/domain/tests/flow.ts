@@ -32,12 +32,12 @@ export function formAt(world: World, level: Level, ids: readonly string[], who =
   return list.id;
 }
 
-/** Погоджує перелік керівником рівня. */
+/** Погоджує перелік: керівник рівня, а на рівні 5 — Відділ відмічає підпис Голови. */
 export function approveAt(world: World, listId: string, sedo: string | number = 1001) {
   const list = getList(world, listId);
   return apply(
     world,
-    approveList(world.ctx, meta(approver(list.level)), {
+    approveList(world.ctx, meta(list.level === 5 ? preparer(5) : approver(list.level)), {
       list,
       requests: list.requestIds.map((id) => get(world, id)),
       sedoNumber: sedo,

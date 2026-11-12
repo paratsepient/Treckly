@@ -89,7 +89,7 @@ function allOutcomes() {
   let b = budget;
   for (const level of [1, 2, 3, 4, 5] as const) {
     const formed = formList(ctx, meta(prep(level)), { level, unitId: ROUTE[level - 1] as string, selected: [cur], existingLists: [] });
-    const approved = approveList(ctx, meta(appr(level)), { list: formed.lists[0]!, requests: formed.requests, sedoNumber: 100 + level, positions, budget: b });
+    const approved = approveList(ctx, meta(level === 5 ? prep(5) : appr(level)), { list: formed.lists[0]!, requests: formed.requests, sedoNumber: 100 + level, positions, budget: b });
     outcomes.push(formed, approved);
     cur = approved.requests[0]!;
     if (approved.budget) b = approved.budget;

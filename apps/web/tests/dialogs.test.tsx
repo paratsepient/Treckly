@@ -120,12 +120,12 @@ test("СЕДО: нечисловий ввід теж іде на сервер, �
   unmount();
 });
 
-test("СЕДО: рівень 5 — «Затвердити» з наслідками (резерв, витяги); інші рівні — «Погодити» без часткового погодження", () => {
+test("СЕДО: рівень 5 — Відділ відмічає «Підписано Головою» з наслідками (резерв, витяги); інші рівні — «Погодити» без часткового погодження", () => {
   let view = render(sedoDialog({ final: true }).ui);
   let dialog = document.querySelector("dialog[open]")!;
-  assert.match(text(dialog), /Затвердити денний перелік/);
+  assert.match(text(dialog), /Відмітити підпис Голови/);
   assert.match(text(dialog), /резервує бюджет і формує витяги/);
-  assert.ok(button(dialog, "Затвердити"));
+  assert.ok(button(dialog, "Підписано Головою"));
   view.unmount();
   view = render(sedoDialog().ui);
   dialog = document.querySelector("dialog[open]")!;

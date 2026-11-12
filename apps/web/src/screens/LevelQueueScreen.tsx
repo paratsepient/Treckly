@@ -10,6 +10,9 @@ import { InfoHint } from "../components/InfoHint.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { PlanComparison } from "../components/PlanComparison.tsx";
 import { RaportDialog } from "../components/RaportDialog.tsx";
+import { DocumentActions, DocumentDialog } from "../components/DocumentDialog.tsx";
+import { SedoDialog } from "../components/SedoDialog.tsx";
+import { buildListHtml, listDocModel, type ListDocInput } from "../lib/list-doc.ts";
 import { ReturnDialog } from "../components/ReturnDialog.tsx";
 import { formatDateShort, formatMoney, requestLabel } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
@@ -44,10 +47,15 @@ export function LevelQueueScreen() {
   const [returning, setReturning] = useState<Request | null>(null);
   const [returnError, setReturnError] = useState<string | undefined>();
   const [disbanding, setDisbanding] = useState<List | null>(null);
+  /** Рівень 5: перелік, під яким відмічають підпис Голови, і перелік, відкритий як документ. */
+  const [signing, setSigning] = useState<List | null>(null);
+  const [signError, setSignError] = useState<string | undefined>();
+  const [viewingList, setViewingList] = useState<string | null>(null);
 
   const form = useApiMutation("formList");
   const giveBack = useApiMutation("returnRequest");
   const disband = useApiMutation("disbandList");
+  const sign = useApiMutation("approveList");
 
   const rows = queue.data?.queue ?? [];
   const priced = positions.data?.positions ?? [];
@@ -131,6 +139,41 @@ export function LevelQueueScreen() {
     setReturning(r);
   };
 
+  const final = level === 5;
+  const listInput = (list: List): ListDocInput => ({
+    list,
+    requests: list.requestIds.map((id) => requestById.get(id)).filter((r): r is Request => r !== undefined),
+    positions: priced,
+    unitName,
+    userName: (id) => session.data?.users.find((u) => u.id === id)?.name ?? id,
+    levelName: levelConfig?.name ?? "",
+  });
+  const listTotal = (list: List): number =>
+    list.requestIds.reduce((sum, id) => {
+      const r = requestById.get(id);
+      return sum + (r ? requestTotal(r, priced) : 0);
+    }, 0);
+  const doSign = (sedoNumber: string) => {
+    if (!signing) return;
+    setSignError(undefined);
+    sign.mutate(
+      { params: { id: signing.id }, body: { sedoNumber, expectedRevisions: { [signing.id]: signing.revision } } },
+      {
+        onSuccess: ({ list, requests: moved }) => {
+          setSigning(null);
+          feedback.notify({
+            key: "signed",
+            tone: "success",
+            title: "Перелік підписано Головою",
+            description: `СЕДО № ${list.sedoNumber}. Бюджет зарезервовано, витяги по в/ч сформовано (заявок: ${moved.length}).`,
+          });
+        },
+        onError: (error) => setSignError(errorText(error)),
+      },
+    );
+  };
+  const viewed = formedByMe.find((l) => l.id === viewingList);
+
   const columns: readonly DataTableColumn<Request>[] = [
     {
       key: "pick",
@@ -208,7 +251,7 @@ export function LevelQueueScreen() {
                 <article key={list.id} className="list-card" aria-label={`Перелік від ${formatDateShort(list.date)}`}>
                   <header className="list-card__head">
                     <h3 className="list-card__title">Перелік від {formatDateShort(list.date)}</h3>
-                    <Badge tone="info">Чекає погодження керівника</Badge>
+                    <Badge tone="info">{final ? "Чекає підпису Голови" : "Чекає погодження керівника"}</Badge>
                   </header>
                   <ul className="list-card__items">
                     {list.requestIds.map((id) => {
@@ -221,7 +264,32 @@ export function LevelQueueScreen() {
                       );
                     })}
                   </ul>
-                  {mine ? (
+                  {final ? (
+                    // Рівень 5: Відділ друкує перелік, несе на підпис Голові й відмічає підпис з номером СЕДО.
+                    <div className="list-card__final">
+                      <p className="list-card__note">Роздрукуйте або завантажте перелік, передайте на підпис Голові й після підпису відмітьте «Підписано Головою».</p>
+                      <div className="list-card__actions">
+                        <IconButton variant="secondary" label={`Переглянути перелік від ${formatDateShort(list.date)}`} icon={<Icon name="view" />} onClick={() => setViewingList(list.id)} />
+                        <DocumentActions
+                          what="перелік"
+                          html={buildListHtml(listInput(list))}
+                          makeDocx={async () => (await import("../lib/docx-export.ts")).buildListDocx(listInput(list))}
+                          fileName={listDocModel(listInput(list)).fileName}
+                        />
+                        {mine ? <Button onClick={() => setDisbanding(list)}>Розформувати</Button> : null}
+                        <Button
+                          variant="primary"
+                          iconStart={<Icon name="success" />}
+                          onClick={() => {
+                            setSignError(undefined);
+                            setSigning(list);
+                          }}
+                        >
+                          Підписано Головою
+                        </Button>
+                      </div>
+                    </div>
+                  ) : mine ? (
                     <Button onClick={() => setDisbanding(list)}>Розформувати</Button>
                   ) : (
                     <p className="list-card__note">Розформувати може лише той, хто сформував перелік.</p>
@@ -262,6 +330,26 @@ export function LevelQueueScreen() {
             </>
           ) : undefined
         }
+      />
+      <SedoDialog
+        open={signing !== null}
+        final
+        requestCount={signing?.requestIds.length ?? 0}
+        totalText={signing ? formatMoney(listTotal(signing)) : ""}
+        pending={sign.isPending}
+        error={signError}
+        onClose={() => setSigning(null)}
+        onConfirm={doSign}
+      />
+      <DocumentDialog
+        open={viewed !== undefined}
+        onClose={() => setViewingList(null)}
+        title={viewed ? listDocModel(listInput(viewed)).documentTitle : "Перелік"}
+        description="Остаточний перелік за день: роздрукуйте або завантажте його й передайте на підпис Голові."
+        html={viewed ? buildListHtml(listInput(viewed)) : null}
+        makeDocx={viewed ? async () => (await import("../lib/docx-export.ts")).buildListDocx(listInput(viewed)) : null}
+        fileName={viewed ? listDocModel(listInput(viewed)).fileName : "Перелік.docx"}
+        what="перелік"
       />
       <ReturnDialog
         open={returning !== null}

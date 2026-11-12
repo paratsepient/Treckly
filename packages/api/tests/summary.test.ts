@@ -41,7 +41,7 @@ test("нова затверджена заявка з'являється в ос
 
   for (const [level, unit] of [[1, "unit-a"], [2, "brig-1"], [3, "ru-1"], [4, "dir-1"], [5, "vor"]] as const) {
     const { list } = await h.call("formList", `prep-${level}-${unit}`, { body: { level, unitId: unit, requestIds: [request.id] } });
-    await h.call("approveList", `appr-${level}-${unit}`, { params: { id: list.id }, body: { sedoNumber: 100 + level } });
+    await h.call("approveList", level === 5 ? `prep-5-${unit}` : `appr-${level}-${unit}`, { params: { id: list.id }, body: { sedoNumber: 100 + level } });
   }
   const after = await h.call("final", AUTHOR_A);
   assert.deepEqual(after.requests.map((r) => r.id).sort(), ["req-0001", request.id].sort());

@@ -20,7 +20,7 @@ const rootRoute = createRootRoute({ component: Root });
 function Home() {
   const session = useApiQuery("session");
   const role = session.data?.user.roleKind;
-  return role ? <Navigate to={homePath(role)} /> : null;
+  return role ? <Navigate to={homePath(role, session.data?.user.level ?? null)} /> : null;
 }
 
 const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/", component: Home });
@@ -77,7 +77,7 @@ const listsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/lists",
   component: () => (
-    <RoleOnly roles={["approver"]}>
+    <RoleOnly roles={["approver"]} levels={[1, 2, 3, 4]}>
       <DailyListScreen />
     </RoleOnly>
   ),

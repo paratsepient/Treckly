@@ -6103,7 +6103,7 @@
       "kind": "level",
       "level": 5,
       "unitId": "vor",
-      "role": "approver"
+      "role": "preparer"
      },
      "requestId": "req-0001",
      "listId": "list-0009",
@@ -6235,7 +6235,7 @@
      ],
      "formedBy": "prep-5-vor",
      "sedoNumber": 7240042,
-     "approvedBy": "appr-5-vor",
+     "approvedBy": "prep-5-vor",
      "revision": 2
     }
    ],
@@ -6243,7 +6243,7 @@
     {
      "type": "list.approved",
      "at": "2027-02-06T09:00:00.000Z",
-     "actorId": "appr-5-vor",
+     "actorId": "prep-5-vor",
      "idempotencyKey": "seed-0036",
      "requestId": null,
      "listId": "list-0009",
@@ -6259,7 +6259,7 @@
     {
      "type": "request.approved",
      "at": "2027-02-06T09:00:00.000Z",
-     "actorId": "appr-5-vor",
+     "actorId": "prep-5-vor",
      "idempotencyKey": "seed-0036",
      "requestId": "req-0001",
      "listId": "list-0009",
@@ -6274,7 +6274,7 @@
     {
      "type": "request.approved",
      "at": "2027-02-06T09:00:00.000Z",
-     "actorId": "appr-5-vor",
+     "actorId": "prep-5-vor",
      "idempotencyKey": "seed-0036",
      "requestId": "req-0002",
      "listId": "list-0009",

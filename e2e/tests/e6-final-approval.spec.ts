@@ -2,7 +2,8 @@ import { expect, test } from "@playwright/test";
 import { AUTHOR_C, openAs, row, switchTo, toast } from "../support.ts";
 
 /**
- * E6. Голова затверджує: резерв бюджету, витяги по в/ч, «Заміна погоджена», оновлені KPI.
+ * E6. Відділ оборонних ресурсів відмічає підпис Голови: резерв бюджету, витяги по в/ч, «Заміна погоджена», оновлені KPI.
+ * Голова в системі лише стежить.
  */
 test("E6: затвердження Головою — резерв бюджету, витяг із «Заміна погоджена», оновлене зведення", async ({ page }) => {
   await openAs(page, "appr-5-vor", "/registry");
@@ -16,13 +17,24 @@ test("E6: затвердження Головою — резерв бюджет�
   await page.getByRole("button", { name: "Сформувати перелік (1)" }).click();
   await expect(toast(page, "Перелік сформовано: заявок 1")).toBeVisible();
 
+  // Голова в системі не погоджує: екрана затвердження в нього немає, лише моніторинг.
   await switchTo(page, "appr-5-vor", "/lists");
-  await page.getByRole("button", { name: "Затвердити", exact: true }).click();
-  const dialog = page.getByRole("dialog");
+  await expect(page).toHaveURL(/#\/registry$/);
+  await expect(page.getByRole("link", { name: "Денний перелік" })).toHaveCount(0);
+
+  // Відділ друкує/завантажує перелік, несе на підпис і відмічає «Підписано Головою» з номером СЕДО.
+  await switchTo(page, "prep-5-vor", "/queue");
+  const card = page.getByRole("article", { name: /Перелік від/ });
+  await expect(card).toContainText("Чекає підпису Голови");
+  const listDownload = page.waitForEvent("download");
+  await card.getByRole("button", { name: "Завантажити перелік (Word)" }).click();
+  expect((await listDownload).suggestedFilename()).toMatch(/\.docx$/);
+  await card.getByRole("button", { name: "Підписано Головою" }).click();
+  const dialog = page.getByRole("dialog", { name: "Відмітити підпис Голови?" });
   await expect(dialog).toContainText("резервує бюджет і формує витяги");
   await dialog.getByLabel("Номер СЕДО").fill("7600001");
-  await dialog.getByRole("button", { name: "Затвердити" }).click();
-  await expect(toast(page, "Перелік затверджено")).toBeVisible();
+  await dialog.getByRole("button", { name: "Підписано Головою" }).click();
+  await expect(toast(page, "Перелік підписано Головою")).toBeVisible();
 
   // Остаточний перелік і витяг по в/ч А0003: рядок заміни — «Заміна погоджена».
   await page.goto("/#/final");

@@ -4,7 +4,7 @@ import { DomainError } from "./errors.ts";
 import { assertLevelRole } from "./permissions.ts";
 import { parseSedoNumber } from "./sedo.ts";
 import type { Budget, DailyList, Level, Meta, Notification, Outcome, Positions, Request, UnitId } from "./types.ts";
-import { FINAL_LEVEL } from "./types.ts";
+import { FINAL_LEVEL, signerKind } from "./types.ts";
 
 function invalid(message: string, details: Readonly<Record<string, unknown>> = {}): DomainError {
   return new DomainError("INVALID_TRANSITION", message, details);
@@ -67,7 +67,7 @@ export function formList(ctx: DomainContext, meta: Meta, input: FormListInput): 
       ),
     ],
     // Керівнику рівня — один сигнал на перелік (за першою заявкою), а не на кожну.
-    notifications: [notification(ctx, "list_formed", selected[0] as Request, levelAudience(selected[0] as Request, level, "approver"), list.id)],
+    notifications: [notification(ctx, "list_formed", selected[0] as Request, levelAudience(selected[0] as Request, level, signerKind(level)), list.id)],
   };
 }
 
@@ -129,7 +129,7 @@ export interface ApproveListInput extends ListInput {
  */
 export function approveList(ctx: DomainContext, meta: Meta, input: ApproveListInput): Outcome {
   const { list } = input;
-  assertLevelRole(meta.actor, "approver", list.level, list.unitId);
+  assertLevelRole(meta.actor, signerKind(list.level), list.level, list.unitId);
   guardRevision(meta, list);
   assertListConsistent(input);
   for (const request of input.requests) guardRevision(meta, request);

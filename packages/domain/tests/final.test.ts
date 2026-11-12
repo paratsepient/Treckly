@@ -38,7 +38,7 @@ test("затвердження блокується, якщо сума пере�
   const listId = formAt(world, 5, ids);
   const list = getList(world, listId);
   const error = throwsCode(
-    () => approveList(world.ctx, meta(approver(5)), { list, requests: ids.map((id) => get(world, id)), sedoNumber: 1, positions: POSITIONS, budget: world.budget }),
+    () => approveList(world.ctx, meta(preparer(5)), { list, requests: ids.map((id) => get(world, id)), sedoNumber: 1, positions: POSITIONS, budget: world.budget }),
     "BUDGET_EXCEEDED",
   );
   assert.equal(error.details["scope"], "2210");
@@ -54,7 +54,7 @@ test("залишок для наступного переліку врахову
   world.clock.advanceDays(1);
   const listId = formAt(world, 5, [second]);
   throwsCode(
-    () => approveList(world.ctx, meta(approver(5)), { list: getList(world, listId), requests: [get(world, second)], sedoNumber: 2, positions: POSITIONS, budget: world.budget }),
+    () => approveList(world.ctx, meta(preparer(5)), { list: getList(world, listId), requests: [get(world, second)], sedoNumber: 2, positions: POSITIONS, budget: world.budget }),
     "BUDGET_EXCEEDED",
   );
 });
@@ -100,4 +100,15 @@ test("витяги формуються по в/ч, лише системою і
   assert.deepEqual(outcome.extracts?.[0]?.requestIds, [a, b]);
   assert.ok(outcome.notifications.every((n) => n.kind === "extract_issued"));
   throwsCode(() => issueExtracts(world.ctx, meta(system), { requests: [get(world, a)] }), "INVALID_TRANSITION"); // вдруге не можна
+});
+
+test("рівень 5: підпис Голови відмічає Відділ оборонних ресурсів; сам Голова в системі не погоджує", () => {
+  const { world, ids } = atFinal([[byList("l1", "p1", 1)]]);
+  const listId = formAt(world, 5, ids);
+  const input = () => ({ list: getList(world, listId), requests: ids.map((id) => get(world, id)), sedoNumber: 77, positions: POSITIONS, budget: world.budget });
+  throwsCode(() => approveList(world.ctx, meta(approver(5)), input()), "FORBIDDEN_ROLE");
+  const outcome = apply(world, approveList(world.ctx, meta(preparer(5)), input()));
+  assert.equal(outcome.lists[0]?.status, "approved");
+  assert.equal(outcome.lists[0]?.approvedBy, preparer(5).userId);
+  assert.ok(ids.every((id) => get(world, id).status === "approved"));
 });

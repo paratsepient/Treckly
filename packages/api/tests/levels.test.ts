@@ -175,7 +175,8 @@ test("повний шлях: нова заявка проходить 5 рівн
 
   for (const { level, unit } of STEPS) {
     const prep = `prep-${level}-${unit}`;
-    const appr = `appr-${level}-${unit}`;
+    // Рівень 5: підпис Голови відмічає Відділ (уповноважений рівня 5).
+    const appr = level === 5 ? prep : `appr-${level}-${unit}`;
     const { list } = await h.call("formList", prep, { body: { level, unitId: unit, requestIds: [request.id] } });
     const detail = await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } });
     assert.equal(detail.track.steps[level - 1]?.inList, true, `рівень ${level}: у переліку`);
@@ -216,11 +217,13 @@ test("затвердження Головою блокується, якщо с�
   const { list } = await h.call("formList", "prep-5-vor", { body: { level: 5, unitId: "vor", requestIds: ["req-0006"] } });
   const budgetBefore = (await h.call("budget", AUTHOR_A)).lines;
 
-  const error = await h.fail("approveList", "appr-5-vor", 422, { params: { id: list.id }, body: { sedoNumber: 200 } });
+  // Голова в системі не погоджує: лише Відділ відмічає його підпис.
+  assert.equal((await h.fail("approveList", "appr-5-vor", 403, { params: { id: list.id }, body: { sedoNumber: 200 } })).code, "FORBIDDEN_ROLE");
+  const error = await h.fail("approveList", "prep-5-vor", 422, { params: { id: list.id }, body: { sedoNumber: 200 } });
   assert.equal(error.code, "BUDGET_EXCEEDED");
   assert.equal(error.details?.["scope"], "3110");
   assert.deepEqual((await h.call("budget", AUTHOR_A)).lines, budgetBefore);
-  const still = (await queueOf(h, "appr-5-vor", 5)).lists.find((l) => l.id === list.id)!;
+  const still = (await queueOf(h, "prep-5-vor", 5)).lists.find((l) => l.id === list.id)!;
   assert.equal(still.status, "formed");
   assert.equal((await h.call("requestDetail", AUTHOR_A, { params: { id: "req-0006" } })).request.status, "in_list");
 });

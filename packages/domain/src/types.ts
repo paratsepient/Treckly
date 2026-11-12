@@ -7,6 +7,13 @@ export type Level = 1 | 2 | 3 | 4 | 5;
 export const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
 export const FINAL_LEVEL: Level = 5;
 
+/**
+ * Хто відмічає погодження переліку рівня: керівник рівня, а на рівні 5 — Відділ оборонних ресурсів.
+ * Голова підписує остаточний перелік на папері; Відділ друкує його, несе на підпис і відмічає
+ * «Підписано Головою» з номером СЕДО. У системі Голова лише стежить (рішення користувача 2026-11-12).
+ */
+export const signerKind = (level: Level): "preparer" | "approver" => (level === FINAL_LEVEL ? "preparer" : "approver");
+
 export type IsoDate = string; // YYYY-MM-DD (UTC)
 export type IsoTimestamp = string;
 export type Kekv = string;

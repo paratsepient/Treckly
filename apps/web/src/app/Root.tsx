@@ -55,7 +55,10 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
       ];
     case "approver":
       return [
-        { id: "work", label: "Робота рівня", items: [{ id: "lists", label: level === 5 ? "Затвердження" : "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
+        // Голова підписує перелік на папері, а в системі лише стежить: без екрана погодження.
+        level === 5
+          ? { id: "work", label: "Моніторинг", items: [final("Остаточний перелік"), inbox] }
+          : { id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] },
         { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "admin":
@@ -64,8 +67,8 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
 }
 
 /** Початковий екран ролі. */
-export const homePath = (role: Role): "/property" | "/queue" | "/lists" | "/journal" =>
-  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? "/lists" : "/journal";
+export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/journal" | "/registry" =>
+  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/registry" : "/lists") : "/journal";
 
 const initials = (name: string): string =>
   name
@@ -252,9 +255,10 @@ export function Root() {
 }
 
 /** Екран доступний лише вказаним ролям; інших повертає на початковий екран їхньої ролі. */
-export function RoleOnly({ roles, level, children }: { readonly roles: readonly Role[]; readonly level?: number; readonly children: ReactNode }) {
+export function RoleOnly({ roles, levels, children }: { readonly roles: readonly Role[]; readonly levels?: readonly number[]; readonly children: ReactNode }) {
   const session = useApiQuery("session");
   const role = session.data?.user.roleKind;
-  if (role && (!roles.includes(role) || (level !== undefined && session.data?.user.level !== level))) return <Navigate to={homePath(role)} />;
+  const level = session.data?.user.level ?? null;
+  if (role && (!roles.includes(role) || (levels !== undefined && (level === null || !levels.includes(level))))) return <Navigate to={homePath(role, level)} />;
   return <>{children}</>;
 }

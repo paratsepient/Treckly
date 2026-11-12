@@ -227,7 +227,8 @@ class Simulation {
     const list = this.lists.get(listId) as DailyList;
     this.sedo += 1 + (this.sedo % 7);
     const out = this.record(
-      approveList(this.ctx, this.meta(this.approver(list.level, list.unitId)), {
+      // Рівень 5: підпис Голови відмічає Відділ оборонних ресурсів (уповноважений рівня 5).
+      approveList(this.ctx, this.meta(list.level === 5 ? this.preparer(5, list.unitId) : this.approver(list.level, list.unitId)), {
         list,
         requests: list.requestIds.map((id) => this.get(id)),
         sedoNumber: this.sedo,
