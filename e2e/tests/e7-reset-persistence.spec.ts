@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { AUTHOR_A, demoAction, openAs, row, toast } from "../support.ts";
+import { AUTHOR_A, demoAction, openAs, requestCard, toast } from "../support.ts";
 
 /**
  * E7. «Скинути демо», збереження після перезавантаження.
@@ -16,12 +16,12 @@ test("E7: чернетка переживає перезавантаження, 
   await expect(page.getByLabel("Позиція, рядок 1")).toHaveValue("pos-003");
 
   await page.goto("/#/my");
-  await expect(row(page, /Чернетка/)).toHaveCount(2);
+  await expect(requestCard(page, /Чернетка/)).toHaveCount(2);
 
   // Скидання: чернетки немає, стан як на початку; роль і тема збережені.
   await demoAction(page, "Скинути демо");
   await expect(toast(page, "Демо скинуто до початкового стану")).toBeVisible();
   await page.goto("/#/my");
-  await expect(row(page, /Чернетка/)).toHaveCount(1);
-  await expect(row(page, /ЗМ-0001/)).toContainText("Витяг сформовано");
+  await expect(requestCard(page, /Чернетка/)).toHaveCount(1);
+  await expect(requestCard(page, /ЗМ-0001/)).toContainText("Витяг сформовано");
 });

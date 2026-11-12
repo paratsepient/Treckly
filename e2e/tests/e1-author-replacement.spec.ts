@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { AUTHOR_A, openAs, toast } from "../support.ts";
+import { AUTHOR_A, openAs, requestCard, toast } from "../support.ts";
 
 /**
  * E1. Автор створює заявку із заміною в іншому КЕКВ, бачить вплив на бюджет і подає.
@@ -57,8 +57,8 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
 
   // Заявка в «Моїх заявках» на рівні 1; трек показує, що вона зараз там.
   await expect(page).toHaveURL(/#\/my\?selected=req-/);
-  await expect(page.getByRole("row", { name: /На рівні 1/ }).first()).toBeVisible();
-  await expect(page.getByRole("row", { name: /Антени для відділу зв'язку/ })).toContainText("На рівні 1");
+  await expect(requestCard(page, /На рівні 1/).first()).toBeVisible();
+  await expect(requestCard(page, /Антени для відділу зв'язку/)).toContainText("На рівні 1");
   const track = page.getByRole("list", { name: "Трек заявки за рівнями погодження" });
   await expect(track.getByRole("listitem").first()).toContainText("Зараз тут");
   await expect(track.getByRole("listitem").nth(1)).toContainText("Попереду");

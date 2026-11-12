@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Badge, Button, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
+import { Badge, Button, DataState, Icon } from "@index/ui";
 import { Dialog, useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
-import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { RaportButton } from "../components/RaportDialog.tsx";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { daysAtLevel } from "@dsp/domain";
@@ -37,7 +36,6 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
   const positions = useApiQuery("positions");
   const reference = useApiQuery("reference");
   const session = useApiQuery("session");
-  const narrow = useMedia(NARROW);
   const detail = useApiQuery("requestDetail", { params: { id: selected ?? "" } }, { enabled: selected !== undefined });
   const withdraw = useApiMutation("withdrawRequest");
 
@@ -48,22 +46,6 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
 
   const select = (id: string | undefined) => void navigate({ to: "/my", search: { selected: id } });
 
-  const columns: readonly DataTableColumn<Request>[] = [
-    { key: "id", header: "Номер", mono: true, render: (r) => requestLabel(r.id), width: 150 },
-    { key: "name", header: "Назва", render: (r) => r.title || "—" },
-    { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge> },
-    { key: "where", header: "Де зараз", render: (r) => whereNow(r, levelNames) },
-    {
-      key: "days",
-      header: "Днів на рівні",
-      numeric: true,
-      render: (r) => (r.status === "at_level" || r.status === "in_list" || r.status === "returned" ? daysAtLevel(r, today) : "—"),
-      width: 130,
-    },
-    { key: "lines", header: "Рядків", numeric: true, render: (r) => r.lines.length, width: 90 },
-    { key: "total", header: "Сума", numeric: true, render: (r) => formatMoney(requestTotal(r, positions.data?.positions ?? [])), width: 160 },
-    { key: "created", header: "Створено", render: (r) => formatDateShort(r.createdOn), width: 120 },
-  ];
 
   const request = detail.data?.request;
   const canEdit = request && (request.status === "draft" || request.status === "returned");
@@ -143,18 +125,49 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
         }}
         {...(selected ? { inspectorKey: selected } : {})}
       >
-        <DataTable
-          label="Мої заявки"
-          columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["name", "where", "days", "lines", "total", "created"] : ["lines", "created"])}
-          rows={rows}
-          getRowId={(r) => r.id}
-          variant="well"
-          currentRowId={selected ?? null}
-          onRowSelect={(id) => select(id)}
-          state={state}
-          stateTitle={state === "error" ? "Не вдалося завантажити заявки" : "Заявок ще немає"}
-          {...(state === "empty" ? { stateDescription: "Створіть першу заявку кнопкою «Нова заявка»." } : {})}
-        />
+        {state !== "ready" ? (
+          <DataState
+            kind={state === "loading" ? "loading" : state === "error" ? "error" : "empty"}
+            title={state === "loading" ? "Завантаження заявок…" : state === "error" ? "Не вдалося завантажити заявки" : "Заявок ще немає"}
+            {...(state === "empty" ? { description: "Створіть першу заявку кнопкою «Нова заявка»." } : {})}
+          />
+        ) : (
+          <ul className="request-cards" aria-label="Мої заявки">
+            {rows.map((r) => {
+              const atLevel = r.status === "at_level" || r.status === "in_list" || r.status === "returned";
+              return (
+                <li key={r.id}>
+                  <article className="request-card" aria-current={r.id === selected ? "true" : undefined} aria-labelledby={`card-${r.id}`}>
+                    <header className="request-card__head">
+                      {/* Кнопка-номер розтягнута на всю картку: клік будь-де відкриває картку заявки. */}
+                      <button type="button" id={`card-${r.id}`} className="request-card__open" onClick={() => select(r.id)}>
+                        {requestLabel(r.id)}
+                      </button>
+                      <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>
+                    </header>
+                    <p className="request-card__title" data-empty={r.title ? undefined : "true"}>
+                      {r.title || "Без назви"}
+                    </p>
+                    <dl className="request-card__facts">
+                      <div>
+                        <dt>Де зараз</dt>
+                        <dd>{whereNow(r, levelNames)}</dd>
+                      </div>
+                      <div>
+                        <dt>Днів на рівні</dt>
+                        <dd>{atLevel ? daysAtLevel(r, today) : "—"}</dd>
+                      </div>
+                    </dl>
+                    <footer className="request-card__foot">
+                      <strong className="request-card__sum">{formatMoney(requestTotal(r, positions.data?.positions ?? []))}</strong>
+                      <span>{`${r.lines.length} ${r.lines.length === 1 ? "рядок" : r.lines.length < 5 ? "рядки" : "рядків"} · ${formatDateShort(r.createdOn)}`}</span>
+                    </footer>
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </ScreenFrame>
       <Dialog
         open={confirmOpen}

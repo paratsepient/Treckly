@@ -548,3 +548,123 @@
 .list-card__tools .raport-tools {
   margin-inline-end: 0;
 }
+
+/* ── «Мої заявки»: кожна заявка — окрема картка ─────────────────────────────── */
+
+.request-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--ix-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.request-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+  height: 100%;
+  padding: var(--ix-space-4);
+  box-sizing: border-box;
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-container);
+  background: var(--ix-surface);
+  transition:
+    border-color var(--ix-duration-fast) var(--ix-easing-standard),
+    background-color var(--ix-duration-fast) var(--ix-easing-standard);
+}
+
+.request-card:hover {
+  border-color: var(--ix-border-strong);
+}
+
+.request-card[aria-current="true"] {
+  border-color: var(--ix-selection-indicator);
+  background: var(--ix-selection-background);
+}
+
+.request-card__head {
+  display: flex;
+  gap: var(--ix-space-2);
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Номер — кнопка, розтягнута на всю картку; фокус обводить усю картку. */
+.request-card__open {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ix-foreground);
+  font: var(--ix-font-mono);
+  font-weight: var(--ix-font-weight-medium);
+  cursor: pointer;
+}
+
+.request-card__open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.request-card__open:focus-visible {
+  outline: none;
+}
+
+.request-card:has(.request-card__open:focus-visible) {
+  outline: var(--ix-focus-width) solid var(--ix-focus-ring);
+  outline-offset: var(--ix-focus-offset);
+}
+
+.request-card__title {
+  margin: 0;
+  font: var(--ix-font-heading-sm);
+  overflow-wrap: anywhere;
+}
+
+.request-card__title[data-empty="true"] {
+  color: var(--ix-foreground-muted);
+  font: var(--ix-font-body);
+}
+
+.request-card__facts {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--ix-space-3);
+  margin: 0;
+}
+
+.request-card__facts dt {
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.request-card__facts dd {
+  margin: 0;
+}
+
+.request-card__facts > div:last-child {
+  text-align: end;
+}
+
+.request-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-1) var(--ix-space-3);
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: var(--ix-space-3);
+  border-top: 1px solid var(--ix-border);
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.request-card__sum {
+  color: var(--ix-foreground);
+  font: var(--ix-font-body-strong);
+  font-variant-numeric: tabular-nums;
+}

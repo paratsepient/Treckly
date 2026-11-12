@@ -72,6 +72,9 @@ export async function submitSimpleRequest(page: Page, positionId = "pos-002"): P
   await expect(toast(page, "Заявку подано")).toBeVisible();
 }
 
+/** Картка заявки в «Моїх заявках» за текстом (номер, статус, назва). */
+export const requestCard = (page: Page, text: string | RegExp) => page.getByRole("list", { name: "Мої заявки" }).getByRole("listitem").filter({ hasText: text });
+
 /** Рядок таблиці за текстом (номер заявки тощо). */
 export const row = (page: Page, text: string | RegExp) => page.getByRole("row", { name: text });
 
