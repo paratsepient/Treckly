@@ -54,11 +54,11 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
         { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "approver":
+      // Голова підписує перелік на папері, а в системі лише стежить: одне меню моніторингу в порядку роботи —
+      // що заплановано, як іде, що затверджено, сповіщення.
+      if (level === 5) return [{ id: "monitoring", label: "Моніторинг", items: [planned, registry, final("Остаточний перелік"), inbox] }];
       return [
-        // Голова підписує перелік на папері, а в системі лише стежить: без екрана погодження.
-        level === 5
-          ? { id: "work", label: "Моніторинг", items: [final("Остаточний перелік"), inbox] }
-          : { id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] },
+        { id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] },
         { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "admin":
