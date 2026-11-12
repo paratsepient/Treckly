@@ -71,6 +71,7 @@
   .lines__table,
   .lines__table tbody {
     display: block;
+    min-width: 0;
   }
 
   .lines__table thead {

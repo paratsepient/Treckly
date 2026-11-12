@@ -125,11 +125,11 @@
 }
 
 .lines__type {
-  width: 10.5rem;
+  width: 11.5rem;
 }
 
 .lines__kekv {
-  width: 4rem;
+  width: 5rem;
 }
 
 .lines__title {
@@ -139,7 +139,8 @@
 
 /* Лунка, як у таблиць набору (DataTable variant="well"): рядки заявки — та сама таблиця, лише з полями в клітинках. */
 .lines__well {
-  overflow: hidden;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   background: var(--ix-surface-inset);
   border: var(--ix-control-border-width) solid var(--ix-well-border);
   border-radius: var(--ix-radius-container);
@@ -150,6 +151,11 @@
 .lines__table .ix-table__header,
 .lines__table .ix-table__cell {
   box-sizing: border-box;
+}
+
+/* Таблиця не стискається нижче зручної ширини: на вузькому місці з'являється горизонтальна прокрутка. */
+.lines__table {
+  min-width: 60rem;
 }
 
 .lines__table .ix-table__cell {
@@ -177,23 +183,23 @@
 }
 
 .lines__num {
-  width: 2rem;
+  width: 3rem;
   font-variant-numeric: tabular-nums;
 }
 
 .lines__qty {
-  width: 6rem;
+  width: 7rem;
 }
 
 .lines__money {
-  width: 7rem;
+  width: 9rem;
   text-align: end;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .lines__actions {
-  width: 2.75rem;
+  width: 3.5rem;
 }
 
 .lines__muted {
