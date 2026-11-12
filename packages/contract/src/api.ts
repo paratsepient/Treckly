@@ -55,6 +55,8 @@ export const ReturnInput = z.object({ note: z.string(), expectedRevision });
 export const FormListInput = z.object({ level: Level, unitId: Id, requestIds: z.array(Id).min(1), expectedRevisions: expectedRevisions.optional() });
 export const DisbandListInput = z.object({ expectedRevisions: expectedRevisions.optional() });
 /** Номер СЕДО приймається як є: формат (число) перевіряє домен → SEDO_NUMBER_INVALID. */
+/** Рівень 5: Голова не підписав — примітка обов'язкова, заявки повертаються авторам. */
+export const NotSignedInput = z.object({ note: z.string().max(2000), expectedRevisions: expectedRevisions.optional() });
 export const ApproveListInput = z.object({ sedoNumber: z.union([z.string(), z.number()]), expectedRevisions: expectedRevisions.optional() });
 export const MarkReadInput = z.object({ ids: z.array(z.number().int()).optional() });
 
@@ -128,6 +130,7 @@ export const API = {
   formList: endpoint({ method: "POST", path: "/api/lists", input: FormListInput, output: ListResponse }),
   disbandList: endpoint({ method: "POST", path: "/api/lists/:id/disband", input: DisbandListInput, output: ListResponse }),
   approveList: endpoint({ method: "POST", path: "/api/lists/:id/approve", input: ApproveListInput, output: ListResponse }),
+  notSignedList: endpoint({ method: "POST", path: "/api/lists/:id/not-signed", input: NotSignedInput, output: ListResponse }),
   lists: endpoint({ method: "GET", path: "/api/lists", output: ListsResponse }),
   // Фінал
   final: endpoint({ method: "GET", path: "/api/final", output: FinalResponse }),

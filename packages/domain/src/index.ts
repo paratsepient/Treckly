@@ -19,7 +19,7 @@ export {
   type ReturnInput,
   type WithdrawInput,
 } from "./request.ts";
-export { formList, disbandList, approveList, type FormListInput, type ListInput, type ApproveListInput } from "./lists.ts";
+export { formList, disbandList, approveList, markNotSigned, type FormListInput, type ListInput, type ApproveListInput, type NotSignedInput } from "./lists.ts";
 export { issueExtracts } from "./extracts.ts";
 export { dailyReminders, daysAtLevel } from "./reminders.ts";
 export { buildTrack, type Track, type TrackStep, type TrackStepState } from "./track.ts";

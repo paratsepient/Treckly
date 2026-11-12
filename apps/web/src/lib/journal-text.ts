@@ -15,6 +15,7 @@ const EVENT_TEXT: Record<string, string> = {
   "request.not_procured": "Закрито як не виконано",
   "list.formed": "Сформовано денний перелік",
   "list.disbanded": "Перелік розформовано",
+  "list.not_signed": "Голова не підписав перелік, заявки повернуто авторам",
   "list.approved": "Перелік погоджено",
 };
 

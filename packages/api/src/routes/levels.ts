@@ -4,6 +4,7 @@ import { loadList, loadLists, loadRequests, saveOutcome, type DspDb, type UserRo
 import {
   approveList,
   disbandList,
+  markNotSigned,
   DomainError,
   formList,
   issueExtracts,
@@ -91,6 +92,22 @@ export function levelRoutes(db: DspDb, run: CommandRunner) {
       if (!list) throw new ApiError(404, "NOT_FOUND", "Перелік не знайдено.", { id });
       const requests = await loadRequests(tx, list.requestIds);
       const outcome = disbandList(ctx, meta, { list, requests });
+      await saveOutcome(tx, outcome, requests[0]?.route[3] ?? "");
+      return { status: 200, body: listResponse(outcome, list) };
+    });
+    return c.json(reply.body, reply.status as 200);
+  });
+
+  /** Рівень 5: Голова не підписав остаточний перелік — заявки повертаються авторам із приміткою. */
+  app.post("/api/lists/:id/not-signed", async (c) => {
+    const { note, expectedRevisions } = await parseBody(c, API.notSignedList.input);
+    const id = c.req.param("id");
+    const meta = metaOf(c, expectedRevisions);
+    const reply = await run(meta.idempotencyKey, async (tx, ctx) => {
+      const list = await loadList(tx, id);
+      if (!list) throw new ApiError(404, "NOT_FOUND", "Перелік не знайдено.", { id });
+      const requests = await loadRequests(tx, list.requestIds);
+      const outcome = markNotSigned(ctx, meta, { list, requests, note });
       await saveOutcome(tx, outcome, requests[0]?.route[3] ?? "");
       return { status: 200, body: listResponse(outcome, list) };
     });

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Button, Checkbox, DataState, DataTable, Icon, IconButton, type DataTableColumn } from "@index/ui";
+import { Badge, Button, Checkbox, DataState, DataTable, Icon, IconButton, Textarea, type DataTableColumn } from "@index/ui";
 import { Dialog, useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { daysAtLevel } from "@dsp/domain";
@@ -56,6 +56,10 @@ export function LevelQueueScreen() {
   const giveBack = useApiMutation("returnRequest");
   const disband = useApiMutation("disbandList");
   const sign = useApiMutation("approveList");
+  const notSigned = useApiMutation("notSignedList");
+  const [refused, setRefused] = useState<List | null>(null);
+  const [refuseNote, setRefuseNote] = useState("");
+  const [refuseError, setRefuseError] = useState<string | undefined>();
 
   const rows = queue.data?.queue ?? [];
   const priced = positions.data?.positions ?? [];
@@ -172,6 +176,25 @@ export function LevelQueueScreen() {
       },
     );
   };
+  const doNotSigned = () => {
+    if (!refused) return;
+    setRefuseError(undefined);
+    notSigned.mutate(
+      { params: { id: refused.id }, body: { note: refuseNote, expectedRevisions: { [refused.id]: refused.revision } } },
+      {
+        onSuccess: ({ requests: back }) => {
+          setRefused(null);
+          feedback.notify({
+            key: "not-signed",
+            tone: "success",
+            title: "Відмічено: Голова не підписав",
+            description: `Заявки повернуто авторам із приміткою (${back.length}); нижчі рівні отримали сповіщення.`,
+          });
+        },
+        onError: (error) => setRefuseError(errorText(error)),
+      },
+    );
+  };
   const viewed = formedByMe.find((l) => l.id === viewingList);
 
   const columns: readonly DataTableColumn<Request>[] = [
@@ -267,7 +290,7 @@ export function LevelQueueScreen() {
                   {final ? (
                     // Рівень 5: Відділ друкує перелік, несе на підпис Голові й відмічає підпис з номером СЕДО.
                     <div className="list-card__final">
-                      <p className="list-card__note">Роздрукуйте або завантажте перелік, передайте на підпис Голові й після підпису відмітьте «Підписано Головою».</p>
+                      <p className="list-card__note">Роздрукуйте або завантажте перелік, передайте на підпис Голові й після підпису відмітьте «Підписано Головою». Якщо Голова не підписав — відмітьте це з приміткою: заявки повернуться авторам.</p>
                       <div className="list-card__actions">
                         <IconButton variant="secondary" label={`Переглянути перелік від ${formatDateShort(list.date)}`} icon={<Icon name="view" />} onClick={() => setViewingList(list.id)} />
                         <DocumentActions
@@ -277,6 +300,15 @@ export function LevelQueueScreen() {
                           fileName={listDocModel(listInput(list)).fileName}
                         />
                         {mine ? <Button onClick={() => setDisbanding(list)}>Розформувати</Button> : null}
+                        <Button
+                          onClick={() => {
+                            setRefuseError(undefined);
+                            setRefuseNote("");
+                            setRefused(list);
+                          }}
+                        >
+                          Голова не підписав…
+                        </Button>
                         <Button
                           variant="primary"
                           iconStart={<Icon name="success" />}
@@ -341,6 +373,23 @@ export function LevelQueueScreen() {
         onClose={() => setSigning(null)}
         onConfirm={doSign}
       />
+      <Dialog
+        open={refused !== null}
+        onClose={() => setRefused(null)}
+        kind="confirm"
+        title="Голова не підписав перелік?"
+        description={`Часткового підпису немає: усі заявки переліку (${refused?.requestIds.length ?? 0}) повернуться авторам із вашою приміткою, рівні 4–1 отримають сповіщення. Бюджет не резервувався.`}
+        actions={
+          <>
+            <Button onClick={() => setRefused(null)}>Скасувати</Button>
+            <Button variant="destructive" loading={notSigned.isPending} loadingLabel="Повернення" disabled={refuseNote.trim() === ""} onClick={doNotSigned}>
+              Повернути авторам
+            </Button>
+          </>
+        }
+      >
+        <Textarea label="Чому не підписано" required rows={3} maxLength={2000} value={refuseNote} error={refuseError} onChange={(e) => setRefuseNote(e.currentTarget.value)} />
+      </Dialog>
       <DocumentDialog
         open={viewed !== undefined}
         onClose={() => setViewingList(null)}

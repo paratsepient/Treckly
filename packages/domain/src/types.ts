@@ -247,6 +247,8 @@ export type EventType =
   | "request.not_procured"
   | "list.formed"
   | "list.disbanded"
+  /** Голова не підписав остаточний перелік: заявки повернуто авторам. */
+  | "list.not_signed"
   | "list.approved";
 
 /** Запис журналу (лише доповнюється). */

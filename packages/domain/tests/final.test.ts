@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { approveList, issueExtracts, lineStatus } from "../src/index.ts";
+import { approveList, issueExtracts, lineStatus, markNotSigned } from "../src/index.ts";
 import { apply, approver, author, byList, createWorld, get, getList, meta, POSITIONS, replacement, system, preparer } from "./fixtures.ts";
 import { advanceTo, approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
@@ -111,4 +111,33 @@ test("рівень 5: підпис Голови відмічає Відділ о
   assert.equal(outcome.lists[0]?.status, "approved");
   assert.equal(outcome.lists[0]?.approvedBy, preparer(5).userId);
   assert.ok(ids.every((id) => get(world, id).status === "approved"));
+});
+
+test("Голова не підписав: усі заявки переліку повертаються авторам із приміткою, бюджет не змінюється", () => {
+  const { world, ids } = atFinal([[byList("l1", "p1", 1)], [byList("l1", "p2", 1)]]);
+  const listId = formAt(world, 5, ids);
+  const list = getList(world, listId);
+  const requests = ids.map((id) => get(world, id));
+  const reserved = world.budget.total.approvedMinor;
+  throwsCode(() => markNotSigned(world.ctx, meta(preparer(5)), { list, requests, note: "  " }), "NOTE_REQUIRED");
+  throwsCode(() => markNotSigned(world.ctx, meta(approver(4)), { list, requests, note: "Перевищено" }), "FORBIDDEN_ROLE");
+  const outcome = apply(world, markNotSigned(world.ctx, meta(preparer(5)), { list, requests, note: "Перевищено ліміт напрямку" }));
+  assert.equal(getList(world, listId).status, "disbanded");
+  for (const id of ids) {
+    const r = get(world, id);
+    assert.equal(r.status, "returned");
+    assert.equal(r.returnInfo?.level, 5);
+    assert.match(r.returnInfo?.note ?? "", /^Голова не підписав перелік: Перевищено ліміт напрямку/);
+  }
+  assert.equal(world.budget.total.approvedMinor, reserved);
+  // Кожна заявка: рівні 4…1 і автор.
+  assert.equal(outcome.notifications.length, ids.length * 5);
+  assert.ok(outcome.events.some((e) => e.type === "list.not_signed"));
+});
+
+test("«Голова не підписав» — лише для переліку рівня 5", () => {
+  const world = createWorld();
+  const id = submitted(world, [byList("l1", "p1", 1)]);
+  const listId = formAt(world, 1, [id]);
+  throwsCode(() => markNotSigned(world.ctx, meta(preparer(1)), { list: getList(world, listId), requests: [get(world, id)], note: "Ні" }), "INVALID_TRANSITION");
 });

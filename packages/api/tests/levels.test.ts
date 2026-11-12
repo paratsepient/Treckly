@@ -236,6 +236,21 @@ test("затвердження Головою блокується, якщо с�
   assert.equal((await h.call("requestDetail", AUTHOR_A, { params: { id: "req-0006" } })).request.status, "in_list");
 });
 
+test("Голова не підписав: Відділ відмічає з приміткою, заявка повертається автору, перелік розформовано", async () => {
+  const h = await boot();
+  const { list: l4 } = await h.call("formList", "prep-4-dir-1", { body: { level: 4, unitId: "dir-1", requestIds: ["req-0006"] } });
+  await h.call("approveList", "appr-4-dir-1", { params: { id: l4.id }, body: { sedoNumber: 100 } });
+  const { list } = await h.call("formList", "prep-5-vor", { body: { level: 5, unitId: "vor", requestIds: ["req-0006"] } });
+  assert.equal((await h.fail("notSignedList", "prep-5-vor", 422, { params: { id: list.id }, body: { note: " " } })).code, "NOTE_REQUIRED");
+  assert.equal((await h.fail("notSignedList", "appr-5-vor", 403, { params: { id: list.id }, body: { note: "Ні" } })).code, "FORBIDDEN_ROLE", "Голова в системі не діє");
+  const { list: after, requests } = await h.call("notSignedList", "prep-5-vor", { params: { id: list.id }, body: { note: "Перевищено залишок 3110" } });
+  assert.equal(after.status, "disbanded");
+  assert.equal(requests[0]?.status, "returned");
+  const detail = (await h.call("requestDetail", "author-unit-c", { params: { id: "req-0006" } })).request;
+  assert.equal(detail.returnInfo?.level, 5);
+  assert.match(detail.returnInfo?.note ?? "", /Голова не підписав перелік: Перевищено залишок 3110/);
+});
+
 // ── Повернення ────────────────────────────────────────────────────────────────
 
 test("повернення: примітка обов'язкова, лише уповноважена особа рівня, лише з черги", async () => {

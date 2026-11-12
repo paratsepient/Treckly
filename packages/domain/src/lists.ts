@@ -3,7 +3,7 @@ import { bumped, guardRevision, levelAudience, makeEvent, stamp, type DomainCont
 import { DomainError } from "./errors.ts";
 import { assertLevelRole } from "./permissions.ts";
 import { parseSedoNumber } from "./sedo.ts";
-import type { Budget, DailyList, Level, Meta, Notification, Outcome, Positions, Request, UnitId } from "./types.ts";
+import type { Audience, Budget, DailyList, Level, Meta, Notification, Outcome, Positions, Request, UnitId } from "./types.ts";
 import { FINAL_LEVEL, signerKind } from "./types.ts";
 
 function invalid(message: string, details: Readonly<Record<string, unknown>> = {}): DomainError {
@@ -113,6 +113,67 @@ export function disbandList(ctx: DomainContext, meta: Meta, input: ListInput): O
       ),
     ],
     notifications: [],
+  };
+}
+
+export interface NotSignedInput extends ListInput {
+  /** Чому Голова не підписав: обов'язкова, йде авторам і нижчим рівням. */
+  readonly note: string;
+}
+
+/**
+ * Рівень 5: Відділ відмічає, що Голова не підписав остаточний перелік. Часткового підпису немає:
+ * усі заявки переліку повертаються авторам з приміткою (правило 3), рівні 4…1 отримують сповіщення,
+ * перелік розформовується. Бюджет не резервувався — вивільняти нічого.
+ */
+export function markNotSigned(ctx: DomainContext, meta: Meta, input: NotSignedInput): Outcome {
+  const { list } = input;
+  if (list.level !== FINAL_LEVEL) {
+    throw invalid("«Голова не підписав» — лише для остаточного переліку рівня 5.", { level: list.level });
+  }
+  assertLevelRole(meta.actor, signerKind(list.level), list.level, list.unitId);
+  guardRevision(meta, list);
+  assertListConsistent(input);
+  for (const request of input.requests) guardRevision(meta, request);
+  const reason = input.note.trim();
+  if (reason === "") {
+    throw new DomainError("NOTE_REQUIRED", "Напишіть, чому Голова не підписав перелік: примітка піде авторам.");
+  }
+  const note = `Голова не підписав перелік: ${reason}`;
+  const { at, today } = stamp(ctx);
+  const notifications: Notification[] = [];
+  const requests = input.requests.map((request) => {
+    const cascade: Audience[] = [];
+    for (let l = FINAL_LEVEL - 1; l >= 1; l -= 1) cascade.push(levelAudience(request, l as Level, "both"));
+    cascade.push({ kind: "author", userId: request.authorId });
+    for (const audience of cascade) notifications.push({ kind: "request_returned", audience, requestId: request.id, listId: list.id, note, at });
+    return bumped(request, {
+      status: "returned" as const,
+      level: null,
+      listId: null,
+      levelEnteredOn: today,
+      returnInfo: { level: FINAL_LEVEL, note, byUserId: meta.actor.userId, at, cascade },
+    });
+  });
+  return {
+    requests,
+    lists: [bumped(list, { status: "disbanded" as const })],
+    events: [
+      makeEvent(ctx, meta, { type: "list.not_signed", listId: list.id, data: { note: reason, requestIds: list.requestIds } }),
+      ...requests.map((r) =>
+        makeEvent(ctx, meta, {
+          type: "request.returned",
+          requestId: r.id,
+          listId: list.id,
+          from: "in_list",
+          to: "returned",
+          requestVersion: r.version,
+          revision: r.revision,
+          data: { level: FINAL_LEVEL, note, reason: "NOT_SIGNED" },
+        }),
+      ),
+    ],
+    notifications,
   };
 }
 
