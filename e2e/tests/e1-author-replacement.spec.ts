@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { AUTHOR_A, openAs, requestCard, toast } from "../support.ts";
+import { AUTHOR_A, openAs, requestCard, toast, registerRaport } from "../support.ts";
 
 /**
  * E1. Автор створює заявку із заміною в іншому КЕКВ, бачить вплив на бюджет і подає.
@@ -53,6 +53,7 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
 
   await expect(submit).toBeEnabled();
   await submit.click();
+  await registerRaport(page);
   await expect(toast(page, "Заявку подано")).toBeVisible();
 
   // Заявка в «Моїх заявках» на рівні 1; трек показує, що вона зараз там.

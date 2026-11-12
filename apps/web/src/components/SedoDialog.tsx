@@ -13,6 +13,8 @@ export interface SedoDialogProps {
   readonly error?: string | undefined;
   readonly onClose: () => void;
   readonly onConfirm: (sedoNumber: string) => void;
+  /** Подання рапорту автором: номер реєстрації рапорту в СЕДО замість погодження переліку. */
+  readonly raport?: { readonly resubmit: boolean } | undefined;
 }
 
 /**
@@ -23,17 +25,19 @@ export function SedoDialog(props: SedoDialogProps) {
   return <SedoDialogBody key={props.open ? "open" : "closed"} {...props} />;
 }
 
-function SedoDialogBody({ open, final, requestCount, totalText, pending, error, onClose, onConfirm }: SedoDialogProps) {
+function SedoDialogBody({ open, final, requestCount, totalText, pending, error, onClose, onConfirm, raport }: SedoDialogProps) {
   const [value, setValue] = useState("");
-  const verb = final ? "Підписано Головою" : "Погодити";
+  const verb = raport ? (raport.resubmit ? "Подати нову версію" : "Подати") : final ? "Підписано Головою" : "Погодити";
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      title={final ? "Відмітити підпис Голови?" : `${verb} денний перелік?`}
+      title={raport ? "Номер рапорту в СЕДО" : final ? "Відмітити підпис Голови?" : `${verb} денний перелік?`}
       description={
-        final
+        raport
+          ? `Зареєструйте рапорт у СЕДО (переглянути й роздрукувати його можна кнопкою «Переглянути рапорт») і введіть реєстраційний номер. Сума рапорту: ${totalText}.${raport.resubmit ? " Нова версія — новий рапорт і новий номер." : ""}`
+          : final
           ? `Голова підписав роздрукований перелік: заявок ${requestCount}, на суму ${totalText}. Відмітка резервує бюджет і формує витяги по в/ч; після неї заявки вже не відкликати.`
           : `Заявок: ${requestCount}, на суму ${totalText}. Усі вони разом перейдуть на наступний рівень. Часткового погодження немає.`
       }
@@ -41,14 +45,14 @@ function SedoDialogBody({ open, final, requestCount, totalText, pending, error, 
       actions={
         <>
           <Button onClick={onClose}>Скасувати</Button>
-          <Button variant="primary" loading={pending} loadingLabel="Погодження" disabled={value.trim() === ""} onClick={() => onConfirm(value)}>
+          <Button variant="primary" loading={pending} loadingLabel={raport ? "Подання заявки" : "Погодження"} disabled={value.trim() === ""} onClick={() => onConfirm(value)}>
             {verb}
           </Button>
         </>
       }
     >
       <Input
-        label="Номер СЕДО"
+        label={raport ? "Реєстраційний номер рапорту в СЕДО" : "Номер СЕДО"}
         description="Лише цифри, без пробілів і літер. СЕДО імітується: номер вводять вручну."
         required
         inputMode="numeric"

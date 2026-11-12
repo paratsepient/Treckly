@@ -25,7 +25,7 @@ test("E3: повернення на рівні 3, автор виправляє 
   assert.deepEqual(recipients, [2, 1, "author"]);
 
   apply(world, editLines(world.ctx, meta(author), { request: get(world, id), lines: [byList("l1", "p1", 1)] }));
-  apply(world, resubmit(world.ctx, meta(author), { request: get(world, id), positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: all(world) }));
+  apply(world, resubmit(world.ctx, meta(author), { request: get(world, id), positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: all(world), sedoNumber: 4102 }));
   const request = get(world, id);
   assert.equal(request.version, 2);
   assert.equal(request.level, 1);

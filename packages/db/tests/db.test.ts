@@ -114,7 +114,7 @@ function approveFrom(s: Setup, st: State, listId: string): Outcome {
 async function newSubmitted(s: Setup, l: RequestLine[]): Promise<string> {
   const draft = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: l, justification: "Потреба підрозділу на 2027 рік." }));
   const id = draft.requests[0]!.id;
-  await run(s, (st) => submit(s.ctx, meta(author), { request: st.requests.find((r) => r.id === id)!, positions: st.positions, unitPlan: Object.fromEntries(Object.keys(st.positions).map((k) => [k, 1000])), budget: st.budget, requests: st.requests }));
+  await run(s, (st) => submit(s.ctx, meta(author), { request: st.requests.find((r) => r.id === id)!, positions: st.positions, unitPlan: Object.fromEntries(Object.keys(st.positions).map((k) => [k, 1000])), budget: st.budget, requests: st.requests, sedoNumber: 4100 }));
   return id;
 }
 

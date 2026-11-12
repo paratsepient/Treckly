@@ -56,7 +56,7 @@ test("клієнт: шлях і метод беруться з реєстру; �
 });
 
 test("клієнт: кожна зміна отримує власний ключ ідемпотентності, змінні шляху підставляються", async () => {
-  const request = { id: "req-1", authorId: "u", route: ["a", "b", "c", "d", "e"], version: 1, revision: 2, status: "draft", level: null, listId: null, lines: [], justification: "", title: "", returnInfo: null, procurement: null, levelEnteredOn: null, createdOn: "2027-02-15" };
+  const request = { id: "req-1", authorId: "u", route: ["a", "b", "c", "d", "e"], version: 1, revision: 2, status: "draft", level: null, listId: null, lines: [], justification: "", title: "", returnInfo: null, sedoNumber: null, procurement: null, levelEnteredOn: null, createdOn: "2027-02-15" };
   const { fetch, calls } = fakeFetch(() => ({ status: 200, json: { request } }));
   const call = createClient({ fetch, getUserId: () => undefined });
   await call("editLines", { params: { id: "req-1" }, body: { lines: [], expectedRevision: 1 } });
@@ -73,7 +73,7 @@ test("клієнт: помилка API стає ApiClientError з кодом, с
   const { fetch } = fakeFetch(() => ({ status: 409, json: { error: { code: "VERSION_CONFLICT", message: "Запис змінено", details: { id: "req-1" } } } }));
   const call = createClient({ fetch, getUserId: () => undefined });
   await assert.rejects(
-    () => call("submitRequest", { params: { id: "req-1" }, body: { expectedRevision: 1 } }),
+    () => call("submitRequest", { params: { id: "req-1" }, body: { expectedRevision: 1, sedoNumber: 1 } }),
     (error: unknown) =>
       error instanceof ApiClientError && error.code === "VERSION_CONFLICT" && error.status === 409 && error.message === "Запис змінено" && error.details["id"] === "req-1",
   );

@@ -1,3 +1,4 @@
+import { parseSedoNumber } from "./sedo.ts";
 import { assertChecksPass, checkRequest } from "./checks.ts";
 import { bumped, guardRevision, levelAudience, makeEvent, stamp, type DomainContext } from "./context.ts";
 import { DomainError } from "./errors.ts";
@@ -70,6 +71,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
     justification: input.justification ?? "",
     title: (input.title ?? "").trim(),
     returnInfo: null,
+    sedoNumber: null,
     procurement: null,
     levelEnteredOn: null,
     createdOn: today,
@@ -108,6 +110,8 @@ export interface SubmitInput {
   readonly budget: Budget;
   /** Усі заявки напрямку (для суми «у роботі»). */
   readonly requests: readonly Request[];
+  /** Реєстраційний номер рапорту в СЕДО (обов'язковий, числовий). */
+  readonly sedoNumber: string | number;
 }
 
 function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, type: "request.submitted" | "request.resubmitted", version: number): Outcome {
@@ -131,9 +135,11 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
     requestId: request.id,
   });
   assertChecksPass(report);
+  const sedoNumber = parseSedoNumber(input.sedoNumber);
   const { today } = stamp(ctx);
   const next = bumped(request, {
     version,
+    sedoNumber,
     status: "at_level",
     level: 1,
     listId: null,
@@ -151,7 +157,7 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
         to: "at_level",
         requestVersion: version,
         revision: next.revision,
-        data: { level: 1, warnings: report.warnings.length },
+        data: { level: 1, warnings: report.warnings.length, sedoNumber },
       }),
     ],
     notifications: [notify(ctx, "request_submitted", levelAudience(next, 1, "preparer"), next)],

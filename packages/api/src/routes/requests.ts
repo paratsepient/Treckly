@@ -108,16 +108,16 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   });
 
   app.post("/api/requests/:id/submit", async (c) => {
-    const { expectedRevision } = await parseBody(c, API.submitRequest.input);
+    const { expectedRevision, sedoNumber } = await parseBody(c, API.submitRequest.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
-      submit(ctx, meta, { request, ...(await checkState(tx, request.route[3], request.route[0])) }),
+      submit(ctx, meta, { request, sedoNumber, ...(await checkState(tx, request.route[3], request.route[0])) }),
     );
   });
 
   app.post("/api/requests/:id/new-version", async (c) => {
-    const { expectedRevision } = await parseBody(c, API.newVersion.input);
+    const { expectedRevision, sedoNumber } = await parseBody(c, API.newVersion.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
-      resubmit(ctx, meta, { request, ...(await checkState(tx, request.route[3], request.route[0])) }),
+      resubmit(ctx, meta, { request, sedoNumber, ...(await checkState(tx, request.route[3], request.route[0])) }),
     );
   });
 

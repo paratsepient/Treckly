@@ -95,7 +95,7 @@ export function RegistryScreen() {
       inspector={
         <DetailPanel
           title={selected ? requestLabel(selected) : "Заявка"}
-          subtitle={request ? `Версія ${request.version} · ${statusText(request.status, request.level)}` : undefined}
+          subtitle={request ? `Версія ${request.version}${request.sedoNumber ? ` · СЕДО № ${request.sedoNumber}` : ""} · ${statusText(request.status, request.level)}` : undefined}
           empty={!selected}
           emptyText="Оберіть заявку в реєстрі, щоб побачити її трек."
           actions={request ? <RaportButton request={request} /> : undefined}

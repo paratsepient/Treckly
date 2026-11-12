@@ -41,6 +41,8 @@ export const CreateRequestInput = z.object({ lines: z.array(RequestLine), justif
 export const CheckRequestInput = z.object({ lines: z.array(RequestLine), requestId: Id.optional() });
 export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), expectedRevision });
 export const RevisionInput = z.object({ expectedRevision });
+/** Подання: реєстраційний номер рапорту в СЕДО (автор реєструє рапорт і вводить номер). */
+export const SubmitInput = z.object({ expectedRevision, sedoNumber: z.union([z.string(), z.number()]) });
 export const ResetDemoInput = z.object({ withExamples: z.boolean().optional() });
 /** Закупівля (адміністрація): документ приймання, отримувач і фактична кількість по рядках. */
 export const ProcureInput = z.object({ acceptanceDoc: z.string(), recipient: z.string(), quantities: z.record(z.string(), z.number().int()), expectedRevision });
@@ -107,9 +109,9 @@ export const API = {
   createRequest: endpoint({ method: "POST", path: "/api/requests", input: CreateRequestInput, output: RequestResponse }),
   editLines: endpoint({ method: "PUT", path: "/api/requests/:id/lines", input: EditLinesInput, output: RequestResponse }),
   checkRequest: endpoint({ method: "POST", path: "/api/requests/check", input: CheckRequestInput, output: CheckResponse }),
-  submitRequest: endpoint({ method: "POST", path: "/api/requests/:id/submit", input: RevisionInput, output: RequestResponse }),
+  submitRequest: endpoint({ method: "POST", path: "/api/requests/:id/submit", input: SubmitInput, output: RequestResponse }),
   withdrawRequest: endpoint({ method: "POST", path: "/api/requests/:id/withdraw", input: RevisionInput, output: RequestResponse }),
-  newVersion: endpoint({ method: "POST", path: "/api/requests/:id/new-version", input: RevisionInput, output: RequestResponse }),
+  newVersion: endpoint({ method: "POST", path: "/api/requests/:id/new-version", input: SubmitInput, output: RequestResponse }),
   // Закупівля й видача (адміністрація)
   procureRequest: endpoint({ method: "POST", path: "/api/requests/:id/procure", input: ProcureInput, output: RequestResponse }),
   issueRequest: endpoint({ method: "POST", path: "/api/requests/:id/issue", input: IssueInput, output: RequestResponse }),

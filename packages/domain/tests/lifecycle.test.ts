@@ -15,6 +15,7 @@ const submitInput = (world: ReturnType<typeof createWorld>, id: string) => ({
   positions: POSITIONS,
   unitPlan: UNIT_PLAN,
   budget: world.budget,
+  sedoNumber: 4100,
   requests: all(world),
 });
 
@@ -255,4 +256,13 @@ test("назва заявки: необов'язкова, обрізаються
   assert.equal(get(world, id).title, "Акумулятори для зв'язку");
   apply(world, editLines(world.ctx, meta(author), { request: get(world, id), lines: [byList("l1", "p1", 3)] }));
   assert.equal(get(world, id).title, "Акумулятори для зв'язку");
+});
+
+test("подання: номер СЕДО рапорту обов'язковий і зберігається в заявці", () => {
+  const world = createWorld();
+  const id = draftOf(world);
+  throwsCode(() => submit(world.ctx, meta(author), { ...submitInput(world, id), sedoNumber: "" }), "SEDO_NUMBER_INVALID");
+  throwsCode(() => submit(world.ctx, meta(author), { ...submitInput(world, id), sedoNumber: "12А" }), "SEDO_NUMBER_INVALID");
+  apply(world, submit(world.ctx, meta(author), { ...submitInput(world, id), sedoNumber: " 5310042 " }));
+  assert.equal(get(world, id).sedoNumber, 5310042);
 });

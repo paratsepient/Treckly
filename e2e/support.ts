@@ -67,6 +67,7 @@ export async function submitSimpleRequest(page: Page, positionId = "pos-002"): P
   await expect(submit).toBeEnabled();
   const before = new URL(page.url()).hash;
   await submit.click();
+  await registerRaport(page);
   // Чекаємо саме переходу до цієї заявки: тост від попереднього подання міг ще не зникнути.
   await page.waitForURL((url) => url.hash.startsWith("#/my?selected=req-") && url.hash !== before);
   await expect(toast(page, "Заявку подано")).toBeVisible();
@@ -82,4 +83,11 @@ export const row = (page: Page, text: string | RegExp) => page.getByRole("row", 
 export async function demoAction(page: Page, label: string): Promise<void> {
   await page.getByRole("button", { name: /Демо-середовище/ }).click();
   await page.getByRole("button", { name: label, exact: true }).click();
+}
+
+/** Діалог подання: автор вводить реєстраційний номер рапорту в СЕДО і підтверджує. */
+export async function registerRaport(page: Page, sedo = "5310042", confirm: string | RegExp = /^Подати( нову версію)?$/): Promise<void> {
+  const dialog = page.getByRole("dialog", { name: "Номер рапорту в СЕДО" });
+  await dialog.getByLabel("Реєстраційний номер рапорту в СЕДО").fill(sedo);
+  await dialog.getByRole("button", { name: confirm }).click();
 }

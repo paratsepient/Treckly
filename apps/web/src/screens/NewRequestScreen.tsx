@@ -11,6 +11,7 @@ import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { CheckPanel, issueText } from "../components/CheckPanel.tsx";
 import { LinesEditor } from "../components/LinesEditor.tsx";
 import { RaportButton } from "../components/RaportDialog.tsx";
+import { SedoDialog } from "../components/SedoDialog.tsx";
 import {
   canRedo,
   canUndo,
@@ -22,7 +23,8 @@ import {
   type CatalogItem,
   type CatalogPosition,
 } from "../lib/editor-state.ts";
-import { requestLabel } from "../lib/format.ts";
+import { formatMoney, requestLabel } from "../lib/format.ts";
+import { requestTotal } from "../lib/totals.ts";
 import { useDebounced } from "../lib/useDebounced.ts";
 
 const EDITABLE: readonly RequestStatus[] = ["draft", "returned"];
@@ -212,14 +214,18 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const blocked =
     history.present.length === 0 || converted.incomplete.length > 0 || noJustification || hasErrors || check.isFetching || linesKey(debouncedLines) !== linesKey(converted.lines);
 
-  const onSubmit = async () => {
+  const [sedoOpen, setSedoOpen] = useState(false);
+  const [sedoError, setSedoError] = useState<string | undefined>();
+  const onSubmit = async (sedoNumber: string) => {
     setSubmitting(true);
+    setSedoError(undefined);
     try {
       await saveNow();
       const s = server.current;
       if (s.id === null) return;
       const operation = isResubmit ? newVersion : submit;
-      await operation.mutateAsync({ params: { id: s.id }, body: { expectedRevision: s.revision } });
+      await operation.mutateAsync({ params: { id: s.id }, body: { expectedRevision: s.revision, sedoNumber } });
+      setSedoOpen(false);
       feedback.notify({
         key: "submitted",
         tone: "success",
@@ -228,6 +234,11 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
       });
       void navigate({ to: "/my", search: { selected: s.id } });
     } catch (error) {
+      if (error instanceof ApiClientError && error.code === "SEDO_NUMBER_INVALID") {
+        setSedoError(error.message);
+        return;
+      }
+      setSedoOpen(false);
       feedback.notify({ key: "submit-error", tone: "error", title: "Заявку не подано", description: errorText(error) });
     } finally {
       setSubmitting(false);
@@ -246,6 +257,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const dataReady = reference.data !== undefined && positionsQuery.data !== undefined && propertyQuery.data !== undefined && mineQuery.data !== undefined;
   // Рапорт показує те, що зараз на екрані: збережена заявка дає маршрут і номер, редактор — рядки й текст.
   const saved = detail.data?.request;
+  const raportTotalText = formatMoney(requestTotal({ lines: converted.lines }, allPositions));
   const raportRequest = saved && saved.id === server.current.id ? { ...saved, lines: converted.lines, justification } : undefined;
   const failed = reference.isError || positionsQuery.isError || propertyQuery.isError || (requestId !== undefined && detail.isError);
 
@@ -334,7 +346,10 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
             </WorkspaceToolbar>
             <span className="form-actions__main">
               <RaportButton request={raportRequest} label="Переглянути рапорт" />
-              <Button variant="primary" disabled={blocked} loading={submitting} loadingLabel="Подання заявки" onClick={() => void onSubmit()}>
+              <Button variant="primary" disabled={blocked} loading={submitting} loadingLabel="Подання заявки" onClick={() => {
+                  setSedoError(undefined);
+                  setSedoOpen(true);
+                }}>
                 {isResubmit ? "Подати нову версію" : "Подати"}
               </Button>
             </span>
@@ -342,6 +357,17 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
         </>
       )}
     </ScreenFrame>
+    <SedoDialog
+      open={sedoOpen}
+      final={false}
+      raport={{ resubmit: isResubmit }}
+      requestCount={1}
+      totalText={raportTotalText}
+      pending={submitting}
+      error={sedoError}
+      onClose={() => setSedoOpen(false)}
+      onConfirm={(value) => void onSubmit(value)}
+    />
     <Dialog
       open={renaming}
       onClose={() => setRenaming(false)}

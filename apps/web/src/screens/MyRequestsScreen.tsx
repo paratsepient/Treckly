@@ -160,6 +160,10 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
                         <dt>Днів на рівні</dt>
                         <dd>{atLevel ? daysAtLevel(r, today) : "—"}</dd>
                       </div>
+                      <div>
+                        <dt>СЕДО №</dt>
+                        <dd>{r.sedoNumber ?? "—"}</dd>
+                      </div>
                     </dl>
                     <footer className="request-card__foot">
                       <strong className="request-card__sum">{formatMoney(requestTotal(r, positions.data?.positions ?? []))}</strong>

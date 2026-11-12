@@ -38,7 +38,7 @@ test("E1: заміна на інший КЕКВ — автоперевірка �
   assert.deepEqual(request.route, ["unit-a", "brig-1", "ru-1", "dir-1", "vor"]);
   assert.equal(request.createdOn, seed.now.slice(0, 10), "дата — із симульованого часу, а не з системного годинника");
 
-  const submitted = await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  const submitted = await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
   assert.equal(submitted.request.status, "at_level");
   assert.equal(submitted.request.level, 1);
   assert.equal(submitted.request.levelEnteredOn, seed.now.slice(0, 10));
@@ -70,7 +70,7 @@ test("автоперевірки: кожен код помилки показа�
   }
 
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [cases[3]!.line], justification: "Потреба підрозділу на 2027 рік." } });
-  const error = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  const error = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
   assert.equal(error.code, "BUDGET_EXCEEDED");
   const after = await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } });
   assert.equal(after.request.status, "draft");
@@ -88,7 +88,7 @@ test("план в/ч: позиція напрямку, якої немає в п
   const notPlanned = await h.call("checkRequest", AUTHOR_A, { body: { lines: [lineOf(outside.id, outside.kekv)] } });
   assert.deepEqual(notPlanned.report.errors.map((e) => [e.code, e.details["reason"]]), [["NOT_IN_LIST", "NOT_IN_UNIT_PLAN"]]);
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(outside.id, outside.kekv)], justification: "Потреба підрозділу на 2027 рік." } });
-  const refused = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  const refused = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
   assert.equal(refused.code, "NOT_IN_LIST");
   assert.equal((await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request.status, "draft");
 
@@ -129,7 +129,7 @@ test("автор редагує чернетку; заявка в черзі в�
   assert.equal(edited.request.lines[0]?.qty, 5);
   assert.equal(edited.request.revision, request.revision + 1);
 
-  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: edited.request.revision } });
+  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: edited.request.revision, sedoNumber: 4100 } });
   const current = (await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request;
   const refused = await h.fail("editLines", AUTHOR_A, 409, { params: { id: request.id }, body: { lines: [], expectedRevision: current.revision } });
   assert.equal(refused.code, "INVALID_TRANSITION");
@@ -142,7 +142,7 @@ test("повернута заявка: автор виправляє й пода
 
   const lines = returned.lines.map((l) => ({ ...l, qty: Math.max(1, Math.floor(l.qty / 2)) }));
   const edited = await h.call("editLines", AUTHOR_B, { params: { id: returned.id }, body: { lines, expectedRevision: returned.revision } });
-  const resubmitted = await h.call("newVersion", AUTHOR_B, { params: { id: returned.id }, body: { expectedRevision: edited.request.revision } });
+  const resubmitted = await h.call("newVersion", AUTHOR_B, { params: { id: returned.id }, body: { expectedRevision: edited.request.revision, sedoNumber: 4100 } });
   assert.equal(resubmitted.request.version, 2);
   assert.equal(resubmitted.request.status, "at_level");
   assert.equal(resubmitted.request.level, 1);
@@ -156,9 +156,9 @@ test("повернута заявка: автор виправляє й пода
 test("«Подати» для повернутої й «Нова версія» для чернетки — різні операції: помилкова відхиляється", async () => {
   const h = await boot();
   const returned = (await h.call("myRequests", AUTHOR_B)).requests.find((r) => r.status === "returned")!;
-  assert.equal((await h.fail("submitRequest", AUTHOR_B, 409, { params: { id: returned.id }, body: { expectedRevision: returned.revision } })).code, "INVALID_TRANSITION");
+  assert.equal((await h.fail("submitRequest", AUTHOR_B, 409, { params: { id: returned.id }, body: { expectedRevision: returned.revision, sedoNumber: 4100 } })).code, "INVALID_TRANSITION");
   const draft = (await h.call("myRequests", AUTHOR_A)).requests.find((r) => r.status === "draft")!;
-  assert.equal((await h.fail("newVersion", AUTHOR_A, 409, { params: { id: draft.id }, body: { expectedRevision: draft.revision } })).code, "INVALID_TRANSITION");
+  assert.equal((await h.fail("newVersion", AUTHOR_A, 409, { params: { id: draft.id }, body: { expectedRevision: draft.revision, sedoNumber: 4100 } })).code, "INVALID_TRANSITION");
 });
 
 test("відкликання: з черги — одразу; із сформованого переліку — спершу розформовує його; після затвердження — ні", async () => {
@@ -213,7 +213,7 @@ test("«Скинути демо» очищає всі рапорти; «з пр�
   assert.ok((await h.call("property", AUTHOR_A)).items.some((i) => i.tab === "planned"), "план в/ч лишився");
   // Після чистого скидання систему можна одразу використовувати: заявка подається.
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")], justification: "Потреба підрозділу на 2027 рік." } });
-  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
 
   // З прикладами — той самий початковий демо-стан.
   await h.call("resetDemo", AUTHOR_A, { body: { withExamples: true } });

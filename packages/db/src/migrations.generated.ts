@@ -50,5 +50,11 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "ALTER TABLE \"requests\" ADD COLUMN \"procurement\" jsonb;"
     ]
+  },
+  {
+    "tag": "0005_greedy_darwin",
+    "statements": [
+      "ALTER TABLE \"requests\" ADD COLUMN \"sedo_number\" bigint;"
+    ]
   }
 ];

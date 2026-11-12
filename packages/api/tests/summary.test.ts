@@ -36,7 +36,7 @@ test("нова затверджена заявка з'являється в ос
   const h = await boot();
   const battery = await positionByName(h, "Акумулятор літій-полімерний 4S");
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 2)], justification: "Потреба підрозділу на 2027 рік." } });
-  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
   assert.equal((await h.call("final", AUTHOR_A)).requests.length, 1, "поки йде маршрутом — її тут немає");
 
   for (const [level, unit] of [[1, "unit-a"], [2, "brig-1"], [3, "ru-1"], [4, "dir-1"], [5, "vor"]] as const) {

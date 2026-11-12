@@ -78,6 +78,7 @@ export const requests = pgTable(
     justification: text("justification").notNull().default(""),
     title: text("title").notNull().default(""),
     returnInfo: jsonb("return_info").$type<ReturnInfo>(),
+    sedoNumber: bigint("sedo_number", { mode: "number" }),
     procurement: jsonb("procurement").$type<Procurement>(),
     levelEnteredOn: text("level_entered_on"),
     createdOn: text("created_on").notNull(),

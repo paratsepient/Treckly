@@ -1,0 +1,1 @@
+ALTER TABLE "requests" ADD COLUMN "sedo_number" bigint;

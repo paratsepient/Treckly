@@ -99,6 +99,7 @@ export const Request = z.object({
   justification: z.string(),
   title: z.string(),
   returnInfo: ReturnInfo.nullable(),
+  sedoNumber: z.number().int().nullable(),
   procurement: Procurement.nullable(),
   levelEnteredOn: IsoDate.nullable(),
   createdOn: IsoDate,

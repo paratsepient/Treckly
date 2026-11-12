@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { AUTHOR_B, openAs, row, switchTo, toast } from "../support.ts";
+import { AUTHOR_B, openAs, row, switchTo, toast, registerRaport } from "../support.ts";
 
 /**
  * E3. На рівні 3 заявку повертають: автор і рівні 1–2 отримують сповіщення; автор виправляє
@@ -36,6 +36,7 @@ test("E3: повернення на рівні 3 з каскадом спові�
   const resubmit = page.getByRole("button", { name: "Подати нову версію" });
   await expect(resubmit).toBeEnabled({ timeout: 15_000 });
   await resubmit.click();
+  await registerRaport(page);
   await expect(toast(page, "Нову версію подано")).toBeVisible();
 
   // Нова версія йде з першого рівня.

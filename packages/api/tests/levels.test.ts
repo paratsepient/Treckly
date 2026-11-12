@@ -18,7 +18,7 @@ async function submitCheap(h: Harness, qty = 1) {
   used.set(h, n + 1);
   const battery = await positionByName(h, CHEAP[n % CHEAP.length] as string);
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", qty)], justification: "Потреба підрозділу на 2027 рік." } });
-  return (await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision } })).request;
+  return (await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } })).request;
 }
 
 const queueOf = (h: Harness, user: string, level: number) => h.call("levelQueue", user, { params: { level: String(level) } });

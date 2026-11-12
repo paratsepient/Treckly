@@ -17,7 +17,7 @@ export function submitted(world: World, lines: readonly RequestLine[]): string {
   const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." })).requests;
   if (!draft) throw new Error("немає чернетки");
   const settled = all(world).filter((r) => r.status !== "at_level" && r.status !== "in_list" && r.status !== "returned");
-  apply(world, submit(world.ctx, meta(author), { request: draft, positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: settled }));
+  apply(world, submit(world.ctx, meta(author), { request: draft, positions: POSITIONS, unitPlan: UNIT_PLAN, budget: world.budget, requests: settled, sedoNumber: 4100 }));
   return draft.id;
 }
 

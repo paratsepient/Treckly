@@ -111,6 +111,12 @@ class Simulation {
   budget: Budget;
   private keys = 0;
   private sedo = 7_240_000;
+  /** Номери рапортів у СЕДО (реєструє автор при поданні) — окремий діапазон від номерів погоджень. */
+  private raportSedo = 5_310_000;
+  nextSedo(): number {
+    this.raportSedo += 1 + (this.raportSedo % 5);
+    return this.raportSedo;
+  }
 
   private readonly planned: ReadonlyMap<string, number>;
   private readonly catalog: { items: SeedItem[]; positions: SeedListPosition[] };
@@ -205,6 +211,7 @@ class Simulation {
         unitPlan: this.planFor(request.route[0], request),
         budget: this.budget,
         requests: [...this.requests.values()],
+        sedoNumber: this.nextSedo(),
       }),
     );
   }
