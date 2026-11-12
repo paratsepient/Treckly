@@ -185,7 +185,7 @@ test("ролі: не автор і адміністратор заявок не 
   assert.equal((await h.fail("withdrawRequest", AUTHOR_B, 403, { params: { id: foreign.id }, body: { expectedRevision: foreign.revision } })).code, "FORBIDDEN_ROLE");
 });
 
-test("«Скинути демо» повертає початковий стан і викликає скидання", async () => {
+test("«Скинути демо» очищає всі рапорти; «з прикладами» повертає демо-стан", async () => {
   let resets = 0;
   const h = await boot({ onReset: () => (resets += 1) });
   const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
@@ -193,7 +193,23 @@ test("«Скинути демо» повертає початковий стан
   await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")], justification: "Потреба підрозділу на 2027 рік." } });
   assert.equal((await h.call("registry", AUTHOR_A)).requests.length, before.length + 1);
 
-  await h.call("resetDemo", AUTHOR_A);
+  // Скидання за замовчуванням: жодної заявки, переліку, витягу, сповіщення; структура, план і ліміти лишаються.
+  await h.call("resetDemo", AUTHOR_A, { body: {} });
   assert.equal(resets, 1);
+  assert.deepEqual((await h.call("registry", AUTHOR_A)).requests, []);
+  assert.deepEqual((await h.call("final", "prep-5-vor")).requests, []);
+  assert.deepEqual((await h.call("final", "prep-5-vor")).extracts, []);
+  assert.deepEqual((await h.call("notifications", AUTHOR_A)).notifications, []);
+  assert.deepEqual((await h.call("levelQueue", "prep-1-unit-a", { params: { level: "1" } })).lists, []);
+  const budget = (await h.call("budget", AUTHOR_A)).lines;
+  assert.ok(budget.every((l) => l.approvedMinor === 0 && l.inWorkMinor === 0 && l.remainingMinor === l.limitMinor), "нічого не зарезервовано");
+  assert.ok((await h.call("property", AUTHOR_A)).items.some((i) => i.tab === "planned"), "план в/ч лишився");
+  // Після чистого скидання систему можна одразу використовувати: заявка подається.
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")], justification: "Потреба підрозділу на 2027 рік." } });
+  await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision } });
+
+  // З прикладами — той самий початковий демо-стан.
+  await h.call("resetDemo", AUTHOR_A, { body: { withExamples: true } });
+  assert.equal(resets, 2);
   assert.deepEqual((await h.call("registry", AUTHOR_A)).requests, before);
 });

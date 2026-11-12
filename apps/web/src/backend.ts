@@ -44,7 +44,7 @@ async function start(): Promise<{ readonly fetch: typeof fetch }> {
     await applySeed(db, seedData);
     stage("демо-дані записано");
   }
-  const app = createApp({ db, ids: createRandomIds(), resetDemo: () => resetDemo(pg, db, seedData) });
+  const app = createApp({ db, ids: createRandomIds(), resetDemo: (options) => resetDemo(pg, db, seedData, options) });
   return { fetch: createInProcessFetch(app) };
 }
 

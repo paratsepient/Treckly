@@ -16,9 +16,9 @@ export async function boot(options: { seeded?: boolean; ids?: { next(prefix: str
   const app = createApp({
     db,
     ids: options.ids ?? createRandomIds(),
-    resetDemo: async () => {
+    resetDemo: async (reset) => {
       options.onReset?.();
-      await resetDemo(pg, db, seed);
+      await resetDemo(pg, db, seed, reset);
     },
   });
   const fetcher = createInProcessFetch(app);

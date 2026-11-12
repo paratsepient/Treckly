@@ -13,7 +13,7 @@ export interface AppOptions {
   readonly db: DspDb;
   readonly ids: IdGenerator;
   /** «Скинути демо»: чиста схема і початковий стан (у браузері — `resetDemo` з @dsp/seed). */
-  readonly resetDemo?: () => Promise<void>;
+  readonly resetDemo?: (options: { withExamples: boolean }) => Promise<void>;
 }
 
 /**
@@ -81,7 +81,10 @@ export function createApp(options: AppOptions) {
 
   app.post("/api/demo/reset", async (c) => {
     if (!options.resetDemo) throw new ApiError(404, "NOT_FOUND", "Скидання демо недоступне.");
-    await options.resetDemo();
+    const text = await c.req.text();
+    const parsed = API.resetDemo.input.safeParse(text.trim() === "" ? {} : JSON.parse(text));
+    if (!parsed.success) throw new ApiError(400, "VALIDATION", "Некоректне тіло запиту.", parsed.error.issues);
+    await options.resetDemo({ withExamples: parsed.data.withExamples ?? false });
     return c.json(await sessionOf(db, c.get("user")));
   });
 

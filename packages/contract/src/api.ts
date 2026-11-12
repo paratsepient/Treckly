@@ -41,6 +41,7 @@ export const CreateRequestInput = z.object({ lines: z.array(RequestLine), justif
 export const CheckRequestInput = z.object({ lines: z.array(RequestLine), requestId: Id.optional() });
 export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), expectedRevision });
 export const RevisionInput = z.object({ expectedRevision });
+export const ResetDemoInput = z.object({ withExamples: z.boolean().optional() });
 export const ReturnInput = z.object({ note: z.string(), expectedRevision });
 export const FormListInput = z.object({ level: Level, unitId: Id, requestIds: z.array(Id).min(1), expectedRevisions: expectedRevisions.optional() });
 export const DisbandListInput = z.object({ expectedRevisions: expectedRevisions.optional() });
@@ -128,7 +129,8 @@ export const API = {
   journal: endpoint({ method: "GET", path: "/api/journal", output: JournalResponse }),
   // Демо
   nextDay: endpoint({ method: "POST", path: "/api/demo/next-day", output: SessionResponse }),
-  resetDemo: endpoint({ method: "POST", path: "/api/demo/reset", output: SessionResponse }),
+  /** Без тіла або `withExamples: false` — чиста база без жодного рапорту; `true` — з прикладами. */
+  resetDemo: endpoint({ method: "POST", path: "/api/demo/reset", input: ResetDemoInput, output: SessionResponse }),
 } as const;
 
 export type ApiName = keyof typeof API;

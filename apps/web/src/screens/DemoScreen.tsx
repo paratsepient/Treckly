@@ -1,6 +1,7 @@
+import { useState } from "react";
 import type { ReactNode } from "react";
 import { Badge, Button, DataState, Icon, SegmentedControl } from "@index/ui";
-import { useFeedback } from "@index/ui-patterns";
+import { Dialog, useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { useApiMutation, useApiQuery, useBackend } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
@@ -112,6 +113,26 @@ export function DemoScreen() {
   const session = useApiQuery("session");
   const reference = useApiQuery("reference");
   const reset = useApiMutation("resetDemo");
+  /** Яке скидання підтверджують: чиста база чи демо-приклади. */
+  const [confirm, setConfirm] = useState<"clean" | "examples" | null>(null);
+  const [resetMode, setResetMode] = useState<"clean" | "examples">("clean");
+  const doReset = (mode: "clean" | "examples") => {
+    setConfirm(null);
+    setResetMode(mode);
+    reset.mutate(
+      { body: { withExamples: mode === "examples" } },
+      {
+        // Кеш не скидається: порожній кеш показав би лоадер на весь екран і прибрав би це повідомлення.
+        onSuccess: () =>
+          feedback.notify({
+            key: "demo-reset",
+            tone: "success",
+            title: mode === "clean" ? "Демо скинуто: рапортів немає" : "Демо заповнено прикладами",
+          }),
+        onError: () => feedback.notify({ key: "demo-reset", tone: "error", title: "Не вдалося скинути демо" }),
+      },
+    );
+  };
   const nextDay = useApiMutation("nextDay");
 
   const users = session.data?.users ?? [];
@@ -182,24 +203,15 @@ export function DemoScreen() {
               />
             </Panel>
             <Panel title="Дані">
-              <p className="demo-env__hint">Повертає початковий стан. Роль і тема лишаються.</p>
-              <Button
-                loading={reset.isPending}
-                loadingLabel="Скидання демо"
-                iconStart={<Icon name="restore" />}
-                onClick={() =>
-                  reset.mutate(
-                    {},
-                    {
-                      // Кеш не скидається: порожній кеш показав би лоадер на весь екран і прибрав би це повідомлення.
-                      onSuccess: () => feedback.notify({ key: "demo-reset", tone: "success", title: "Демо скинуто до початкового стану" }),
-                      onError: () => feedback.notify({ key: "demo-reset", tone: "error", title: "Не вдалося скинути демо" }),
-                    },
-                  )
-                }
-              >
-                Скинути демо
-              </Button>
+              <p className="demo-env__hint">«Скинути демо» видаляє всі рапорти, переліки й витяги; структура, ролі, план і ліміти лишаються.</p>
+              <span className="demo-env__buttons">
+                <Button iconStart={<Icon name="restore" />} loading={reset.isPending && resetMode === "clean"} loadingLabel="Скидання демо" onClick={() => setConfirm("clean")}>
+                  Скинути демо
+                </Button>
+                <Button variant="ghost" loading={reset.isPending && resetMode === "examples"} loadingLabel="Завантаження прикладів" onClick={() => setConfirm("examples")}>
+                  Заповнити прикладами
+                </Button>
+              </span>
             </Panel>
           </section>
 
@@ -231,6 +243,25 @@ export function DemoScreen() {
           </section>
         </>
       )}
+      <Dialog
+        open={confirm !== null}
+        onClose={() => setConfirm(null)}
+        kind="confirm"
+        title={confirm === "examples" ? "Заповнити демо прикладами?" : "Скинути демо?"}
+        description={
+          confirm === "examples"
+            ? "Поточні дані буде замінено демо-прикладами: заявки в різних станах, переліки, витяги й сповіщення."
+            : "Буде видалено всі рапорти — і чернетки, і подані, і затверджені, — а також переліки, витяги, сповіщення й журнал. Структура, ролі, план в/ч і ліміти лишаться."
+        }
+        actions={
+          <>
+            <Button onClick={() => setConfirm(null)}>Скасувати</Button>
+            <Button variant={confirm === "examples" ? "primary" : "destructive"} onClick={() => confirm && doReset(confirm)}>
+              {confirm === "examples" ? "Заповнити" : "Скинути все"}
+            </Button>
+          </>
+        }
+      />
     </ScreenFrame>
   );
 }
