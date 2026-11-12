@@ -49,23 +49,48 @@ export function summaryRoutes(db: DspDb) {
   });
 
   /**
-   * Запланований перелік закупівель напрямку з розбивкою по в/ч. Бачить лише Відділ оборонних ресурсів
-   * і Голова (рівень 5): вони готують і затверджують остаточний перелік.
+   * Запланований перелік у зоні відповідальності: уповноважений і керівник кожного рівня бачать
+   * план в/ч свого підрозділу (в/ч — свою, бригада — свої в/ч, РУ — свої бригади), а рівні 4–5
+   * (напрямок, Відділ і Голова) — увесь перелік напрямку.
    */
   app.get("/api/planned-list", async (c) => {
     const user = c.get("user");
-    if (user.level !== 5 || (user.roleKind !== "preparer" && user.roleKind !== "approver")) {
-      throw new DomainError("FORBIDDEN_ROLE", "Запланований перелік бачить Відділ оборонних ресурсів і Голова.", { role: user.roleKind, level: user.level });
+    if ((user.roleKind !== "preparer" && user.roleKind !== "approver") || user.level === null || !user.unitId) {
+      throw new DomainError("FORBIDDEN_ROLE", "Запланований перелік бачать уповноважені особи й керівники рівнів.", { role: user.roleKind });
     }
     const [units, requests] = await Promise.all([loadUnits(db), loadRequests(db)]);
-    const direction = directionOf(units, user.unitId ?? "");
+    const direction = directionOf(units, user.unitId);
+    const wholeDirection = user.level >= 4;
+    // В/ч під підрозділом користувача (для рівня 1 — він сам).
+    const under = new Set<string>();
+    const walk = (id: string) => {
+      for (const u of units) if (u.parentId === id) walk(u.id);
+      if (units.find((u) => u.id === id)?.kind === "unit") under.add(id);
+    };
+    walk(wholeDirection ? direction : user.unitId);
+    const inScope = (r: { route: readonly string[] }) => under.has(r.route[0] as string);
+
+    const reserved = new Map<string, number>();
     const inWork = new Map<string, number>();
-    for (const r of requests) {
-      if (r.status !== "at_level" && r.status !== "in_list") continue;
-      for (const line of r.lines) inWork.set(line.positionId, (inWork.get(line.positionId) ?? 0) + line.qty);
+    for (const r of requests.filter(inScope)) {
+      const target = r.status === "approved" || r.status === "extract_issued" ? reserved : r.status === "at_level" || r.status === "in_list" ? inWork : null;
+      if (!target) continue;
+      for (const line of r.lines) target.set(line.positionId, (target.get(line.positionId) ?? 0) + line.qty);
     }
-    const positions = await loadPlannedList(db, direction);
-    return c.json({ positions: positions.map((p) => ({ ...p, inWorkQty: inWork.get(p.id) ?? 0 })) });
+    const positions = (await loadPlannedList(db, direction))
+      .map((p) => {
+        const scopedUnits = p.units.filter((u) => under.has(u.unitId));
+        return {
+          ...p,
+          units: scopedUnits,
+          plannedQty: wholeDirection ? p.plannedQty : scopedUnits.reduce((sum, u) => sum + u.qty, 0),
+          reservedQty: reserved.get(p.id) ?? 0,
+          inWorkQty: inWork.get(p.id) ?? 0,
+        };
+      })
+      // Нижче напрямку показуємо лише те, що заплановано в в/ч зони.
+      .filter((p) => wholeDirection || p.plannedQty > 0 || p.reservedQty > 0 || p.inWorkQty > 0);
+    return c.json({ scope: { unitId: user.unitId, level: user.level, wholeDirection, unitIds: [...under].sort() }, positions });
   });
 
   return app;

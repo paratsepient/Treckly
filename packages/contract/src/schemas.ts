@@ -248,16 +248,18 @@ export const PlannedPosition = z.object({
   kekv: Kekv,
   priceMinor: Money,
   measure: z.string(),
-  /** Заплановано за переліком напрямку. */
+  /** Заплановано: на рівнях 4–5 — за переліком напрямку, нижче — сума планів в/ч зони відповідальності. */
   plannedQty: z.number().int(),
-  /** Зарезервовано затвердженими заявками. */
+  /** Зарезервовано затвердженими заявками в/ч зони відповідальності. */
   reservedQty: z.number().int(),
-  /** У заявках, що йдуть маршрутом (на рівнях і в переліках). */
+  /** У заявках в/ч зони, що йдуть маршрутом (на рівнях і в переліках). */
   inWorkQty: z.number().int(),
-  /** Заплановано в в/ч: хто скільки може замовити. */
+  /** Заплановано в в/ч зони: хто скільки може замовити. */
   units: z.array(z.object({ unitId: Id, qty: z.number().int() })),
 });
-export const PlannedList = z.object({ positions: z.array(PlannedPosition) });
+/** Зона відповідальності: підрозділ користувача і в/ч під ним; на рівнях 4–5 — увесь напрямок. */
+export const PlannedScope = z.object({ unitId: Id, level: Level, wholeDirection: z.boolean(), unitIds: z.array(Id) });
+export const PlannedList = z.object({ scope: PlannedScope, positions: z.array(PlannedPosition) });
 
 export const Kpi = z.object({
   byStatus: z.record(RequestStatus, z.number().int()),

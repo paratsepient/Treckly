@@ -51,12 +51,12 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
     case "preparer":
       return [
         { id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
-        { id: "overview", label: "Зведення", items: [registry, ...(level === 5 ? [planned] : [])] },
+        { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "approver":
       return [
         { id: "work", label: "Робота рівня", items: [{ id: "lists", label: level === 5 ? "Затвердження" : "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
-        { id: "overview", label: "Зведення", items: [registry, ...(level === 5 ? [planned] : [])] },
+        { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "admin":
       return [{ id: "admin", label: "Адміністрування", items: [registry, { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> }] }];

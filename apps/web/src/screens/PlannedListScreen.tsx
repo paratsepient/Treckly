@@ -34,6 +34,15 @@ export function PlannedListScreen() {
 
   const all = query.data?.positions ?? [];
   const unitName = (id: string) => reference.data?.units.find((u) => u.id === id)?.name ?? id;
+  const unitNameOf = unitName;
+  const scope = query.data?.scope;
+  const scopeText = scope
+    ? scope.wholeDirection
+      ? "увесь напрямок"
+      : scope.unitIds.length === 1
+        ? unitNameOf(scope.unitIds[0] as string)
+        : `${unitNameOf(scope.unitId)}: ${scope.unitIds.map(unitNameOf).join(", ")}`
+    : "";
   const kekvs = useMemo(() => [...new Set(all.map((p) => p.kekv))].sort(), [all]);
   const rows = useMemo(() => all.filter((p) => kekv === ALL || p.kekv === kekv), [all, kekv]);
   const current = all.find((p) => p.id === selected);
@@ -71,7 +80,7 @@ export function PlannedListScreen() {
     <DetailPanel title={current.name} subtitle={`${current.code} · КЕКВ ${current.kekv} · ${formatMoney(current.priceMinor)} за ${current.measure}`}>
       <dl className="planned__facts">
         <div>
-          <dt>Заплановано за напрямком</dt>
+          <dt>{scope?.wholeDirection ? "Заплановано за напрямком" : "Заплановано у ваших в/ч"}</dt>
           <dd>{`${number.format(current.plannedQty)} ${current.measure}`}</dd>
         </div>
         <div>
@@ -112,9 +121,9 @@ export function PlannedListScreen() {
   return (
     <ScreenFrame
       title="Запланований перелік"
-      meta={query.data ? `${rows.length} позицій · план на ${formatMoney(sums.planned)}` : undefined}
+      meta={query.data ? `${scopeText} · ${rows.length} позицій · план на ${formatMoney(sums.planned)}` : undefined}
       surfaceLabel="Запланований перелік закупівель напрямку"
-      actions={<InfoHint label="Що означають стовпці" text="Перелік закупівель напрямку на 2027 рік. «Зарезервовано» — під затверджені Головою заявки, «У роботі» — заявки, що зараз на рівнях погодження, «Вільно» — план мінус резерв." />}
+      actions={<InfoHint label="Що означають стовпці" text="Запланований перелік закупівель на 2027 рік у вашій зоні відповідальності: в/ч, бригада, РУ — план їхніх в/ч; напрямок, Відділ і Голова — увесь перелік напрямку. «Зарезервовано» — під затверджені Головою заявки, «У роботі» — заявки, що зараз на рівнях погодження, «Вільно» — план мінус резерв." />}
       inspector={detail}
       inspectorLabel="Розбивка позиції по в/ч"
       inspectorOpen={selected !== undefined}

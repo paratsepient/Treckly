@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { AUTHOR_A, openAs, row, switchTo } from "../support.ts";
 
-/** Запланований перелік закупівель: лише Відділ оборонних ресурсів і Голова (рівень 5). */
-test("запланований перелік: Відділ бачить перелік і розбивку по в/ч, інші ролі на екран не потрапляють", async ({ page }) => {
+/** Запланований перелік закупівель: кожен рівень бачить план своєї зони відповідальності; автор — ні. */
+test("запланований перелік: Відділ бачить увесь напрямок, уповноважений в/ч — свою в/ч, автор — нічого", async ({ page }) => {
   await openAs(page, "prep-5-vor", "/queue");
   await page.getByRole("link", { name: "Запланований перелік" }).click();
   await expect(page).toHaveURL(/#\/planned$/);
@@ -23,7 +23,12 @@ test("запланований перелік: Відділ бачить пер�
   await expect(card.getByText("Заплановано за напрямком")).toBeVisible();
   await expect(card.getByRole("list", { name: /Заплановано по в\/ч/ }).getByText("в/ч А0001")).toBeVisible();
 
-  // Голова бачить те саме; автор і нижчі рівні не мають пункту меню, а за адресою їх повертає на їхній екран.
+  // Уповноважений в/ч бачить лише план своєї в/ч.
+  await switchTo(page, "prep-1-unit-a", "/queue");
+  await page.getByRole("link", { name: "Запланований перелік" }).click();
+  await expect(page.getByText(/^в\/ч А0001 · \d+ позицій/)).toBeVisible();
+
+  // Автор пункту меню не має, а за адресою його повертає на його екран.
   await switchTo(page, AUTHOR_A, "/planned");
   await expect(page).toHaveURL(/#\/property$/);
 });

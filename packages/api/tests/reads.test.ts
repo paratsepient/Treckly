@@ -112,25 +112,40 @@ test("повернута заявка: трек каскадом, примітк
   assert.equal(detail.request.returnInfo?.level, 3);
 });
 
-test("запланований перелік: лише рівень 5; резерв, «у роботі» й розбивка по в/ч", async () => {
+test("запланований перелік: кожен рівень бачить план своєї зони; автор і адміністратор — ні", async () => {
   const h = await boot();
-  for (const who of [AUTHOR_A, "prep-1-unit-a", "appr-4-dir-1", "admin-demo"]) {
+  for (const who of [AUTHOR_A, "admin-demo"]) {
     assert.equal((await h.fail("plannedList", who, 403)).code, "FORBIDDEN_ROLE", who);
   }
-  const { positions } = await h.call("plannedList", "prep-5-vor");
-  const head = await h.call("plannedList", "appr-5-vor");
-  assert.deepEqual(head.positions, positions, "Відділ і Голова бачать те саме");
-
+  // Рівень 5: увесь напрямок, план — за переліком напрямку; Відділ і Голова бачать те саме.
+  const top = await h.call("plannedList", "prep-5-vor");
+  assert.equal(top.scope.wholeDirection, true);
+  assert.deepEqual(top.scope.unitIds, ["unit-a", "unit-b", "unit-c"]);
+  assert.deepEqual((await h.call("plannedList", "appr-5-vor")).positions, top.positions);
   const direction = (await h.call("positions", "prep-5-vor")).positions;
-  assert.equal(positions.length, direction.length);
-  for (const p of positions) {
-    const own = direction.find((d) => d.id === p.id)!;
-    assert.equal(p.plannedQty - p.reservedQty, own.availableQty, `${p.code}: план − резерв = доступно за переліком`);
-    assert.ok(p.inWorkQty >= 0);
+  assert.equal(top.positions.length, direction.length);
+  for (const p of top.positions) {
+    assert.equal(p.plannedQty - p.reservedQty, direction.find((d) => d.id === p.id)!.availableQty, `${p.code}: план − резерв = доступно`);
   }
-  // Затверджені заявки дають резерв, заявки на рівнях — «у роботі»; план в/ч А0001 охоплює її заявки.
-  assert.ok(positions.some((p) => p.reservedQty > 0));
-  assert.ok(positions.some((p) => p.inWorkQty > 0));
-  const withUnits = positions.filter((p) => p.units.some((u) => u.unitId === "unit-a"));
-  assert.ok(withUnits.length >= 5 && withUnits.every((p) => p.units.every((u) => u.qty > 0)));
+  assert.ok(top.positions.some((p) => p.reservedQty > 0) && top.positions.some((p) => p.inWorkQty > 0));
+
+  // Рівень 1 (в/ч А0001): лише її план — сума плану в/ч, без чужих в/ч.
+  const unit = await h.call("plannedList", "prep-1-unit-a");
+  assert.deepEqual(unit.scope.unitIds, ["unit-a"]);
+  assert.ok(unit.positions.length >= 5 && unit.positions.length < top.positions.length);
+  for (const p of unit.positions) {
+    assert.ok(p.units.every((u) => u.unitId === "unit-a"));
+    assert.equal(p.plannedQty, p.units.reduce((s, u) => s + u.qty, 0));
+  }
+  const own = (await h.call("unitProperty", "prep-1-unit-a", { params: { id: "unit-a" } })).items.filter((i) => i.tab === "planned");
+  assert.equal(unit.positions.reduce((s, p) => s + p.plannedQty, 0), own.reduce((s, i) => s + i.qty, 0));
+  assert.deepEqual((await h.call("plannedList", "appr-1-unit-a")).positions, unit.positions, "командир в/ч бачить те саме");
+
+  // Рівень 2 (Бригада 1): в/ч А0001 і А0002; рівень 3 (РУ-1): усі три в/ч, але план — сума планів в/ч.
+  assert.deepEqual((await h.call("plannedList", "prep-2-brig-1")).scope.unitIds, ["unit-a", "unit-b"]);
+  const ru = await h.call("plannedList", "appr-3-ru-1");
+  assert.equal(ru.scope.wholeDirection, false);
+  assert.deepEqual(ru.scope.unitIds, ["unit-a", "unit-b", "unit-c"]);
+  // Рівень 4 (напрямок) — увесь перелік, як рівень 5.
+  assert.equal((await h.call("plannedList", "prep-4-dir-1")).positions.length, top.positions.length);
 });

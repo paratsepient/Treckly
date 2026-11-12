@@ -117,7 +117,7 @@ const plannedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/planned",
   component: () => (
-    <RoleOnly roles={["preparer", "approver"]} level={5}>
+    <RoleOnly roles={["preparer", "approver"]}>
       <PlannedListScreen />
     </RoleOnly>
   ),
