@@ -129,7 +129,7 @@
 }
 
 .lines__kekv {
-  width: 4.5rem;
+  width: 4rem;
 }
 
 .lines__title {
@@ -144,6 +144,12 @@
   border: var(--ix-control-border-width) solid var(--ix-well-border);
   border-radius: var(--ix-radius-container);
   box-shadow: var(--ix-shadow-inset);
+}
+
+/* Ширини стовпців — разом із відступами клітинок: інакше відступи «з'їдають» стовпець позиції. */
+.lines__table .ix-table__header,
+.lines__table .ix-table__cell {
+  box-sizing: border-box;
 }
 
 .lines__table .ix-table__cell {
@@ -162,7 +168,7 @@
 }
 
 /* Довга назва позиції не заходить під стрілку списку: текст плавно зникає перед нею (маска, а не колір). */
-.lines__table .ix-select__control:not(:focus-visible):not(:hover) {
+.lines__cell-position .ix-select__control:not(:focus-visible):not(:hover) {
   mask-image: linear-gradient(to left, transparent 2rem, currentColor 2.75rem);
 }
 
@@ -176,18 +182,18 @@
 }
 
 .lines__qty {
-  width: 5.5rem;
+  width: 6rem;
 }
 
 .lines__money {
-  width: 7.5rem;
+  width: 7rem;
   text-align: end;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .lines__actions {
-  width: 3rem;
+  width: 2.75rem;
 }
 
 .lines__muted {
