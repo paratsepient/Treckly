@@ -397,3 +397,10 @@
   outline-offset: var(--ix-focus-offset);
   border-radius: var(--ix-radius-compact);
 }
+
+/* Завантаження й друк — іконки ліворуч у підвалі діалогу, рішення (повернути, додати) — праворуч. */
+.raport-tools {
+  display: flex;
+  gap: var(--ix-space-2);
+  margin-inline-end: auto;
+}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Button, DataState, Icon } from "@index/ui";
+import { Button, DataState, Icon, IconButton } from "@index/ui";
 import { Dialog, useFeedback } from "@index/ui-patterns";
 import { useApiQuery } from "../api/hooks.tsx";
 import { requestLabel } from "../lib/format.ts";
@@ -118,13 +118,19 @@ export function RaportDialog({ request, open, onClose, extraActions }: RaportDia
       description={description}
       actions={
         <>
+          <span className="raport-tools">
+            <IconButton
+              variant="secondary"
+              label="Завантажити Word"
+              icon={<Icon name="save" />}
+              loading={saving}
+              loadingLabel="Формування Word"
+              disabled={!input}
+              onClick={() => void download()}
+            />
+            <IconButton variant="secondary" label="Друкувати" icon={<Icon name="sheet" />} disabled={!input} onClick={() => printHtml(html)} />
+          </span>
           {extraActions}
-          <Button variant="secondary" iconStart={<Icon name="save" />} loading={saving} loadingLabel="Формування Word" disabled={!input} onClick={() => void download()}>
-            Завантажити Word
-          </Button>
-          <Button variant="primary" iconStart={<Icon name="share" />} disabled={!input} onClick={() => printHtml(html)}>
-            Друкувати
-          </Button>
         </>
       }
     >
