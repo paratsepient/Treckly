@@ -45,6 +45,7 @@ export interface CreateDraftInput {
   readonly route: Route;
   readonly lines: readonly RequestLine[];
   readonly justification?: string;
+  readonly title?: string;
 }
 
 /** Чернетка: автор в/ч (рівень 1) заповнює заявку. */
@@ -66,6 +67,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
     listId: null,
     lines: input.lines,
     justification: input.justification ?? "",
+    title: (input.title ?? "").trim(),
     returnInfo: null,
     levelEnteredOn: null,
     createdOn: today,
@@ -79,7 +81,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
 }
 
 /** Зміни вносить лише автор, і лише в чернетці або повернутій заявці. */
-export function editLines(ctx: DomainContext, meta: Meta, input: { request: Request; lines: readonly RequestLine[]; justification?: string }): Outcome {
+export function editLines(ctx: DomainContext, meta: Meta, input: { request: Request; lines: readonly RequestLine[]; justification?: string; title?: string }): Outcome {
   const { request } = input;
   assertAuthor(meta.actor, request);
   guardRevision(meta, request);
@@ -87,7 +89,7 @@ export function editLines(ctx: DomainContext, meta: Meta, input: { request: Requ
     throw invalid("Заявку можна редагувати лише в чернетці або після повернення.", { status: request.status });
   }
   assertUniqueLineIds(input.lines);
-  const next = bumped(request, { lines: input.lines, justification: input.justification ?? request.justification });
+  const next = bumped(request, { lines: input.lines, justification: input.justification ?? request.justification, title: input.title !== undefined ? input.title.trim() : request.title });
   return {
     requests: [next],
     lists: [],

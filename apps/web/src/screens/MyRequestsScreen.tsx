@@ -50,6 +50,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
 
   const columns: readonly DataTableColumn<Request>[] = [
     { key: "id", header: "Номер", mono: true, render: (r) => requestLabel(r.id), width: 150 },
+    { key: "name", header: "Назва", render: (r) => r.title || "—" },
     { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge> },
     { key: "where", header: "Де зараз", render: (r) => whereNow(r, levelNames) },
     {
@@ -83,8 +84,8 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
 
   const inspector = (
     <DetailPanel
-      title={selected ? requestLabel(selected) : "Заявка"}
-      subtitle={request ? `Версія ${request.version} · ${statusText(request.status, request.level)}` : undefined}
+      title={request?.title || (selected ? requestLabel(selected) : "Заявка")}
+      subtitle={request ? `${request.title ? `${requestLabel(request.id)} · ` : ""}Версія ${request.version} · ${statusText(request.status, request.level)}` : undefined}
       empty={!selected}
       emptyText="Оберіть заявку в таблиці, щоб побачити її трек."
       actions={
@@ -144,7 +145,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
       >
         <DataTable
           label="Мої заявки"
-          columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["where", "days", "lines", "total", "created"] : ["lines", "created"])}
+          columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["name", "where", "days", "lines", "total", "created"] : ["lines", "created"])}
           rows={rows}
           getRowId={(r) => r.id}
           variant="well"

@@ -38,5 +38,11 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "ALTER TABLE \"requests\" ADD COLUMN \"justification\" text DEFAULT '' NOT NULL;"
     ]
+  },
+  {
+    "tag": "0003_nosy_living_lightning",
+    "statements": [
+      "ALTER TABLE \"requests\" ADD COLUMN \"title\" text DEFAULT '' NOT NULL;"
+    ]
   }
 ];

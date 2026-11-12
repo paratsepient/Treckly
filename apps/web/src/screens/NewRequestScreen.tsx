@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Button, DataState, Icon, IconButton, Textarea, Tooltip } from "@index/ui";
-import { ToolbarGroup, useFeedback, WorkspaceToolbar, type SaveStatusProps } from "@index/ui-patterns";
+import { Button, DataState, Icon, IconButton, Input, Textarea, Tooltip } from "@index/ui";
+import { Dialog, ToolbarGroup, useFeedback, WorkspaceToolbar, type SaveStatusProps } from "@index/ui-patterns";
 import type { RequestStatus } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
@@ -43,7 +43,7 @@ interface ServerState {
 }
 
 /** Ключ збереження: рядки й обґрунтування разом — зміна будь-чого з них зберігається. */
-const draftKey = (linesKeyValue: string, justification: string): string => JSON.stringify([linesKeyValue, justification]);
+const draftKey = (linesKeyValue: string, justification: string, title = ""): string => JSON.stringify([linesKeyValue, justification, title]);
 const EMPTY_KEY = draftKey(linesKey([]), "");
 
 /**
@@ -71,6 +71,10 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const [savedAt, setSavedAt] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
   const [justification, setJustification] = useState("");
+  /** Назва заявки від автора; порожня — показується номер. */
+  const [name, setName] = useState("");
+  const [renaming, setRenaming] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
   const server = useRef<ServerState>({ id: null, revision: 0, status: null, version: 1, savedKey: EMPTY_KEY });
 
   const items = useMemo<readonly CatalogItem[]>(() => reference.data?.items ?? [], [reference.data]);
@@ -91,7 +95,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const positionMap = useMemo(() => new Map(allPositions.map((p) => [p.id, p])), [allPositions]);
   const itemMap = useMemo(() => new Map(items.map((i) => [i.id, i])), [items]);
   const converted = useMemo(() => toRequestLines(history.present, positionMap, itemMap), [history.present, positionMap, itemMap]);
-  const key = draftKey(linesKey(converted.lines), justification);
+  const key = draftKey(linesKey(converted.lines), justification, name);
 
   // Інша заявка в адресі (або «Нова заявка» після відкритої): редактор починається заново.
   // Адреса, яку ми самі щойно виставили після створення чернетки, збігається з server.id й пропускається.
@@ -100,6 +104,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
     server.current = { id: null, revision: 0, status: null, version: 1, savedKey: EMPTY_KEY };
     dispatch({ type: "load", lines: [] });
     setJustification("");
+    setName("");
     setLoaded(requestId === undefined);
     setSaveState("idle");
   }, [requestId]);
@@ -108,9 +113,10 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   useEffect(() => {
     const request = detail.data?.request;
     if (!request || reference.data === undefined || request.id === server.current.id) return;
-    server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: draftKey(linesKey(request.lines), request.justification) };
+    server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: draftKey(linesKey(request.lines), request.justification, request.title) };
     dispatch({ type: "load", lines: fromRequestLines(request.lines, items) });
     setJustification(request.justification);
+    setName(request.title);
     setLoaded(true);
   }, [detail.data, reference.data, items]);
 
@@ -125,28 +131,28 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   );
   const report = debouncedLines.length > 0 ? (check.data?.report ?? null) : null;
 
-  const latest = useRef({ lines: converted.lines, justification });
-  latest.current = { lines: converted.lines, justification };
+  const latest = useRef({ lines: converted.lines, justification, name });
+  latest.current = { lines: converted.lines, justification, name };
   const chain = useRef<Promise<void>>(Promise.resolve());
 
   const saveOnce = useCallback(async (): Promise<void> => {
-    const { lines, justification: text } = latest.current;
+    const { lines, justification: text, name: label } = latest.current;
     const s = server.current;
-    const lineKey = draftKey(linesKey(lines), text);
+    const lineKey = draftKey(linesKey(lines), text, label);
     if (lineKey === s.savedKey) {
       setSaveState((prev) => (prev === "dirty" ? "saved" : prev));
       return;
     }
-    if (s.id === null && lines.length === 0 && text.trim() === "") return;
+    if (s.id === null && lines.length === 0 && text.trim() === "" && label.trim() === "") return;
     setSaveState("saving");
     try {
       if (s.id === null) {
-        const { request } = await create.mutateAsync({ body: { lines: [...lines], justification: text } });
+        const { request } = await create.mutateAsync({ body: { lines: [...lines], justification: text, title: label } });
         server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: lineKey };
         // Адреса запам'ятовує заявку: після перезавантаження сторінки чернетка знайдеться.
         void navigate({ to: "/new", search: { id: request.id }, replace: true });
       } else {
-        const { request } = await edit.mutateAsync({ params: { id: s.id }, body: { lines: [...lines], justification: text, expectedRevision: s.revision } });
+        const { request } = await edit.mutateAsync({ params: { id: s.id }, body: { lines: [...lines], justification: text, title: label, expectedRevision: s.revision } });
         server.current = { ...s, revision: request.revision, savedKey: lineKey };
       }
       setSaveState("saved");
@@ -217,7 +223,8 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
     onRetry: () => void saveNow().catch(() => undefined),
   };
 
-  const title = requestId ? `Заявка ${requestLabel(requestId)}` : "Нова заявка";
+  const number = requestId ? requestLabel(requestId) : undefined;
+  const title = name.trim() !== "" ? name.trim() : number ? `Заявка ${number}` : "Нова заявка";
   const documentState = isResubmit ? `Повернуто · версія ${server.current.version}` : "Чернетка · зберігається автоматично";
   const dataReady = reference.data !== undefined && positionsQuery.data !== undefined && propertyQuery.data !== undefined;
   // Рапорт показує те, що зараз на екрані: збережена заявка дає маршрут і номер, редактор — рядки й текст.
@@ -225,16 +232,35 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const raportRequest = saved && saved.id === server.current.id ? { ...saved, lines: converted.lines, justification } : undefined;
   const failed = reference.isError || positionsQuery.isError || propertyQuery.isError || (requestId !== undefined && detail.isError);
 
+  const saveName = () => {
+    setName(nameDraft.trim());
+    setRenaming(false);
+  };
+
   return (
+    <>
     <ScreenFrame
       title={title}
       surfaceLabel="Заповнення заявки"
       {...(readOnly || failed ? {} : { documentState, saveStatus })}
+      {...(name.trim() !== "" && number ? { meta: number } : {})}
       actions={
-        // Пояснення до заповнення — у підказці біля назви: на екрані лишаються лише поля.
-        <Tooltip content={HINT} placement="bottom">
-          <IconButton label="Як заповнити заявку" icon={<Icon name="info" />} showTooltip={false} />
-        </Tooltip>
+        <>
+          {readOnly ? null : (
+            <IconButton
+              label="Перейменувати заявку"
+              icon={<Icon name="rename" />}
+              onClick={() => {
+                setNameDraft(name);
+                setRenaming(true);
+              }}
+            />
+          )}
+          {/* Пояснення до заповнення — у підказці біля назви: на екрані лишаються лише поля. */}
+          <Tooltip content={HINT} placement="bottom">
+            <IconButton label="Як заповнити заявку" icon={<Icon name="info" />} showTooltip={false} />
+          </Tooltip>
+        </>
       }
       inspector={
         <DetailPanel title="Перевірки і бюджет" subtitle="Оновлюються, поки ви заповнюєте заявку">
@@ -301,5 +327,29 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
         </>
       )}
     </ScreenFrame>
+    <Dialog
+      open={renaming}
+      onClose={() => setRenaming(false)}
+      title="Перейменувати заявку"
+      description={`Назва допоможе впізнати заявку в списках. Номер ${number ?? "заявки"} лишається незмінним; порожня назва — показується номер.`}
+      actions={
+        <>
+          <Button onClick={() => setRenaming(false)}>Скасувати</Button>
+          <Button variant="primary" onClick={saveName}>
+            Зберегти
+          </Button>
+        </>
+      }
+    >
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          saveName();
+        }}
+      >
+        <Input label="Назва заявки" maxLength={120} value={nameDraft} placeholder="Наприклад, «Живлення для відділу зв'язку»" onChange={(event) => setNameDraft(event.currentTarget.value)} />
+      </form>
+    </Dialog>
+    </>
   );
 }

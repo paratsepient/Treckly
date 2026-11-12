@@ -43,6 +43,14 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   expect((await download).suggestedFilename()).toMatch(/^Рапорт ЗМ-.+\.docx$/);
   await page.keyboard.press("Escape");
 
+  // Назва заявки замість номера: кнопка поруч зі значком «і».
+  await page.getByRole("button", { name: "Перейменувати заявку" }).click();
+  const rename = page.getByRole("dialog", { name: "Перейменувати заявку" });
+  await rename.getByLabel("Назва заявки").fill("Антени для відділу зв'язку");
+  await rename.getByRole("button", { name: "Зберегти" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Антени для відділу зв'язку" })).toBeVisible();
+  await expect(page.getByText(/Збережено о/)).toBeVisible({ timeout: 15_000 });
+
   await expect(submit).toBeEnabled();
   await submit.click();
   await expect(toast(page, "Заявку подано")).toBeVisible();
@@ -50,6 +58,7 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   // Заявка в «Моїх заявках» на рівні 1; трек показує, що вона зараз там.
   await expect(page).toHaveURL(/#\/my\?selected=req-/);
   await expect(page.getByRole("row", { name: /На рівні 1/ }).first()).toBeVisible();
+  await expect(page.getByRole("row", { name: /Антени для відділу зв'язку/ })).toContainText("На рівні 1");
   const track = page.getByRole("list", { name: "Трек заявки за рівнями погодження" });
   await expect(track.getByRole("listitem").first()).toContainText("Зараз тут");
   await expect(track.getByRole("listitem").nth(1)).toContainText("Попереду");

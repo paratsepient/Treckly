@@ -73,12 +73,12 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   };
 
   app.post("/api/requests", async (c) => {
-    const { lines, justification } = await parseBody(c, API.createRequest.input);
+    const { lines, justification, title } = await parseBody(c, API.createRequest.input);
     const user = c.get("user");
     const meta = metaOf(c);
     const reply = await run(meta.idempotencyKey, async (tx, ctx) => {
       const route = routeFor(await loadUnits(tx), user.unitId ?? "");
-      const outcome = createDraft(ctx, meta, { route, lines, ...(justification !== undefined ? { justification } : {}) });
+      const outcome = createDraft(ctx, meta, { route, lines, ...(justification !== undefined ? { justification } : {}), ...(title !== undefined ? { title } : {}) });
       await saveOutcome(tx, outcome, route[3]);
       return { status: 201, body: { request: outcome.requests[0] } };
     });
@@ -86,9 +86,9 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   });
 
   app.put("/api/requests/:id/lines", async (c) => {
-    const { lines, justification, expectedRevision } = await parseBody(c, API.editLines.input);
+    const { lines, justification, title, expectedRevision } = await parseBody(c, API.editLines.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ ctx, meta, request }) =>
-      editLines(ctx, meta, { request, lines, ...(justification !== undefined ? { justification } : {}) }),
+      editLines(ctx, meta, { request, lines, ...(justification !== undefined ? { justification } : {}), ...(title !== undefined ? { title } : {}) }),
     );
   });
 

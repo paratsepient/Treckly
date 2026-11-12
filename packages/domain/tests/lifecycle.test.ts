@@ -246,3 +246,13 @@ test("подати: заявку за позицією, якої немає в �
   assert.ok(Array.isArray(error.details["issues"]));
   assert.equal(get(world, id).status, "draft");
 });
+
+test("назва заявки: необов'язкова, обрізаються пробіли; редагування рядків без назви її не стирає", () => {
+  const world = createWorld();
+  const id = draftOf(world);
+  assert.equal(get(world, id).title, "");
+  apply(world, editLines(world.ctx, meta(author), { request: get(world, id), lines: [byList("l1", "p1", 2)], title: "  Акумулятори для зв'язку  " }));
+  assert.equal(get(world, id).title, "Акумулятори для зв'язку");
+  apply(world, editLines(world.ctx, meta(author), { request: get(world, id), lines: [byList("l1", "p1", 3)] }));
+  assert.equal(get(world, id).title, "Акумулятори для зв'язку");
+});

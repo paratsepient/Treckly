@@ -96,6 +96,8 @@ export interface Request {
   readonly lines: readonly RequestLine[];
   /** Обґрунтування потреби: автор пише його сам, решта рапорту — шаблон. */
   readonly justification: string;
+  /** Назва заявки від автора (необов'язкова): щоб у списках її було легко впізнати. */
+  readonly title: string;
   readonly returnInfo: ReturnInfo | null;
   /** З якого дня заявка на поточному рівні (для лічильника днів). */
   readonly levelEnteredOn: IsoDate | null;
