@@ -60,6 +60,14 @@ interface LineBase {
   readonly kekv: Kekv;
 }
 
+/** Джерело фінансування заявки. */
+export type FundingSource = "general" | "special";
+export const FUNDING_SOURCES: readonly FundingSource[] = ["general", "special"];
+
+/** Стан майна, яке замінюють (рядок заміни): без нього заміну не подати. */
+export type OldCondition = "unusable" | "needs_repair" | "lost";
+export const OLD_CONDITIONS: readonly OldCondition[] = ["unusable", "needs_repair", "lost"];
+
 export interface ByListLine extends LineBase {
   readonly kind: "by_list";
 }
@@ -68,6 +76,8 @@ export interface ByListLine extends LineBase {
 export interface ReplacementLine extends LineBase {
   readonly kind: "replacement";
   readonly newItem: NewItem;
+  /** Стан майна, яке замінюють; обов'язковий при поданні. */
+  readonly condition?: OldCondition;
 }
 
 export type RequestLine = ByListLine | ReplacementLine;
@@ -121,6 +131,10 @@ export interface Request {
   readonly justification: string;
   /** Назва заявки від автора (необов'язкова): щоб у списках її було легко впізнати. */
   readonly title: string;
+  /** Служба (відділ), для потреб якої замовляють; обов'язкова при поданні. */
+  readonly service: string;
+  /** Джерело фінансування. */
+  readonly funding: FundingSource;
   readonly returnInfo: ReturnInfo | null;
   /** Реєстраційний номер рапорту в СЕДО: автор реєструє рапорт і вводить номер при поданні (кожна версія — новий номер). */
   readonly sedoNumber: number | null;

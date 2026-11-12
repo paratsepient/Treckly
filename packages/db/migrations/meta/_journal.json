@@ -43,6 +43,13 @@
       "when": 1794517162705,
       "tag": "0005_greedy_darwin",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794517680447,
+      "tag": "0006_simple_vulture",
+      "breakpoints": true
     }
   ]
 }

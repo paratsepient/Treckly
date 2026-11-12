@@ -1,5 +1,5 @@
 import type { Request } from "@dsp/domain";
-import { formatDate, formatMoney, requestLabel } from "./format.ts";
+import { CONDITION_LABELS, formatDate, formatMoney, FUNDING_LABELS, requestLabel } from "./format.ts";
 import { escapeHtml } from "./reports.ts";
 import { requestTotal } from "./totals.ts";
 
@@ -11,7 +11,8 @@ import { requestTotal } from "./totals.ts";
  */
 
 export interface RaportInput {
-  readonly request: Pick<Request, "id" | "version" | "status" | "route" | "lines" | "justification" | "createdOn">;
+  readonly request: Pick<Request, "id" | "version" | "status" | "route" | "lines" | "justification" | "createdOn"> &
+    Partial<Pick<Request, "service" | "funding" | "sedoNumber">>;
   /** Автор: ПІБ у порядку «Прізвище Ім'я По батькові» і посада. */
   readonly author: { readonly name: string; readonly title: string } | undefined;
   readonly unitName: (id: string) => string;
@@ -63,6 +64,8 @@ export function signatureName(fullName: string): string {
 /** «Напрямок …» усередині речення пишеться з малої літери. */
 const lowerFirst = (value: string): string => value.charAt(0).toLocaleLowerCase("uk-UA") + value.slice(1);
 
+const FUNDING_GENITIVE: Record<keyof typeof FUNDING_LABELS, string> = { general: "загального фонду", special: "спеціального фонду" };
+
 const NUM = (value: number): string => new Intl.NumberFormat("uk-UA").format(value);
 const MONEY = (minor: number): string => formatMoney(minor).replace(/\s?грн$/u, "").trim();
 
@@ -88,6 +91,7 @@ export function raportModel(input: RaportInput): RaportModel {
       String(index + 1),
       planned ? `${planned.code} · ${planned.name}` : line.positionId,
       `${line.newItem.code} · ${line.newItem.name}`,
+      line.condition ? CONDITION_LABELS[line.condition] : "—",
       measureOf.get(line.newItem.code) ?? "шт.",
       NUM(line.qty),
       // Зміна КЕКВ видна одразу: «2210 → 3110» означає, що сума списується з ліміту 3110.
@@ -118,9 +122,9 @@ export function raportModel(input: RaportInput): RaportModel {
     tables.push({
       heading: "1. Заміна: замість запланованої позиції — інший предмет",
       note: "Ці позиції Попереднього переліку не закуповуються; замість кожної просимо схожий предмет. Кількість і сума — предмета, який просимо.",
-      head: ["№", "Замість (позиція переліку)", "Просимо натомість", "Од. виміру", "Кількість", "КЕКВ", "Сума, грн"],
+      head: ["№", "Замість (позиція переліку)", "Просимо натомість", "Стан замінюваного", "Од. виміру", "Кількість", "КЕКВ", "Сума, грн"],
       rows: replacementRows,
-      numeric: [4, 6],
+      numeric: [5, 7],
     });
   }
   if (listRows.length > 0) {
@@ -146,8 +150,8 @@ export function raportModel(input: RaportInput): RaportModel {
     addressee: [`Командиру ${unitGenitive(unit)}`],
     title: "РАПОРТ",
     request:
-      `Прошу Вашого погодження закупівлі майна для потреб ${unit} за Попереднім переліком на 2027 рік, ` +
-      `${lowerFirst(direction)}, у кількості та на суму, наведені нижче.` +
+      `Прошу Вашого погодження закупівлі майна для потреб ${unit}${request.service?.trim() ? ` (${lowerFirst(request.service.trim())})` : ""} за Попереднім переліком на 2027 рік, ` +
+      `${lowerFirst(direction)}, за рахунок ${FUNDING_GENITIVE[request.funding ?? "general"]}, у кількості та на суму, наведені нижче.` +
       (replacementRows.length > 0 && listRows.length > 0
         ? " Розділ 1 — заміна запланованих позицій на схожі предмети, розділ 2 — закупівля запланованих позицій без заміни."
         : replacementRows.length > 0
@@ -167,7 +171,7 @@ export function raportModel(input: RaportInput): RaportModel {
       name: author ? signatureName(author.name) : "_______________",
       date: formatDate(input.date),
     },
-    footnote: `Номер у системі ${label}, версія ${request.version}. Реєстраційний номер СЕДО вноситься після реєстрації.`,
+    footnote: `Номер у системі ${label}, версія ${request.version}. ${request.sedoNumber ? `Реєстраційний номер СЕДО ${request.sedoNumber}.` : "Реєстраційний номер СЕДО вноситься після реєстрації."}`,
   };
 }
 

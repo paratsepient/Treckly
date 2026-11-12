@@ -19,6 +19,7 @@ import {
   Request,
   RequestDetail,
   RequestLine,
+  FundingSource,
   Unit,
   User,
 } from "./schemas.ts";
@@ -37,9 +38,11 @@ export const SwitchRoleInput = z.object({ userId: Id });
 const Justification = z.string().max(4000);
 /** Назва заявки: коротка, щоб уміщалась у заголовок і рядок таблиці. */
 const Title = z.string().max(120);
-export const CreateRequestInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional() });
+const Service = z.string().max(120);
+const Details = { service: Service.optional(), funding: FundingSource.optional() };
+export const CreateRequestInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), ...Details });
 export const CheckRequestInput = z.object({ lines: z.array(RequestLine), requestId: Id.optional() });
-export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), expectedRevision });
+export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), ...Details, expectedRevision });
 export const RevisionInput = z.object({ expectedRevision });
 /** Подання: реєстраційний номер рапорту в СЕДО (автор реєструє рапорт і вводить номер). */
 export const SubmitInput = z.object({ expectedRevision, sedoNumber: z.union([z.string(), z.number()]) });

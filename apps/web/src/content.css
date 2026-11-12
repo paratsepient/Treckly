@@ -188,6 +188,24 @@
   white-space: nowrap;
 }
 
+/* Служба й джерело фінансування: два поля в ряд, на вузькому екрані — одне під одним. */
+.request-details {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--ix-space-4);
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .request-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lines__replacement > * {
+  min-width: 0;
+}
+
 /* ── Обґрунтування й перегляд рапорту ─────────────────────────────────────── */
 
 .justification {

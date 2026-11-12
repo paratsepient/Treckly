@@ -74,8 +74,8 @@ const budget: Budget = { total: { limitMinor: 1_000_00, approvedMinor: 0 }, perK
 function allOutcomes() {
   const ctx = { clock: createManualClock("2027-02-01T09:00:00Z"), ids: createSequentialIds() };
   const outcomes = [];
-  const lines = [{ kind: "replacement" as const, id: "l1", positionId: "p1", qty: 1, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", priceMinor: 90_00 } }];
-  const created = createDraft(ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." });
+  const lines = [{ kind: "replacement" as const, id: "l1", positionId: "p1", qty: 1, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", priceMinor: 90_00 }, condition: "unusable" as const }];
+  const created = createDraft(ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" });
   outcomes.push(created);
   let req = created.requests[0]!;
   const submitted = submit(ctx, meta(author), { request: req, positions, unitPlan: { p1: 5 }, budget, requests: [], sedoNumber: 4100 });

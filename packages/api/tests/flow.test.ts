@@ -20,6 +20,7 @@ async function replacementLine(h: Harness, positionName: string, candidateName: 
     qty,
     kekv: position.kekv,
     newItem: { code: candidate.code, name: candidate.name, kekv: candidate.kekv, priceMinor: candidate.priceMinor },
+    condition: "unusable" as const,
   };
 }
 
@@ -33,7 +34,7 @@ test("E1: заміна на інший КЕКВ — автоперевірка �
   assert.equal(report.impact.total, 48_000_00);
   assert.ok(report.warnings.some((w) => w.details["scope"] === "3110"), "разом із заявками «у роботі» перевищено залишок 3110");
 
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line], justification: "Потреба підрозділу на 2027 рік." } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   assert.equal(request.status, "draft");
   assert.deepEqual(request.route, ["unit-a", "brig-1", "ru-1", "dir-1", "vor"]);
   assert.equal(request.createdOn, seed.now.slice(0, 10), "дата — із симульованого часу, а не з системного годинника");
@@ -69,7 +70,7 @@ test("автоперевірки: кожен код помилки показа�
     assert.ok(report.errors.some((e) => e.code === code), `очікували ${code}, є ${report.errors.map((e) => e.code)}`);
   }
 
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [cases[3]!.line], justification: "Потреба підрозділу на 2027 рік." } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [cases[3]!.line], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   const error = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
   assert.equal(error.code, "BUDGET_EXCEEDED");
   const after = await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } });
@@ -87,7 +88,7 @@ test("план в/ч: позиція напрямку, якої немає в п
 
   const notPlanned = await h.call("checkRequest", AUTHOR_A, { body: { lines: [lineOf(outside.id, outside.kekv)] } });
   assert.deepEqual(notPlanned.report.errors.map((e) => [e.code, e.details["reason"]]), [["NOT_IN_LIST", "NOT_IN_UNIT_PLAN"]]);
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(outside.id, outside.kekv)], justification: "Потреба підрозділу на 2027 рік." } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(outside.id, outside.kekv)], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   const refused = await h.fail("submitRequest", AUTHOR_A, 422, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
   assert.equal(refused.code, "NOT_IN_LIST");
   assert.equal((await h.call("requestDetail", AUTHOR_A, { params: { id: request.id } })).request.status, "draft");
@@ -124,7 +125,7 @@ test("перевірка не змінює стан: ні заявок, ні ж�
 test("автор редагує чернетку; заявка в черзі вже не редагується", async () => {
   const h = await boot();
   const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)], justification: "Потреба підрозділу на 2027 рік." } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 1)], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   const edited = await h.call("editLines", AUTHOR_A, { params: { id: request.id }, body: { lines: [lineOf(battery.id, "2210", 5)], expectedRevision: request.revision } });
   assert.equal(edited.request.lines[0]?.qty, 5);
   assert.equal(edited.request.revision, request.revision + 1);
@@ -197,7 +198,7 @@ test("«Скинути демо» очищає всі рапорти; «з пр�
   const h = await boot({ onReset: () => (resets += 1) });
   const battery = await positionByName(h, "Акумулятор літій-полімерний 6S");
   const before = (await h.call("registry", AUTHOR_A)).requests;
-  await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")], justification: "Потреба підрозділу на 2027 рік." } });
+  await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   assert.equal((await h.call("registry", AUTHOR_A)).requests.length, before.length + 1);
 
   // Скидання за замовчуванням: жодної заявки, переліку, витягу, сповіщення; структура, план і ліміти лишаються.
@@ -212,7 +213,7 @@ test("«Скинути демо» очищає всі рапорти; «з пр�
   assert.ok(budget.every((l) => l.approvedMinor === 0 && l.inWorkMinor === 0 && l.remainingMinor === l.limitMinor), "нічого не зарезервовано");
   assert.ok((await h.call("property", AUTHOR_A)).items.some((i) => i.tab === "planned"), "план в/ч лишився");
   // Після чистого скидання систему можна одразу використовувати: заявка подається.
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")], justification: "Потреба підрозділу на 2027 рік." } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210")], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
 
   // З прикладами — той самий початковий демо-стан.

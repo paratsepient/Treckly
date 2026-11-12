@@ -9,7 +9,7 @@ import {
   type EditorAction,
   type EditorLine,
 } from "../lib/editor-state.ts";
-import { formatMoney } from "../lib/format.ts";
+import { CONDITION_LABELS, formatMoney } from "../lib/format.ts";
 
 export interface LinesEditorProps {
   readonly lines: readonly EditorLine[];
@@ -154,6 +154,19 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                             </option>
                           ))}
                         </Select>
+                        <Select
+                          label={`Стан замінюваного, рядок ${row}`}
+                          disabled={disabled}
+                          placeholder="Оберіть стан"
+                          value={line.condition}
+                          onChange={(event) => dispatch({ type: "update", id: line.id, patch: { condition: event.target.value as EditorLine["condition"] } })}
+                        >
+                          {Object.entries(CONDITION_LABELS).map(([value, label]) => (
+                            <option key={value} value={value}>
+                              {label}
+                            </option>
+                          ))}
+                        </Select>
                         {rule === "same-kekv" ? <Badge tone="success">Той самий КЕКВ: ліміт не витрачається</Badge> : null}
                         {rule === "other-kekv" && item ? <Badge tone="warning">{`Інший КЕКВ: списується з ліміту ${item.kekv}`}</Badge> : null}
                       </div>
@@ -175,7 +188,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
       </table>
       </div>
       <div className="lines__footer">
-        <Button iconStart={<Icon name="add" />} disabled={disabled} onClick={() => dispatch({ type: "add", line: { id: newLineId(), kind: "by_list", positionId: "", qty: "1", replacementItemId: "" } })}>
+        <Button iconStart={<Icon name="add" />} disabled={disabled} onClick={() => dispatch({ type: "add", line: { id: newLineId(), kind: "by_list", positionId: "", qty: "1", replacementItemId: "", condition: "" } })}>
           Додати рядок
         </Button>
       </div>

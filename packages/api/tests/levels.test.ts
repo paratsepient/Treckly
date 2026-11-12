@@ -17,7 +17,7 @@ async function submitCheap(h: Harness, qty = 1) {
   const n = used.get(h) ?? 0;
   used.set(h, n + 1);
   const battery = await positionByName(h, CHEAP[n % CHEAP.length] as string);
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", qty)], justification: "Потреба підрозділу на 2027 рік." } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", qty)], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   return (await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } })).request;
 }
 

@@ -33,7 +33,7 @@ test("рапорт: шаблон заповнює адресата, текст �
   const m = raportModel(input());
   assert.deepEqual(m.addressee, ["Командиру військової частини А0001"]);
   assert.equal(m.title, "РАПОРТ");
-  assert.match(m.request, /в\/ч А0001 за Попереднім переліком на 2027 рік, напрямок «Технічне забезпечення», у кількості/u);
+  assert.match(m.request, /в\/ч А0001 за Попереднім переліком на 2027 рік, напрямок «Технічне забезпечення», за рахунок загального фонду, у кількості/u);
   assert.deepEqual(m.justification, ["Майно зношене.", "Потрібне поповнення."]);
   assert.equal(m.signature.name, "Роксолан САВИЦЬКИЙ");
   assert.equal(m.signature.position, "Автор заявок в/ч А0001");
@@ -47,11 +47,12 @@ test("рапорт: заміни стоять на початку, далі по
   assert.deepEqual(m.tables.map((t) => t.heading), ["1. Заміна: замість запланованої позиції — інший предмет", "2. Закупівля за переліком (без заміни)"]);
   assert.match(m.request, /Розділ 1 — заміна запланованих позицій на схожі предмети, розділ 2 — закупівля запланованих позицій без заміни/u);
   assert.deepEqual(m.tables[0]?.head.slice(1, 3), ["Замість (позиція переліку)", "Просимо натомість"]);
-  assert.equal(m.tables[0]?.rows[0]?.[5], "2210 → 3110", "зміна КЕКВ видна в рядку заміни");
+  assert.equal(m.tables[0]?.rows[0]?.[6], "2210 → 3110", "зміна КЕКВ видна в рядку заміни");
+  assert.equal(m.tables[0]?.head[3], "Стан замінюваного");
   const [replacement] = m.tables[0]?.rows ?? [];
   assert.equal(replacement?.[1], "ПМ-002 · Радіостанція");
   assert.equal(replacement?.[2], "ОБ-009 · Генератор");
-  assert.equal(replacement?.[3], "компл.");
+  assert.equal(replacement?.[4], "компл.");
   const [byList] = m.tables[1]?.rows ?? [];
   assert.deepEqual([byList?.[1], byList?.[3], byList?.[4]], ["ПМ-001", "шт.", "2"]);
   assert.match(m.total, /53\s000,00/u);
@@ -75,4 +76,22 @@ test("рапорт: текст автора екранується в HTML", () 
 test("підпис: «Прізвище Ім'я По батькові» → «Ім'я ПРІЗВИЩЕ»; коротке ім'я лишається як є", () => {
   assert.equal(signatureName("Гриневецька Анастасія Олегівна"), "Анастасія ГРИНЕВЕЦЬКА");
   assert.equal(signatureName("Адміністратор"), "Адміністратор");
+});
+
+test("рапорт: служба й джерело фінансування в тексті прохання, стан замінюваного — у таблиці замін", () => {
+  const base = input();
+  const m = raportModel({
+    ...base,
+    request: {
+      ...base.request,
+      service: "Служба зв'язку",
+      funding: "special",
+      sedoNumber: 5310042,
+      lines: base.request.lines.map((l) => (l.kind === "replacement" ? { ...l, condition: "needs_repair" as const } : l)),
+    },
+  });
+  assert.match(m.request, /для потреб в\/ч А0001 \(служба зв'язку\) за/u);
+  assert.match(m.request, /за рахунок спеціального фонду/u);
+  assert.equal(m.tables[0]?.rows[0]?.[3], "Потребує ремонту");
+  assert.match(m.footnote, /Реєстраційний номер СЕДО 5310042/u);
 });

@@ -35,7 +35,7 @@ test("витяги: рядок заміни має статус «Заміна �
 test("нова затверджена заявка з'являється в остаточному переліку й витягу, а не раніше", async () => {
   const h = await boot();
   const battery = await positionByName(h, "Акумулятор літій-полімерний 4S");
-  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 2)], justification: "Потреба підрозділу на 2027 рік." } });
+  const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [lineOf(battery.id, "2210", 2)], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });
   await h.call("submitRequest", AUTHOR_A, { params: { id: request.id }, body: { expectedRevision: request.revision, sedoNumber: 4100 } });
   assert.equal((await h.call("final", AUTHOR_A)).requests.length, 1, "поки йде маршрутом — її тут немає");
 

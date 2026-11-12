@@ -186,7 +186,7 @@ function editor(lines: EditorLine[], problems = new Map<string, string[]>()) {
   const ui = <LinesEditor lines={lines} positions={positions} items={items} dispatch={(a) => actions.push(a)} problems={problems} newLineId={() => "new-1"} />;
   return { ui, actions };
 }
-const line = (patch: Partial<EditorLine>): EditorLine => ({ id: "l1", kind: "by_list", positionId: "", qty: "1", replacementItemId: "", ...patch });
+const line = (patch: Partial<EditorLine>): EditorLine => ({ id: "l1", kind: "by_list", positionId: "", qty: "1", replacementItemId: "", condition: "", ...patch });
 
 test("таблиця рядків: сума рахується від ціни позиції й кількості; без позиції — прочерк", () => {
   const { ui } = editor([line({ id: "a", positionId: "p1", qty: "3" }), line({ id: "b" })]);
@@ -202,7 +202,7 @@ test("таблиця рядків: для заміни показано канд
   const same = editor([line({ kind: "replacement", positionId: "p1", replacementItemId: "i2" })]);
   let view = render(same.ui);
   assert.match(text(view.container), /Той самий КЕКВ: ліміт не витрачається/);
-  const options = [...view.container.querySelectorAll(".lines__replacement select option")].map((o) => o.textContent ?? "");
+  const options = [...view.container.querySelector(".lines__replacement select")!.querySelectorAll("option")].map((o) => o.textContent ?? "");
   assert.equal(options.length, 3, "підказка + 2 кандидати тієї ж групи");
   assert.ok(options.every((o) => !o.includes("Акумулятор 6S")), "самого предмета позиції серед кандидатів немає");
   view.unmount();

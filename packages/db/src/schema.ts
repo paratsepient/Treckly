@@ -77,6 +77,8 @@ export const requests = pgTable(
     listId: text("list_id"),
     justification: text("justification").notNull().default(""),
     title: text("title").notNull().default(""),
+    service: text("service").notNull().default(""),
+    funding: text("funding").$type<"general" | "special">().notNull().default("general"),
     returnInfo: jsonb("return_info").$type<ReturnInfo>(),
     sedoNumber: bigint("sedo_number", { mode: "number" }),
     procurement: jsonb("procurement").$type<Procurement>(),
@@ -97,6 +99,7 @@ export const requestLines = pgTable(
     qty: integer("qty").notNull(),
     kekv: text("kekv").notNull(),
     newItem: jsonb("new_item").$type<{ code: string; name: string; kekv: string; priceMinor: number }>(),
+    condition: text("condition").$type<"unusable" | "needs_repair" | "lost">(),
   },
   (t) => [primaryKey({ columns: [t.requestId, t.id] })],
 );

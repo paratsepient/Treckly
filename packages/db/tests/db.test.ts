@@ -112,7 +112,7 @@ function approveFrom(s: Setup, st: State, listId: string): Outcome {
 }
 
 async function newSubmitted(s: Setup, l: RequestLine[]): Promise<string> {
-  const draft = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: l, justification: "Потреба підрозділу на 2027 рік." }));
+  const draft = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: l, justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" }));
   const id = draft.requests[0]!.id;
   await run(s, (st) => submit(s.ctx, meta(author), { request: st.requests.find((r) => r.id === id)!, positions: st.positions, unitPlan: Object.fromEntries(Object.keys(st.positions).map((k) => [k, 1000])), budget: st.budget, requests: st.requests, sedoNumber: 4100 }));
   return id;
@@ -137,15 +137,15 @@ test("журнал лише доповнюється: UPDATE і DELETE відх�
 
 test("заявка зберігається й читається без втрат (рядки за переліком і заміни)", async () => {
   const s = await setup();
-  const replacement: RequestLine = { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "N-9", name: "Інший", kekv: "3110", priceMinor: 150_00 } };
-  const outcome = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: lines(byList("l1", "p2", 1), replacement), justification: "Потреба підрозділу на 2027 рік." }));
+  const replacement: RequestLine = { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "N-9", name: "Інший", kekv: "3110", priceMinor: 150_00 }, condition: "needs_repair" };
+  const outcome = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: lines(byList("l1", "p2", 1), replacement), justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" }));
   const saved = await loadRequest(s.db, outcome.requests[0]!.id);
   assert.deepEqual(saved, outcome.requests[0]);
 });
 
 test("весь шлях заявки через базу: рівні 1–5, затвердження, резерв, витяг; стан у базі = стан домену", async () => {
   const s = await setup();
-  const id = await newSubmitted(s, lines(byList("l1", "p1", 2), { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", priceMinor: 120_00 } }));
+  const id = await newSubmitted(s, lines(byList("l1", "p1", 2), { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", priceMinor: 120_00 }, condition: "lost" }));
 
   for (const level of [1, 2, 3, 4, 5] as const) {
     s.clock.advanceDays(1);

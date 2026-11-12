@@ -77,14 +77,21 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   };
 
   app.post("/api/requests", async (c) => {
-    const { lines, justification, title } = await parseBody(c, API.createRequest.input);
+    const { lines, justification, title, service, funding } = await parseBody(c, API.createRequest.input);
     const user = c.get("user");
     const meta = metaOf(c);
     // Маршрут будується від в/ч автора: інші ролі (зокрема адміністрація) заявок не створюють.
     if (meta.actor.role.kind !== "author") throw new DomainError("FORBIDDEN_ROLE", "Заявку створює автор у своїй в/ч.");
     const reply = await run(meta.idempotencyKey, async (tx, ctx) => {
       const route = routeFor(await loadUnits(tx), user.unitId ?? "");
-      const outcome = createDraft(ctx, meta, { route, lines, ...(justification !== undefined ? { justification } : {}), ...(title !== undefined ? { title } : {}) });
+      const outcome = createDraft(ctx, meta, {
+        route,
+        lines,
+        ...(justification !== undefined ? { justification } : {}),
+        ...(title !== undefined ? { title } : {}),
+        ...(service !== undefined ? { service } : {}),
+        ...(funding !== undefined ? { funding } : {}),
+      });
       await saveOutcome(tx, outcome, route[3]);
       return { status: 201, body: { request: outcome.requests[0] } };
     });
@@ -92,9 +99,16 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   });
 
   app.put("/api/requests/:id/lines", async (c) => {
-    const { lines, justification, title, expectedRevision } = await parseBody(c, API.editLines.input);
+    const { lines, justification, title, service, funding, expectedRevision } = await parseBody(c, API.editLines.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ ctx, meta, request }) =>
-      editLines(ctx, meta, { request, lines, ...(justification !== undefined ? { justification } : {}), ...(title !== undefined ? { title } : {}) }),
+      editLines(ctx, meta, {
+        request,
+        lines,
+        ...(justification !== undefined ? { justification } : {}),
+        ...(title !== undefined ? { title } : {}),
+        ...(service !== undefined ? { service } : {}),
+        ...(funding !== undefined ? { funding } : {}),
+      }),
     );
   });
 

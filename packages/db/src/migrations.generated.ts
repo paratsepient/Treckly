@@ -56,5 +56,13 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "ALTER TABLE \"requests\" ADD COLUMN \"sedo_number\" bigint;"
     ]
+  },
+  {
+    "tag": "0006_simple_vulture",
+    "statements": [
+      "ALTER TABLE \"request_lines\" ADD COLUMN \"condition\" text;",
+      "ALTER TABLE \"requests\" ADD COLUMN \"service\" text DEFAULT '' NOT NULL;",
+      "ALTER TABLE \"requests\" ADD COLUMN \"funding\" text DEFAULT 'general' NOT NULL;"
+    ]
   }
 ];

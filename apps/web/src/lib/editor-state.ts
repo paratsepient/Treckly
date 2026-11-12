@@ -1,4 +1,4 @@
-import type { RequestLine } from "@dsp/domain";
+import type { OldCondition, RequestLine } from "@dsp/domain";
 
 /** Рядок у редакторі: поля можуть бути ще не заповнені, тому кількість — рядок. */
 export interface EditorLine {
@@ -8,6 +8,8 @@ export interface EditorLine {
   readonly qty: string;
   /** Предмет, на який міняють (лише для заміни). */
   readonly replacementItemId: string;
+  /** Стан майна, яке замінюють (лише для заміни); "" — ще не вказано. */
+  readonly condition: OldCondition | "";
 }
 
 export interface History {
@@ -92,7 +94,7 @@ export interface CatalogPosition {
 }
 
 export function newLine(id: string): EditorLine {
-  return { id, kind: "by_list", positionId: "", qty: "1", replacementItemId: "" };
+  return { id, kind: "by_list", positionId: "", qty: "1", replacementItemId: "", condition: "" };
 }
 
 /** Кількість, яку можна надіслати: додатне ціле. Інакше — null (рядок вважається незавершеним). */
@@ -133,6 +135,7 @@ export function toRequestLines(lines: readonly EditorLine[], positions: Readonly
       qty,
       kekv: position.kekv,
       newItem: { code: item.code, name: item.name, kekv: item.kekv, priceMinor: item.priceMinor },
+      ...(line.condition !== "" ? { condition: line.condition } : {}),
     });
   }
   return { lines: complete, incomplete };
@@ -147,6 +150,7 @@ export function fromRequestLines(lines: readonly RequestLine[], items: readonly 
     positionId: line.positionId,
     qty: String(line.qty),
     replacementItemId: line.kind === "replacement" ? (byCode.get(line.newItem.code) ?? "") : "",
+    condition: line.kind === "replacement" ? (line.condition ?? "") : "",
   }));
 }
 
@@ -172,6 +176,6 @@ export const linesKey = (lines: readonly RequestLine[]): string =>
     lines.map((l) =>
       l.kind === "by_list"
         ? [l.kind, l.id, l.positionId, l.qty, l.kekv]
-        : [l.kind, l.id, l.positionId, l.qty, l.kekv, l.newItem.code, l.newItem.kekv, l.newItem.priceMinor],
+        : [l.kind, l.id, l.positionId, l.qty, l.kekv, l.newItem.code, l.newItem.kekv, l.newItem.priceMinor, l.condition ?? ""],
     ),
   );

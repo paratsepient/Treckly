@@ -45,6 +45,8 @@ const request: Request = {
   justification: "Потреба підрозділу.",
   title: "",
   returnInfo: null,
+  service: "Служба зв'язку",
+  funding: "general",
   sedoNumber: null,
   procurement: null,
   levelEnteredOn: "2027-02-06",

@@ -3,7 +3,7 @@ import { assertChecksPass, checkRequest } from "./checks.ts";
 import { bumped, guardRevision, levelAudience, makeEvent, stamp, type DomainContext } from "./context.ts";
 import { DomainError } from "./errors.ts";
 import { assertAuthor, assertLevelRole } from "./permissions.ts";
-import { isApprovedStatus } from "./types.ts";
+import { isApprovedStatus, type FundingSource } from "./types.ts";
 import type {
   Audience,
   Budget,
@@ -48,6 +48,8 @@ export interface CreateDraftInput {
   readonly lines: readonly RequestLine[];
   readonly justification?: string;
   readonly title?: string;
+  readonly service?: string;
+  readonly funding?: FundingSource;
 }
 
 /** Чернетка: автор в/ч (рівень 1) заповнює заявку. */
@@ -70,6 +72,8 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
     lines: input.lines,
     justification: input.justification ?? "",
     title: (input.title ?? "").trim(),
+    service: (input.service ?? "").trim(),
+    funding: input.funding ?? "general",
     returnInfo: null,
     sedoNumber: null,
     procurement: null,
@@ -85,7 +89,11 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
 }
 
 /** Зміни вносить лише автор, і лише в чернетці або повернутій заявці. */
-export function editLines(ctx: DomainContext, meta: Meta, input: { request: Request; lines: readonly RequestLine[]; justification?: string; title?: string }): Outcome {
+export function editLines(
+  ctx: DomainContext,
+  meta: Meta,
+  input: { request: Request; lines: readonly RequestLine[]; justification?: string; title?: string; service?: string; funding?: FundingSource },
+): Outcome {
   const { request } = input;
   assertAuthor(meta.actor, request);
   guardRevision(meta, request);
@@ -93,7 +101,13 @@ export function editLines(ctx: DomainContext, meta: Meta, input: { request: Requ
     throw invalid("Заявку можна редагувати лише в чернетці або після повернення.", { status: request.status });
   }
   assertUniqueLineIds(input.lines);
-  const next = bumped(request, { lines: input.lines, justification: input.justification ?? request.justification, title: input.title !== undefined ? input.title.trim() : request.title });
+  const next = bumped(request, {
+    lines: input.lines,
+    justification: input.justification ?? request.justification,
+    title: input.title !== undefined ? input.title.trim() : request.title,
+    service: input.service !== undefined ? input.service.trim() : request.service,
+    funding: input.funding ?? request.funding,
+  });
   return {
     requests: [next],
     lists: [],
@@ -124,6 +138,13 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
   if (request.justification.trim() === "") {
     // Рапорт без обґрунтування неповний: решту тексту дає шаблон, а потребу пояснює лише автор.
     throw invalid("Напишіть обґрунтування: без нього рапорт не можна подати.", { reason: "EMPTY_JUSTIFICATION" });
+  }
+  if (request.service.trim() === "") {
+    throw invalid("Вкажіть службу (відділ), для потреб якої замовляєте.", { reason: "EMPTY_SERVICE" });
+  }
+  const noCondition = request.lines.find((l) => l.kind === "replacement" && l.condition === undefined);
+  if (noCondition) {
+    throw invalid("Вкажіть стан майна, яке замінюєте.", { reason: "CONDITION_REQUIRED", lineId: noCondition.id });
   }
   const report = checkRequest({
     lines: request.lines,

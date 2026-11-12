@@ -59,6 +59,8 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
       listId: r.listId,
       justification: r.justification,
       title: r.title,
+      service: r.service,
+      funding: r.funding,
       returnInfo: r.returnInfo,
       sedoNumber: r.sedoNumber,
       procurement: r.procurement,
@@ -87,6 +89,7 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
           qty: line.qty,
           kekv: line.kekv,
           newItem: line.kind === "replacement" ? { ...line.newItem } : null,
+          condition: line.kind === "replacement" ? (line.condition ?? null) : null,
         })),
       );
     }
@@ -327,7 +330,7 @@ function toLine(row: LineRow): RequestLine {
   const base = { id: row.id, positionId: row.positionId, qty: row.qty, kekv: row.kekv };
   if (row.kind === "replacement") {
     if (!row.newItem) throw new Error(`Рядок заміни ${row.id} без нового предмета`);
-    return { kind: "replacement", ...base, newItem: row.newItem };
+    return { kind: "replacement", ...base, newItem: row.newItem, ...(row.condition ? { condition: row.condition } : {}) };
   }
   return { kind: "by_list", ...base };
 }
@@ -345,6 +348,8 @@ function toRequest(row: RequestRow, lines: readonly LineRow[]): Request {
     lines: lines.filter((l) => l.requestId === row.id).sort((a, b) => a.ord - b.ord).map(toLine),
     justification: row.justification,
     title: row.title,
+    service: row.service,
+    funding: row.funding,
     returnInfo: row.returnInfo,
     sedoNumber: row.sedoNumber ?? null,
     procurement: row.procurement ?? null,

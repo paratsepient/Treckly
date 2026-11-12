@@ -17,6 +17,8 @@ const request = (id: string, patch: Partial<Request> = {}): Request => ({
   justification: "Потреба підрозділу.",
   title: "",
   returnInfo: null,
+  service: "Служба зв'язку",
+  funding: "general",
   sedoNumber: null,
   procurement: null,
   levelEnteredOn: "2027-02-06",

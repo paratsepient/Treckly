@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createDraft, editLines, resubmit, returnRequest, submit, withdraw } from "../src/index.ts";
-import { all, apply, approver, author, byList, createWorld, get, getList, meta, otherAuthor, POSITIONS, preparer, ROUTE, UNIT_PLAN } from "./fixtures.ts";
+import type { RequestLine } from "../src/index.ts";
+import { all, apply, approver, author, byList, createWorld, get, getList, meta, otherAuthor, POSITIONS, preparer, replacement, ROUTE, UNIT_PLAN } from "./fixtures.ts";
 import { advanceTo, approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
 function draftOf(world: ReturnType<typeof createWorld>, lines = [byList("l1", "p1", 2)]): string {
-  const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік." })).requests;
+  const [draft] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines, justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" })).requests;
   return draft!.id;
 }
 
@@ -224,7 +225,7 @@ test("дублікат id рядків відхиляється при ство�
 
 test("обґрунтування: без нього заявку не подати; редагування рядків його не стирає", () => {
   const world = createWorld();
-  const [blank] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines: [byList("l1", "p1", 1)] })).requests;
+  const [blank] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines: [byList("l1", "p1", 1)], service: "Служба тилу" })).requests;
   assert.equal(blank?.justification, "");
   const error = throwsCode(() => submit(world.ctx, meta(author), submitInput(world, blank!.id)), "INVALID_TRANSITION");
   assert.equal(error.details["reason"], "EMPTY_JUSTIFICATION");
@@ -265,4 +266,16 @@ test("подання: номер СЕДО рапорту обов'язковий
   throwsCode(() => submit(world.ctx, meta(author), { ...submitInput(world, id), sedoNumber: "12А" }), "SEDO_NUMBER_INVALID");
   apply(world, submit(world.ctx, meta(author), { ...submitInput(world, id), sedoNumber: " 5310042 " }));
   assert.equal(get(world, id).sedoNumber, 5310042);
+});
+
+test("подання: без служби й без стану замінюваного майна заявку не подати", () => {
+  const world = createWorld();
+  const [noService] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines: [byList("l1", "p1", 1)], justification: "Потреба." })).requests;
+  assert.equal(throwsCode(() => submit(world.ctx, meta(author), submitInput(world, noService!.id)), "INVALID_TRANSITION").details["reason"], "EMPTY_SERVICE");
+  const { condition: _drop, ...bare } = replacement("l2", "p2", 1, "2210", 100_00) as Extract<RequestLine, { kind: "replacement" }>;
+  const id = draftOf(world, [bare]);
+  const error = throwsCode(() => submit(world.ctx, meta(author), submitInput(world, id)), "INVALID_TRANSITION");
+  assert.equal(error.details["reason"], "CONDITION_REQUIRED");
+  assert.equal(error.details["lineId"], "l2");
+  assert.equal(get(world, id).funding, "general");
 });

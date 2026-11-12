@@ -39,6 +39,17 @@ export const STATUS_LABELS: Record<RequestStatus, string> = {
   withdrawn: "Відкликано",
 };
 
+/** Джерело фінансування й стан замінюваного майна — підписи для інтерфейсу й рапорту. */
+export const FUNDING_LABELS: Record<"general" | "special", string> = { general: "Загальний фонд", special: "Спеціальний фонд" };
+export const CONDITION_LABELS: Record<"unusable" | "needs_repair" | "lost", string> = {
+  unusable: "Непридатне до використання",
+  needs_repair: "Потребує ремонту",
+  lost: "Втрачене (знищене)",
+};
+
+/** Підказки для поля «Служба (відділ)»: автор може вписати й іншу. */
+export const SERVICES = ["Служба зв'язку", "Служба тилу", "Інженерна служба", "Медична служба", "Служба РАО", "Відділ персоналу"] as const;
+
 export const STATUS_TONES: Record<RequestStatus, BadgeTone> = {
   draft: "neutral",
   at_level: "info",
