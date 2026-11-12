@@ -51,3 +51,17 @@ test("звірка: рядок-заміна показує предмет, на 
   assert.equal(line?.replacement, "Інша радіостанція");
   assert.equal(line?.verdict, "ok");
 });
+
+test("звірка: залишки ініціатора — скільки того, що просять, уже на базі й отримано (для заміни — нового предмета)", () => {
+  const replacement = { kind: "replacement" as const, id: "r", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "ОБ-003", name: "Тепловізор", kekv: "3110", priceMinor: 100 } };
+  const check = planCheck({ lines: [by("a", "p1", 2), replacement, by("c", "p2", 1)] }, positions, property);
+  assert.deepEqual(
+    check.lines.map((l) => [l.lineId, l.onBase, l.received]),
+    [
+      ["a", 99, 0],
+      ["r", 0, 8],
+      ["c", 0, 0],
+    ],
+  );
+  assert.equal(check.inStock, 2);
+});

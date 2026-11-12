@@ -258,7 +258,7 @@ export function LevelQueueScreen() {
           {...(state === "empty" ? { stateDescription: "Нових заявок на вашому рівні немає. Заявки з'являться, коли нижчий рівень погодить свій перелік." } : {})}
         />
 
-        <PlanComparison request={comparedRequest} unitName={comparedRequest ? unitName(comparedRequest.route[0]) : ""} />
+        <PlanComparison request={comparedRequest} unitName={comparedRequest ? unitName(comparedRequest.route[0]) : ""} withStock={final} />
         </section>
 
         <section className="lists" aria-labelledby="formed-title">

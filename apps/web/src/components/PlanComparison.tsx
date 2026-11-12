@@ -27,7 +27,16 @@ function Frame({ request, unitName, children }: { readonly request: Request | un
  * Інфоблок «Звірка з переліком»: що просить заявка проти того, що заплановано в в/ч автора
  * й доступно за Попереднім переліком напрямку. Розбіжності видно одразу, до рішення.
  */
-export function PlanComparison({ request, unitName }: { readonly request: Request | undefined; readonly unitName: string }) {
+export function PlanComparison({
+  request,
+  unitName,
+  withStock = false,
+}: {
+  readonly request: Request | undefined;
+  readonly unitName: string;
+  /** Рівень 5: показати залишки ініціатора (на базі, отримано) того, що просять. */
+  readonly withStock?: boolean;
+}) {
   const unitId = request?.route[0];
   const property = useApiQuery("unitProperty", { params: { id: unitId ?? "" } }, { enabled: unitId !== undefined });
   const positions = useApiQuery("positions");
@@ -74,6 +83,12 @@ export function PlanComparison({ request, unitName }: { readonly request: Reques
     { key: "requested", header: "У заявці", numeric: true, render: (l) => l.requested, width: 100 },
     { key: "planned", header: "План в/ч", numeric: true, render: (l) => l.planned ?? "—", width: 100 },
     { key: "available", header: "Доступно за переліком", numeric: true, render: (l) => l.available ?? "—", width: 170 },
+    ...(withStock
+      ? ([
+          { key: "onBase", header: "На базі", numeric: true, render: (l) => l.onBase, width: 90 },
+          { key: "received", header: "Отримано", numeric: true, render: (l) => l.received, width: 100 },
+        ] satisfies DataTableColumn<PlanLine>[])
+      : []),
     { key: "kekv", header: "КЕКВ", render: (l) => <Badge>{l.kekv}</Badge>, width: 90 },
     {
       key: "verdict",
@@ -87,6 +102,13 @@ export function PlanComparison({ request, unitName }: { readonly request: Reques
     <Frame request={request} unitName={unitName}>
       <p className="plan__summary">
         {check.mismatches === 0 ? <Badge tone="success">Усе відповідає плану</Badge> : <Badge tone="warning">{`Розбіжностей: ${check.mismatches} з ${check.lines.length}`}</Badge>}
+        {withStock ? (
+          check.inStock === 0 ? (
+            <Badge tone="success">Такого майна в в/ч немає</Badge>
+          ) : (
+            <Badge tone="warning">{`В/ч уже має таке майно: рядків ${check.inStock} — перевірте потребу`}</Badge>
+          )
+        ) : null}
       </p>
       <DataTable
         label={`Звірка заявки ${requestLabel(request.id)} з переліком`}

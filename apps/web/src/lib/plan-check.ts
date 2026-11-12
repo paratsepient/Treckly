@@ -45,11 +45,16 @@ export interface PlanLine {
   /** Предмет-заміна (для рядків-замін). */
   readonly replacement: string | null;
   readonly verdict: PlanVerdict;
+  /** Залишки ініціатора того предмета, який просять (для заміни — нового): на складі бази й уже отримано. */
+  readonly onBase: number;
+  readonly received: number;
 }
 
 export interface PlanCheck {
   readonly lines: readonly PlanLine[];
   readonly mismatches: number;
+  /** Рядки, предмет яких в/ч уже має на базі або отримала: Відділу варто перевірити, чи потреба справжня. */
+  readonly inStock: number;
 }
 
 /**
@@ -59,7 +64,12 @@ export interface PlanCheck {
 export function planCheck(request: Pick<Request, "lines">, positions: readonly PlanPosition[], property: readonly PlanRow[]): PlanCheck {
   const byId = new Map(positions.map((p) => [p.id, p]));
   const plannedByCode = new Map<string, number>();
-  for (const row of property) if (row.tab === "planned") plannedByCode.set(row.code, (plannedByCode.get(row.code) ?? 0) + row.qty);
+  const onBaseByCode = new Map<string, number>();
+  const receivedByCode = new Map<string, number>();
+  for (const row of property) {
+    const target = row.tab === "planned" ? plannedByCode : row.tab === "on_base" ? onBaseByCode : row.tab === "received" ? receivedByCode : null;
+    target?.set(row.code, (target.get(row.code) ?? 0) + row.qty);
+  }
 
   const totals = new Map<string, number>();
   for (const line of request.lines) totals.set(line.positionId, (totals.get(line.positionId) ?? 0) + line.qty);
@@ -74,8 +84,11 @@ export function planCheck(request: Pick<Request, "lines">, positions: readonly P
     else if (line.kekv !== position.kekv) verdict = "kekv";
     else if (total > planned) verdict = "over_plan";
     else if (total > position.availableQty) verdict = "over_available";
+    const wantedCode = line.kind === "replacement" ? line.newItem.code : (position?.code ?? "");
     return {
       lineId: line.id,
+      onBase: onBaseByCode.get(wantedCode) ?? 0,
+      received: receivedByCode.get(wantedCode) ?? 0,
       kind: line.kind,
       positionId: line.positionId,
       code: position?.code ?? "—",
@@ -88,5 +101,5 @@ export function planCheck(request: Pick<Request, "lines">, positions: readonly P
       verdict,
     };
   });
-  return { lines, mismatches: lines.filter((l) => l.verdict !== "ok").length };
+  return { lines, mismatches: lines.filter((l) => l.verdict !== "ok").length, inStock: lines.filter((l) => l.onBase + l.received > 0).length };
 }

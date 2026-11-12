@@ -454,6 +454,9 @@
 }
 
 .plan__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
   margin: 0;
 }
 

@@ -13,6 +13,11 @@ test("E6: затвердження Головою — резерв бюджет�
 
   // Відділ формує остаточний перелік із ЗМ-0007, Голова затверджує.
   await switchTo(page, "prep-5-vor", "/queue");
+  // Рівень 5 бачить залишки ініціатора: скільки того, що просять, уже на базі й отримано.
+  const plan = page.getByRole("region", { name: "Звірка з Попереднім переліком" });
+  await expect(plan.getByRole("columnheader", { name: "На базі" })).toBeVisible();
+  await expect(plan.getByRole("columnheader", { name: "Отримано" })).toBeVisible();
+  await expect(plan.getByText(/Такого майна в в\/ч немає|В\/ч уже має таке майно/)).toBeVisible();
   await page.getByRole("checkbox", { name: "Обрати ЗМ-0007 до переліку" }).check();
   await page.getByRole("button", { name: "Сформувати перелік (1)" }).click();
   await expect(toast(page, "Перелік сформовано: заявок 1")).toBeVisible();
