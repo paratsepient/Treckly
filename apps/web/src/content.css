@@ -519,3 +519,20 @@
 .planned__qty {
   font-variant-numeric: tabular-nums;
 }
+
+/* Дії форми під полями: історія змін ліворуч, рапорт і «Подати» праворуч. */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding-block-start: var(--ix-space-4);
+  border-top: 1px solid var(--ix-border);
+}
+
+.form-actions__main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2);
+}

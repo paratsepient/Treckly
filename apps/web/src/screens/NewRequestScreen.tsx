@@ -227,26 +227,6 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
       title={title}
       surfaceLabel="Заповнення заявки"
       {...(readOnly || failed ? {} : { documentState, saveStatus })}
-      primaryAction={
-        readOnly ? undefined : (
-          <Button variant="primary" disabled={blocked || !loaded} loading={submitting} loadingLabel="Подання заявки" onClick={() => void onSubmit()}>
-            {isResubmit ? "Подати нову версію" : "Подати"}
-          </Button>
-        )
-      }
-      actions={
-        readOnly ? undefined : (
-          <>
-            <WorkspaceToolbar label="Дії редактора заявки">
-              <ToolbarGroup label="Історія змін">
-                <IconButton label="Відмінити" icon={<Icon name="undo" />} disabled={!canUndo(history)} onClick={() => dispatch({ type: "undo" })} />
-                <IconButton label="Повторити" icon={<Icon name="redo" />} disabled={!canRedo(history)} onClick={() => dispatch({ type: "redo" })} />
-              </ToolbarGroup>
-            </WorkspaceToolbar>
-            <RaportButton request={raportRequest} label="Переглянути рапорт" />
-          </>
-        )
-      }
       inspector={
         <DetailPanel title="Перевірки і бюджет" subtitle="Оновлюються, поки ви заповнюєте заявку">
           <CheckPanel report={report} budget={budgetQuery.data} rowOf={rowOf} pending={check.isFetching} incompleteCount={converted.incomplete.length} />
@@ -298,6 +278,21 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
               onChange={(event) => setJustification(event.currentTarget.value)}
             />
           </section>
+          {/* Дії форми — після того, що заповнюють: історія змін і рапорт ліворуч, «Подати» останньою праворуч. */}
+          <div className="form-actions">
+            <WorkspaceToolbar label="Дії редактора заявки">
+              <ToolbarGroup label="Історія змін">
+                <IconButton label="Відмінити" icon={<Icon name="undo" />} disabled={!canUndo(history)} onClick={() => dispatch({ type: "undo" })} />
+                <IconButton label="Повторити" icon={<Icon name="redo" />} disabled={!canRedo(history)} onClick={() => dispatch({ type: "redo" })} />
+              </ToolbarGroup>
+            </WorkspaceToolbar>
+            <span className="form-actions__main">
+              <RaportButton request={raportRequest} label="Переглянути рапорт" />
+              <Button variant="primary" disabled={blocked} loading={submitting} loadingLabel="Подання заявки" onClick={() => void onSubmit()}>
+                {isResubmit ? "Подати нову версію" : "Подати"}
+              </Button>
+            </span>
+          </div>
         </>
       )}
     </ScreenFrame>
