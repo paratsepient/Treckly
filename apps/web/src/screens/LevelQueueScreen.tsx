@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Button, Checkbox, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
+import { Badge, Button, Checkbox, DataState, DataTable, Icon, IconButton, type DataTableColumn } from "@index/ui";
 import { Dialog, useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { daysAtLevel } from "@dsp/domain";
@@ -146,10 +146,10 @@ export function LevelQueueScreen() {
     {
       key: "act",
       header: "Дія",
-      width: 140,
+      width: 200,
       render: (r) => (
-        // Клік по кнопці не відкриває рапорт: подія не спливає до рядка.
-        <span onClick={(event) => event.stopPropagation()}>
+        <span className="row-actions">
+          <IconButton variant="secondary" label={`Переглянути рапорт ${requestLabel(r.id)}`} icon={<Icon name="view" />} onClick={() => setReading(r)} />
           <Button onClick={() => startReturn(r)}>Повернути…</Button>
         </span>
       ),
@@ -171,7 +171,7 @@ export function LevelQueueScreen() {
         }
       >
         <p className="screen__hint">
-          Натисніть на заявку, щоб прочитати рапорт. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
+          Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі.
         </p>
         <div className="queue__select-all">
           <Checkbox
@@ -189,8 +189,6 @@ export function LevelQueueScreen() {
           getRowId={(r) => r.id}
           rowHeaderKey="id"
           variant="well"
-          currentRowId={reading?.id ?? null}
-          onRowSelect={(id) => setReading(rows.find((row) => row.id === id) ?? null)}
           state={state}
           stateTitle={state === "error" ? "Не вдалося завантажити чергу" : "Черга порожня"}
           {...(state === "empty" ? { stateDescription: "Нових заявок на вашому рівні немає. Заявки з'являться, коли нижчий рівень погодить свій перелік." } : {})}

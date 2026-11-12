@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Button, DataState, DataTable, Icon, type DataTableColumn } from "@index/ui";
+import { Badge, Button, DataState, DataTable, Icon, IconButton, type DataTableColumn } from "@index/ui";
 import { useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
 import { ApiClientError } from "../api/client.ts";
@@ -104,17 +104,13 @@ export function DailyListScreen() {
             const r = requests.get(id);
             return (
               <li key={id} className="list-requests__item">
-                <p className="list-requests__name">
-                  {r ? (
-                    <button type="button" className="list-requests__open" onClick={() => setReading(r)}>
-                      {requestLabel(id)}
-                      <span className="ix-sr-only">: відкрити рапорт</span>
-                    </button>
-                  ) : (
-                    requestLabel(id)
-                  )}
-                  {r ? ` · ${unitName(r.route[0])}` : ""}
-                </p>
+                <div className="list-requests__head">
+                  <p className="list-requests__name">
+                    {requestLabel(id)}
+                    {r ? ` · ${unitName(r.route[0])}` : ""}
+                  </p>
+                  {r ? <IconButton variant="secondary" label={`Переглянути рапорт ${requestLabel(id)}`} icon={<Icon name="view" />} onClick={() => setReading(r)} /> : null}
+                </div>
                 {r ? (
                   <>
                     <p className="list-requests__meta">{formatMoney(requestTotal(r, priced))}</p>

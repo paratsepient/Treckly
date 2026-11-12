@@ -375,27 +375,19 @@
   margin-block-start: var(--ix-space-1);
 }
 
-/* Номер заявки в складі переліку — кнопка, що відкриває рапорт для ознайомлення. */
-.list-requests__open {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--ix-foreground);
-  font: inherit;
-  font-weight: var(--ix-font-weight-medium);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-  cursor: pointer;
+/* Дії в рядку таблиці: значок «Переглянути рапорт» стоїть перед основною дією. */
+.row-actions {
+  display: flex;
+  gap: var(--ix-space-2);
+  align-items: center;
 }
 
-.list-requests__open:hover {
-  background: var(--ix-surface-hover);
-}
-
-.list-requests__open:focus-visible {
-  outline: var(--ix-focus-width) solid var(--ix-focus-ring);
-  outline-offset: var(--ix-focus-offset);
-  border-radius: var(--ix-radius-compact);
+/* Заявка в складі переліку: назва ліворуч, значок перегляду рапорту праворуч. */
+.list-requests__head {
+  display: flex;
+  gap: var(--ix-space-2);
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* Завантаження й друк — іконки ліворуч у підвалі діалогу, рішення (повернути, додати) — праворуч. */

@@ -15,11 +15,13 @@ test("E2: перелік із двох заявок із трьох, погод�
   const picks = page.getByRole("checkbox", { name: /Обрати ЗМ-.* до переліку/ });
   await expect(picks).toHaveCount(3);
 
-  // Клік по заявці відкриває її рапорт для ознайомлення; галочка лише обирає, не відкриваючи його.
+  // Рапорт для ознайомлення відкриває кнопка з оком перед «Повернути…»; клік по рядку чи галочці його не відкриває.
   await picks.nth(1).check();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await picks.nth(1).uncheck();
-  await row(page, /ЗМ-0010/).getByRole("button", { name: "ЗМ-0010" }).click();
+  await row(page, /ЗМ-0010/).getByText("в/ч А0001").click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await row(page, /ЗМ-0010/).getByRole("button", { name: "Переглянути рапорт ЗМ-0010" }).click();
   const raport = page.getByRole("dialog", { name: "Рапорт ЗМ-0010" });
   await expect(raport.getByText(/Рапорт для ознайомлення/)).toBeVisible();
   await expect(raport.frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
@@ -29,7 +31,7 @@ test("E2: перелік із двох заявок із трьох, погод�
   await expect(raport).toHaveCount(0);
   await expect(page.getByRole("checkbox", { name: "Обрати ЗМ-0010 до переліку" })).toBeChecked();
   await expect(page.getByRole("button", { name: "Сформувати перелік (1)" })).toBeEnabled();
-  await row(page, /ЗМ-0010/).getByRole("button", { name: "ЗМ-0010" }).click();
+  await row(page, /ЗМ-0010/).getByRole("button", { name: "Переглянути рапорт ЗМ-0010" }).click();
   await page.getByRole("dialog", { name: "Рапорт ЗМ-0010" }).getByRole("button", { name: "Прибрати з переліку" }).click();
   await expect(page.getByRole("checkbox", { name: "Обрати ЗМ-0010 до переліку" })).not.toBeChecked();
   await picks.nth(1).check();
@@ -43,7 +45,7 @@ test("E2: перелік із двох заявок із трьох, погод�
   await expect(page.getByRole("row", { name: /15\.02\.2027/ })).toBeVisible();
 
   // Керівник відкриває рапорт будь-якої заявки переліку для ознайомлення.
-  await page.getByRole("button", { name: /^ЗМ-.*відкрити рапорт/ }).first().click();
+  await page.getByRole("button", { name: /^Переглянути рапорт ЗМ-/ }).first().click();
   const reading = page.getByRole("dialog", { name: /Рапорт ЗМ-/ });
   await expect(reading.frameLocator("iframe").getByText("РАПОРТ", { exact: true })).toBeVisible();
   await page.keyboard.press("Escape");
