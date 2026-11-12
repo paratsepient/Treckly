@@ -689,3 +689,15 @@
 .inbox .inbox__item[data-unread="true"] {
   background: var(--ix-info-surface);
 }
+
+/* Картки показників і діаграм — з тінню картки набору, як сповіщення й заявки. */
+.kpi-row > *,
+.chart-row > * {
+  box-shadow: var(--ix-shadow-card);
+}
+
+/* Сума в центрі кільцевої діаграми дрібніша: вміщується в отвір і не спорить із заголовком. */
+.chart-row .ix-chart__total {
+  font: var(--ix-font-body-strong);
+  font-variant-numeric: tabular-nums;
+}
