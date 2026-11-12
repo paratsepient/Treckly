@@ -34,7 +34,7 @@ const extract: Extract = {
   ],
 };
 const positions = [{ id: "p1", name: "Акумулятор", priceMinor: 100_00 }];
-const base = { title: "Остаточний перелік і витяги", today: "2027-02-15", positions, unitName: (id: string) => (id === "unit-a" ? "в/ч А0001" : id) };
+const base = { title: "Затверджені закупівлі", today: "2027-02-15", positions, unitName: (id: string) => (id === "unit-a" ? "в/ч А0001" : id) };
 
 test("екранування: небезпечні символи не потрапляють у розмітку", () => {
   assert.equal(escapeHtml(`<script>alert("x")</script> & 'q'`), "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; &#39;q&#39;");
@@ -43,7 +43,7 @@ test("екранування: небезпечні символи не потр�
 
 test("звіт: номер, в/ч, СЕДО, сума й статус рядків витягу, зокрема «Заміна погоджена»", () => {
   const html = buildFinalReport({ ...base, requests: [request("req-0001")], lists: [list], extracts: [extract] });
-  assert.match(html, /<title>Остаточний перелік і витяги<\/title>/);
+  assert.match(html, /<title>Затверджені закупівлі<\/title>/);
   assert.match(html, /ЗМ-0001/);
   assert.match(html, /в\/ч А0001/);
   assert.match(html, /7240123/);

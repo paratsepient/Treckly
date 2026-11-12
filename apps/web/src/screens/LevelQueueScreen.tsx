@@ -345,7 +345,7 @@ export function LevelQueueScreen() {
         open={viewed !== undefined}
         onClose={() => setViewingList(null)}
         title={viewed ? listDocModel(listInput(viewed)).documentTitle : "Перелік"}
-        description="Остаточний перелік за день: роздрукуйте або завантажте його й передайте на підпис Голові."
+        description="Перелік за день на підпис Голові: роздрукуйте або завантажте його й передайте на підпис Голові."
         html={viewed ? buildListHtml(listInput(viewed)) : null}
         makeDocx={viewed ? async () => (await import("../lib/docx-export.ts")).buildListDocx(listInput(viewed)) : null}
         fileName={viewed ? listDocModel(listInput(viewed)).fileName : "Перелік.docx"}

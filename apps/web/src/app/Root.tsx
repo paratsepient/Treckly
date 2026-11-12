@@ -50,13 +50,13 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
       ];
     case "preparer":
       return [
-        { id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, ...(level === 5 ? [final("Остаточний перелік")] : []), inbox] },
+        { id: "work", label: "Робота рівня", items: [{ id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> }, ...(level === 5 ? [final("Затверджені закупівлі")] : []), inbox] },
         { id: "overview", label: "Зведення", items: [planned, registry] },
       ];
     case "approver":
       // Голова підписує перелік на папері, а в системі лише стежить: одне меню моніторингу в порядку роботи —
       // що заплановано, як іде, що затверджено, сповіщення.
-      if (level === 5) return [{ id: "monitoring", label: "Моніторинг", items: [planned, registry, final("Остаточний перелік"), inbox] }];
+      if (level === 5) return [{ id: "monitoring", label: "Моніторинг", items: [planned, registry, final("Затверджені закупівлі"), inbox] }];
       return [
         { id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] },
         { id: "overview", label: "Зведення", items: [planned, registry] },

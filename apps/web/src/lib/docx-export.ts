@@ -29,7 +29,7 @@ export function buildFinalDocument(input: FinalReportInput): Document {
         children: [
           new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun(m.title)] }),
           new Paragraph(m.subtitle),
-          new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("Остаточний перелік")] }),
+          new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("Підписані Головою заявки")] }),
           new Paragraph(m.summary),
           table(m.requestHead, m.requestRows, "Затверджених заявок немає."),
           new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("Витяги по в/ч")] }),

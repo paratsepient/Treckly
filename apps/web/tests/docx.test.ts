@@ -56,7 +56,7 @@ const extract: Extract = {
   requestIds: ["req-0001"],
   lines: [{ requestId: "req-0001", lineId: "l2", positionId: "p1", qty: 1, kind: "replacement", status: "replacement_agreed" }],
 };
-const base = { title: "Остаточний перелік і витяги", today: "2027-02-15", positions: [{ id: "p1", name: "Акумулятор <6S>", priceMinor: 100_00 }], unitName: (id: string) => (id === "unit-a" ? "в/ч А0001" : id) };
+const base = { title: "Затверджені закупівлі", today: "2027-02-15", positions: [{ id: "p1", name: "Акумулятор <6S>", priceMinor: 100_00 }], unitName: (id: string) => (id === "unit-a" ? "в/ч А0001" : id) };
 
 const documentXml = async (input: Parameters<typeof buildFinalDocument>[0]): Promise<string> => {
   const files = readZip(await Packer.toBuffer(buildFinalDocument(input)));
@@ -66,7 +66,7 @@ const documentXml = async (input: Parameters<typeof buildFinalDocument>[0]): Pro
 
 test("Word: документ відкривається як zip і містить заголовок, СЕДО, витяг і статус заміни", async () => {
   const xml = await documentXml({ ...base, requests: [request], lists: [list], extracts: [extract] });
-  for (const expected of ["Остаточний перелік і витяги", "ЗМ-0001", "в/ч А0001", "7240123", "Витяг по в/ч А0001 від 06.02.2027", "Заміна погоджена", "Заміна"]) {
+  for (const expected of ["Затверджені закупівлі", "ЗМ-0001", "в/ч А0001", "7240123", "Витяг по в/ч А0001 від 06.02.2027", "Заміна погоджена", "Заміна"]) {
     assert.ok(xml.includes(expected), `у документі немає «${expected}»`);
   }
 });

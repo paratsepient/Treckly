@@ -11,12 +11,14 @@ import { requestTotal } from "../lib/totals.ts";
 import { buildExtractHtml, extractDocModel, type ExtractDocInput } from "../lib/extract-doc.ts";
 import { DocumentActions, DocumentDialog } from "../components/DocumentDialog.tsx";
 import { RaportDialog } from "../components/RaportDialog.tsx";
+import { AnnualPlanImpact } from "../components/AnnualPlanImpact.tsx";
 
 type Final = ApiOutput<"final">;
 type Request = Final["requests"][number];
 
 /**
- * Остаточний перелік і витяги. Відділ і Голова бачать усі затверджені заявки, в/ч — лише свої.
+ * Затверджені закупівлі: заявки, підписані Головою, витяги по в/ч і як після них змінюється річний перелік.
+ * Відділ і Голова бачать усе, в/ч — лише свої заявки й витяги.
  * Витяг формується після затвердження Головою; лише в ньому рядок заміни стає «Заміна погоджена».
  */
 export function FinalScreen() {
@@ -46,7 +48,7 @@ export function FinalScreen() {
     return list ? formatDateShort(list.date) : "—";
   };
   const total = useMemo(() => requests.reduce((sum, r) => sum + requestTotal(r, priced), 0), [requests, priced]);
-  const title = isAuthor ? "Витяги по в/ч" : "Остаточний перелік і витяги";
+  const title = isAuthor ? "Витяги по в/ч" : "Затверджені закупівлі";
 
   const columns: readonly DataTableColumn<Request>[] = [
     { key: "id", header: "Номер", mono: true, render: (r) => requestLabel(r.id), width: 150 },
@@ -106,7 +108,7 @@ export function FinalScreen() {
     >
       <section className="lists" aria-labelledby="final-requests-title">
         <h2 id="final-requests-title" className="lists__title">
-          Остаточний перелік
+          Підписані Головою заявки
         </h2>
         <DataTable
           label="Затверджені заявки"
@@ -116,10 +118,19 @@ export function FinalScreen() {
           rowHeaderKey="id"
           variant="well"
           state={state}
-          stateTitle={state === "error" ? "Не вдалося завантажити остаточний перелік" : "Затверджених заявок ще немає"}
+          stateTitle={state === "error" ? "Не вдалося завантажити затверджені заявки" : "Затверджених заявок ще немає"}
           {...(state === "empty" ? { stateDescription: "Заявка потрапляє сюди після затвердження Головою: тоді ж резервується бюджет і формується витяг." } : {})}
         />
       </section>
+
+      {isAuthor ? null : (
+        <section className="lists" aria-labelledby="annual-title">
+          <h2 id="annual-title" className="lists__title">
+            Річний перелік після закупівель
+          </h2>
+          <AnnualPlanImpact />
+        </section>
+      )}
 
       <section className="lists" aria-labelledby="extracts-title">
         <h2 id="extracts-title" className="lists__title">

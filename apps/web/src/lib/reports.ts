@@ -112,7 +112,7 @@ export function buildFinalReport(input: FinalReportInput): string {
 <body>
   <h1>${escapeHtml(m.title)}</h1>
   <p>${escapeHtml(m.subtitle)}</p>
-  <h2>Остаточний перелік</h2>
+  <h2>Підписані Головою заявки</h2>
   <p>${escapeHtml(m.summary)}</p>
   <table>
     <thead>${cells(m.requestHead, "th")}</thead>

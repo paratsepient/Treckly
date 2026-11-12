@@ -812,3 +812,9 @@
 .list-card__actions .raport-tools {
   margin-inline-end: 0;
 }
+
+.annual {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-3);
+}
