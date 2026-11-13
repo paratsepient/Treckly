@@ -10,14 +10,14 @@ test("остаточний перелік: автор бачить лише св
   assert.deepEqual(a.extracts.map((x) => x.unitId), ["unit-a"]);
   assert.ok(a.lists.every((l) => l.level === 5 && l.status === "approved" && l.sedoNumber !== null));
 
-  assert.deepEqual((await h.call("final", AUTHOR_B)).requests.map((r) => r.id), ["req-0002"]);
-  assert.deepEqual((await h.call("final", AUTHOR_C)).requests, [], "в/ч А0003 ще нічого не затверджено");
-  assert.deepEqual((await h.call("final", AUTHOR_C)).extracts, []);
+  // В/ч А0002: одна заявка чекає закупівлі, друга вже закуплена; в/ч А0003 — заявка, яку вже видано.
+  assert.deepEqual((await h.call("final", AUTHOR_B)).requests.map((r) => r.id).sort(), ["req-0002", "req-0012"]);
+  assert.deepEqual((await h.call("final", AUTHOR_C)).requests.map((r) => [r.id, r.status]), [["req-0013", "issued"]]);
 
   const all = await h.call("final", "prep-5-vor");
-  assert.deepEqual(all.requests.map((r) => r.id).sort(), ["req-0001", "req-0002"]);
-  assert.deepEqual(all.extracts.map((x) => x.unitId).sort(), ["unit-a", "unit-b"]);
-  assert.equal((await h.call("final", "appr-5-vor")).lists.length, 1, "обидві заявки затверджено одним переліком");
+  assert.deepEqual(all.requests.map((r) => r.id).sort(), ["req-0001", "req-0002", "req-0012", "req-0013"]);
+  assert.deepEqual([...new Set(all.extracts.map((x) => x.unitId))].sort(), ["unit-a", "unit-b", "unit-c"]);
+  assert.equal((await h.call("final", "appr-5-vor")).lists.length, 2, "два остаточні переліки, підписані Головою");
 });
 
 test("витяги: рядок заміни має статус «Заміна погоджена» лише у витягу", async () => {
@@ -57,11 +57,11 @@ test("зведення: лише ролі рівнів і адміністрат
 test("зведення: статуси, дні на рівнях, частка повернень і бюджет за КЕКВ відповідають демо-даним", async () => {
   const h = await boot();
   const k = await h.call("kpi", "appr-5-vor");
-  assert.deepEqual(k.byStatus, { draft: 1, at_level: 5, in_list: 1, returned: 1, approved: 0, extract_issued: 2, procured: 0, issued: 0, not_procured: 0, withdrawn: 1 });
-  assert.equal(Object.values(k.byStatus).reduce((a, b) => a + b, 0), 11);
-  assert.equal(k.returnShare, 0.1, "1 повернута із 10 поданих");
-  // Рівень 3 пройшли за 2, 2, 1 і 1 день, а одна заявка лежить там 13 днів: (2+2+13+1+1)/5.
-  assert.equal(k.avgDaysByLevel["3"], 3.8);
+  assert.deepEqual(k.byStatus, { draft: 1, at_level: 5, in_list: 1, returned: 1, approved: 0, extract_issued: 2, procured: 1, issued: 1, not_procured: 0, withdrawn: 1 });
+  assert.equal(Object.values(k.byStatus).reduce((a, b) => a + b, 0), 13);
+  assert.equal(k.returnShare, 1 / 12, "1 повернута із 12 поданих");
+  // Рівень 3 пройшли за 2, 2, 1, 1 і двічі за 0 днів, а одна заявка лежить там 13 днів: (2+2+13+1+1+0+0)/7.
+  assert.equal(k.avgDaysByLevel["3"], Math.round((19 / 7) * 10) / 10);
   assert.deepEqual(Object.keys(k.avgDaysByLevel), ["1", "2", "3", "4", "5"]);
   assert.deepEqual(k.budgetByKekv.map((l) => l.scope), ["TOTAL", "2210", "2220", "3110"]);
   const k3110 = k.budgetByKekv.find((l) => l.scope === "3110")!;
@@ -77,7 +77,7 @@ test("зведення оновлюється: повернення збільш
   const returned = await h.call("kpi", "prep-3-ru-1");
   assert.equal(returned.byStatus.returned, before.byStatus.returned + 1);
   assert.equal(returned.byStatus.at_level, before.byStatus.at_level - 1);
-  assert.equal(returned.returnShare, 0.2);
+  assert.equal(returned.returnShare, 2 / 12);
 
   await h.call("nextDay", AUTHOR_A);
   const later = await h.call("kpi", "prep-3-ru-1");

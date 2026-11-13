@@ -84,7 +84,7 @@ test("мої заявки: лише власні, нові згори; реєс�
   const dates = mine.requests.map((r) => r.createdOn);
   assert.deepEqual(dates, [...dates].sort().reverse());
   const registry = await h.call("registry", AUTHOR_A);
-  assert.equal(registry.requests.length, 11);
+  assert.equal(registry.requests.length, 13);
 });
 
 test("картка заявки: трек, статуси рядків і журнал; затверджена з витягом — усе пройдено", async () => {
@@ -125,9 +125,11 @@ test("запланований перелік: кожен рівень бачи�
   const direction = (await h.call("positions", "prep-5-vor")).positions;
   assert.equal(top.positions.length, direction.length);
   for (const p of top.positions) {
-    assert.equal(p.plannedQty - p.reservedQty, direction.find((d) => d.id === p.id)!.availableQty, `${p.code}: план − резерв = доступно`);
+    assert.equal(p.plannedQty - p.approvedQty - p.boughtQty, direction.find((d) => d.id === p.id)!.availableQty, `${p.code}: план − затверджено − куплено = доступно`);
+    assert.equal(p.freeQty, p.plannedQty - p.inRequestsQty - p.approvedQty - p.boughtQty, `${p.code}: стани разом дають план`);
+    assert.ok(p.issuedQty <= p.boughtQty);
   }
-  assert.ok(top.positions.some((p) => p.reservedQty > 0) && top.positions.some((p) => p.inWorkQty > 0));
+  assert.ok(top.positions.some((p) => p.approvedQty > 0) && top.positions.some((p) => p.inRequestsQty > 0));
 
   // Рівень 1 (в/ч А0001): лише її план — сума плану в/ч, без чужих в/ч.
   const unit = await h.call("plannedList", "prep-1-unit-a");

@@ -9,7 +9,11 @@ test("запланований перелік: Відділ бачить уве�
 
   const table = page.getByRole("table", { name: "Запланований перелік закупівель" });
   await expect(table).toBeVisible();
-  await expect(page.getByText("План, грн")).toBeVisible();
+  // Виконання плану: «Виконано» й ті самі стани в гривнях, що на смугах позицій.
+  const summary = page.getByRole("region", { name: "Виконання плану в гривнях" });
+  await expect(summary.getByText(/виконано · куплено на/)).toBeVisible();
+  for (const label of ["Куплено, грн", "Затверджено, грн", "У заявках, грн", "Вільно, грн"]) await expect(summary.getByText(label)).toBeVisible();
+  await expect(row(page, /Рюкзак польовий/).getByRole("img", { name: /Куплено 10 шт\./ })).toBeVisible();
 
   // КЕКВ-фільтр звужує перелік.
   await expect(row(page, /Квадрокоптер розвідувальний/)).toBeVisible();
@@ -17,10 +21,11 @@ test("запланований перелік: Відділ бачить уве�
   await page.getByLabel("КЕКВ").selectOption("3110");
   await expect.poll(async () => table.getByRole("row").count()).toBeLessThan(before);
 
-  // Квадрокоптер: план напрямку, резерв, «у роботі» й розбивка по в/ч у картці.
+  // Квадрокоптер: план напрямку, стани плану й розбивка по в/ч у картці.
   await row(page, /Квадрокоптер розвідувальний/).getByRole("button", { name: "Квадрокоптер розвідувальний" }).click();
   const card = page.getByRole("complementary", { name: "Розбивка позиції по в/ч" });
-  await expect(card.getByText("Заплановано за напрямком")).toBeVisible();
+  await expect(card.getByText("План за напрямком")).toBeVisible();
+  await expect(card.getByText("У заявках")).toBeVisible();
   await expect(card.getByRole("list", { name: /Заплановано по в\/ч/ }).getByText("в/ч А0001")).toBeVisible();
 
   // Уповноважений в/ч бачить лише план своєї в/ч.

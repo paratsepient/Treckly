@@ -44,6 +44,19 @@ export type RequestStatus =
 export const APPROVED_STATUSES: readonly RequestStatus[] = ["approved", "extract_issued", "procured", "issued"];
 export const isApprovedStatus = (status: RequestStatus): boolean => APPROVED_STATUSES.includes(status);
 
+/**
+ * Стан запланованої кількості за статусом заявки. Кожна одиниця плану — рівно в одному стані, і разом
+ * зі «Вільно» вони дають план: «У заявках» (іде погодженням або повернута автору), «Затверджено»
+ * (Голова підписав, чекає закупівлі), «Куплено» (на складі бази або вже видано). Решта статусів план не займає.
+ */
+export type PlanState = "in_requests" | "approved" | "bought";
+export function planStateOf(status: RequestStatus): PlanState | null {
+  if (status === "at_level" || status === "in_list" || status === "returned") return "in_requests";
+  if (status === "approved" || status === "extract_issued") return "approved";
+  if (status === "procured" || status === "issued") return "bought";
+  return null;
+}
+
 export interface NewItem {
   readonly code: string;
   readonly name: string;

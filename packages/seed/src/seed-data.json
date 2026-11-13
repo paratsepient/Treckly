@@ -1073,17 +1073,17 @@
  ],
  "budget": {
   "total": {
-   "limitMinor": 138810000,
-   "approvedMinor": 43050000
+   "limitMinor": 148830000,
+   "approvedMinor": 53070000
   },
   "perKekv": {
    "2210": {
-    "limitMinor": 57960000,
-    "approvedMinor": 22200000
+    "limitMinor": 66480000,
+    "approvedMinor": 30720000
    },
    "2220": {
-    "limitMinor": 57650000,
-    "approvedMinor": 7650000
+    "limitMinor": 59150000,
+    "approvedMinor": 9150000
    },
    "3110": {
     "limitMinor": 23200000,
@@ -1305,33 +1305,47 @@
   {
    "id": "prop-unit-b-planned-7",
    "unitId": "unit-b",
+   "itemId": "item-012",
+   "tab": "planned",
+   "qty": 13
+  },
+  {
+   "id": "prop-unit-b-planned-8",
+   "unitId": "unit-b",
+   "itemId": "item-014",
+   "tab": "planned",
+   "qty": 9
+  },
+  {
+   "id": "prop-unit-b-planned-9",
+   "unitId": "unit-b",
    "itemId": "item-022",
    "tab": "planned",
    "qty": 49
   },
   {
-   "id": "prop-unit-b-planned-8",
+   "id": "prop-unit-b-planned-10",
    "unitId": "unit-b",
    "itemId": "item-023",
    "tab": "planned",
    "qty": 61
   },
   {
-   "id": "prop-unit-b-planned-9",
+   "id": "prop-unit-b-planned-11",
    "unitId": "unit-b",
    "itemId": "item-030",
    "tab": "planned",
    "qty": 8
   },
   {
-   "id": "prop-unit-b-planned-10",
+   "id": "prop-unit-b-planned-12",
    "unitId": "unit-b",
    "itemId": "item-032",
    "tab": "planned",
    "qty": 3
   },
   {
-   "id": "prop-unit-b-planned-11",
+   "id": "prop-unit-b-planned-13",
    "unitId": "unit-b",
    "itemId": "item-033",
    "tab": "planned",
@@ -1445,33 +1459,54 @@
   {
    "id": "prop-unit-c-planned-6",
    "unitId": "unit-c",
+   "itemId": "item-010",
+   "tab": "planned",
+   "qty": 25
+  },
+  {
+   "id": "prop-unit-c-planned-7",
+   "unitId": "unit-c",
    "itemId": "item-015",
    "tab": "planned",
    "qty": 13
   },
   {
-   "id": "prop-unit-c-planned-7",
+   "id": "prop-unit-c-planned-8",
    "unitId": "unit-c",
    "itemId": "item-016",
    "tab": "planned",
    "qty": 9
   },
   {
-   "id": "prop-unit-c-planned-8",
+   "id": "prop-unit-c-planned-9",
+   "unitId": "unit-c",
+   "itemId": "item-024",
+   "tab": "planned",
+   "qty": 61
+  },
+  {
+   "id": "prop-unit-c-planned-10",
+   "unitId": "unit-c",
+   "itemId": "item-028",
+   "tab": "planned",
+   "qty": 49
+  },
+  {
+   "id": "prop-unit-c-planned-11",
    "unitId": "unit-c",
    "itemId": "item-030",
    "tab": "planned",
    "qty": 8
   },
   {
-   "id": "prop-unit-c-planned-9",
+   "id": "prop-unit-c-planned-12",
    "unitId": "unit-c",
    "itemId": "item-036",
    "tab": "planned",
    "qty": 4
   },
   {
-   "id": "prop-unit-c-planned-10",
+   "id": "prop-unit-c-planned-13",
    "unitId": "unit-c",
    "itemId": "item-038",
    "tab": "planned",
@@ -8447,6 +8482,2996 @@
     }
    ],
    "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": null,
+     "procurement": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0050",
+     "requestId": "req-0012",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "author-unit-b",
+     "idempotencyKey": "seed-0051",
+     "requestId": "req-0012",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0,
+      "sedoNumber": 5310027
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "preparer"
+     },
+     "requestId": "req-0012",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 1,
+     "status": "draft",
+     "level": null,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": null,
+     "procurement": null,
+     "levelEnteredOn": null,
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.created",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0052",
+     "requestId": "req-0013",
+     "listId": null,
+     "from": null,
+     "to": "draft",
+     "requestVersion": 1,
+     "revision": 1,
+     "data": {}
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 2,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.submitted",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "author-unit-c",
+     "idempotencyKey": "seed-0053",
+     "requestId": "req-0013",
+     "listId": null,
+     "from": "draft",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 2,
+     "data": {
+      "level": 1,
+      "warnings": 0,
+      "sedoNumber": 5310030
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_submitted",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "preparer"
+     },
+     "requestId": "req-0013",
+     "listId": null,
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0014",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0014",
+     "level": 1,
+     "unitId": "unit-b",
+     "date": "2027-02-11",
+     "status": "formed",
+     "requestIds": [
+      "req-0012"
+     ],
+     "formedBy": "prep-1-unit-b",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-1-unit-b",
+     "idempotencyKey": "seed-0054",
+     "requestId": null,
+     "listId": "list-0014",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-b",
+      "date": "2027-02-11",
+      "requestIds": [
+       "req-0012"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-1-unit-b",
+     "idempotencyKey": "seed-0054",
+     "requestId": "req-0012",
+     "listId": "list-0014",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "approver"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0014",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0014",
+     "level": 1,
+     "unitId": "unit-b",
+     "date": "2027-02-11",
+     "status": "approved",
+     "requestIds": [
+      "req-0012"
+     ],
+     "formedBy": "prep-1-unit-b",
+     "sedoNumber": 7240062,
+     "approvedBy": "appr-1-unit-b",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-1-unit-b",
+     "idempotencyKey": "seed-0055",
+     "requestId": null,
+     "listId": "list-0014",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "sedoNumber": 7240062
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-1-unit-b",
+     "idempotencyKey": "seed-0055",
+     "requestId": "req-0012",
+     "listId": "list-0014",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240062
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0014",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "in_list",
+     "level": 1,
+     "listId": "list-0015",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0015",
+     "level": 1,
+     "unitId": "unit-c",
+     "date": "2027-02-11",
+     "status": "formed",
+     "requestIds": [
+      "req-0013"
+     ],
+     "formedBy": "prep-1-unit-c",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0056",
+     "requestId": null,
+     "listId": "list-0015",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "unitId": "unit-c",
+      "date": "2027-02-11",
+      "requestIds": [
+       "req-0013"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0056",
+     "requestId": "req-0013",
+     "listId": "list-0015",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "approver"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0015",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0015",
+     "level": 1,
+     "unitId": "unit-c",
+     "date": "2027-02-11",
+     "status": "approved",
+     "requestIds": [
+      "req-0013"
+     ],
+     "formedBy": "prep-1-unit-c",
+     "sedoNumber": 7240067,
+     "approvedBy": "appr-1-unit-c",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-1-unit-c",
+     "idempotencyKey": "seed-0057",
+     "requestId": null,
+     "listId": "list-0015",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 1,
+      "sedoNumber": 7240067
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-1-unit-c",
+     "idempotencyKey": "seed-0057",
+     "requestId": "req-0013",
+     "listId": "list-0015",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 4,
+     "data": {
+      "fromLevel": 1,
+      "level": 2,
+      "sedoNumber": 7240067
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "preparer"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0015",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0016",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0016",
+     "level": 2,
+     "unitId": "brig-1",
+     "date": "2027-02-11",
+     "status": "formed",
+     "requestIds": [
+      "req-0012"
+     ],
+     "formedBy": "prep-2-brig-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0058",
+     "requestId": null,
+     "listId": "list-0016",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "unitId": "brig-1",
+      "date": "2027-02-11",
+      "requestIds": [
+       "req-0012"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0058",
+     "requestId": "req-0012",
+     "listId": "list-0016",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "approver"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0016",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0016",
+     "level": 2,
+     "unitId": "brig-1",
+     "date": "2027-02-11",
+     "status": "approved",
+     "requestIds": [
+      "req-0012"
+     ],
+     "formedBy": "prep-2-brig-1",
+     "sedoNumber": 7240070,
+     "approvedBy": "appr-2-brig-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-2-brig-1",
+     "idempotencyKey": "seed-0059",
+     "requestId": null,
+     "listId": "list-0016",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "sedoNumber": 7240070
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-2-brig-1",
+     "idempotencyKey": "seed-0059",
+     "requestId": "req-0012",
+     "listId": "list-0016",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240070
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0016",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 5,
+     "status": "in_list",
+     "level": 2,
+     "listId": "list-0017",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0017",
+     "level": 2,
+     "unitId": "brig-2",
+     "date": "2027-02-11",
+     "status": "formed",
+     "requestIds": [
+      "req-0013"
+     ],
+     "formedBy": "prep-2-brig-2",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-2-brig-2",
+     "idempotencyKey": "seed-0060",
+     "requestId": null,
+     "listId": "list-0017",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "unitId": "brig-2",
+      "date": "2027-02-11",
+      "requestIds": [
+       "req-0013"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-2-brig-2",
+     "idempotencyKey": "seed-0060",
+     "requestId": "req-0013",
+     "listId": "list-0017",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 5,
+     "data": {
+      "level": 2
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "approver"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0017",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0017",
+     "level": 2,
+     "unitId": "brig-2",
+     "date": "2027-02-11",
+     "status": "approved",
+     "requestIds": [
+      "req-0013"
+     ],
+     "formedBy": "prep-2-brig-2",
+     "sedoNumber": 7240076,
+     "approvedBy": "appr-2-brig-2",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-2-brig-2",
+     "idempotencyKey": "seed-0061",
+     "requestId": null,
+     "listId": "list-0017",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 2,
+      "sedoNumber": 7240076
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-2-brig-2",
+     "idempotencyKey": "seed-0061",
+     "requestId": "req-0013",
+     "listId": "list-0017",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "fromLevel": 2,
+      "level": 3,
+      "sedoNumber": 7240076
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0017",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
+     "status": "in_list",
+     "level": 3,
+     "listId": "list-0018",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    },
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
+     "status": "in_list",
+     "level": 3,
+     "listId": "list-0018",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0018",
+     "level": 3,
+     "unitId": "ru-1",
+     "date": "2027-02-11",
+     "status": "formed",
+     "requestIds": [
+      "req-0012",
+      "req-0013"
+     ],
+     "formedBy": "prep-3-ru-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0062",
+     "requestId": null,
+     "listId": "list-0018",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 3,
+      "unitId": "ru-1",
+      "date": "2027-02-11",
+      "requestIds": [
+       "req-0012",
+       "req-0013"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0062",
+     "requestId": "req-0012",
+     "listId": "list-0018",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 7,
+     "data": {
+      "level": 3
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0062",
+     "requestId": "req-0013",
+     "listId": "list-0018",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 7,
+     "data": {
+      "level": 3
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "approver"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0018",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 8,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    },
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 8,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0018",
+     "level": 3,
+     "unitId": "ru-1",
+     "date": "2027-02-11",
+     "status": "approved",
+     "requestIds": [
+      "req-0012",
+      "req-0013"
+     ],
+     "formedBy": "prep-3-ru-1",
+     "sedoNumber": 7240081,
+     "approvedBy": "appr-3-ru-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0063",
+     "requestId": null,
+     "listId": "list-0018",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 3,
+      "sedoNumber": 7240081
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0063",
+     "requestId": "req-0012",
+     "listId": "list-0018",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 8,
+     "data": {
+      "fromLevel": 3,
+      "level": 4,
+      "sedoNumber": 7240081
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-3-ru-1",
+     "idempotencyKey": "seed-0063",
+     "requestId": "req-0013",
+     "listId": "list-0018",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 8,
+     "data": {
+      "fromLevel": 3,
+      "level": 4,
+      "sedoNumber": 7240081
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0018",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "preparer"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0018",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 9,
+     "status": "in_list",
+     "level": 4,
+     "listId": "list-0019",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    },
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 9,
+     "status": "in_list",
+     "level": 4,
+     "listId": "list-0019",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0019",
+     "level": 4,
+     "unitId": "dir-1",
+     "date": "2027-02-11",
+     "status": "formed",
+     "requestIds": [
+      "req-0012",
+      "req-0013"
+     ],
+     "formedBy": "prep-4-dir-1",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0064",
+     "requestId": null,
+     "listId": "list-0019",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 4,
+      "unitId": "dir-1",
+      "date": "2027-02-11",
+      "requestIds": [
+       "req-0012",
+       "req-0013"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0064",
+     "requestId": "req-0012",
+     "listId": "list-0019",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 4
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0064",
+     "requestId": "req-0013",
+     "listId": "list-0019",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 4
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "approver"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0019",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 10,
+     "status": "at_level",
+     "level": 5,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    },
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 10,
+     "status": "at_level",
+     "level": 5,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0019",
+     "level": 4,
+     "unitId": "dir-1",
+     "date": "2027-02-11",
+     "status": "approved",
+     "requestIds": [
+      "req-0012",
+      "req-0013"
+     ],
+     "formedBy": "prep-4-dir-1",
+     "sedoNumber": 7240084,
+     "approvedBy": "appr-4-dir-1",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0065",
+     "requestId": null,
+     "listId": "list-0019",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 4,
+      "sedoNumber": 7240084
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0065",
+     "requestId": "req-0012",
+     "listId": "list-0019",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 10,
+     "data": {
+      "fromLevel": 4,
+      "level": 5,
+      "sedoNumber": 7240084
+     }
+    },
+    {
+     "type": "request.advanced",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "appr-4-dir-1",
+     "idempotencyKey": "seed-0065",
+     "requestId": "req-0013",
+     "listId": "list-0019",
+     "from": "in_list",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 10,
+     "data": {
+      "fromLevel": 4,
+      "level": 5,
+      "sedoNumber": 7240084
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 5,
+      "unitId": "vor",
+      "role": "preparer"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0019",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_advanced",
+     "audience": {
+      "kind": "level",
+      "level": 5,
+      "unitId": "vor",
+      "role": "preparer"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0019",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 11,
+     "status": "in_list",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    },
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 11,
+     "status": "in_list",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0020",
+     "level": 5,
+     "unitId": "vor",
+     "date": "2027-02-11",
+     "status": "formed",
+     "requestIds": [
+      "req-0012",
+      "req-0013"
+     ],
+     "formedBy": "prep-5-vor",
+     "sedoNumber": null,
+     "approvedBy": null,
+     "revision": 1
+    }
+   ],
+   "events": [
+    {
+     "type": "list.formed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0066",
+     "requestId": null,
+     "listId": "list-0020",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 5,
+      "unitId": "vor",
+      "date": "2027-02-11",
+      "requestIds": [
+       "req-0012",
+       "req-0013"
+      ]
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0066",
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 11,
+     "data": {
+      "level": 5
+     }
+    },
+    {
+     "type": "request.listed",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0066",
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "from": "at_level",
+     "to": "in_list",
+     "requestVersion": 1,
+     "revision": 11,
+     "data": {
+      "level": 5
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "list_formed",
+     "audience": {
+      "kind": "level",
+      "level": 5,
+      "unitId": "vor",
+      "role": "preparer"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 12,
+     "status": "approved",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    },
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 12,
+     "status": "approved",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [
+    {
+     "id": "list-0020",
+     "level": 5,
+     "unitId": "vor",
+     "date": "2027-02-11",
+     "status": "approved",
+     "requestIds": [
+      "req-0012",
+      "req-0013"
+     ],
+     "formedBy": "prep-5-vor",
+     "sedoNumber": 7240090,
+     "approvedBy": "prep-5-vor",
+     "revision": 2
+    }
+   ],
+   "events": [
+    {
+     "type": "list.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0067",
+     "requestId": null,
+     "listId": "list-0020",
+     "from": null,
+     "to": null,
+     "requestVersion": null,
+     "revision": null,
+     "data": {
+      "level": 5,
+      "sedoNumber": 7240090
+     }
+    },
+    {
+     "type": "request.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0067",
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "from": "in_list",
+     "to": "approved",
+     "requestVersion": 1,
+     "revision": 12,
+     "data": {
+      "sedoNumber": 7240090
+     }
+    },
+    {
+     "type": "request.approved",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0067",
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "from": "in_list",
+     "to": "approved",
+     "requestVersion": 1,
+     "revision": 12,
+     "data": {
+      "sedoNumber": 7240090
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-b"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-b",
+      "role": "both"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-1",
+      "role": "both"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "both"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "both"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-c"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 1,
+      "unitId": "unit-c",
+      "role": "both"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 2,
+      "unitId": "brig-2",
+      "role": "both"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 3,
+      "unitId": "ru-1",
+      "role": "both"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "request_approved",
+     "audience": {
+      "kind": "level",
+      "level": 4,
+      "unitId": "dir-1",
+      "role": "both"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ],
+   "budget": {
+    "total": {
+     "limitMinor": 10000000000000,
+     "approvedMinor": 53070000
+    },
+    "perKekv": {
+     "2210": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 30720000
+     },
+     "2220": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 9150000
+     },
+     "3110": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 13200000
+     }
+    }
+   }
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 13,
+     "status": "extract_issued",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    },
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 13,
+     "status": "extract_issued",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": null,
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.extract_issued",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "system",
+     "idempotencyKey": "seed-0068",
+     "requestId": "req-0012",
+     "listId": null,
+     "from": "approved",
+     "to": "extract_issued",
+     "requestVersion": 1,
+     "revision": 13,
+     "data": {}
+    },
+    {
+     "type": "request.extract_issued",
+     "at": "2027-02-11T09:00:00.000Z",
+     "actorId": "system",
+     "idempotencyKey": "seed-0068",
+     "requestId": "req-0013",
+     "listId": null,
+     "from": "approved",
+     "to": "extract_issued",
+     "requestVersion": 1,
+     "revision": 13,
+     "data": {}
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "extract_issued",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-b"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    },
+    {
+     "kind": "extract_issued",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-c"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": null,
+     "at": "2027-02-11T09:00:00.000Z"
+    }
+   ],
+   "extracts": [
+    {
+     "id": "extract-0003",
+     "unitId": "unit-b",
+     "date": "2027-02-11",
+     "requestIds": [
+      "req-0012"
+     ],
+     "lines": [
+      {
+       "requestId": "req-0012",
+       "lineId": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0012",
+       "lineId": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kind": "by_list",
+       "status": "approved"
+      }
+     ]
+    },
+    {
+     "id": "extract-0004",
+     "unitId": "unit-c",
+     "date": "2027-02-11",
+     "requestIds": [
+      "req-0013"
+     ],
+     "lines": [
+      {
+       "requestId": "req-0013",
+       "lineId": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0013",
+       "lineId": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kind": "by_list",
+       "status": "approved"
+      },
+      {
+       "requestId": "req-0013",
+       "lineId": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kind": "by_list",
+       "status": "approved"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0012",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 14,
+     "status": "procured",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-27",
+       "positionId": "pos-012",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-28",
+       "positionId": "pos-014",
+       "qty": 6,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно втрачено під час виконання бойових завдань, акти списання оформлено. Для відновлення забезпечення просимо закупівлю за переліком.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "special",
+     "returnInfo": null,
+     "sedoNumber": 5310027,
+     "procurement": {
+      "acceptanceDoc": "АП-2027-03",
+      "recipient": "Склад бази",
+      "procuredAt": "2027-02-12T09:00:00.000Z",
+      "issueAct": null,
+      "issuedAt": null,
+      "note": null,
+      "byUserId": "prep-5-vor"
+     },
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.procured",
+     "at": "2027-02-12T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0069",
+     "requestId": "req-0012",
+     "listId": null,
+     "from": "extract_issued",
+     "to": "procured",
+     "requestVersion": 1,
+     "revision": 14,
+     "data": {
+      "acceptanceDoc": "АП-2027-03",
+      "recipient": "Склад бази"
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_procured",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-b"
+     },
+     "requestId": "req-0012",
+     "listId": "list-0020",
+     "note": "Документ приймання: АП-2027-03",
+     "at": "2027-02-12T09:00:00.000Z"
+    }
+   ],
+   "property": [
+    {
+     "unitId": "unit-b",
+     "code": "ПМ-012",
+     "tab": "on_base",
+     "delta": 10
+    },
+    {
+     "unitId": "unit-b",
+     "code": "ПМ-014",
+     "tab": "on_base",
+     "delta": 6
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 14,
+     "status": "procured",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": {
+      "acceptanceDoc": "АП-2027-04",
+      "recipient": "Склад бази",
+      "procuredAt": "2027-02-12T09:00:00.000Z",
+      "issueAct": null,
+      "issuedAt": null,
+      "note": null,
+      "byUserId": "prep-5-vor"
+     },
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.procured",
+     "at": "2027-02-12T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0070",
+     "requestId": "req-0013",
+     "listId": null,
+     "from": "extract_issued",
+     "to": "procured",
+     "requestVersion": 1,
+     "revision": 14,
+     "data": {
+      "acceptanceDoc": "АП-2027-04",
+      "recipient": "Склад бази"
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_procured",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-c"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": "Документ приймання: АП-2027-04",
+     "at": "2027-02-12T09:00:00.000Z"
+    }
+   ],
+   "property": [
+    {
+     "unitId": "unit-c",
+     "code": "МД-024",
+     "tab": "on_base",
+     "delta": 50
+    },
+    {
+     "unitId": "unit-c",
+     "code": "МД-028",
+     "tab": "on_base",
+     "delta": 40
+    },
+    {
+     "unitId": "unit-c",
+     "code": "ПМ-010",
+     "tab": "on_base",
+     "delta": 20
+    }
+   ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0013",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 15,
+     "status": "issued",
+     "level": 5,
+     "listId": "list-0020",
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-29",
+       "positionId": "pos-024",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-30",
+       "positionId": "pos-028",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-31",
+       "positionId": "pos-010",
+       "qty": 20,
+       "kekv": "2210"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310030,
+     "procurement": {
+      "acceptanceDoc": "АП-2027-04",
+      "recipient": "Склад бази",
+      "procuredAt": "2027-02-12T09:00:00.000Z",
+      "issueAct": "АВ-2027-02",
+      "issuedAt": "2027-02-13T09:00:00.000Z",
+      "note": null,
+      "byUserId": "prep-5-vor"
+     },
+     "levelEnteredOn": "2027-02-11",
+     "createdOn": "2027-02-11"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.issued",
+     "at": "2027-02-13T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0071",
+     "requestId": "req-0013",
+     "listId": null,
+     "from": "procured",
+     "to": "issued",
+     "requestVersion": 1,
+     "revision": 15,
+     "data": {
+      "act": "АВ-2027-02"
+     }
+    }
+   ],
+   "notifications": [
+    {
+     "kind": "request_issued",
+     "audience": {
+      "kind": "author",
+      "userId": "author-unit-c"
+     },
+     "requestId": "req-0013",
+     "listId": "list-0020",
+     "note": "Акт видачі: АВ-2027-02",
+     "at": "2027-02-13T09:00:00.000Z"
+    }
+   ],
+   "property": [
+    {
+     "unitId": "unit-c",
+     "code": "МД-024",
+     "tab": "on_base",
+     "delta": -50
+    },
+    {
+     "unitId": "unit-c",
+     "code": "МД-024",
+     "tab": "received",
+     "delta": 50
+    },
+    {
+     "unitId": "unit-c",
+     "code": "МД-028",
+     "tab": "on_base",
+     "delta": -40
+    },
+    {
+     "unitId": "unit-c",
+     "code": "МД-028",
+     "tab": "received",
+     "delta": 40
+    },
+    {
+     "unitId": "unit-c",
+     "code": "ПМ-010",
+     "tab": "on_base",
+     "delta": -20
+    },
+    {
+     "unitId": "unit-c",
+     "code": "ПМ-010",
+     "tab": "received",
+     "delta": 20
+    }
+   ]
   }
  ],
  "now": "2027-02-15T09:00:00.000Z"

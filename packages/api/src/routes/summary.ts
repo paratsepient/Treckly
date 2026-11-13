@@ -12,7 +12,7 @@ import {
   loadUnits,
   type DspDb,
 } from "@dsp/db";
-import { computeKpi, DomainError, isApprovedStatus } from "@dsp/domain";
+import { computeKpi, DomainError, isApprovedStatus, planStateOf } from "@dsp/domain";
 import { budgetSummary } from "../views.ts";
 import type { Env } from "../http.ts";
 
@@ -71,26 +71,39 @@ export function summaryRoutes(db: DspDb) {
     walk(wholeDirection ? direction : user.unitId);
     const inScope = (r: { route: readonly string[] }) => under.has(r.route[0] as string);
 
-    const reserved = new Map<string, number>();
-    const inWork = new Map<string, number>();
+    // Стани плану за позицією; заміна займає ту позицію, замість якої купують інший предмет.
+    const qty = { in_requests: new Map<string, number>(), approved: new Map<string, number>(), bought: new Map<string, number>() };
+    const issued = new Map<string, number>();
+    const add = (map: Map<string, number>, id: string, n: number) => map.set(id, (map.get(id) ?? 0) + n);
     for (const r of requests.filter(inScope)) {
-      const target = isApprovedStatus(r.status) ? reserved : r.status === "at_level" || r.status === "in_list" ? inWork : null;
-      if (!target) continue;
-      for (const line of r.lines) target.set(line.positionId, (target.get(line.positionId) ?? 0) + line.qty);
+      const state = planStateOf(r.status);
+      if (!state) continue;
+      for (const line of r.lines) {
+        add(qty[state], line.positionId, line.qty);
+        if (r.status === "issued") add(issued, line.positionId, line.qty);
+      }
     }
     const positions = (await loadPlannedList(db, direction))
       .map((p) => {
         const scopedUnits = p.units.filter((u) => under.has(u.unitId));
+        const { reservedQty: _reserved, ...rest } = p;
+        const plannedQty = wholeDirection ? p.plannedQty : scopedUnits.reduce((sum, u) => sum + u.qty, 0);
+        const inRequestsQty = qty.in_requests.get(p.id) ?? 0;
+        const approvedQty = qty.approved.get(p.id) ?? 0;
+        const boughtQty = qty.bought.get(p.id) ?? 0;
         return {
-          ...p,
+          ...rest,
           units: scopedUnits,
-          plannedQty: wholeDirection ? p.plannedQty : scopedUnits.reduce((sum, u) => sum + u.qty, 0),
-          reservedQty: reserved.get(p.id) ?? 0,
-          inWorkQty: inWork.get(p.id) ?? 0,
+          plannedQty,
+          inRequestsQty,
+          approvedQty,
+          boughtQty,
+          issuedQty: issued.get(p.id) ?? 0,
+          freeQty: plannedQty - inRequestsQty - approvedQty - boughtQty,
         };
       })
-      // Нижче напрямку показуємо лише те, що заплановано в в/ч зони.
-      .filter((p) => wholeDirection || p.plannedQty > 0 || p.reservedQty > 0 || p.inWorkQty > 0);
+      // Нижче напрямку показуємо лише те, що заплановано в в/ч зони або вже в її заявках.
+      .filter((p) => wholeDirection || p.plannedQty > 0 || p.inRequestsQty + p.approvedQty + p.boughtQty > 0);
     return c.json({ scope: { unitId: user.unitId, level: user.level, wholeDirection, unitIds: [...under].sort() }, positions });
   });
 

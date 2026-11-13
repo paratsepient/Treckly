@@ -45,12 +45,12 @@ test("E6: затвердження Головою — резерв бюджет�
   await page.goto("/#/final");
   await expect(row(page, /ЗМ-0007/)).toContainText("Витяг сформовано");
   await expect(row(page, /ЗМ-0007/)).toContainText("7600001");
-  const extract = page.getByRole("article", { name: /Витяг по в\/ч А0003/ });
+  const extract = page.getByRole("article", { name: /Витяг по в\/ч А0003 від 15\.02\.2027/ });
   await expect(extract.getByText("Заміна погоджена")).toBeVisible();
   await expect(extract.getByText(/\(заміна\)/)).toBeVisible();
 
   // Сформований витяг — окремий документ: перегляд, Word і друк прямо з картки витягу.
-  await extract.getByRole("button", { name: /Переглянути витяг по в\/ч А0003/ }).click();
+  await extract.getByRole("button", { name: /Переглянути витяг по в\/ч А0003 від 15\.02\.2027/ }).click();
   const doc = page.getByRole("dialog", { name: /Витяг по в\/ч А0003/ });
   const sheet = doc.frameLocator("iframe");
   await expect(sheet.getByText("ВИТЯГ", { exact: true })).toBeVisible();
@@ -72,6 +72,6 @@ test("E6: затвердження Головою — резерв бюджет�
 
   // Автор в/ч А0003 бачить власний витяг, а чужих — ні.
   await switchTo(page, AUTHOR_C, "/final");
-  await expect(page.getByRole("article", { name: /Витяг по в\/ч А0003/ })).toBeVisible();
+  await expect(page.getByRole("article", { name: /Витяг по в\/ч А0003 від 15\.02\.2027/ })).toBeVisible();
   await expect(page.getByRole("article", { name: /Витяг по в\/ч А0001/ })).toHaveCount(0);
 });

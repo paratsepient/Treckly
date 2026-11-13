@@ -7,6 +7,9 @@ import {
   formList,
   inWorkImpact,
   issueExtracts,
+  confirmProcurement,
+  issueProcured,
+  isApprovedStatus,
   returnRequest,
   submit,
   withdraw,
@@ -147,7 +150,7 @@ class Simulation {
   positions(): Positions {
     const reserved = new Map<string, number>();
     for (const r of this.requests.values()) {
-      if (r.status !== "approved" && r.status !== "extract_issued") continue;
+      if (!isApprovedStatus(r.status)) continue;
       for (const l of r.lines) reserved.set(l.positionId, (reserved.get(l.positionId) ?? 0) + l.qty);
     }
     const byItem = new Map(this.catalog.items.map((i) => [i.id, i]));
@@ -265,6 +268,25 @@ class Simulation {
     this.record(returnRequest(this.ctx, this.meta(this.preparer(level, unitId)), { request: this.get(id), note }));
   }
 
+  /** Відділ оборонних ресурсів підтверджує закупівлю: нове — на складі бази за в/ч. */
+  procure(id: string, acceptanceDoc: string): void {
+    const request = this.get(id);
+    this.record(
+      confirmProcurement(this.ctx, this.meta(this.preparer(5, "vor")), {
+        request,
+        acceptanceDoc,
+        recipient: "Склад бази",
+        quantities: Object.fromEntries(request.lines.map((l) => [l.id, l.qty])),
+        positions: this.positions(),
+      }),
+    );
+  }
+
+  /** Видача одним актом: нове — в «Отримано» в/ч. */
+  issue(id: string, act: string): void {
+    this.record(issueProcured(this.ctx, this.meta(this.preparer(5, "vor")), { request: this.get(id), act, positions: this.positions() }));
+  }
+
   withdraw(id: string): void {
     const request = this.get(id);
     this.record(withdraw(this.ctx, this.meta(this.authorOf(request.route[0] as UnitKey)), { request }));
@@ -352,6 +374,25 @@ export function generateSeed(): SeedData {
 
   sim.day(9);
   sim.draft("unit-a", [by(17, 2), by(19, 4)]);
+
+  // Закупівля: одна заявка закуплена (на складі бази), друга вже видана в/ч — щоб було видно «Куплено» в плані.
+  sim.day(10);
+  const r11 = sim.newSubmitted("unit-b", [by(12, 10), by(14, 6)]);
+  const r12 = sim.newSubmitted("unit-c", [by(24, 50), by(28, 40), by(10, 20)]);
+  sim.pass(1, "unit-b", [r11]);
+  sim.pass(1, "unit-c", [r12]);
+  sim.pass(2, "brig-1", [r11]);
+  sim.pass(2, "brig-2", [r12]);
+  sim.pass(3, "ru-1", [r11, r12]);
+  sim.pass(4, DIRECTION_ID, [r11, r12]);
+  sim.pass(5, "vor", [r11, r12]);
+
+  sim.day(11);
+  sim.procure(r11, "АП-2027-03");
+  sim.procure(r12, "АП-2027-04");
+
+  sim.day(12);
+  sim.issue(r12, "АВ-2027-02");
 
   sim.day(14);
   void [r3, r5, r6, r8];

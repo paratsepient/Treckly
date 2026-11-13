@@ -142,14 +142,14 @@ export function FinalScreen() {
           <DataState kind="empty" size="compact" title="Витягів ще немає" description="Витяг по в/ч формується автоматично після затвердження заявок Головою." />
         ) : (
           extracts.map((extract) => (
-            <article key={extract.id} className="list-card" aria-label={`Витяг по ${unitName(extract.unitId)}`}>
+            <article key={extract.id} className="list-card" aria-label={`Витяг по ${unitName(extract.unitId)} від ${formatDateShort(extract.date)}`}>
               <header className="list-card__head">
                 <h3 className="list-card__title">
                   Витяг по {unitName(extract.unitId)} від {formatDateShort(extract.date)}
                 </h3>
                 <span className="list-card__tools">
                   <Badge tone="success">Сформовано</Badge>
-                  <IconButton variant="secondary" label={`Переглянути витяг по ${unitName(extract.unitId)}`} icon={<Icon name="view" />} onClick={() => setViewing(extract.id)} />
+                  <IconButton variant="secondary" label={`Переглянути витяг по ${unitName(extract.unitId)} від ${formatDateShort(extract.date)}`} icon={<Icon name="view" />} onClick={() => setViewing(extract.id)} />
                   {(() => {
                     const input = extractInput(extract.id);
                     return (

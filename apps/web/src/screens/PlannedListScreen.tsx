@@ -5,7 +5,9 @@ import { useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { InfoHint } from "../components/InfoHint.tsx";
+import { PlanBar, PlanLegend } from "../components/PlanBar.tsx";
 import { formatMoney, formatMoneyShort } from "../lib/format.ts";
+import { doneShare, moneyOf, percent, PLAN_STATES, qtyOf } from "../lib/plan-states.ts";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 
 type Position = ApiOutput<"plannedList">["positions"][number];
@@ -13,17 +15,14 @@ type Position = ApiOutput<"plannedList">["positions"][number];
 const ALL = "all";
 const number = new Intl.NumberFormat("uk-UA");
 
-/** Скільки лишилось вільного за переліком напрямку: план мінус резерв під затверджені заявки. */
-const availableOf = (p: Position): number => p.plannedQty - p.reservedQty;
 /** Скільки розподілено по в/ч (сума їхніх планів). */
 const distributedOf = (p: Position): number => p.units.reduce((sum, u) => sum + u.qty, 0);
-const money = (qty: number, p: Position): number => qty * p.priceMinor;
 const grn = (value: number): string => formatMoneyShort(value * 100);
 
 /**
- * Запланований перелік закупівель напрямку для Відділу оборонних ресурсів і Голови: що заплановано
- * на 2027 рік, скільки вже зарезервовано затвердженими заявками, скільки зараз у роботі й хто з в/ч
- * що запланував. Рядок відкриває розбивку позиції по в/ч.
+ * Запланований перелік закупівель у зоні відповідальності: як виконується план на 2027 рік.
+ * Кожна позиція — смуга станів (куплено, затверджено, у заявках, вільно; разом — план) і «Виконано»;
+ * угорі — ті самі стани в гривнях для всього переліку. Рядок відкриває точні числа й розбивку по в/ч.
  */
 export function PlannedListScreen() {
   const narrow = useMedia(NARROW);
@@ -47,37 +46,29 @@ export function PlannedListScreen() {
   const rows = useMemo(() => all.filter((p) => kekv === ALL || p.kekv === kekv), [all, kekv]);
   const current = all.find((p) => p.id === selected);
 
-  const sums = useMemo(
-    () => ({
-      planned: rows.reduce((s, p) => s + money(p.plannedQty, p), 0),
-      reserved: rows.reduce((s, p) => s + money(p.reservedQty, p), 0),
-      inWork: rows.reduce((s, p) => s + money(p.inWorkQty, p), 0),
-      available: rows.reduce((s, p) => s + money(availableOf(p), p), 0),
-    }),
-    [rows],
-  );
+  const sums = useMemo(() => moneyOf(rows), [rows]);
+  const qtyText = (p: Position) => (value: number) => `${number.format(value)} ${p.measure}`;
 
   const columns: readonly DataTableColumn<Position>[] = [
     { key: "code", header: "Код", mono: true, render: (p) => p.code, width: 110 },
     { key: "name", header: "Предмет", render: (p) => p.name },
     { key: "kekv", header: "КЕКВ", render: (p) => <Badge>{p.kekv}</Badge>, width: 90 },
-    { key: "planned", header: "Заплановано", numeric: true, render: (p) => `${number.format(p.plannedQty)} ${p.measure}`, width: 140 },
-    { key: "reserved", header: "Зарезервовано", numeric: true, render: (p) => number.format(p.reservedQty), width: 140 },
-    { key: "inWork", header: "У роботі", numeric: true, render: (p) => number.format(p.inWorkQty), width: 110 },
-    { key: "available", header: "Вільно", numeric: true, render: (p) => number.format(availableOf(p)), width: 110 },
-    { key: "units", header: "Розподілено по в/ч", numeric: true, render: (p) => number.format(distributedOf(p)), width: 170 },
+    { key: "planned", header: "План", numeric: true, render: (p) => qtyText(p)(p.plannedQty), width: 120 },
+    { key: "progress", header: "Стан плану", render: (p) => <PlanBar amounts={qtyOf(p)} format={qtyText(p)} label={p.name} />, width: 200 },
+    { key: "done", header: "Виконано", numeric: true, render: (p) => percent.format(doneShare(qtyOf(p))), width: 110 },
+    { key: "free", header: "Вільно", numeric: true, render: (p) => number.format(p.freeQty), width: 100 },
     {
       key: "state",
-      header: "Стан",
+      header: "Увага",
       render: (p) =>
         scope?.wholeDirection && distributedOf(p) > p.plannedQty ? (
-          <Badge tone="error">Розподілено більше, ніж за напрямком</Badge>
-        ) : p.inWorkQty > availableOf(p) ? (
-          <Badge tone="warning">Заявок більше, ніж вільно</Badge>
+          <Badge tone="error">Розподілено по в/ч більше, ніж за напрямком</Badge>
+        ) : p.freeQty < 0 ? (
+          <Badge tone="warning">Замовлено понад план</Badge>
         ) : (
-          <Badge tone="success">У межах плану</Badge>
+          "—"
         ),
-      width: 230,
+      width: 220,
     },
   ];
 
@@ -85,22 +76,36 @@ export function PlannedListScreen() {
 
   const detail = current ? (
     <DetailPanel title={current.name} subtitle={`${current.code} · КЕКВ ${current.kekv} · ${formatMoney(current.priceMinor)} за ${current.measure}`}>
+      <PlanBar amounts={qtyOf(current)} format={qtyText(current)} label={current.name} />
       <dl className="planned__facts">
         <div>
-          <dt>{scope?.wholeDirection ? "Заплановано за напрямком" : "Заплановано у ваших в/ч"}</dt>
-          <dd>{`${number.format(current.plannedQty)} ${current.measure}`}</dd>
+          <dt>{scope?.wholeDirection ? "План за напрямком" : "План ваших в/ч"}</dt>
+          <dd>{qtyText(current)(current.plannedQty)}</dd>
         </div>
+        {PLAN_STATES.map((st) => (
+          <div key={st.key}>
+            <dt>
+              <span className="plan-legend__swatch" data-state={st.key} aria-hidden="true" />
+              {st.label}
+            </dt>
+            <dd>{number.format(qtyOf(current)[st.key])}</dd>
+          </div>
+        ))}
+        {current.boughtQty > 0 ? (
+          <>
+            <div className="planned__sub">
+              <dt>з них на складі бази</dt>
+              <dd>{number.format(current.boughtQty - current.issuedQty)}</dd>
+            </div>
+            <div className="planned__sub">
+              <dt>з них видано в/ч</dt>
+              <dd>{number.format(current.issuedQty)}</dd>
+            </div>
+          </>
+        ) : null}
         <div>
-          <dt>Зарезервовано</dt>
-          <dd>{number.format(current.reservedQty)}</dd>
-        </div>
-        <div>
-          <dt>У роботі</dt>
-          <dd>{number.format(current.inWorkQty)}</dd>
-        </div>
-        <div>
-          <dt>Вільно</dt>
-          <dd>{number.format(availableOf(current))}</dd>
+          <dt>Виконано</dt>
+          <dd>{percent.format(doneShare(qtyOf(current)))}</dd>
         </div>
         <div>
           <dt>Розподілено по в/ч</dt>
@@ -130,7 +135,12 @@ export function PlannedListScreen() {
       title="Запланований перелік"
       meta={query.data ? `${scopeText} · ${rows.length} позицій · план на ${formatMoney(sums.planned)}` : undefined}
       surfaceLabel="Запланований перелік закупівель напрямку"
-      actions={<InfoHint label="Що означають стовпці" text="Запланований перелік закупівель на 2027 рік у вашій зоні відповідальності: в/ч, бригада, РУ — план їхніх в/ч; напрямок, Відділ і Голова — увесь перелік напрямку. «Зарезервовано» — під затверджені Головою заявки, «У роботі» — заявки, що зараз на рівнях погодження, «Вільно» — план мінус резерв." />}
+      actions={
+        <InfoHint
+          label="Як читати перелік"
+          text="План на 2027 рік у вашій зоні: в/ч, бригада, РУ — план їхніх в/ч; напрямок, Відділ і Голова — увесь перелік напрямку. Кожна одиниця плану — в одному стані: «Куплено» (закупівлю підтверджено), «Затверджено» (Голова підписав, чекає закупівлі), «У заявках» (іде погодженням або повернуто), «Вільно» (ще ніхто не замовив). Разом вони дають план. «Виконано» — куплене від плану. По позиції — у штуках, угорі — у гривнях за цінами переліку."
+        />
+      }
       inspector={detail}
       inspectorLabel="Розбивка позиції по в/ч"
       inspectorOpen={selected !== undefined}
@@ -139,12 +149,22 @@ export function PlannedListScreen() {
       }}
       {...(selected ? { inspectorKey: selected } : {})}
     >
-      <div className="kpi-row">
-        <KpiTile label="План, грн" value={Math.round(sums.planned / 100)} formatValue={grn} />
-        <KpiTile label="Зарезервовано, грн" value={Math.round(sums.reserved / 100)} formatValue={grn} />
-        <KpiTile label="У роботі, грн" value={Math.round(sums.inWork / 100)} formatValue={grn} />
-        <KpiTile label="Вільно, грн" value={Math.round(sums.available / 100)} formatValue={grn} />
-      </div>
+      {/* Підсумок переліку в гривнях: ті самі стани, що на смугах позицій, і «Виконано». */}
+      <section className="plan-summary" aria-label="Виконання плану в гривнях">
+        <div className="plan-summary__head">
+          <p className="plan-summary__done">
+            <span className="plan-summary__value">{percent.format(doneShare(sums))}</span>
+            <span className="plan-summary__label">{`виконано · куплено на ${formatMoney(sums.bought)} з ${formatMoney(sums.planned)}`}</span>
+          </p>
+        </div>
+        <PlanBar amounts={sums} format={(v) => formatMoney(v)} label="Увесь перелік" />
+        <div className="kpi-row">
+          {PLAN_STATES.map((st) => (
+            <KpiTile key={st.key} label={`${st.label}, грн`} value={Math.round(sums[st.key] / 100)} formatValue={grn} />
+          ))}
+        </div>
+        <PlanLegend />
+      </section>
       <div className="filters">
         <Select label="КЕКВ" value={kekv} onChange={(event) => setKekv(event.target.value)}>
           <option value={ALL}>Усі КЕКВ</option>
@@ -157,7 +177,7 @@ export function PlannedListScreen() {
       </div>
       <DataTable
         label="Запланований перелік закупівель"
-        columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["code", "kekv", "reserved", "inWork", "units", "state"] : ["kekv", "units", "state"])}
+        columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["code", "kekv", "planned", "free", "state"] : ["kekv", "free", "state"])}
         rows={rows}
         getRowId={(p) => p.id}
         rowHeaderKey="name"

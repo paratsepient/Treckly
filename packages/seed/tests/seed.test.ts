@@ -87,8 +87,8 @@ test("користувачі: автор у кожній в/ч, керівник
   assert.ok(seed.users.filter((u) => u.roleKind !== "admin").every((u) => u.unitId && seed.units.some((x) => x.id === u.unitId)));
 });
 
-test("заявки: 10–12 у різних станах, як у документі", () => {
-  assert.ok(final.requests.size >= 10 && final.requests.size <= 12, `заявок: ${final.requests.size}`);
+test("заявки: 10–13 у різних станах, як у документі", () => {
+  assert.ok(final.requests.size >= 10 && final.requests.size <= 13, `заявок: ${final.requests.size}`);
   const levels = new Set(byStatus("at_level").map((r) => r.level));
   assert.deepEqual([...levels].sort(), [1, 2, 3, 4, 5], "у черзі є заявки кожного з п'яти рівнів");
   assert.equal(byStatus("draft").length, 1);
@@ -97,12 +97,16 @@ test("заявки: 10–12 у різних станах, як у докумен
   assert.equal(byStatus("extract_issued").length, 2, "2 затверджені з витягами");
   const approvedReplacementKinds = byStatus("extract_issued").map((r) => r.lines.some((l) => l.kind === "replacement"));
   assert.ok(approvedReplacementKinds.some(Boolean), "серед затверджених є заявка із заміною");
+  // Для стану «Куплено» в запланованому переліку: одна заявка на складі бази, одна вже видана в/ч.
+  assert.equal(byStatus("procured").length, 1);
+  assert.equal(byStatus("issued").length, 1);
 });
 
 test("сформований, але непогоджений перелік: одна заявка в ньому, одна поза ним на тому ж рівні", () => {
   const inList = byStatus("in_list");
   assert.equal(inList.length, 1);
-  const list = seed.outcomes.flatMap((o) => o.lists).filter((l) => l.status === "formed").at(-1)!;
+  const latest = new Map(seed.outcomes.flatMap((o) => o.lists).map((l) => [l.id, l]));
+  const list = [...latest.values()].filter((l) => l.status === "formed").at(-1)!;
   assert.deepEqual(list.requestIds, [inList[0]!.id]);
   const outside = byStatus("at_level").filter((r) => r.level === inList[0]!.level && r.route[0] === inList[0]!.route[0]);
   assert.equal(outside.length, 1, "необрана лишається в черзі");
@@ -206,7 +210,7 @@ test("запис у базу: стан у базі збігається зі с�
 
   const positions = await loadPositions(db, seed.directionId);
   const approvedQty = [...final.requests.values()]
-    .filter((r) => r.status === "extract_issued")
+    .filter((r) => r.status === "extract_issued" || r.status === "procured" || r.status === "issued")
     .flatMap((r) => r.lines)
     .reduce((sum, l) => sum + l.qty, 0);
   const plannedQty = seed.listPositions.reduce((sum, p) => sum + p.plannedQty, 0);

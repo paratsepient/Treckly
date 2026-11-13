@@ -5,6 +5,7 @@ import type { ApiOutput } from "@dsp/contract";
 import { daysAtLevel } from "@dsp/domain";
 import { useApiQuery } from "../api/hooks.tsx";
 import { DetailPanel } from "../app/DetailPanel.tsx";
+import { BudgetStateColumns } from "../components/BudgetStates.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { RaportButton } from "../components/RaportDialog.tsx";
@@ -76,13 +77,6 @@ export function RegistryScreen() {
     { key: "created", header: "Створено", render: (r) => formatDateShort(r.createdOn), width: 120 },
   ];
 
-  const budgetColumns: readonly DataTableColumn<BudgetLine>[] = [
-    { key: "scope", header: "КЕКВ", mono: true, render: (l) => l.scope, width: 100 },
-    { key: "limit", header: "Ліміт", numeric: true, render: (l) => formatMoney(l.limitMinor) },
-    { key: "approved", header: "Затверджено", numeric: true, render: (l) => formatMoney(l.approvedMinor) },
-    { key: "work", header: "У роботі", numeric: true, render: (l) => formatMoney(l.inWorkMinor) },
-    { key: "left", header: "Залишок", numeric: true, render: (l) => formatMoney(l.remainingMinor) },
-  ];
 
   const state = registry.isPending ? "loading" : registry.isError ? "error" : rows.length === 0 ? "empty" : "ready";
   const request = detail.data?.request;
@@ -141,12 +135,12 @@ export function RegistryScreen() {
                 data={levels.map((l) => ({ label: `${l.level}`, value: kpi.data.avgDaysByLevel[String(l.level)] ?? 0 }))}
               />
               <DonutChart
-                title="Затверджений бюджет за КЕКВ"
+                title="Затверджено й куплено за КЕКВ"
                 formatValue={(v) => `${formatMoneyShort(v * 100)} грн`}
                 data={budgetLines.filter((l) => l.approvedMinor > 0).map((l) => ({ label: `КЕКВ ${l.scope}`, value: l.approvedMinor / 100 }))}
               />
             </div>
-            <DataTable label="Бюджет напрямку за КЕКВ" columns={budgetColumns} rows={budgetLines} getRowId={(l) => l.scope} rowHeaderKey="scope" variant="well" />
+            <DataTable label="Бюджет напрямку за КЕКВ" columns={BudgetStateColumns} rows={budgetLines} getRowId={(l) => l.scope} rowHeaderKey="scope" variant="well" />
           </>
         )}
       </section>

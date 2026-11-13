@@ -123,9 +123,9 @@ test("попередження про суму «у роботі» відріз�
 
 const budget = {
   lines: [
-    { scope: "TOTAL", limitMinor: 1_000_00, approvedMinor: 200_00, inWorkMinor: 300_00, remainingMinor: 800_00 },
-    { scope: "2210", limitMinor: 600_00, approvedMinor: 100_00, inWorkMinor: 100_00, remainingMinor: 500_00 },
-    { scope: "3110", limitMinor: 400_00, approvedMinor: 100_00, inWorkMinor: 200_00, remainingMinor: 300_00 },
+    { scope: "TOTAL", limitMinor: 1_000_00, approvedMinor: 200_00, boughtMinor: 0, inWorkMinor: 300_00, inRequestsMinor: 300_00, remainingMinor: 800_00 },
+    { scope: "2210", limitMinor: 600_00, approvedMinor: 100_00, boughtMinor: 0, inWorkMinor: 100_00, inRequestsMinor: 100_00, remainingMinor: 500_00 },
+    { scope: "3110", limitMinor: 400_00, approvedMinor: 100_00, boughtMinor: 0, inWorkMinor: 200_00, inRequestsMinor: 200_00, remainingMinor: 300_00 },
   ],
 };
 const okReport = { ok: true, errors: [], warnings: [], impact: { perKekv: { "3110": 100_00 }, total: 100_00 }, inWork: { perKekv: {}, total: 0 } };

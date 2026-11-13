@@ -230,8 +230,15 @@ export const PropertyItem = z.object({ id: Id, unitId: Id, item: Item, tab: Prop
 export const BudgetSummaryLine = z.object({
   scope: z.union([z.literal("TOTAL"), Kekv]),
   limitMinor: Money,
+  /** Затверджено разом із купленим (резерв під підписані Головою заявки). */
   approvedMinor: Money,
+  /** З них куплено (закупівлю підтверджено або видано). */
+  boughtMinor: Money,
+  /** У заявках на рівнях і в переліках (для автоперевірок). */
   inWorkMinor: Money,
+  /** У заявках разом із поверненими авторам (для показу стану плану). */
+  inRequestsMinor: Money,
+  /** Ліміт мінус затверджене й куплене. */
   remainingMinor: Money,
 });
 export const BudgetSummary = z.object({ lines: z.array(BudgetSummaryLine) });
@@ -281,10 +288,16 @@ export const PlannedPosition = z.object({
   measure: z.string(),
   /** Заплановано: на рівнях 4–5 — за переліком напрямку, нижче — сума планів в/ч зони відповідальності. */
   plannedQty: z.number().int(),
-  /** Зарезервовано затвердженими заявками в/ч зони відповідальності. */
-  reservedQty: z.number().int(),
-  /** У заявках в/ч зони, що йдуть маршрутом (на рівнях і в переліках). */
-  inWorkQty: z.number().int(),
+  /**
+   * Стани плану (кожна одиниця — рівно в одному; план = вільно + у заявках + затверджено + куплено):
+   * у заявках — іде погодженням або повернута; затверджено — Голова підписав, чекає закупівлі;
+   * куплено — закупівлю підтверджено (з них видано в/ч — `issuedQty`); вільно — ще ніхто не замовив (може бути < 0, якщо понад план).
+   */
+  inRequestsQty: z.number().int(),
+  approvedQty: z.number().int(),
+  boughtQty: z.number().int(),
+  issuedQty: z.number().int(),
+  freeQty: z.number().int(),
   /** Заплановано в в/ч зони: хто скільки може замовити. */
   units: z.array(z.object({ unitId: Id, qty: z.number().int() })),
 });

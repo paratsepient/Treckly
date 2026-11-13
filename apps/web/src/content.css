@@ -939,3 +939,124 @@
   flex-wrap: wrap;
   gap: var(--ix-space-1);
 }
+
+/* ── Стани плану: смуга, легенда, підсумок ──────────────────────────────────
+   Куплено — успіх, затверджено — інформація, у заявках — акцент; вільне — порожня доріжка. */
+.plan-bar {
+  display: block;
+  width: 100%;
+  min-width: 120px;
+}
+
+.plan-bar__track {
+  display: flex;
+  height: var(--ix-space-2);
+  overflow: hidden;
+  border-radius: var(--ix-radius-compact);
+  background: var(--ix-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ix-border);
+}
+
+.plan-bar__track[data-over="true"] {
+  box-shadow: inset 0 0 0 1px var(--ix-warning);
+}
+
+.plan-bar__seg {
+  flex: none;
+  height: 100%;
+}
+
+.plan-bar__seg[data-state="bought"],
+.plan-legend__swatch[data-state="bought"] {
+  background: var(--ix-success);
+}
+
+.plan-bar__seg[data-state="approved"],
+.plan-legend__swatch[data-state="approved"] {
+  background: var(--ix-info);
+}
+
+.plan-bar__seg[data-state="inRequests"],
+.plan-legend__swatch[data-state="inRequests"] {
+  background: var(--ix-accent);
+}
+
+.plan-legend__swatch[data-state="free"] {
+  background: var(--ix-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ix-border-strong);
+}
+
+.plan-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-2) var(--ix-space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.plan-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ix-space-2);
+}
+
+.plan-legend strong {
+  color: var(--ix-foreground);
+  font-weight: var(--ix-font-weight-medium);
+}
+
+.plan-legend__swatch {
+  display: inline-block;
+  flex: none;
+  width: var(--ix-space-3);
+  height: var(--ix-space-3);
+  margin-right: var(--ix-space-2);
+  border-radius: var(--ix-radius-compact);
+  vertical-align: middle;
+}
+
+.plan-legend li .plan-legend__swatch {
+  margin-right: 0;
+}
+
+.plan-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+}
+
+.plan-summary .plan-bar__track {
+  height: var(--ix-space-3);
+}
+
+.plan-summary__done {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ix-space-1) var(--ix-space-3);
+  margin: 0;
+}
+
+.plan-summary__value {
+  font: var(--ix-font-heading-xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--ix-foreground);
+}
+
+.plan-summary__label {
+  color: var(--ix-foreground-secondary);
+}
+
+/* Підрядки купленого в картці позиції й від'ємний залишок ліміту. */
+.planned__facts .planned__sub dt {
+  padding-left: var(--ix-space-4);
+  color: var(--ix-foreground-secondary);
+}
+
+.money-over {
+  color: var(--ix-warning);
+  font-weight: var(--ix-font-weight-medium);
+}
