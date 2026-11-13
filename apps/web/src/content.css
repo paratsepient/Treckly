@@ -188,20 +188,6 @@
   white-space: nowrap;
 }
 
-/* Служба й джерело фінансування: два поля в ряд, на вузькому екрані — одне під одним. */
-.request-details {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--ix-space-4);
-  align-items: start;
-}
-
-@media (max-width: 720px) {
-  .request-details {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 .lines__replacement > * {
   min-width: 0;
 }
@@ -910,33 +896,14 @@
   }
 }
 
-/* Служба в заявці — лише показ: її задає профіль автора. */
-.request-details__service {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ix-space-1);
-  min-width: 0;
+/* Джерело фінансування в шапці редактора: компактний вибір між перейменуванням і підказкою. */
+.header-funding {
+  display: inline-flex;
+  width: 190px;
 }
 
-.request-details__label {
-  font: var(--ix-font-body-strong);
-  color: var(--ix-foreground);
-}
-
-.request-details__value {
-  display: flex;
-  align-items: center;
-  min-height: var(--ix-space-10);
-  padding: 0 var(--ix-space-3);
-  border: 1px solid var(--ix-border);
-  border-radius: var(--ix-radius-control);
-  background: var(--ix-surface-inset);
-  color: var(--ix-foreground);
-}
-
-.request-details__missing {
-  color: var(--ix-warning);
-  font: var(--ix-font-caption);
+.header-funding > * {
+  width: 100%;
 }
 
 /* Користувачі: форма картки й вибір КЕКВ. */

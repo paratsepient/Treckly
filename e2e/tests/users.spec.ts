@@ -11,8 +11,17 @@ test("користувачі: відділ і доступні КЕКВ авто
   await card.getByRole("button", { name: "Зберегти" }).click();
   await expect(toast(page, "Налаштування збережено")).toBeVisible();
 
+  // Служба в рапорті — з відділу профілю; у виборі позицій — лише КЕКВ 3110.
   await switchTo(page, AUTHOR_A, "/new");
-  await expect(page.locator(".request-details__value")).toHaveText("Відділ тилу");
+  await page.getByRole("button", { name: "Додати рядок" }).click();
+  const position = page.getByLabel("Позиція, рядок 1");
+  await position.selectOption({ index: 1 });
+  await expect(page.getByRole("table", { name: "Рядки заявки" }).getByText("3110")).toBeVisible();
+  await page.getByLabel("Обґрунтування потреби").fill("Потреба відділу тилу.");
+  await page.getByRole("button", { name: "Переглянути рапорт" }).click();
+  const sheet = page.getByRole("dialog", { name: /Рапорт ЗМ-/ }).frameLocator("iframe");
+  await expect(sheet.getByText(/\(відділ тилу\) за Попереднім переліком/)).toBeVisible();
+  await page.keyboard.press("Escape");
   await page.goto("/#/property");
   const table = page.getByRole("table").first();
   await expect(table.getByText("2210", { exact: true })).toHaveCount(0);

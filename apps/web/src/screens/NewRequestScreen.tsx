@@ -297,6 +297,18 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
               }}
             />
           )}
+          {readOnly ? null : (
+            // Джерело фінансування — короткий вибір у шапці, між перейменуванням і підказкою.
+            <span className="header-funding">
+              <Select label="Джерело фінансування" hideLabel value={funding} onChange={(event) => setFunding(event.target.value as Funding)}>
+                {Object.entries(FUNDING_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </span>
+          )}
           {/* Пояснення до заповнення — у підказці біля назви: на екрані лишаються лише поля. */}
           <InfoHint label="Як заповнити заявку" text={HINT} />
         </>
@@ -332,26 +344,12 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
               <span className="return-note__hint"> Виправте заявку й подайте нову версію: вона піде з першого рівня.</span>
             </p>
           ) : null}
-          <section className="request-details" aria-label="Для кого і за який кошт">
-            {/* Служба — з профілю автора: відділ у в/ч задає адміністратор («Користувачі»). */}
-            <div className="request-details__service">
-              <span className="request-details__label">Служба (відділ)</span>
-              {service ? (
-                <span className="request-details__value">{service}</span>
-              ) : (
-                <span className="request-details__missing" role="note">
-                  Відділ у вашому профілі не вказано — зверніться до адміністратора; без нього заявку не подати.
-                </span>
-              )}
-            </div>
-            <Select label="Джерело фінансування" value={funding} onChange={(event) => setFunding(event.target.value as Funding)}>
-              {Object.entries(FUNDING_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </Select>
-          </section>
+          {/* Служба береться з профілю автора; на екрані лише попередження, якщо відділ не вказано. */}
+          {service ? null : (
+            <p className="return-note" role="note">
+              Відділ у вашому профілі не вказано — зверніться до адміністратора: без нього заявку не подати.
+            </p>
+          )}
           <LinesEditor lines={history.present} positions={positions} items={items} dispatch={dispatch} problems={problems} newLineId={newId} />
           <section className="justification" aria-labelledby="justification-title">
             <h2 id="justification-title" className="justification__title">
