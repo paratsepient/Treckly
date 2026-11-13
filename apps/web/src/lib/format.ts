@@ -46,13 +46,8 @@ export const STATUS_LABELS: Record<RequestStatus, string> = {
 /** Короткі назви рівнів для статусу: «На розгляді · бригада». */
 export const LEVEL_SHORT: Record<number, string> = { 1: "в/ч", 2: "бригада", 3: "РУ", 4: "напрямок", 5: "Відділ ресурсів" };
 
-/** Джерело фінансування й стан замінюваного майна — підписи для інтерфейсу й рапорту. */
+/** Джерело фінансування — підписи для інтерфейсу й рапорту. */
 export const FUNDING_LABELS: Record<"general" | "special", string> = { general: "Загальний фонд", special: "Спеціальний фонд" };
-export const CONDITION_LABELS: Record<"unusable" | "needs_repair" | "lost", string> = {
-  unusable: "Непридатне до використання",
-  needs_repair: "Потребує ремонту",
-  lost: "Втрачене (знищене)",
-};
 
 /** «Відділ зв'язку в/ч А0001» → «Відділ зв'язку»: служба заявки — відділ автора без назви в/ч. */
 export const serviceName = (department: string): string => department.replace(/\s+в\/ч\s+\S+$/u, "").trim();

@@ -153,7 +153,7 @@ test("журнал лише доповнюється: UPDATE і DELETE відх�
 
 test("заявка зберігається й читається без втрат (рядки за переліком і заміни)", async () => {
   const s = await setup();
-  const replacement: RequestLine = { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "", name: "Інший", kekv: "3110", qty: 1, totalMinor: 150_00, measure: "шт." }, condition: "needs_repair" };
+  const replacement: RequestLine = { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "", name: "Інший", kekv: "3110", qty: 1, totalMinor: 150_00, measure: "шт." } };
   const outcome = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: lines(byList("l1", "p2", 1), replacement), justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" }));
   const saved = await loadRequest(s.db, outcome.requests[0]!.id);
   assert.deepEqual(saved, outcome.requests[0]);
@@ -161,7 +161,7 @@ test("заявка зберігається й читається без втр�
 
 test("весь шлях заявки через базу: рівні 1–5, затвердження, резерв, витяг; стан у базі = стан домену", async () => {
   const s = await setup();
-  const id = await newSubmitted(s, lines(byList("l1", "p1", 2), { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "", name: "Н", kekv: "3110", qty: 1, totalMinor: 50_00, measure: "шт." }, condition: "lost" }));
+  const id = await newSubmitted(s, lines(byList("l1", "p1", 2), { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "", name: "Н", kekv: "3110", qty: 1, totalMinor: 50_00, measure: "шт." } }));
 
   for (const level of [1, 2, 3, 4, 5] as const) {
     s.clock.advanceDays(1);

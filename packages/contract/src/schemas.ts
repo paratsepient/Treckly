@@ -63,8 +63,7 @@ const lineBase = {
 
 export const ByListLine = z.object({ kind: z.literal("by_list"), ...lineBase });
 export const FundingSource = z.enum(["general", "special"]);
-export const OldCondition = z.enum(["unusable", "needs_repair", "lost"]);
-export const ReplacementLine = z.object({ kind: z.literal("replacement"), ...lineBase, newItem: NewItem, condition: OldCondition.optional(), newPositionId: Id.optional() });
+export const ReplacementLine = z.object({ kind: z.literal("replacement"), ...lineBase, newItem: NewItem, newPositionId: Id.optional() });
 export const RequestLine = z.discriminatedUnion("kind", [ByListLine, ReplacementLine]);
 
 export const Route = z.tuple([Id, Id, Id, Id, Id]);

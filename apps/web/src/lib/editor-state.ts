@@ -1,4 +1,4 @@
-import type { OldCondition, RequestLine } from "@dsp/domain";
+import type { RequestLine } from "@dsp/domain";
 
 /** Рядок у редакторі: поля можуть бути ще не заповнені, тому кількість — рядок. */
 export interface EditorLine {
@@ -12,7 +12,6 @@ export interface EditorLine {
   readonly newTotal: string;
   readonly newKekv: string;
   /** Стан майна, яке замінюють (лише для заміни); "" — ще не вказано. */
-  readonly condition: OldCondition | "";
 }
 
 export interface History {
@@ -94,7 +93,7 @@ export interface CatalogPosition {
 }
 
 export function newLine(id: string): EditorLine {
-  return { id, kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "", condition: "" };
+  return { id, kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "" };
 }
 
 /** Сума в гривнях, як її вводить людина («8 000», «8000,50») → копійки; інакше — null. */
@@ -147,7 +146,6 @@ export function toRequestLines(lines: readonly EditorLine[], positions: Readonly
       qty,
       kekv: position.kekv,
       newItem: { code: "", name: line.newName.trim(), kekv: line.newKekv || position.kekv, qty: newQty, totalMinor, measure: "шт." },
-      ...(line.condition !== "" ? { condition: line.condition } : {}),
     });
   }
   return { lines: complete, incomplete };
@@ -164,7 +162,6 @@ export function fromRequestLines(lines: readonly RequestLine[], items: readonly 
     newQty: line.kind === "replacement" ? String(line.newItem.qty) : "1",
     newTotal: line.kind === "replacement" ? formatMoneyInput(line.newItem.totalMinor) : "",
     newKekv: line.kind === "replacement" ? line.newItem.kekv : "",
-    condition: line.kind === "replacement" ? (line.condition ?? "") : "",
   }));
 }
 
@@ -179,6 +176,6 @@ export const linesKey = (lines: readonly RequestLine[]): string =>
     lines.map((l) =>
       l.kind === "by_list"
         ? [l.kind, l.id, l.positionId, l.qty, l.kekv]
-        : [l.kind, l.id, l.positionId, l.qty, l.kekv, l.newItem.name, l.newItem.kekv, l.newItem.qty, l.newItem.totalMinor, l.condition ?? ""],
+        : [l.kind, l.id, l.positionId, l.qty, l.kekv, l.newItem.name, l.newItem.kekv, l.newItem.qty, l.newItem.totalMinor],
     ),
   );

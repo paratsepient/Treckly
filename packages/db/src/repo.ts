@@ -92,7 +92,6 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
           qty: line.qty,
           kekv: line.kekv,
           newItem: line.kind === "replacement" ? { ...line.newItem } : null,
-          condition: line.kind === "replacement" ? (line.condition ?? null) : null,
           newPositionId: line.kind === "replacement" ? (line.newPositionId ?? null) : null,
         })),
       );
@@ -364,7 +363,6 @@ function toLine(row: LineRow): RequestLine {
       kind: "replacement",
       ...base,
       newItem: row.newItem,
-      ...(row.condition ? { condition: row.condition } : {}),
       ...(row.newPositionId ? { newPositionId: row.newPositionId } : {}),
     };
   }

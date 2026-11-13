@@ -101,5 +101,11 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "ALTER TABLE \"requests\" ADD COLUMN \"kekv_check\" jsonb;"
     ]
+  },
+  {
+    "tag": "0013_smooth_starhawk",
+    "statements": [
+      "ALTER TABLE \"request_lines\" DROP COLUMN \"condition\";"
+    ]
   }
 ];

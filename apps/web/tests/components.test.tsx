@@ -186,7 +186,7 @@ function editor(lines: EditorLine[], problems = new Map<string, string[]>()) {
   const ui = <LinesEditor lines={lines} positions={positions} items={items} dispatch={(a) => actions.push(a)} problems={problems} newLineId={() => "new-1"} />;
   return { ui, actions };
 }
-const line = (patch: Partial<EditorLine>): EditorLine => ({ id: "l1", kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "", condition: "", ...patch });
+const line = (patch: Partial<EditorLine>): EditorLine => ({ id: "l1", kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "", ...patch });
 
 test("таблиця рядків: сума рахується від ціни позиції й кількості; без позиції — прочерк", () => {
   const { ui } = editor([line({ id: "a", positionId: "p1", qty: "3" }), line({ id: "b" })]);

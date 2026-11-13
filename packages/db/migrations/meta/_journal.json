@@ -92,6 +92,13 @@
       "when": 1794576618453,
       "tag": "0012_wooden_luminals",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794578478280,
+      "tag": "0013_smooth_starhawk",
+      "breakpoints": true
     }
   ]
 }

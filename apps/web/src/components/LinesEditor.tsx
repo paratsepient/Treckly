@@ -211,7 +211,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
       </table>
       </div>
       <div className="lines__footer">
-        <Button iconStart={<Icon name="add" />} disabled={disabled} onClick={() => dispatch({ type: "add", line: { id: newLineId(), kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "", condition: "" } })}>
+        <Button iconStart={<Icon name="add" />} disabled={disabled} onClick={() => dispatch({ type: "add", line: { id: newLineId(), kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "" } })}>
           Додати рядок
         </Button>
       </div>

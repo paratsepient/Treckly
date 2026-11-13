@@ -116,7 +116,6 @@ export const requestLines = pgTable(
     newItem: jsonb("new_item").$type<{ code: string; name: string; kekv: string; qty: number; totalMinor: number; measure: string }>(),
     /** Позиція переліку нового предмета — після погодження заміни Головою. */
     newPositionId: text("new_position_id"),
-    condition: text("condition").$type<"unusable" | "needs_repair" | "lost">(),
   },
   (t) => [primaryKey({ columns: [t.requestId, t.id] })],
 );

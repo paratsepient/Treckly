@@ -86,7 +86,6 @@ test("рапорт: служба й джерело фінансування в �
       service: "Служба зв'язку",
       funding: "special",
       sedoNumber: 5310042,
-      lines: base.request.lines.map((l) => (l.kind === "replacement" ? { ...l, condition: "needs_repair" as const } : l)),
     },
   });
   assert.match(m.request, /для потреб в\/ч А0001 \(служба зв'язку\) за/u);

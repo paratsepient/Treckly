@@ -1,0 +1,1 @@
+ALTER TABLE "request_lines" DROP COLUMN "condition";

@@ -86,9 +86,6 @@ interface LineBase {
 export type FundingSource = "general" | "special";
 export const FUNDING_SOURCES: readonly FundingSource[] = ["general", "special"];
 
-/** Стан майна, яке замінюють (рядок заміни): без нього заміну не подати. */
-export type OldCondition = "unusable" | "needs_repair" | "lost";
-export const OLD_CONDITIONS: readonly OldCondition[] = ["unusable", "needs_repair", "lost"];
 
 export interface ByListLine extends LineBase {
   readonly kind: "by_list";
@@ -103,8 +100,6 @@ export interface ReplacementLine extends LineBase {
   readonly newItem: NewItem;
   /** Позиція переліку нового предмета — з'являється після погодження Головою. */
   readonly newPositionId?: string;
-  /** Стан майна, яке замінюють; обов'язковий при поданні. */
-  readonly condition?: OldCondition;
 }
 
 export type RequestLine = ByListLine | ReplacementLine;
