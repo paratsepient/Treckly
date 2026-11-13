@@ -8,7 +8,7 @@ import {
   type EditorAction,
   type EditorLine,
 } from "../lib/editor-state.ts";
-import { CONDITION_LABELS, formatMoney } from "../lib/format.ts";
+import { formatMoney } from "../lib/format.ts";
 
 export interface LinesEditorProps {
   readonly lines: readonly EditorLine[];
@@ -150,7 +150,6 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                         <span className="lines__replacement-head" aria-hidden="true">Кількість</span>
                         <span className="lines__replacement-head" aria-hidden="true">{limit !== null ? `Сума, грн (до ${formatMoney(limit)})` : "Сума, грн"}</span>
                         <span className="lines__replacement-head" aria-hidden="true">КЕКВ</span>
-                        <span className="lines__replacement-head" aria-hidden="true">Стан замінюваного</span>
                         <Input
                           label={`Що натомість, рядок ${row}`}
                           hideLabel
@@ -188,20 +187,6 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                           {kekvs.map((k) => (
                             <option key={k} value={k}>
                               {k}
-                            </option>
-                          ))}
-                        </Select>
-                        <Select
-                          label={`Стан замінюваного, рядок ${row}`}
-                          hideLabel
-                          disabled={disabled}
-                          placeholder="Оберіть стан"
-                          value={line.condition}
-                          onChange={(event) => dispatch({ type: "update", id: line.id, patch: { condition: event.target.value as EditorLine["condition"] } })}
-                        >
-                          {Object.entries(CONDITION_LABELS).map(([value, label]) => (
-                            <option key={value} value={value}>
-                              {label}
                             </option>
                           ))}
                         </Select>

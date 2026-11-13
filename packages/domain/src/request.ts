@@ -143,10 +143,6 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
   if (request.service.trim() === "") {
     throw invalid("Вкажіть службу (відділ), для потреб якої замовляєте.", { reason: "EMPTY_SERVICE" });
   }
-  const noCondition = request.lines.find((l) => l.kind === "replacement" && l.condition === undefined);
-  if (noCondition) {
-    throw invalid("Вкажіть стан майна, яке замінюєте.", { reason: "CONDITION_REQUIRED", lineId: noCondition.id });
-  }
   const report = checkRequest({
     lines: request.lines,
     positions: input.positions,

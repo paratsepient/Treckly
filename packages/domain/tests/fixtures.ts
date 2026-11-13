@@ -70,7 +70,6 @@ export function replacement(id: string, positionId: string, qty: number, newKekv
     qty,
     kekv: position?.kekv ?? "?",
     newItem: { code: "", name: "Новий предмет", kekv: newKekv, qty: newQty, totalMinor, measure: "шт." },
-    condition: "unusable",
   };
 }
 

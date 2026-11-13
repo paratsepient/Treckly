@@ -337,7 +337,6 @@ export function generateSeed(): SeedData {
       qty,
       kekv: entry.kekv,
       newItem: { code: "", name: item.name, kekv: item.kekv, qty: newQty, totalMinor, measure: item.measure },
-      condition: (["unusable", "needs_repair", "lost"] as const)[lineNo % 3],
     };
   };
 

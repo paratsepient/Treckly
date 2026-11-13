@@ -203,7 +203,7 @@ test("таблиця рядків: заміна — найменування, к
   let view = render(same.ui);
   assert.match(text(view.container), /Той самий КЕКВ: ліміт не витрачається/);
   const labels = [...view.container.querySelectorAll(".lines__replacement label")].map((l) => l.textContent ?? "");
-  for (const label of ["Що натомість", "Кількість нового", "Сума, грн", "КЕКВ нового", "Стан замінюваного"]) {
+  for (const label of ["Що натомість", "Кількість нового", "Сума, грн", "КЕКВ нового"]) {
     assert.ok(labels.some((l) => l.includes(label)), label);
   }
   assert.match(text(view.container), /Сума, грн \(до /);

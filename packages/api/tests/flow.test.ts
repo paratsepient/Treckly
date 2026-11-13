@@ -20,7 +20,6 @@ async function replacementLine(h: Harness, positionName: string, name: string, k
     qty,
     kekv: position.kekv,
     newItem: { code: "", name, kekv, qty: newQty, totalMinor, measure: "компл." },
-    condition: "unusable" as const,
   };
 }
 

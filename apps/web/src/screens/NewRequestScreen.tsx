@@ -228,13 +228,11 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const hasErrors = (report?.errors.length ?? 0) > 0;
   const noJustification = justification.trim() === "";
   const noService = service.trim() === "";
-  const noCondition = history.present.some((l) => l.kind === "replacement" && l.condition === "");
   // Що саме заважає подати: показуємо під кнопкою, а не лише робимо її сірою.
   const incompleteRows = converted.incomplete.map((id) => rowOf.get(id)).filter((n): n is number => n !== undefined);
   const submitWhy = [
     history.present.length === 0 ? "додайте хоча б один рядок" : null,
     incompleteRows.length > 0 ? `оберіть позицію й кількість (для заміни — ще й предмет) у ${incompleteRows.length === 1 ? "рядку" : "рядках"} ${incompleteRows.join(", ")}` : null,
-    noCondition ? "вкажіть стан майна, яке замінюєте" : null,
     noJustification ? "напишіть обґрунтування" : null,
     hasErrors ? "виправте помилки автоперевірок (праворуч)" : null,
     noService ? "у вашому профілі не вказано відділ — зверніться до адміністратора" : null,
@@ -242,7 +240,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const blocked =
     history.present.length === 0 ||
     noService ||
-    noCondition || converted.incomplete.length > 0 || noJustification || hasErrors || check.isFetching || linesKey(debouncedLines) !== linesKey(converted.lines);
+    converted.incomplete.length > 0 || noJustification || hasErrors || check.isFetching || linesKey(debouncedLines) !== linesKey(converted.lines);
 
   const [sedoOpen, setSedoOpen] = useState(false);
   const [sedoError, setSedoError] = useState<string | undefined>();

@@ -1,5 +1,5 @@
 import type { Request } from "@dsp/domain";
-import { CONDITION_LABELS, formatDate, formatMoney, FUNDING_LABELS, requestLabel } from "./format.ts";
+import { formatDate, formatMoney, FUNDING_LABELS, requestLabel } from "./format.ts";
 import { escapeHtml } from "./reports.ts";
 import { requestTotal } from "./totals.ts";
 
@@ -93,7 +93,6 @@ export function raportModel(input: RaportInput): RaportModel {
       planned ? `${planned.code} · ${planned.name}` : line.positionId,
       NUM(line.qty),
       MONEY(replacedSum),
-      line.condition ? CONDITION_LABELS[line.condition] : "—",
       line.newItem.code ? `${line.newItem.code} · ${line.newItem.name}` : line.newItem.name,
       NUM(line.newItem.qty),
       // Зміна КЕКВ видна одразу: «2210 → 3110» означає, що сума списується з ліміту 3110.
@@ -124,9 +123,9 @@ export function raportModel(input: RaportInput): RaportModel {
     tables.push({
       heading: "1. Заміна: замість запланованої позиції — інший предмет",
       note: "Ці позиції Попереднього переліку не закуповуються; замість них просимо інший предмет на суму, не більшу за суму замінюваного.",
-      head: ["№", "Замість (позиція переліку)", "Кількість", "Сума, грн", "Стан замінюваного", "Просимо натомість", "Кількість", "КЕКВ", "Сума, грн"],
+      head: ["№", "Замість (позиція переліку)", "Кількість", "Сума, грн", "Просимо натомість", "Кількість", "КЕКВ", "Сума, грн"],
       rows: replacementRows,
-      numeric: [2, 3, 6, 8],
+      numeric: [2, 3, 5, 7],
     });
   }
   if (listRows.length > 0) {

@@ -268,14 +268,13 @@ test("подання: номер СЕДО рапорту обов'язковий
   assert.equal(get(world, id).sedoNumber, 5310042);
 });
 
-test("подання: без служби й без стану замінюваного майна заявку не подати", () => {
+test("подання: без служби заявку не подати", () => {
   const world = createWorld();
   const [noService] = apply(world, createDraft(world.ctx, meta(author), { route: ROUTE, lines: [byList("l1", "p1", 1)], justification: "Потреба." })).requests;
   assert.equal(throwsCode(() => submit(world.ctx, meta(author), submitInput(world, noService!.id)), "INVALID_TRANSITION").details["reason"], "EMPTY_SERVICE");
-  const { condition: _drop, ...bare } = replacement("l2", "p2", 1, "2210", 100_00) as Extract<RequestLine, { kind: "replacement" }>;
-  const id = draftOf(world, [bare]);
-  const error = throwsCode(() => submit(world.ctx, meta(author), submitInput(world, id)), "INVALID_TRANSITION");
-  assert.equal(error.details["reason"], "CONDITION_REQUIRED");
-  assert.equal(error.details["lineId"], "l2");
+  // Стан замінюваного майна не потрібен: заміну подають без нього.
+  const id = draftOf(world, [replacement("l2", "p2", 1, "2210", 1_00)]);
+  apply(world, submit(world.ctx, meta(author), submitInput(world, id)));
+  assert.equal(get(world, id).status, "at_level");
   assert.equal(get(world, id).funding, "general");
 });

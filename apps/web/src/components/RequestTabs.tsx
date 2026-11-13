@@ -1,7 +1,7 @@
 import type { DetailTab } from "../app/DetailPanel.tsx";
 import { Badge, DataState } from "@index/ui";
 import type { ApiOutput } from "@dsp/contract";
-import { CONDITION_LABELS, FUNDING_LABELS, LINE_STATUS_LABELS, LINE_STATUS_TONES } from "../lib/format.ts";
+import { FUNDING_LABELS, LINE_STATUS_LABELS, LINE_STATUS_TONES } from "../lib/format.ts";
 import { journalText } from "../lib/journal-text.ts";
 import { Track } from "./Track.tsx";
 
@@ -59,7 +59,6 @@ export function requestTabs({ detail, positions, levels, journal = true }: Reque
                 {line.kind === "replacement" ? (
                   <p className="request-lines__meta">
                     {`Заміна на: ${line.newItem.name} × ${line.newItem.qty} · ${(line.newItem.totalMinor / 100).toLocaleString("uk-UA")} грн · КЕКВ ${line.newItem.kekv}`}
-                    {line.condition ? ` · стан замінюваного: ${CONDITION_LABELS[line.condition].toLocaleLowerCase("uk-UA")}` : ""}
                   </p>
                 ) : null}
                 {status ? <Badge tone={LINE_STATUS_TONES[status]}>{LINE_STATUS_LABELS[status]}</Badge> : null}
