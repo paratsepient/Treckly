@@ -10,7 +10,7 @@ import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { RaportButton } from "../components/RaportDialog.tsx";
 import { requestTabs } from "../components/RequestTabs.tsx";
-import { formatDateShort, formatMoney, formatMoneyShort, requestLabel, STATUS_LABELS, STATUS_TONES, statusText } from "../lib/format.ts";
+import { formatDateShort, formatMoney, formatMoneyShort, requestLabel, STATUS_LABELS, STATUS_TONES, statusText, LEVEL_SHORT } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
 
 type Request = ApiOutput<"registry">["requests"][number];
@@ -60,15 +60,10 @@ export function RegistryScreen() {
   const columns: readonly DataTableColumn<Request>[] = [
     { key: "id", header: "Номер", mono: true, render: (r) => requestLabel(r.id), width: 150 },
     { key: "unit", header: "в/ч", render: (r) => unitName(r.route[0]) },
-    { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>, width: 200 },
-    {
-      key: "where",
-      header: "Де зараз",
-      render: (r) => (r.level !== null && (r.status === "at_level" || r.status === "in_list") ? `${r.level}. ${levels.find((l) => l.level === r.level)?.name ?? ""}` : "—"),
-    },
+    { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>, width: 260 },
     {
       key: "days",
-      header: "Днів на рівні",
+      header: "Днів на розгляді",
       numeric: true,
       render: (r) => (r.status === "at_level" || r.status === "in_list" || r.status === "returned" ? daysAtLevel(r, today) : "—"),
       width: 130,
@@ -132,7 +127,7 @@ export function RegistryScreen() {
               <BarChart
                 title="Середня кількість днів на рівні"
                 valueLabel="Днів"
-                data={levels.map((l) => ({ label: `${l.level}`, value: kpi.data.avgDaysByLevel[String(l.level)] ?? 0 }))}
+                data={levels.map((l) => ({ label: LEVEL_SHORT[l.level] ?? `${l.level}`, value: kpi.data.avgDaysByLevel[String(l.level)] ?? 0 }))}
               />
               <DonutChart
                 title="Затверджено й куплено за КЕКВ"
@@ -158,7 +153,7 @@ export function RegistryScreen() {
               </option>
             ))}
           </Select>
-          <Select label="Де зараз" value={level} onChange={(event) => setLevel(event.target.value)}>
+          <Select label="Рівень" value={level} onChange={(event) => setLevel(event.target.value)}>
             <option value={ALL}>Усі рівні</option>
             {levels.map((l) => (
               <option key={l.level} value={String(l.level)}>

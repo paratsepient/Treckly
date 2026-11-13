@@ -20,7 +20,7 @@ test("Голова не підписав: заявки переліку пове
 
   await switchTo(page, AUTHOR_C, "/my");
   const returned = requestCard(page, "ЗМ-0007");
-  await expect(returned).toContainText("Повернуто");
+  await expect(returned).toContainText("На доопрацюванні");
   await page.goto("/#/notifications");
   await expect(page.getByText(/Голова не підписав перелік: Уточнити потребу в генераторах/).first()).toBeVisible();
 });

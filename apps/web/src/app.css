@@ -124,12 +124,13 @@
   min-width: 0;
 }
 
+/* «Купити як заплановано» і «2210 → 3110» мають вміщатися без обрізання. */
 .lines__type {
-  width: 11.5rem;
+  width: 14.5rem;
 }
 
 .lines__kekv {
-  width: 5rem;
+  width: 8rem;
 }
 
 .lines__title {

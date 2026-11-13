@@ -20,7 +20,7 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   // Автоперевірки й бюджет: новий КЕКВ витрачається, старий не змінюється (вивільнення немає).
   const budget = page.getByRole("table", { name: /Залишок бюджету за КЕКВ/ });
   const row3110 = budget.getByRole("row", { name: /^3110/ });
-  await expect(row3110).toContainText("+48 000");
+  await expect(row3110).toContainText("−48 000");
   await expect(budget.getByRole("row", { name: /^2210/ })).not.toContainText("−");
   await expect(page.getByText("Перевірки пройдено")).toBeVisible();
   await expect(page.getByText(/Інший КЕКВ: списується з ліміту 3110/)).toBeVisible();
@@ -63,8 +63,8 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
 
   // Заявка в «Моїх заявках» на рівні 1; трек показує, що вона зараз там.
   await expect(page).toHaveURL(/#\/my\?selected=req-/);
-  await expect(requestCard(page, /На рівні 1/).first()).toBeVisible();
-  await expect(requestCard(page, /Антени для відділу зв'язку/)).toContainText("На рівні 1");
+  await expect(requestCard(page, /На розгляді · в\/ч/).first()).toBeVisible();
+  await expect(requestCard(page, /Антени для відділу зв'язку/)).toContainText("На розгляді · в/ч");
   const track = page.getByRole("list", { name: "Трек заявки за рівнями погодження" });
   await expect(track.getByRole("listitem").first()).toContainText("Зараз тут");
   await expect(track.getByRole("listitem").nth(1)).toContainText("Попереду");

@@ -26,18 +26,25 @@ export function formatDays(days: number): string {
 /** Короткий номер заявки для людей: `req-0001` → «ЗМ-0001», `req-1a2b3c4d` → «ЗМ-1A2B3C4D». */
 export const requestLabel = (id: string): string => `ЗМ-${id.replace(/^req-/, "").toUpperCase()}`;
 
+/**
+ * Статуси людською мовою: що з заявкою зараз і чого вона чекає. «Де саме» (рівень) додає `statusText`,
+ * тому окремий стовпець «Де зараз» не потрібен.
+ */
 export const STATUS_LABELS: Record<RequestStatus, string> = {
   draft: "Чернетка",
-  at_level: "На рівні",
-  in_list: "У денному переліку",
-  returned: "Повернуто автору",
+  at_level: "На розгляді",
+  in_list: "Чекає погодження",
+  returned: "На доопрацюванні",
   approved: "Затверджено",
-  extract_issued: "Витяг сформовано",
-  procured: "Виконано · на складі бази",
-  issued: "Виконано · видано",
-  not_procured: "Не виконано",
+  extract_issued: "Чекає закупівлі",
+  procured: "Куплено, на базі",
+  issued: "Видано в/ч",
+  not_procured: "Не закуплено",
   withdrawn: "Відкликано",
 };
+
+/** Короткі назви рівнів для статусу: «На розгляді · бригада». */
+export const LEVEL_SHORT: Record<number, string> = { 1: "в/ч", 2: "бригада", 3: "РУ", 4: "напрямок", 5: "Відділ ресурсів" };
 
 /** Джерело фінансування й стан замінюваного майна — підписи для інтерфейсу й рапорту. */
 export const FUNDING_LABELS: Record<"general" | "special", string> = { general: "Загальний фонд", special: "Спеціальний фонд" };
@@ -63,10 +70,11 @@ export const STATUS_TONES: Record<RequestStatus, BadgeTone> = {
   withdrawn: "neutral",
 };
 
-/** Статус із рівнем: «На рівні 3», «У денному переліку 2». */
+/** Статус із рівнем: «На розгляді · РУ», «Чекає погодження · бригада»; на рівні 5 у переліку — «Чекає підпису Голови». */
 export function statusText(status: RequestStatus, level: number | null): string {
+  if (status === "in_list" && level === 5) return "Чекає підпису Голови";
   const base = STATUS_LABELS[status];
-  return (status === "at_level" || status === "in_list") && level !== null ? `${base} ${level}` : base;
+  return (status === "at_level" || status === "in_list") && level !== null ? `${base} · ${LEVEL_SHORT[level] ?? level}` : base;
 }
 
 export const LINE_STATUS_LABELS: Record<LineStatus, string> = {
@@ -76,7 +84,7 @@ export const LINE_STATUS_LABELS: Record<LineStatus, string> = {
   replacement_agreed: "Заміна погоджена",
   purchased: "Закуплено",
   replaced: "Замінено",
-  not_procured: "Не виконано",
+  not_procured: "Не закуплено",
 };
 
 export const LINE_STATUS_TONES: Record<LineStatus, BadgeTone> = {

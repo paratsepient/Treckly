@@ -17,16 +17,6 @@ type Request = ApiOutput<"myRequests">["requests"][number];
 type Positions = ApiOutput<"positions">["positions"];
 
 /** «Де зараз»: рівень, на якому заявка, або що з нею сталося. */
-function whereNow(request: Request, levelNames: ReadonlyMap<number, string>): string {
-  if (request.level !== null && (request.status === "at_level" || request.status === "in_list")) return `${request.level}. ${levelNames.get(request.level) ?? ""}`;
-  if (request.status === "returned") return request.returnInfo ? `Автор (повернув рівень ${request.returnInfo.level})` : "Автор";
-  if (request.status === "approved" || request.status === "extract_issued") return "Затверджено Головою, чекає закупівлі";
-  if (request.status === "procured") return "На складі бази";
-  if (request.status === "issued") return "Видано в/ч";
-  if (request.status === "not_procured") return "Закупівля не відбулася";
-  return "—";
-}
-
 const WITHDRAWABLE = ["draft", "at_level", "in_list", "returned"] as const;
 
 /** «Мої заявки» з треком 5 рівнів: де зараз заявка і скільки днів вона там. */
@@ -41,8 +31,6 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
   const session = useApiQuery("session");
   const detail = useApiQuery("requestDetail", { params: { id: selected ?? "" } }, { enabled: selected !== undefined });
   const withdraw = useApiMutation("withdrawRequest");
-
-  const levelNames = new Map((reference.data?.levels ?? []).map((l) => [l.level as number, l.name]));
   const today = session.data?.today ?? "";
   const rows = mine.data?.requests ?? [];
   const state = mine.isPending ? "loading" : mine.isError ? "error" : rows.length === 0 ? "empty" : "ready";
@@ -153,15 +141,11 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
                     </p>
                     <dl className="request-card__facts">
                       <div>
-                        <dt>Де зараз</dt>
-                        <dd>{whereNow(r, levelNames)}</dd>
-                      </div>
-                      <div>
-                        <dt>Днів на рівні</dt>
+                        <dt>Днів на розгляді</dt>
                         <dd>{atLevel ? daysAtLevel(r, today) : "—"}</dd>
                       </div>
                       <div>
-                        <dt>СЕДО №</dt>
+                        <dt>№ у СЕДО</dt>
                         <dd>{r.sedoNumber ?? "—"}</dd>
                       </div>
                     </dl>

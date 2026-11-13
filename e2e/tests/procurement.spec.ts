@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { AUTHOR_A, openAs, requestCard, switchTo, toast } from "../support.ts";
 
 /** Після підпису Голови: Відділ оборонних ресурсів підтверджує закупівлю, видає нове актом; автор бачить статус і майно. */
-test("закупівля й видача: «Виконано · на складі бази» → «Виконано · видано», майно в/ч оновлюється", async ({ page }) => {
+test("закупівля й видача: «Куплено, на базі» → «Видано в/ч», майно в/ч оновлюється", async ({ page }) => {
   await openAs(page, "prep-5-vor", "/queue");
   await page.getByRole("link", { name: "Закупівлі й видача" }).click();
   await expect(page).toHaveURL(/#\/procurement$/);
@@ -24,9 +24,9 @@ test("закупівля й видача: «Виконано · на склад�
   await issue.getByRole("button", { name: "Видати" }).click();
   await expect(toast(page, "ЗМ-0001: нове видано")).toBeVisible();
 
-  // Автор бачить «Виконано · видано» і сповіщення.
+  // Автор бачить «Видано в/ч» і сповіщення.
   await switchTo(page, AUTHOR_A, "/my");
-  await expect(requestCard(page, /ЗМ-0001/)).toContainText("Виконано · видано");
+  await expect(requestCard(page, /ЗМ-0001/)).toContainText("Видано в/ч");
   await page.goto("/#/notifications");
   await expect(page.getByText(/ЗМ-0001: нове видано в\/ч/)).toBeVisible();
 });

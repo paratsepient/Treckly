@@ -17,10 +17,11 @@ test("гроші: цілі копійки → гривні з пробілами
 test("номер заявки для людей і статус із рівнем", () => {
   assert.equal(requestLabel("req-0001"), "ЗМ-0001");
   assert.equal(requestLabel("req-1a2b3c4d"), "ЗМ-1A2B3C4D");
-  assert.equal(statusText("at_level", 3), "На рівні 3");
-  assert.equal(statusText("in_list", 2), "У денному переліку 2");
-  assert.equal(statusText("returned", null), "Повернуто автору");
-  assert.equal(statusText("approved", 5), "Затверджено", "рівень додається лише в черзі й переліку");
+  assert.equal(statusText("at_level", 3), "На розгляді · РУ");
+  assert.equal(statusText("in_list", 2), "Чекає погодження · бригада");
+  assert.equal(statusText("in_list", 5), "Чекає підпису Голови");
+  assert.equal(statusText("returned", null), "На доопрацюванні");
+  assert.equal(statusText("extract_issued", 5), "Чекає закупівлі", "рівень додається лише в черзі й переліку");
 });
 
 interface Seen {

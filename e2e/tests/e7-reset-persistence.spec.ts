@@ -33,5 +33,5 @@ test("E7: чернетка переживає перезавантаження, 
   await expect(toast(page, "Демо заповнено прикладами")).toBeVisible();
   await page.goto("/#/my");
   await expect(requestCard(page, /Чернетка/)).toHaveCount(1);
-  await expect(requestCard(page, /ЗМ-0001/)).toContainText("Витяг сформовано");
+  await expect(requestCard(page, /ЗМ-0001/)).toContainText("Чекає закупівлі");
 });

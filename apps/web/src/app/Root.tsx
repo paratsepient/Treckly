@@ -76,9 +76,9 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
           id: "admin",
           label: "Адміністрування",
           items: [
-            { id: "users", label: "Користувачі", href: "#/users", icon: <Icon name="role" /> },
+            { id: "users", label: "Користувачі", href: "#/users", icon: <Icon name="users" /> },
             registry,
-            { id: "acting", label: "ТВО", href: "#/acting", icon: <Icon name="role" /> },
+            { id: "acting", label: "Заміщення (ТВО)", href: "#/acting", icon: <Icon name="refresh" /> },
             { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> },
           ],
         },

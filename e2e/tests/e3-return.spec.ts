@@ -41,7 +41,7 @@ test("E3: повернення на рівні 3 з каскадом спові�
 
   // Нова версія йде з першого рівня.
   await expect(page).toHaveURL(/#\/my\?selected=req-0003/);
-  await expect(page.getByText("Версія 2 · На рівні 1")).toBeVisible();
+  await expect(page.getByText("Версія 2 · На розгляді · в/ч")).toBeVisible();
   const track = page.getByRole("list", { name: "Трек заявки за рівнями погодження" });
   await expect(track.getByRole("listitem").first()).toContainText("Зараз тут");
   await expect(track.getByRole("listitem").nth(2)).toContainText("Попереду");

@@ -45,7 +45,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
               №
             </th>
             <th scope="col" className="ix-table__header lines__type">
-              Тип рядка
+              Що робимо
             </th>
             <th scope="col" className="ix-table__header">Позиція переліку</th>
             <th scope="col" className="ix-table__header lines__qty">
@@ -87,8 +87,8 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                     value={line.kind}
                     onChange={(event) => dispatch({ type: "update", id: line.id, patch: { kind: event.target.value as EditorLine["kind"] } })}
                   >
-                    <option value="by_list">За переліком</option>
-                    <option value="replacement">Заміна</option>
+                    <option value="by_list">Купити як заплановано</option>
+                    <option value="replacement">Замінити на інше</option>
                   </Select>
                 </td>
                 <td className="ix-table__cell lines__cell-position">
@@ -121,7 +121,8 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                 </td>
                 <td className="ix-table__cell lines__cell-kekv">
                   <span className="lines__cell-label" aria-hidden="true">КЕКВ</span>
-                  {position ? <Badge>{position.kekv}</Badge> : <span className="lines__muted">—</span>}
+                  {/* Для заміни на предмет іншого КЕКВ видно, з якого ліміту списується: «2210 → 3110». */}
+                  {position ? <Badge>{line.kind === "replacement" && item && item.kekv !== position.kekv ? `${position.kekv} → ${item.kekv}` : position.kekv}</Badge> : <span className="lines__muted">—</span>}
                 </td>
                 <td className="ix-table__cell lines__money">
                   <span className="lines__cell-label" aria-hidden="true">Сума</span>

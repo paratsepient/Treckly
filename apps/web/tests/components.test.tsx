@@ -115,10 +115,10 @@ test("текст без номера рядка починається з вел
   assert.equal(issueText(issue("QTY_EXCEEDED", { requested: 5, available: 1 }, "невідомий"), rows), "Запитано 5, а доступно 1.");
 });
 
-test("попередження про суму «у роботі» відрізняється від помилки", () => {
+test("попередження про суму інших заявок на погодженні відрізняється від помилки", () => {
   const warning = issueText(issue("BUDGET_EXCEEDED", { scope: "3110", requestedMinor: 42_000_00, remainingMinor: 100_000_00, inWorkMinor: 300_000_00 }, null), rows, true);
   assert.match(warning, /вміщується в залишок КЕКВ 3110/);
-  assert.match(warning, /разом із заявками «у роботі»/);
+  assert.match(warning, /разом з іншими заявками на погодженні/);
 });
 
 const budget = {
@@ -140,7 +140,7 @@ test("панель перевірок: усе гаразд — позначка 
   const { container, unmount } = render(<CheckPanel report={okReport} budget={budget} rowOf={rows} />);
   assert.match(text(container), /Перевірки пройдено/);
   const cells = (scope: string) => [...container.querySelectorAll("tbody tr")].find((tr) => text(tr.querySelector("th")) === scope)!.querySelectorAll("td");
-  assert.match(text(cells("3110")[1]!), /\+100/, "витрата на новому КЕКВ");
+  assert.match(text(cells("3110")[1]!), /−100/, "витрата на новому КЕКВ зменшує залишок");
   assert.equal(text(cells("2210")[1]!), "—", "старий КЕКВ заміни не змінюється: вивільнення немає");
   assert.equal(text(cells("3110")[2]!).replace(/\s/g, ""), "200");
   assert.match(text(container.querySelector("tbody tr th")), /Усього/);

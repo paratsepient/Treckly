@@ -9,7 +9,7 @@ test("E5: відкликання на рівні 4 можливе, після з
 
   // ЗМ-0006 лежить на рівні 4.
   await requestCard(page, /ЗМ-0006/).getByRole("button", { name: "ЗМ-0006" }).click();
-  await expect(page.getByText("Версія 1 · На рівні 4")).toBeVisible();
+  await expect(page.getByText("Версія 1 · На розгляді · напрямок")).toBeVisible();
   await page.getByRole("button", { name: "Відкликати", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Відкликати", exact: true }).click();
   await expect(toast(page, "Заявку відкликано")).toBeVisible();
@@ -22,6 +22,6 @@ test("E5: відкликання на рівні 4 можливе, після з
   // Затверджену заявку відкликати не можна: кнопки немає.
   await switchTo(page, AUTHOR_A, "/my");
   await requestCard(page, /ЗМ-0001/).getByRole("button", { name: "ЗМ-0001" }).click();
-  await expect(page.getByText(/Версія 1 · Витяг сформовано/)).toBeVisible();
+  await expect(page.getByText(/Версія 1 · Чекає закупівлі/)).toBeVisible();
   await expect(page.getByRole("button", { name: "Відкликати", exact: true })).toHaveCount(0);
 });

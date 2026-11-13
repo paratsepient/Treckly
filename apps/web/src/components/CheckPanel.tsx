@@ -56,7 +56,7 @@ function describe(issue: Issue, rowOf: ReadonlyMap<string, number>, warning: boo
       const scope = SCOPE_LABEL(d["scope"]);
       // Попередження: сама заявка вміщується, але разом із заявками, що ще йдуть маршрутом, — ні.
       return warning
-        ? `Заявка вміщується в залишок ${scope} (${remaining}), але разом із заявками «у роботі» (${inWork}) залишку не вистачить.`
+        ? `Заявка вміщується в залишок ${scope} (${remaining}), але разом з іншими заявками на погодженні (${inWork}) залишку не вистачить.`
         : `Сума ${requested} перевищує залишок ${scope}: ${remaining}.`;
     }
     default:
@@ -142,10 +142,11 @@ export function CheckPanel({ report, budget, rowOf, pending = false, incompleteC
                     <th scope="row">{line.scope === "TOTAL" ? "Усього" : line.scope}</th>
                     <td className="check__num">
                       {formatMoneyShort(line.remainingMinor)}
-                      <span className="check__sub">{`у роботі ${formatMoneyShort(line.inWorkMinor)}`}</span>
+                      <span className="check__sub">{`у заявках ${formatMoneyShort(line.inRequestsMinor)}`}</span>
                     </td>
                     <td className="check__num" data-sign={delta > 0 ? "plus" : delta < 0 ? "minus" : undefined}>
-                      {delta === 0 ? "—" : `${delta > 0 ? "+" : "−"}${formatMoneyShort(Math.abs(delta))}`}
+                      {/* Заявка зменшує залишок, тому витрата — зі знаком «−». */}
+                      {delta === 0 ? "—" : `${delta > 0 ? "−" : "+"}${formatMoneyShort(Math.abs(delta))}`}
                     </td>
                     <td className="check__num" data-negative={after < 0 ? "true" : undefined}>
                       {formatMoneyShort(after)}

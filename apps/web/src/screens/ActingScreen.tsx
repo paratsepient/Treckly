@@ -96,7 +96,7 @@ export function ActingScreen() {
   const state = list.isPending ? "loading" : list.isError ? "error" : assignments.length === 0 ? "empty" : "ready";
   return (
     <ScreenFrame
-      title="ТВО"
+      title="Заміщення (ТВО)"
       meta={list.data ? `Чинних призначень: ${active.length}` : undefined}
       surfaceLabel="Тимчасове виконання обов'язків"
       actions={

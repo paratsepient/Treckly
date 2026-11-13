@@ -97,12 +97,12 @@ export function FinalScreen() {
       surfaceLabel={title}
       actions={
         <Button iconStart={<Icon name="save" />} disabled={query.data === undefined} loading={exporting} loadingLabel="Створення документа Word" onClick={() => void exportDocx()}>
-          Word (.docx)
+          Звіт у Word
         </Button>
       }
       primaryAction={
         <Button iconStart={<Icon name="sheet" />} disabled={query.data === undefined} onClick={print}>
-          Друк / PDF
+          Друкувати звіт
         </Button>
       }
     >
@@ -149,18 +149,14 @@ export function FinalScreen() {
                 </h3>
                 <span className="list-card__tools">
                   <Badge tone="success">Сформовано</Badge>
-                  <IconButton variant="secondary" label={`Переглянути витяг по ${unitName(extract.unitId)} від ${formatDateShort(extract.date)}`} icon={<Icon name="view" />} onClick={() => setViewing(extract.id)} />
-                  {(() => {
-                    const input = extractInput(extract.id);
-                    return (
-                      <DocumentActions
-                        what="витяг"
-                        html={input ? buildExtractHtml(input) : null}
-                        makeDocx={input ? async () => (await import("../lib/docx-export.ts")).buildExtractDocx(input) : null}
-                        fileName={input ? extractDocModel(input).fileName : "Витяг.docx"}
-                      />
-                    );
-                  })()}
+                  {/* Одна підписана кнопка замість трьох значків: у вікні витягу — і друк, і Word. */}
+                  <Button
+                    iconStart={<Icon name="view" />}
+                    aria-label={`Відкрити витяг по ${unitName(extract.unitId)} від ${formatDateShort(extract.date)}`}
+                    onClick={() => setViewing(extract.id)}
+                  >
+                    Відкрити витяг
+                  </Button>
                 </span>
               </header>
               <p className="list-card__note">Заявки: {extract.requestIds.map(requestLabel).join(", ")}</p>
