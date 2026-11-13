@@ -80,6 +80,12 @@ export function PlanComparison({
         </span>
       ),
     },
+    {
+      key: "verdict",
+      header: "Результат",
+      render: (l) => <Badge tone={l.verdict === "ok" ? "success" : "warning"}>{VERDICT_LABELS[l.verdict]}</Badge>,
+      width: 230,
+    },
     { key: "requested", header: "У заявці", numeric: true, render: (l) => l.requested, width: 100 },
     { key: "planned", header: "План в/ч", numeric: true, render: (l) => l.planned ?? "—", width: 100 },
     { key: "available", header: "Доступно за переліком", numeric: true, render: (l) => l.available ?? "—", width: 170 },
@@ -90,12 +96,6 @@ export function PlanComparison({
         ] satisfies DataTableColumn<PlanLine>[])
       : []),
     { key: "kekv", header: "КЕКВ", render: (l) => <Badge>{l.kekv}</Badge>, width: 90 },
-    {
-      key: "verdict",
-      header: "Результат",
-      render: (l) => <Badge tone={l.verdict === "ok" ? "success" : "warning"}>{VERDICT_LABELS[l.verdict]}</Badge>,
-      width: 260,
-    },
   ];
 
   return (

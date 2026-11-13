@@ -1,3 +1,4 @@
+import { inZone, zoneUnits } from "../zone.ts";
 import { Hono } from "hono";
 import { kekvAllowed, serviceOf } from "./users.ts";
 import { API } from "@dsp/contract";
@@ -193,7 +194,12 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
     return c.json({ requests: newestFirst((await loadRequests(db)).filter((r) => r.authorId === me)) });
   });
 
-  app.get("/api/registry", async (c) => c.json({ requests: newestFirst(await loadRequests(db)) }));
+  /** Реєстр — лише заявки зони відповідальності (автор — своя в/ч, рівні 1–3 — свої в/ч, вище — увесь напрямок). */
+  app.get("/api/registry", async (c) => {
+    const [requests, units] = await Promise.all([loadRequests(db), loadUnits(db)]);
+    const zone = zoneUnits(units, c.get("user"));
+    return c.json({ requests: newestFirst(requests.filter((r) => inZone(zone, r))) });
+  });
 
   app.get("/api/requests/:id", async (c) => {
     const request = await requireRequest(db, c.req.param("id"));

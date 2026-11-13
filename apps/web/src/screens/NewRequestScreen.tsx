@@ -176,8 +176,9 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
       if (s.id === null) {
         const { request } = await create.mutateAsync({ body: { lines: [...lines], justification: text, title: label, funding: source } });
         server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: lineKey };
-        // Адреса запам'ятовує заявку: після перезавантаження сторінки чернетка знайдеться.
-        void navigate({ to: "/new", search: { id: request.id }, replace: true });
+        // Адреса запам'ятовує заявку: після перезавантаження сторінки чернетка знайдеться. Лише якщо людина
+        // досі в редакторі: збереження, що завершилось уже після переходу в інший розділ, не повертає її назад.
+        if (window.location.hash.startsWith("#/new")) void navigate({ to: "/new", search: { id: request.id }, replace: true });
       } else {
         const { request } = await edit.mutateAsync({ params: { id: s.id }, body: { lines: [...lines], justification: text, title: label, funding: source, expectedRevision: s.revision } });
         server.current = { ...s, revision: request.revision, savedKey: lineKey };
@@ -221,6 +222,16 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const noJustification = justification.trim() === "";
   const noService = service.trim() === "";
   const noCondition = history.present.some((l) => l.kind === "replacement" && l.condition === "");
+  // Що саме заважає подати: показуємо під кнопкою, а не лише робимо її сірою.
+  const incompleteRows = converted.incomplete.map((id) => rowOf.get(id)).filter((n): n is number => n !== undefined);
+  const submitWhy = [
+    history.present.length === 0 ? "додайте хоча б один рядок" : null,
+    incompleteRows.length > 0 ? `оберіть позицію й кількість (для заміни — ще й предмет) у ${incompleteRows.length === 1 ? "рядку" : "рядках"} ${incompleteRows.join(", ")}` : null,
+    noCondition ? "вкажіть стан майна, яке замінюєте" : null,
+    noJustification ? "напишіть обґрунтування" : null,
+    hasErrors ? "виправте помилки автоперевірок (праворуч)" : null,
+    noService ? "у вашому профілі не вказано відділ — зверніться до адміністратора" : null,
+  ].filter((reason): reason is string => reason !== null);
   const blocked =
     history.present.length === 0 ||
     noService ||
@@ -265,7 +276,8 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
 
   const number = requestId ? requestLabel(requestId) : undefined;
   const title = name.trim() !== "" ? name.trim() : number ? `Заявка ${number}` : "Нова заявка";
-  const documentState = isResubmit ? `Повернуто · версія ${server.current.version}` : "Чернетка · зберігається автоматично";
+  // Стан документа — коротко; про збереження каже окремий індикатор поруч («Збережено о …»), щоб не суперечити йому.
+  const documentState = isResubmit ? `Повернуто · версія ${server.current.version}` : "Чернетка";
   const dataReady = reference.data !== undefined && positionsQuery.data !== undefined && propertyQuery.data !== undefined && mineQuery.data !== undefined;
   // Рапорт показує те, що зараз на екрані: збережена заявка дає маршрут і номер, редактор — рядки й текст.
   const saved = detail.data?.request;
@@ -376,13 +388,24 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
             </WorkspaceToolbar>
             <span className="form-actions__main">
               <RaportButton request={raportRequest} label="Переглянути рапорт" />
-              <Button variant="primary" disabled={blocked} loading={submitting} loadingLabel="Подання заявки" onClick={() => {
+              <Button
+                variant="primary"
+                disabled={blocked}
+                loading={submitting}
+                loadingLabel="Подання заявки"
+                {...(submitWhy.length > 0 ? { "aria-describedby": "submit-why" } : {})}
+                onClick={() => {
                   setSedoError(undefined);
                   setSedoOpen(true);
                 }}>
                 {isResubmit ? "Подати нову версію" : "Подати"}
               </Button>
             </span>
+            {submitWhy.length > 0 ? (
+              <p id="submit-why" className="form-actions__why">
+                {`Щоб подати: ${submitWhy.join("; ")}.`}
+              </p>
+            ) : null}
           </div>
         </>
       )}

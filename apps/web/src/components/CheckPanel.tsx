@@ -81,13 +81,13 @@ export function CheckPanel({ report, budget, rowOf, pending = false, incompleteC
         ) : (
           <>
             <p className="check__summary">
-              {errors.length > 0 ? (
-                <Badge tone="error">{`Помилок: ${errors.length}`}</Badge>
-              ) : report !== null ? (
+              {/* Один підсумок без суперечностей: «пройдено» — лише коли немає ні помилок, ні незаповнених рядків. */}
+              {errors.length > 0 ? <Badge tone="error">{`Помилок: ${errors.length}`}</Badge> : null}
+              {incompleteCount > 0 ? <Badge tone="warning">{`Не заповнено рядків: ${incompleteCount}`}</Badge> : null}
+              {warnings.length > 0 ? <Badge tone="warning">{`Попереджень: ${warnings.length}`}</Badge> : null}
+              {errors.length === 0 && incompleteCount === 0 && report !== null ? (
                 <Badge tone="success">Перевірки пройдено</Badge>
               ) : null}
-              {warnings.length > 0 ? <Badge tone="warning">{`Попереджень: ${warnings.length}`}</Badge> : null}
-              {incompleteCount > 0 ? <Badge tone="warning">{`Не заповнено рядків: ${incompleteCount}`}</Badge> : null}
             </p>
             <ul className="check__list">
               {errors.map((issue, i) => (

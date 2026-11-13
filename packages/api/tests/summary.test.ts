@@ -52,6 +52,11 @@ test("зведення: лише ролі рівнів і адміністрат
   const h = await boot();
   assert.equal((await h.fail("kpi", AUTHOR_A, 403)).code, "FORBIDDEN_ROLE");
   for (const user of ["prep-1-unit-a", "appr-3-ru-1", "prep-5-vor", "admin-demo"]) await h.call("kpi", user);
+  // Зведення — по зоні: уповноважений в/ч А0001 рахує лише заявки своєї в/ч.
+  const unitA = await h.call("kpi", "prep-1-unit-a");
+  const unitATotal = Object.values(unitA.byStatus).reduce((x, y) => x + y, 0);
+  assert.equal(unitATotal, (await h.call("registry", "prep-1-unit-a")).requests.length);
+  assert.ok(unitATotal < 13);
 });
 
 test("зведення: статуси, дні на рівнях, частка повернень і бюджет за КЕКВ відповідають демо-даним", async () => {

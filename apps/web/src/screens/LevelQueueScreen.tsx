@@ -201,7 +201,7 @@ export function LevelQueueScreen() {
     {
       key: "pick",
       header: "Обрати",
-      width: 80,
+      width: narrow ? 56 : 80,
       // Клік по прапорцю лише обирає заявку, а не відкриває її картку (подія не спливає до рядка).
       render: (r) => (
         <span onClick={(event) => event.stopPropagation()}>
@@ -209,7 +209,7 @@ export function LevelQueueScreen() {
         </span>
       ),
     },
-    { key: "id", header: "Номер", mono: true, render: (r) => requestLabel(r.id), width: 150 },
+    { key: "id", header: "Номер", mono: true, render: (r) => requestLabel(r.id), width: narrow ? 104 : 150 },
     { key: "unit", header: "Автор (в/ч)", render: (r) => unitName(r.route[0]) },
     { key: "lines", header: "Рядків", numeric: true, render: (r) => r.lines.length, width: 90 },
     { key: "total", header: "Сума", numeric: true, render: (r) => formatMoney(requestTotal(r, priced)), width: 160 },
@@ -217,7 +217,7 @@ export function LevelQueueScreen() {
     {
       key: "act",
       header: "Дія",
-      width: 200,
+      width: narrow ? 168 : 200,
       render: (r) => (
         // Клік по кнопках не вибирає рядок для звірки: подія не спливає до рядка.
         <span className="row-actions" onClick={(event) => event.stopPropagation()}>
@@ -237,16 +237,22 @@ export function LevelQueueScreen() {
         meta={queue.data ? `${rows.length} у черзі` : undefined}
         surfaceLabel="Черга рівня"
         actions={<InfoHint label="Як працює черга" text={"Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення, а під таблицею видно, чи відповідає заявка плану в/ч. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі."} />}
-        primaryAction={
-          <Button variant="primary" iconStart={<Icon name="add" />} disabled={checked.size === 0} loading={form.isPending} loadingLabel="Формування переліку" onClick={doForm}>
-            {`Сформувати перелік${checked.size > 0 ? ` (${checked.size})` : ""}`}
-          </Button>
-        }
       >
         <section className="queue-card" aria-label="Заявки в черзі та звірка з переліком">
+        {/* Вибір і дія поруч: що позначено — те й піде в перелік. */}
+        {rows.length > 0 ? (
+          <div className="queue-card__bar">
+            <p className="queue-card__hint" aria-live="polite">
+              {checked.size === 0 ? "Позначте заявки, які погоджуєте сьогодні, — з них сформується денний перелік." : `Обрано заявок: ${checked.size}. Необрані лишаться в черзі.`}
+            </p>
+            <Button variant="primary" iconStart={<Icon name="add" />} disabled={checked.size === 0} loading={form.isPending} loadingLabel="Формування переліку" onClick={doForm}>
+              {`Сформувати перелік${checked.size > 0 ? ` (${checked.size})` : ""}`}
+            </Button>
+          </div>
+        ) : null}
         <DataTable
           label="Заявки в черзі рівня"
-          columns={visibleColumns(columns, narrow, ["unit", "lines", "days"])}
+          columns={visibleColumns(columns, narrow, ["unit", "lines", "days", "total"])}
           rows={rows}
           getRowId={(r) => r.id}
           rowHeaderKey="id"

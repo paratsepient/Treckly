@@ -83,8 +83,14 @@ test("мої заявки: лише власні, нові згори; реєс�
   assert.ok(mine.requests.length >= 3 && mine.requests.every((r) => r.authorId === AUTHOR_A));
   const dates = mine.requests.map((r) => r.createdOn);
   assert.deepEqual(dates, [...dates].sort().reverse());
-  const registry = await h.call("registry", AUTHOR_A);
-  assert.equal(registry.requests.length, 13);
+  // Реєстр — за зоною відповідальності: напрямок і вище бачать усе, рівні 1–3 — свої в/ч, автор — свою в/ч.
+  assert.equal((await h.call("registry", "admin-demo")).requests.length, 13);
+  assert.equal((await h.call("registry", "prep-5-vor")).requests.length, 13);
+  assert.ok((await h.call("registry", AUTHOR_A)).requests.every((r) => r.route[0] === "unit-a"));
+  const brigade = (await h.call("registry", "prep-2-brig-1")).requests;
+  assert.ok(brigade.length > 0 && brigade.every((r) => r.route[0] === "unit-a" || r.route[0] === "unit-b"));
+  const unitB = (await h.call("registry", "prep-1-unit-b")).requests;
+  assert.ok(unitB.length > 0 && unitB.every((r) => r.route[0] === "unit-b"));
 });
 
 test("картка заявки: трек, статуси рядків і журнал; затверджена з витягом — усе пройдено", async () => {

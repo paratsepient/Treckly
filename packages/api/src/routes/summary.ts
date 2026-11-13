@@ -1,3 +1,4 @@
+import { inZone, zoneUnits } from "../zone.ts";
 import { Hono } from "hono";
 import {
   directionOf,
@@ -45,7 +46,11 @@ export function summaryRoutes(db: DspDb) {
     const [requests, events, now, units] = await Promise.all([loadRequests(db), loadAllEvents(db), loadNow(db), loadUnits(db)]);
     const direction = directionOf(units, user.unitId ?? "");
     const [budget, positions] = await Promise.all([loadBudget(db, direction), loadPositions(db, direction)]);
-    const kpi = computeKpi(requests, events, now.slice(0, 10));
+    // Статуси, дні й повернення — по заявках зони; бюджет — ліміт напрямку, тож рахується по всіх заявках.
+    const zone = zoneUnits(units, user);
+    const scoped = requests.filter((r) => inZone(zone, r));
+    const ids = new Set(scoped.map((r) => r.id));
+    const kpi = computeKpi(scoped, events.filter((e) => e.requestId === null || ids.has(e.requestId)), now.slice(0, 10));
     return c.json({ ...kpi, budgetByKekv: budgetSummary(budget, requests, positions).lines });
   });
 
