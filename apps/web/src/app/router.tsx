@@ -1,4 +1,4 @@
-import { createHashHistory, createRootRoute, createRoute, createRouter, Navigate } from "@tanstack/react-router";
+import { createHashHistory, createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
 import { MyRequestsScreen } from "../screens/MyRequestsScreen.tsx";
 import { NewRequestScreen } from "../screens/NewRequestScreen.tsx";
 import { PropertyScreen } from "../screens/PropertyScreen.tsx";
@@ -12,21 +12,16 @@ import { DemoScreen } from "../screens/DemoScreen.tsx";
 import { PlannedListScreen } from "../screens/PlannedListScreen.tsx";
 import { ProcurementScreen } from "../screens/ProcurementScreen.tsx";
 import { ActingScreen } from "../screens/ActingScreen.tsx";
+import { HomeScreen } from "../screens/HomeScreen.tsx";
 import { UsersScreen } from "../screens/UsersScreen.tsx";
-import { useApiQuery } from "../api/hooks.tsx";
-import { homePath, RoleOnly, Root } from "./Root.tsx";
+import { RoleOnly, Root } from "./Root.tsx";
 
 const optionalString = (value: unknown): string | undefined => (typeof value === "string" && value !== "" ? value : undefined);
 
 const rootRoute = createRootRoute({ component: Root });
 
-function Home() {
-  const session = useApiQuery("session");
-  const role = session.data?.user.roleKind;
-  return role ? <Navigate to={homePath(role, session.data?.user.level ?? null)} /> : null;
-}
 
-const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/", component: Home });
+const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/", component: HomeScreen });
 
 const propertyRoute = createRoute({
   getParentRoute: () => rootRoute,

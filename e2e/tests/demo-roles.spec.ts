@@ -19,8 +19,9 @@ test("демо: кнопка «Демо» відкриває ієрархію р
   await expect(unitRoles.getByRole("button")).toHaveCount(3);
   await expect(unitRoles.getByRole("button", { name: /Автор заявок/ })).toHaveAttribute("aria-current", "true");
 
-  // Вибір командира бригади: його початковий екран — денний перелік.
+  // Вибір командира бригади: початковий екран — «Головна» з тим, що зараз потрібно зробити.
   await page.getByRole("list", { name: "Ролі: Бригада 1" }).getByRole("button", { name: /Командир бригади/ }).click();
-  await expect(page).toHaveURL(/#\/lists$/);
+  await expect(page).toHaveURL(/#\/$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Головна" })).toBeVisible();
   await expect(page.getByText(/Командир бригади · Бригада 1/).first()).toBeVisible();
 });

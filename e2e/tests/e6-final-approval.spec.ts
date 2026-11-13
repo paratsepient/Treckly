@@ -24,7 +24,7 @@ test("E6: затвердження Головою — резерв бюджет�
 
   // Голова в системі не погоджує: екрана затвердження в нього немає, лише моніторинг.
   await switchTo(page, "appr-5-vor", "/lists");
-  await expect(page).toHaveURL(/#\/summary$/);
+  await expect(page).toHaveURL(/#\/$/);
   await expect(page.getByRole("link", { name: "Денний перелік" })).toHaveCount(0);
 
   // Відділ друкує/завантажує перелік, несе на підпис і відмічає «Підписано Головою» з номером СЕДО.

@@ -10,6 +10,8 @@ const SCREENS: readonly { role: string; hash: string; name: string; ready: (page
   { role: "author-unit-a", hash: "/new", name: "Нова заявка", ready: (p) => expect(p.getByRole("button", { name: "Додати рядок" })).toBeVisible() },
   { role: "author-unit-a", hash: "/my?selected=req-0008", name: "Мої заявки з карткою заявки", ready: (p) => expect(p.getByRole("list", { name: "Трек заявки за рівнями погодження" })).toBeVisible() },
   { role: "author-unit-a", hash: "/final", name: "Витяги по в/ч", ready: (p) => expect(p.getByRole("article").first()).toBeVisible() },
+  { role: "author-unit-b", hash: "/", name: "Головна (автор)", ready: (p) => expect(p.getByRole("list", { name: "Що потрібно зробити" })).toBeVisible() },
+  { role: "prep-5-vor", hash: "/", name: "Головна (Відділ)", ready: (p) => expect(p.getByRole("list", { name: "Що потрібно зробити" })).toBeVisible() },
   { role: "author-unit-b", hash: "/notifications", name: "Сповіщення", ready: (p) => expect(p.getByRole("list", { name: /Сповіщення/ })).toBeVisible() },
   { role: "prep-1-unit-a", hash: "/queue", name: "Черга рівня", ready: (p) => expect(p.getByRole("checkbox", { name: /Обрати ЗМ-/ }).first()).toBeVisible() },
   { role: "appr-1-unit-a", hash: "/lists", name: "Денний перелік", ready: (p) => expect(p.getByRole("button", { name: "Погодити", exact: true })).toBeEnabled() },

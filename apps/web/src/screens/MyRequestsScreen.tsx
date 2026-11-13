@@ -132,7 +132,16 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
           <DataState
             kind={state === "loading" ? "loading" : state === "error" ? "error" : "empty"}
             title={state === "loading" ? "Завантаження заявок…" : state === "error" ? "Не вдалося завантажити заявки" : "Заявок ще немає"}
-            {...(state === "empty" ? { description: "Створіть першу заявку кнопкою «Нова заявка»." } : {})}
+            {...(state === "empty"
+              ? {
+                  description: "Заявку подають за планом вашої в/ч: оберіть позиції й напишіть обґрунтування — рапорт система складе сама.",
+                  action: (
+                    <Button variant="primary" iconStart={<Icon name="add" />} onClick={() => void navigate({ to: "/new", search: { id: undefined } })}>
+                      Створити заявку
+                    </Button>
+                  ),
+                }
+              : {})}
           />
         ) : (
           <ul className="request-cards" aria-label="Мої заявки">

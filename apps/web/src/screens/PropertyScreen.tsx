@@ -30,7 +30,8 @@ const columns: readonly DataTableColumn<Row>[] = [
 
 /** Скільки вже замовлено й скільки лишилось за планом — лише на вкладці «Заплановано». */
 const planColumns = (orderedOf: (code: string) => number): readonly DataTableColumn<Row>[] => [
-  ...columns.slice(0, 4),
+  ...columns.slice(0, 3),
+  { ...(columns[3] as DataTableColumn<Row>), header: "За планом" },
   { key: "ordered", header: "Вже замовлено", numeric: true, render: (row) => (isFiller(row) ? blank : orderedOf(row.item.code) || "—"), width: 150 },
   {
     key: "left",

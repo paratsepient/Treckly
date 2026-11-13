@@ -35,5 +35,5 @@ test("запланований перелік: Відділ бачить уве�
 
   // Автор пункту меню не має, а за адресою його повертає на його екран.
   await switchTo(page, AUTHOR_A, "/planned");
-  await expect(page).toHaveURL(/#\/property$/);
+  await expect(page).toHaveURL(/#\/$/);
 });

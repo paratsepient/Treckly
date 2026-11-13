@@ -25,7 +25,15 @@ interface NavGroup {
 }
 
 /** Навігація за роллю: кожна роль бачить лише свої екрани. */
+/** «Головна» — першою в меню кожної ролі: там сказано, що зараз потрібно зробити. */
 function groupsFor(role: Role, unread: number, level: number | null): NavGroup[] {
+  const groups = groupsForRole(role, unread, level);
+  const home: NavItem = { id: "home", label: "Головна", href: "#/", icon: <Icon name="templates" /> };
+  const [first, ...rest] = groups;
+  return first ? [{ ...first, items: [home, ...first.items] }, ...rest] : groups;
+}
+
+function groupsForRole(role: Role, unread: number, level: number | null): NavGroup[] {
   const planned: NavItem = { id: "planned", label: "Запланований перелік", href: "#/planned", icon: <Icon name="registry" /> };
   const inbox: NavItem = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
   const summary: NavItem = { id: "summary", label: "Зведення", href: "#/summary", icon: <Icon name="kpi" /> };
@@ -89,8 +97,8 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
 }
 
 /** Початковий екран ролі. */
-export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/summary" | "/users" =>
-  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/summary" : "/lists") : "/users";
+/** Початковий екран будь-якої ролі — «Головна»: що зараз потрібно зробити. */
+export const homePath = (_role: Role, _level: number | null = null): "/" => "/";
 
 const initials = (name: string): string =>
   name
@@ -218,7 +226,7 @@ export function Root() {
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
-  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned", "procurement", "acting", "users", "summary"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
+  const active = pathname === "/" ? "home" : ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned", "procurement", "acting", "users", "summary"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
   const role = `${user.title}${unit ? ` · ${unit.name}` : ""}`;
   const demo = (
     <div className="sidebar__demo">
