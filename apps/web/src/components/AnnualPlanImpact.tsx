@@ -13,7 +13,7 @@ const grn = (value: number): string => formatMoneyShort(value * 100);
 
 /**
  * Річний план після затверджених закупівель — та сама логіка станів, що в «Запланованому переліку»:
- * куплено, затверджено (чекає закупівлі), у заявках, ще без заявки; «Виконано» — куплене від плану.
+ * куплено, затверджено (чекає закупівлі), у заявках, згідно плану; «Виконано» — куплене від плану.
  * Позиції — у штуках, перелік — у гривнях за цінами плану, бюджет за КЕКВ — у фактичних сумах.
  */
 export function AnnualPlanImpact() {
@@ -52,7 +52,7 @@ export function AnnualPlanImpact() {
           <KpiTile label="План на рік, грн" value={Math.round(sums.planned / 100)} formatValue={grn} />
           <KpiTile label="Куплено, грн" value={Math.round(sums.bought / 100)} formatValue={grn} />
           <KpiTile label="Затверджено, грн" value={Math.round(sums.approved / 100)} formatValue={grn} />
-          <KpiTile label="Ще без заявки, грн" value={Math.round(sums.free / 100)} formatValue={grn} />
+          <KpiTile label="Згідно плану, грн" value={Math.round(sums.free / 100)} formatValue={grn} />
         </div>
         <PlanLegend />
       </section>
@@ -65,7 +65,7 @@ export function AnnualPlanImpact() {
         variant="well"
         state={touched.length === 0 ? "empty" : "ready"}
         stateTitle="Затверджених закупівель ще немає"
-        stateDescription="Коли Відділ відмітить підпис Голови, тут видно, скільки кожної позиції затверджено, куплено й що ще без заявки."
+        stateDescription="Коли Відділ відмітить підпис Голови, тут видно, скільки кожної позиції затверджено, куплено й що лишається згідно плану."
       />
       <DataTable label="Бюджет напрямку за КЕКВ" columns={BudgetStateColumns} rows={lines} getRowId={(l) => l.scope} rowHeaderKey="scope" variant="well" />
     </div>

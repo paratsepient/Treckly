@@ -1,7 +1,7 @@
 import { PLAN_STATES, type PlanAmounts } from "../lib/plan-states.ts";
 
 /**
- * Смуга стану плану: зліва направо «Куплено», «Затверджено», «У заявках», решта доріжки — «Ще без заявки».
+ * Смуга стану плану: зліва направо «Куплено», «Затверджено», «У заявках», «Згідно плану» (бузковий) — разом увесь план.
  * Один погляд замість п'яти чисел; точні значення — у підписі для читача з екрана й у картці позиції.
  * Якщо замовлено понад план, смуга заповнена повністю й має позначку.
  */
@@ -17,6 +17,7 @@ export function PlanBar({ amounts, format, label }: { readonly amounts: PlanAmou
         <span className="plan-bar__seg" data-state="bought" style={{ width: width(amounts.bought) }} />
         <span className="plan-bar__seg" data-state="approved" style={{ width: width(amounts.approved) }} />
         <span className="plan-bar__seg" data-state="inRequests" style={{ width: width(amounts.inRequests) }} />
+        <span className="plan-bar__seg" data-state="free" style={{ width: width(amounts.free) }} />
       </span>
     </span>
   );

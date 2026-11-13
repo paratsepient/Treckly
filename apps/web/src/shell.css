@@ -53,7 +53,9 @@ body {
  * М'яка тінь карток застосунку (заявки, переліки, сповіщення, показники): тінь картки набору
  * задовга й темна для щільних сіток. Лише токени кольору; у темній темі тінь трохи глибша, бо тло темне.
  */
+/* Бузковий для «Згідно плану»: синій і маджента діаграм набору, освітлені тлом — у кожній темі свій. */
 :root {
+  --app-plan-planned: color-mix(in srgb, color-mix(in srgb, var(--ix-chart-1) 45%, var(--ix-chart-5)) 68%, var(--ix-surface));
   --app-card-shadow: 0 1px 2px color-mix(in srgb, var(--ix-color-black) 6%, transparent), 0 2px 6px color-mix(in srgb, var(--ix-color-black) 4%, transparent);
 }
 

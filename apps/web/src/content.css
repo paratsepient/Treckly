@@ -991,9 +991,10 @@
   background: var(--ix-accent);
 }
 
+/* «Згідно плану» — заплановане частинами без заявки: бузковий, зі змішування токенів діаграм набору. */
+.plan-bar__seg[data-state="free"],
 .plan-legend__swatch[data-state="free"] {
-  background: var(--ix-surface-inset);
-  box-shadow: inset 0 0 0 1px var(--ix-border-strong);
+  background: var(--app-plan-planned);
 }
 
 .plan-legend {
