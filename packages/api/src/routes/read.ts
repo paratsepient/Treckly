@@ -33,17 +33,23 @@ const itemView = (i: Awaited<ReturnType<typeof loadItems>>[number]) => ({
   group: i.groupKey,
 });
 
-/** ТВО: поки призначення чинне, особа діє з роллю того, кого заміщає; посада — «ТВО: …». */
-export async function effectiveUser(q: Queryable, user: UserRow): Promise<{ user: UserRow; actingFor: string | null }> {
-  const assignment = actingOf(user.id, await loadActing(q));
+/**
+ * ТВО: поки призначення чинне, заступник діє з роллю того, кого заміщає (посада «ТВО: …»), а сам заміщений
+ * не діє — лише бачить (`substitutedBy`: хто його заміщає; рішення користувача 2026-11-13).
+ */
+export async function effectiveUser(q: Queryable, user: UserRow): Promise<{ user: UserRow; actingFor: string | null; substitutedBy: string | null }> {
+  const assignments = await loadActing(q);
+  const replaced = assignments.find((a) => a.revokedAt === null && a.principalId === user.id);
+  const substitutedBy = replaced ? replaced.deputyId : null;
+  const assignment = actingOf(user.id, assignments);
   const principal = assignment ? await loadUser(q, assignment.principalId) : null;
-  if (!assignment || !principal) return { user, actingFor: null };
-  return { user: { ...user, roleKind: principal.roleKind, level: principal.level, unitId: principal.unitId, title: `ТВО: ${principal.title}` }, actingFor: principal.id };
+  if (!assignment || !principal) return { user, actingFor: null, substitutedBy };
+  return { user: { ...user, roleKind: principal.roleKind, level: principal.level, unitId: principal.unitId, title: `ТВО: ${principal.title}` }, actingFor: principal.id, substitutedBy };
 }
 
-export async function sessionOf(db: Queryable, user: UserRow, actingFor: string | null = null) {
+export async function sessionOf(db: Queryable, user: UserRow, actingFor: string | null = null, substitutedBy: string | null = null) {
   const [users, now] = await Promise.all([loadUsers(db), loadNow(db)]);
-  return { user: userView(user), users: users.map(userView), today: now.slice(0, 10), actingFor };
+  return { user: userView(user), users: users.map(userView), today: now.slice(0, 10), actingFor, substitutedBy };
 }
 
 /** Читання довідників і зведень: без змін стану, ключ ідемпотентності не потрібен. */
@@ -52,7 +58,7 @@ export function readRoutes(db: DspDb) {
 
   const directionFor = async (user: UserRow): Promise<string> => directionOf(await loadUnits(db), user.unitId ?? "");
 
-  app.get("/api/session", async (c) => c.json(await sessionOf(db, c.get("user"), c.get("actingFor"))));
+  app.get("/api/session", async (c) => c.json(await sessionOf(db, c.get("user"), c.get("actingFor"), c.get("substitutedBy"))));
 
   app.get("/api/reference", async (c) => {
     const [units, kekv, items] = await Promise.all([loadUnits(db), loadKekv(db), loadItems(db)]);

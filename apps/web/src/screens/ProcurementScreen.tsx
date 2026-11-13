@@ -7,7 +7,7 @@ import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { InfoHint } from "../components/InfoHint.tsx";
 import { RaportButton } from "../components/RaportDialog.tsx";
-import { formatDateShort, formatMoney, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
+import { formatDateShort, formatMoney, requestLabel, STATUS_TONES, statusText, requestStatus } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
 
 type Request = ApiOutput<"registry">["requests"][number];
@@ -138,7 +138,7 @@ export function ProcurementScreen() {
               <article className="request-card procurement-card" aria-label={`${requestLabel(r.id)} · ${unitName(r.route[0])}`}>
                 <header className="request-card__head">
                   <span className="request-card__number">{requestLabel(r.id)}</span>
-                  <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>
+                  <Badge tone={STATUS_TONES[r.status]}>{requestStatus(r)}</Badge>
                 </header>
                 <p className="request-card__title" data-empty={r.title ? undefined : "true"}>
                   {r.title || unitName(r.route[0])}

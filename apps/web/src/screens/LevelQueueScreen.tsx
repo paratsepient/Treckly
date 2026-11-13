@@ -79,6 +79,7 @@ export function LevelQueueScreen() {
   const comparedRequest = rows.find((r) => r.id === compared) ?? rows[0];
 
   const formedByMe = useMemo(() => (queue.data?.lists ?? []).filter((l) => l.status === "formed"), [queue.data]);
+  const unsignedLists = useMemo(() => (queue.data?.lists ?? []).filter((l) => l.status === "not_signed"), [queue.data]);
   const requestById = useMemo(() => new Map([...(queue.data?.queue ?? []), ...(queue.data?.listed ?? [])].map((r) => [r.id, r])), [queue.data]);
 
   const toggle = (id: string, on: boolean) =>
@@ -217,12 +218,17 @@ export function LevelQueueScreen() {
     {
       key: "act",
       header: "Дія",
-      width: narrow ? 168 : 200,
+      width: narrow ? 104 : 200,
       render: (r) => (
         // Клік по кнопках не вибирає рядок для звірки: подія не спливає до рядка.
         <span className="row-actions" onClick={(event) => event.stopPropagation()}>
           <IconButton variant="secondary" label={`Переглянути рапорт ${requestLabel(r.id)}`} icon={<Icon name="view" />} onClick={() => setReading(r)} />
-          <Button onClick={() => startReturn(r)}>Повернути…</Button>
+          {/* На телефоні — значок з підказкою, щоб дія вміщалася в рядок; на ширшому екрані — підписана кнопка. */}
+          {narrow ? (
+            <IconButton variant="secondary" label={`Повернути ${requestLabel(r.id)} автору`} icon={<Icon name="back" />} onClick={() => startReturn(r)} />
+          ) : (
+            <Button onClick={() => startReturn(r)}>Повернути…</Button>
+          )}
         </span>
       ),
     },
@@ -337,6 +343,23 @@ export function LevelQueueScreen() {
             })
           )}
         </section>
+
+        {unsignedLists.length > 0 ? (
+          <section className="lists" aria-labelledby="not-signed-title">
+            <h2 id="not-signed-title" className="lists__title">
+              Не підписані Головою
+            </h2>
+            {unsignedLists.map((list) => (
+              <article key={list.id} className="list-card" aria-label={`Перелік від ${formatDateShort(list.date)}: не підписано Головою`}>
+                <header className="list-card__head">
+                  <h3 className="list-card__title">Перелік від {formatDateShort(list.date)}</h3>
+                  <Badge tone="error">Не підписано Головою</Badge>
+                </header>
+                <p className="list-card__note">{`Заявки повернуто авторам на доопрацювання: ${list.requestIds.map(requestLabel).join(", ")}.`}</p>
+              </article>
+            ))}
+          </section>
+        ) : null}
       </ScreenFrame>
 
       <RaportDialog

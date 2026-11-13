@@ -123,7 +123,7 @@ export const dailyLists = pgTable("daily_lists", {
   level: integer("level").notNull(),
   unitId: text("unit_id").notNull(),
   date: text("date").notNull(),
-  status: text("status").$type<"formed" | "approved" | "disbanded">().notNull(),
+  status: text("status").$type<"formed" | "approved" | "disbanded" | "not_signed">().notNull(),
   formedBy: text("formed_by").notNull(),
   sedoNumber: bigint("sedo_number", { mode: "number" }),
   approvedBy: text("approved_by"),

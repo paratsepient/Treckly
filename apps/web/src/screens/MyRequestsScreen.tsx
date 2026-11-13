@@ -10,7 +10,7 @@ import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { RaportButton } from "../components/RaportDialog.tsx";
 import { requestTabs } from "../components/RequestTabs.tsx";
 import { daysAtLevel } from "@dsp/domain";
-import { formatDateShort, formatMoney, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
+import { formatDateShort, formatMoney, requestLabel, STATUS_TONES, statusText, requestStatus } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
 
 type Request = ApiOutput<"myRequests">["requests"][number];
@@ -69,7 +69,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
   const inspector = (
     <DetailPanel
       title={request?.title || (selected ? requestLabel(selected) : "Заявка")}
-      subtitle={request ? `${request.title ? `${requestLabel(request.id)} · ` : ""}Версія ${request.version} · ${statusText(request.status, request.level)}` : undefined}
+      subtitle={request ? `${request.title ? `${requestLabel(request.id)} · ` : ""}Версія ${request.version} · ${requestStatus(request)}` : undefined}
       empty={!selected}
       emptyText="Оберіть заявку в таблиці, щоб побачити її трек."
       actions={
@@ -155,7 +155,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
                       <button type="button" id={`card-${r.id}`} className="request-card__open" onClick={() => select(r.id)}>
                         {requestLabel(r.id)}
                       </button>
-                      <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>
+                      <Badge tone={STATUS_TONES[r.status]}>{requestStatus(r)}</Badge>
                     </header>
                     {/* Без назви — показуємо, що в заявці, а не «Без назви». */}
                     <p className="request-card__title">{r.title || itemsSummary(r)}</p>

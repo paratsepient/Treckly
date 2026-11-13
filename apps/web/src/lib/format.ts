@@ -70,6 +70,12 @@ export const STATUS_TONES: Record<RequestStatus, BadgeTone> = {
   withdrawn: "neutral",
 };
 
+/** Статус заявки з позначками: повернута через непідписаний Головою перелік — «Не підписано Головою». */
+export function requestStatus(r: { readonly status: RequestStatus; readonly level: number | null; readonly returnInfo?: { readonly reason?: string } | null }): string {
+  if (r.status === "returned" && r.returnInfo?.reason === "not_signed") return "Не підписано Головою";
+  return statusText(r.status, r.level);
+}
+
 /** Статус із рівнем: «На розгляді · РУ», «Чекає погодження · бригада»; на рівні 5 у переліку — «Чекає підпису Голови». */
 export function statusText(status: RequestStatus, level: number | null): string {
   if (status === "in_list" && level === 5) return "Чекає підпису Голови";

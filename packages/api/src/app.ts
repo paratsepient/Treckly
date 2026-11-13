@@ -51,6 +51,7 @@ export function createApp(options: AppOptions) {
     const effective = await effectiveUser(db, user);
     c.set("user", effective.user);
     c.set("actingFor", effective.actingFor);
+    c.set("substitutedBy", effective.substitutedBy);
     await next();
   });
 
@@ -68,7 +69,7 @@ export function createApp(options: AppOptions) {
     const user = await loadUser(db, userId);
     if (!user) throw new ApiError(404, "NOT_FOUND", `Невідомий користувач ${userId}.`);
     const effective = await effectiveUser(db, user);
-    return c.json(await sessionOf(db, effective.user, effective.actingFor));
+    return c.json(await sessionOf(db, effective.user, effective.actingFor, effective.substitutedBy));
   });
 
   /**
@@ -81,7 +82,7 @@ export function createApp(options: AppOptions) {
       const next = new Date(Date.parse(await loadNow(tx)) + 86_400_000).toISOString();
       await saveNow(tx, next);
       await saveNotifications(tx, dailyReminders({ clock: createManualClock(next), ids: options.ids }, await loadRequests(tx)));
-      return { status: 200, body: await sessionOf(tx, c.get("user"), c.get("actingFor")) };
+      return { status: 200, body: await sessionOf(tx, c.get("user"), c.get("actingFor"), c.get("substitutedBy")) };
     });
     return c.json(reply.body, reply.status as 200);
   });
@@ -92,7 +93,7 @@ export function createApp(options: AppOptions) {
     const parsed = API.resetDemo.input.safeParse(text.trim() === "" ? {} : JSON.parse(text));
     if (!parsed.success) throw new ApiError(400, "VALIDATION", "Некоректне тіло запиту.", parsed.error.issues);
     await options.resetDemo({ withExamples: parsed.data.withExamples ?? false });
-    return c.json(await sessionOf(db, c.get("user"), c.get("actingFor")));
+    return c.json(await sessionOf(db, c.get("user"), c.get("actingFor"), c.get("substitutedBy")));
   });
 
   return app;

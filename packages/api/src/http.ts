@@ -41,7 +41,7 @@ export class ApiError extends Error {
 
 export interface Env {
   /** `user` — уже з роллю того, кого особа заміщає як ТВО; `actingFor` — кого саме. */
-  Variables: { user: UserRow; actingFor: string | null };
+  Variables: { user: UserRow; actingFor: string | null; substitutedBy: string | null };
 }
 
 export interface Reply {
@@ -77,6 +77,10 @@ export function actorOf(user: UserRow, actingFor: string | null = null): Actor {
 }
 
 export function metaOf(c: Context<Env>, expectedRevisions?: Record<string, number>): Meta {
+  // Заміщений ТВО не діє, поки призначення чинне (керування демо дозволене: це не робота з заявками).
+  if (c.get("substitutedBy") && !c.req.path.startsWith("/api/demo/")) {
+    throw new DomainError("FORBIDDEN_ROLE", "Ваші обов'язки зараз виконує ТВО: дії недоступні, доки призначення не знято.", { substitutedBy: c.get("substitutedBy") });
+  }
   return {
     actor: actorOf(c.get("user"), c.get("actingFor")),
     idempotencyKey: c.req.header("idempotency-key") ?? "",

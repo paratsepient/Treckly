@@ -103,7 +103,8 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                   >
                     {positions.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.code} · {p.name} (можна замовити {p.availableQty})
+                        {/* Коротко, щоб назва вміщалася в поле: код, назва, скільки ще можна замовити. */}
+                        {`${p.name} · ${p.code} · до ${p.availableQty}`}
                       </option>
                     ))}
                   </Select>

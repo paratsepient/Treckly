@@ -40,7 +40,7 @@ export function formList(ctx: DomainContext, meta: Meta, input: FormListInput): 
     }
   }
   const { today } = stamp(ctx);
-  const clash = input.existingLists.find((l) => l.level === level && l.unitId === unitId && l.date === today && l.status !== "disbanded");
+  const clash = input.existingLists.find((l) => l.level === level && l.unitId === unitId && l.date === today && (l.status === "formed" || l.status === "approved"));
   if (clash) {
     throw invalid("Перелік цього рівня й підрозділу на сьогодні вже існує.", { reason: "LIST_EXISTS", listId: clash.id });
   }
@@ -152,12 +152,12 @@ export function markNotSigned(ctx: DomainContext, meta: Meta, input: NotSignedIn
       level: null,
       listId: null,
       levelEnteredOn: today,
-      returnInfo: { level: FINAL_LEVEL, note, byUserId: meta.actor.userId, at, cascade },
+      returnInfo: { level: FINAL_LEVEL, note, byUserId: meta.actor.userId, at, cascade, reason: "not_signed" as const },
     });
   });
   return {
     requests,
-    lists: [bumped(list, { status: "disbanded" as const })],
+    lists: [bumped(list, { status: "not_signed" as const })],
     events: [
       makeEvent(ctx, meta, { type: "list.not_signed", listId: list.id, data: { note: reason, requestIds: list.requestIds } }),
       ...requests.map((r) =>

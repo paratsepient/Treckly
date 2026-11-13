@@ -78,6 +78,8 @@ export const SessionResponse = z.object({
   today: z.string(),
   /** ТВО: чиї обов'язки зараз виконує користувач (роль у `user` — уже того, кого заміщає). */
   actingFor: Id.nullable(),
+  /** ТВО: хто зараз заміщає цього користувача; поки не `null`, сам він не діє. */
+  substitutedBy: Id.nullable(),
 });
 export const AssignActingInput = z.object({ principalId: Id, deputyId: Id });
 export const ActingResponse = z.object({ assignment: ActingAssignment });

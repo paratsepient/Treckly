@@ -124,6 +124,8 @@ export interface ReturnInfo {
   readonly at: IsoTimestamp;
   /** Каскад сповіщень згори вниз: рівні L-1…1, потім автор. */
   readonly cascade: readonly Audience[];
+  /** Чому повернуто: «not_signed» — Голова не підписав остаточний перелік. */
+  readonly reason?: "not_signed";
 }
 
 export interface Request {
@@ -170,7 +172,8 @@ export interface Procurement {
   readonly byUserId: UserId;
 }
 
-export type DailyListStatus = "formed" | "approved" | "disbanded";
+/** «not_signed» — остаточний перелік, який Голова не підписав (заявки повернуто авторам). */
+export type DailyListStatus = "formed" | "approved" | "disbanded" | "not_signed";
 
 export interface DailyList {
   readonly id: string;

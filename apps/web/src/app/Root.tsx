@@ -35,7 +35,7 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
 
 function groupsForRole(role: Role, unread: number, level: number | null): NavGroup[] {
   const planned: NavItem = { id: "planned", label: "Запланований перелік", href: "#/planned", icon: <Icon name="registry" /> };
-  const inbox: NavItem = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
+  const inbox: NavItem = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="bell" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
   const summary: NavItem = { id: "summary", label: "Зведення", href: "#/summary", icon: <Icon name="kpi" /> };
   const registry: NavItem = { id: "registry", label: "Реєстр заявок", href: "#/registry", icon: <Icon name="records" /> };
   const final = (label: string): NavItem => ({ id: "final", label, href: "#/final", icon: <Icon name="sheet" /> });
@@ -275,6 +275,12 @@ export function Root() {
                 <span className="mobilebar__date">{formatDate(session.data.today)}</span>
               </header>
             )}
+            {session.data.substitutedBy ? (
+              // Заміщений ТВО: бачить усе, але не діє, доки призначення не знято.
+              <p className="substituted-note" role="status">
+                {`Ваші обов'язки зараз виконує ТВО: ${session.data.users.find((u) => u.id === session.data.substitutedBy)?.name ?? session.data.substitutedBy}. Дії недоступні, доки адміністратор не зніме призначення; переглядати можна.`}
+              </p>
+            ) : null}
             <Outlet />
           </div>
         </div>

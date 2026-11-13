@@ -16,11 +16,12 @@ test("Голова не підписав: заявки переліку пове
   await dialog.getByLabel("Чому не підписано").fill("Уточнити потребу в генераторах");
   await confirm.click();
   await expect(toast(page, "Відмічено: Голова не підписав")).toBeVisible();
-  await expect(page.getByRole("article", { name: /Перелік від/ })).toHaveCount(0);
+  // Позначка лишається: перелік — у розділі «Не підписані Головою».
+  await expect(page.getByRole("article", { name: /: не підписано Головою$/ })).toContainText("ЗМ-0007");
 
   await switchTo(page, AUTHOR_C, "/my");
   const returned = requestCard(page, "ЗМ-0007");
-  await expect(returned).toContainText("На доопрацюванні");
+  await expect(returned).toContainText("Не підписано Головою");
   await page.goto("/#/notifications");
   await expect(page.getByText(/Голова не підписав перелік: Уточнити потребу в генераторах/).first()).toBeVisible();
 });

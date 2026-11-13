@@ -399,7 +399,7 @@ const iconGroups: readonly (readonly [string, readonly (readonly [IconName, stri
     ["trend-up", "Зростання"], ["trend-down", "Спад"], ["trend-flat", "Без змін"],
   ]],
   ["Стани", [
-    ["success", "Успіх"], ["warning", "Попередження"], ["error", "Помилка"], ["info", "Інформація"], ["loading", "Завантаження"],
+    ["success", "Успіх"], ["warning", "Попередження"], ["error", "Помилка"], ["info", "Інформація"], ["bell", "Сповіщення"], ["loading", "Завантаження"],
     ["empty", "Порожній стан"], ["stale", "Застарілі дані"], ["access-denied", "Немає доступу"], ["source-unavailable", "Джерело недоступне"],
   ]],
 ];

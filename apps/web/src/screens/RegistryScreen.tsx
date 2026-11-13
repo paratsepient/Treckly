@@ -10,7 +10,7 @@ import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { RaportButton } from "../components/RaportDialog.tsx";
 import { requestTabs } from "../components/RequestTabs.tsx";
-import { formatDateShort, formatMoney, formatMoneyShort, requestLabel, STATUS_LABELS, STATUS_TONES, statusText, LEVEL_SHORT } from "../lib/format.ts";
+import { formatDateShort, formatMoney, formatMoneyShort, requestLabel, STATUS_LABELS, STATUS_TONES, statusText, LEVEL_SHORT, requestStatus } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
 
 type Request = ApiOutput<"registry">["requests"][number];
@@ -62,7 +62,7 @@ export function RegistryScreen({ view = "registry" }: { readonly view?: "summary
   const columns: readonly DataTableColumn<Request>[] = [
     { key: "id", header: "Номер", mono: true, render: (r) => requestLabel(r.id), width: 150 },
     { key: "unit", header: "в/ч", render: (r) => unitName(r.route[0]) },
-    { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>, width: 260 },
+    { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{requestStatus(r)}</Badge>, width: 260 },
     {
       key: "days",
       header: "Днів на розгляді",
@@ -129,7 +129,7 @@ export function RegistryScreen({ view = "registry" }: { readonly view?: "summary
       inspector={
         <DetailPanel
           title={selected ? requestLabel(selected) : "Заявка"}
-          subtitle={request ? `Версія ${request.version}${request.sedoNumber ? ` · СЕДО № ${request.sedoNumber}` : ""} · ${statusText(request.status, request.level)}` : undefined}
+          subtitle={request ? `Версія ${request.version}${request.sedoNumber ? ` · СЕДО № ${request.sedoNumber}` : ""} · ${requestStatus(request)}` : undefined}
           empty={!selected}
           emptyText="Оберіть заявку в реєстрі, щоб побачити її трек."
           actions={request ? <RaportButton request={request} /> : undefined}

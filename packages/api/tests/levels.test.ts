@@ -244,11 +244,14 @@ test("Голова не підписав: Відділ відмічає з пр�
   assert.equal((await h.fail("notSignedList", "prep-5-vor", 422, { params: { id: list.id }, body: { note: " " } })).code, "NOTE_REQUIRED");
   assert.equal((await h.fail("notSignedList", "appr-5-vor", 403, { params: { id: list.id }, body: { note: "Ні" } })).code, "FORBIDDEN_ROLE", "Голова в системі не діє");
   const { list: after, requests } = await h.call("notSignedList", "prep-5-vor", { params: { id: list.id }, body: { note: "Перевищено залишок 3110" } });
-  assert.equal(after.status, "disbanded");
+  assert.equal(after.status, "not_signed");
   assert.equal(requests[0]?.status, "returned");
   const detail = (await h.call("requestDetail", "author-unit-c", { params: { id: "req-0006" } })).request;
   assert.equal(detail.returnInfo?.level, 5);
   assert.match(detail.returnInfo?.note ?? "", /Голова не підписав перелік: Перевищено залишок 3110/);
+  assert.equal(detail.returnInfo?.reason, "not_signed");
+  // Позначка лишається в історії рівня 5: перелік видно зі статусом «не підписано».
+  assert.equal((await h.call("levelQueue", "prep-5-vor", { params: { level: "5" } })).lists.find((l) => l.id === list.id)?.status, "not_signed");
 });
 
 // ── Повернення ────────────────────────────────────────────────────────────────

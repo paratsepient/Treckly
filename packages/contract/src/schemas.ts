@@ -16,7 +16,7 @@ export const Id = z.string().min(1);
 
 export const RequestStatus = z.enum(["draft", "at_level", "in_list", "returned", "approved", "extract_issued", "procured", "issued", "not_procured", "withdrawn"]);
 export const LineStatus = z.enum(["awaits_approval", "approved", "awaits_replacement_approval", "replacement_agreed", "purchased", "replaced", "not_procured"]);
-export const DailyListStatus = z.enum(["formed", "approved", "disbanded"]);
+export const DailyListStatus = z.enum(["formed", "approved", "disbanded", "not_signed"]);
 
 export const ErrorCode = z.enum([
   "NOT_IN_LIST",
@@ -76,6 +76,7 @@ export const ReturnInfo = z.object({
   byUserId: Id,
   at: IsoTimestamp,
   cascade: z.array(Audience),
+  reason: z.literal("not_signed").optional(),
 });
 
 export const Procurement = z.object({

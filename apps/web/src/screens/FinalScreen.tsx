@@ -5,7 +5,7 @@ import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
-import { formatDateShort, formatMoney, LINE_STATUS_LABELS, LINE_STATUS_TONES, requestLabel, STATUS_TONES, statusText } from "../lib/format.ts";
+import { formatDateShort, formatMoney, LINE_STATUS_LABELS, LINE_STATUS_TONES, requestLabel, STATUS_TONES, statusText, requestStatus } from "../lib/format.ts";
 import { buildFinalReport, printHtml } from "../lib/reports.ts";
 import { requestTotal } from "../lib/totals.ts";
 import { buildExtractHtml, extractDocModel, type ExtractDocInput } from "../lib/extract-doc.ts";
@@ -57,7 +57,7 @@ export function FinalScreen() {
     { key: "sedo", header: "СЕДО №", mono: true, render: (r) => sedoOf(r.id), width: 140 },
     { key: "lines", header: "Рядків", numeric: true, render: (r) => r.lines.length, width: 90 },
     { key: "total", header: "Сума", numeric: true, render: (r) => formatMoney(requestTotal(r, priced)), width: 160 },
-    { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>, width: 190 },
+    { key: "status", header: "Статус", render: (r) => <Badge tone={STATUS_TONES[r.status]}>{requestStatus(r)}</Badge>, width: 190 },
     {
       key: "doc",
       header: "Документ",

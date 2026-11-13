@@ -20,6 +20,13 @@ test("ТВО: адміністратор призначає, заступник 
   assert.equal(session.user.level, 1);
   assert.match(session.user.title, /^ТВО: /);
 
+  // Заміщений керівник не діє, доки призначення чинне: бачить, але погодити не може.
+  const own = await h.call("session", APPR_1A);
+  assert.equal(own.substitutedBy, AUTHOR_A);
+  const ownQueue = await h.call("levelQueue", APPR_1A, { params: { level: "1" } });
+  const formed = ownQueue.lists.find((l) => l.status === "formed")!;
+  assert.equal((await h.fail("approveList", APPR_1A, 403, { params: { id: formed.id }, body: { sedoNumber: 8099 } })).code, "FORBIDDEN_ROLE");
+
   const queue = await h.call("levelQueue", AUTHOR_A, { params: { level: "1" } });
   const list = queue.lists.find((l) => l.status === "formed")!;
   await h.call("approveList", AUTHOR_A, { params: { id: list.id }, body: { sedoNumber: 8100 } });
@@ -29,6 +36,7 @@ test("ТВО: адміністратор призначає, заступник 
 
   const revoked = await h.call("revokeActing", ADMIN, { params: { id: assignment.id }, body: {} });
   assert.ok(revoked.assignment.revokedAt);
+  assert.equal((await h.call("session", APPR_1A)).substitutedBy, null, "після зняття заміщений знову діє");
   const back = await h.call("session", AUTHOR_A);
   assert.equal(back.actingFor, null);
   assert.equal(back.user.roleKind, "author");

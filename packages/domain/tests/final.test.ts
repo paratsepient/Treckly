@@ -122,12 +122,13 @@ test("Голова не підписав: усі заявки переліку �
   throwsCode(() => markNotSigned(world.ctx, meta(preparer(5)), { list, requests, note: "  " }), "NOTE_REQUIRED");
   throwsCode(() => markNotSigned(world.ctx, meta(approver(4)), { list, requests, note: "Перевищено" }), "FORBIDDEN_ROLE");
   const outcome = apply(world, markNotSigned(world.ctx, meta(preparer(5)), { list, requests, note: "Перевищено ліміт напрямку" }));
-  assert.equal(getList(world, listId).status, "disbanded");
+  assert.equal(getList(world, listId).status, "not_signed");
   for (const id of ids) {
     const r = get(world, id);
     assert.equal(r.status, "returned");
     assert.equal(r.returnInfo?.level, 5);
     assert.match(r.returnInfo?.note ?? "", /^Голова не підписав перелік: Перевищено ліміт напрямку/);
+    assert.equal(r.returnInfo?.reason, "not_signed");
   }
   assert.equal(world.budget.total.approvedMinor, reserved);
   // Кожна заявка: рівні 4…1 і автор.
