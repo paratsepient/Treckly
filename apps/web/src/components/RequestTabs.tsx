@@ -12,12 +12,14 @@ export interface RequestTabsInput {
   readonly detail: Detail;
   readonly positions: readonly Position[];
   readonly levels: readonly { readonly level: number; readonly name: string }[];
+  /** Вкладка «Журнал» (службовий запис дій) — для рівнів і адміністратора; автору достатньо треку. */
+  readonly journal?: boolean;
 }
 
 /** Вкладки картки заявки: трек, рядки зі статусами й журнал. Спільні для всіх екранів, де заявку відкривають. */
-export function requestTabs({ detail, positions, levels }: RequestTabsInput): DetailTab[] {
+export function requestTabs({ detail, positions, levels, journal = true }: RequestTabsInput): DetailTab[] {
   const { request } = detail;
-  return [
+  const tabs: DetailTab[] = [
     {
       value: "track",
       label: "Трек",
@@ -69,6 +71,9 @@ export function requestTabs({ detail, positions, levels }: RequestTabsInput): De
         </div>
       ),
     },
+  ];
+  if (!journal) return tabs;
+  tabs.push(
     {
       value: "journal",
       label: "Журнал",
@@ -85,5 +90,6 @@ export function requestTabs({ detail, positions, levels }: RequestTabsInput): De
           </ol>
         ),
     },
-  ];
+  );
+  return tabs;
 }

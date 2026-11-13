@@ -98,7 +98,7 @@ export function ProcurementScreen() {
       { params: { id: failing.id }, body: { note, expectedRevision: failing.revision } },
       {
         onSuccess: () => {
-          done(`${requestLabel(failing.id)}: закрито як не виконано`, "Статус заміни знято, резерв бюджету вивільнено.");
+          done(`${requestLabel(failing.id)}: закрито як не закуплено`, "Статус заміни знято, резерв бюджету вивільнено.");
           setFailing(null);
         },
         onError: (e) => setError(errorText(e)),
@@ -159,7 +159,6 @@ export function ProcurementScreen() {
                 ) : null}
                 <footer className="request-card__foot">
                   <strong className="request-card__sum">{formatMoney(requestTotal(r, priced))}</strong>
-                  <span>{unitName(r.route[0])}</span>
                 </footer>
                 <div className="procurement-card__actions">
                   <RaportButton request={r} />
@@ -172,7 +171,7 @@ export function ProcurementScreen() {
                           setFailing(r);
                         }}
                       >
-                        Не виконано…
+                        Не закуплено…
                       </Button>
                       <Button variant="primary" iconStart={<Icon name="success" />} onClick={() => openProcure(r)}>
                         Підтвердити закупівлю…
@@ -254,13 +253,13 @@ export function ProcurementScreen() {
         open={failing !== null}
         onClose={() => setFailing(null)}
         kind="confirm"
-        title={`Закрити ${failing ? requestLabel(failing.id) : ""} як не виконано?`}
+        title={`Закрити ${failing ? requestLabel(failing.id) : ""} як не закуплено?`}
         description="Закупівля не відбулася: статус заміни знімається, резерв бюджету вивільняється, автор отримає сповіщення з приміткою."
         actions={
           <>
             <Button onClick={() => setFailing(null)}>Скасувати</Button>
             <Button variant="destructive" loading={notProcured.isPending} loadingLabel="Закриття" disabled={note.trim() === ""} onClick={doFail}>
-              Закрити як не виконано
+              Закрити як не закуплено
             </Button>
           </>
         }

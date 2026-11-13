@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge, Button, Checkbox, DataTable, Input, Select, type DataTableColumn } from "@index/ui";
 import { useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
@@ -93,22 +93,36 @@ export function UsersScreen() {
   const session = useApiQuery("session");
   const reference = useApiQuery("reference");
   const [selected, setSelected] = useState<string | undefined>();
+  const [query, setQuery] = useState("");
 
-  const users = session.data?.users ?? [];
+  const all = session.data?.users ?? [];
   const unitName = (id: string | null) => (id ? (reference.data?.units.find((u) => u.id === id)?.name ?? id) : "—");
-  const current = users.find((u) => u.id === selected);
+  // Порядок за структурою: рівень (автори — разом із в/ч, рівень 1), підрозділ, роль; адміністратор — останнім.
+  const ROLE_ORDER: Record<User["roleKind"], number> = { author: 0, preparer: 1, approver: 2, admin: 3 };
+  const users = useMemo(() => {
+    const needle = query.trim().toLocaleLowerCase("uk-UA");
+    return [...all]
+      .sort(
+        (a, b) =>
+          (a.roleKind === "admin" ? 9 : (a.level ?? 1)) - (b.roleKind === "admin" ? 9 : (b.level ?? 1)) ||
+          unitName(a.unitId).localeCompare(unitName(b.unitId), "uk") ||
+          ROLE_ORDER[a.roleKind] - ROLE_ORDER[b.roleKind],
+      )
+      .filter((u) => needle === "" || `${u.name} ${u.title} ${unitName(u.unitId)}`.toLocaleLowerCase("uk-UA").includes(needle));
+  }, [all, query, reference.data]);
+  const current = all.find((u) => u.id === selected);
   const role = (u: User) => `${ROLE_TEXT[u.roleKind]}${u.level ? ` · рівень ${u.level}` : ""}`;
 
   const columns: readonly DataTableColumn<User>[] = [
     { key: "name", header: "ПІБ", render: (u) => u.name },
-    { key: "role", header: "Роль", render: role, width: 210 },
-    { key: "unit", header: "Підрозділ", render: (u) => unitName(u.unitId), width: 220 },
-    { key: "department", header: "Відділ", render: (u) => (u.departmentId ? serviceName(unitName(u.departmentId)) : "—"), width: 200 },
+    { key: "role", header: "Роль", render: role, width: 200 },
+    { key: "unit", header: "Підрозділ", render: (u) => unitName(u.unitId), width: 200 },
+    { key: "department", header: "Відділ", render: (u) => (u.departmentId ? serviceName(unitName(u.departmentId)) : "—"), width: 180 },
     {
       key: "kekv",
       header: "КЕКВ",
       render: (u) => (u.kekvs.length === 0 ? <Badge>Усі</Badge> : <span className="user-kekvs">{u.kekvs.map((k) => <Badge key={k}>{k}</Badge>)}</span>),
-      width: 150,
+      width: 110,
     },
   ];
 
@@ -122,10 +136,11 @@ export function UsersScreen() {
     );
 
   const state = session.isPending || reference.isPending ? "loading" : session.isError || reference.isError ? "error" : users.length === 0 ? "empty" : "ready";
+  const emptyTitle = all.length > 0 ? "Нікого не знайдено" : "Користувачів немає";
   return (
     <ScreenFrame
       title="Користувачі"
-      meta={session.data ? `${users.length} користувачів` : undefined}
+      meta={session.data ? `${all.length} користувачів` : undefined}
       surfaceLabel="Керування користувачами"
       actions={
         <InfoHint
@@ -141,6 +156,9 @@ export function UsersScreen() {
       }}
       {...(selected ? { inspectorKey: selected } : {})}
     >
+      <div className="filters">
+        <Input label="Пошук" placeholder="Ім'я, посада або підрозділ" value={query} onChange={(e) => setQuery(e.currentTarget.value)} />
+      </div>
       <DataTable
         label="Користувачі"
         columns={visibleColumns(columns, narrow || selected !== undefined, ["unit", "kekv"])}
@@ -151,7 +169,7 @@ export function UsersScreen() {
         currentRowId={selected ?? null}
         onRowSelect={setSelected}
         state={state}
-        stateTitle={state === "error" ? "Не вдалося завантажити користувачів" : "Користувачів немає"}
+        stateTitle={state === "error" ? "Не вдалося завантажити користувачів" : emptyTitle}
       />
     </ScreenFrame>
   );

@@ -208,7 +208,7 @@ export function DemoScreen() {
                 <Button iconStart={<Icon name="restore" />} loading={reset.isPending && resetMode === "clean"} loadingLabel="Скидання демо" onClick={() => setConfirm("clean")}>
                   Скинути демо
                 </Button>
-                <Button variant="ghost" loading={reset.isPending && resetMode === "examples"} loadingLabel="Завантаження прикладів" onClick={() => setConfirm("examples")}>
+                <Button variant="secondary" loading={reset.isPending && resetMode === "examples"} loadingLabel="Завантаження прикладів" onClick={() => setConfirm("examples")}>
                   Заповнити прикладами
                 </Button>
               </span>

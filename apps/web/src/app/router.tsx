@@ -106,6 +106,16 @@ const registryRoute = createRoute({
   ),
 });
 
+const summaryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/summary",
+  component: () => (
+    <RoleOnly roles={["preparer", "approver", "admin"]}>
+      <RegistryScreen view="summary" />
+    </RoleOnly>
+  ),
+});
+
 const notificationsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/notifications",
@@ -169,7 +179,7 @@ const journalRoute = createRoute({
 /** Демо-середовище доступне з будь-якої ролі: тут її й обирають. */
 const demoRoute = createRoute({ getParentRoute: () => rootRoute, path: "/demo", component: DemoScreen });
 
-const routeTree = rootRoute.addChildren([indexRoute, demoRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, finalRoute, registryRoute, notificationsRoute, journalRoute, plannedRoute, procurementRoute, actingRoute, usersRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, demoRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, finalRoute, registryRoute, notificationsRoute, journalRoute, plannedRoute, procurementRoute, actingRoute, usersRoute, summaryRoute]);
 
 /** Хеш-історія: застосунок відкривається зі статичних файлів на localhost без налаштування сервера. */
 export const router = createRouter({ routeTree, history: createHashHistory() });

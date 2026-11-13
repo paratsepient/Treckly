@@ -41,13 +41,24 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
   const request = detail.data?.request;
   const canEdit = request && (request.status === "draft" || request.status === "returned");
   const canWithdraw = request && (WITHDRAWABLE as readonly string[]).includes(request.status);
+  // Чернетку ще ніхто не бачив: для людини це «видалити», а не «відкликати».
+  const isDraft = request?.status === "draft";
+
+  const nameOf = (positionId: string) => positions.data?.positions.find((p) => p.id === positionId)?.name ?? positionId;
+  /** «Акумулятор 6S, Шолом захисний і ще 2» — щоб картку без назви можна було впізнати. */
+  const itemsSummary = (r: (typeof rows)[number]): string => {
+    if (r.lines.length === 0) return "Порожня чернетка";
+    const names = r.lines.slice(0, 2).map((l) => (l.kind === "replacement" ? l.newItem.name : nameOf(l.positionId)));
+    return r.lines.length > 2 ? `${names.join(", ")} і ще ${r.lines.length - 2}` : names.join(", ");
+  };
 
   const doWithdraw = () => {
     if (!request) return;
     withdraw.mutate(
       { params: { id: request.id }, body: { expectedRevision: request.revision } },
       {
-        onSuccess: () => feedback.notify({ key: "withdrawn", tone: "success", title: "Заявку відкликано", description: requestLabel(request.id) }),
+        onSuccess: () =>
+          feedback.notify({ key: "withdrawn", tone: "success", title: isDraft ? "Чернетку видалено" : "Заявку відкликано", description: requestLabel(request.id) }),
         onError: (error) =>
           feedback.notify({ key: "withdraw-error", tone: "error", title: "Не вдалося відкликати", description: error instanceof ApiClientError ? error.message : "Невідома помилка" }),
         onSettled: () => setConfirmOpen(false),
@@ -76,7 +87,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
             <RaportButton request={request} />
             {canWithdraw ? (
               <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
-                Відкликати
+                {isDraft ? "Видалити чернетку" : "Відкликати"}
               </Button>
             ) : null}
           </>
@@ -88,6 +99,7 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
               detail: detail.data,
               positions: positions.data?.positions ?? [],
               levels: (reference.data?.levels ?? []).map((l) => ({ level: l.level, name: l.name })),
+              journal: false,
             })
           : undefined
       }
@@ -136,19 +148,24 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
                       </button>
                       <Badge tone={STATUS_TONES[r.status]}>{statusText(r.status, r.level)}</Badge>
                     </header>
-                    <p className="request-card__title" data-empty={r.title ? undefined : "true"}>
-                      {r.title || "Без назви"}
-                    </p>
-                    <dl className="request-card__facts">
-                      <div>
-                        <dt>Днів на розгляді</dt>
-                        <dd>{atLevel ? daysAtLevel(r, today) : "—"}</dd>
-                      </div>
-                      <div>
-                        <dt>№ у СЕДО</dt>
-                        <dd>{r.sedoNumber ?? "—"}</dd>
-                      </div>
-                    </dl>
+                    {/* Без назви — показуємо, що в заявці, а не «Без назви». */}
+                    <p className="request-card__title">{r.title || itemsSummary(r)}</p>
+                    {atLevel || r.sedoNumber ? (
+                      <dl className="request-card__facts">
+                        {atLevel ? (
+                          <div>
+                            <dt>Днів на розгляді</dt>
+                            <dd>{daysAtLevel(r, today)}</dd>
+                          </div>
+                        ) : null}
+                        {r.sedoNumber ? (
+                          <div>
+                            <dt>№ у СЕДО</dt>
+                            <dd>{r.sedoNumber}</dd>
+                          </div>
+                        ) : null}
+                      </dl>
+                    ) : null}
                     <footer className="request-card__foot">
                       <strong className="request-card__sum">{formatMoney(requestTotal(r, positions.data?.positions ?? []))}</strong>
                       <span>{`${r.lines.length} ${r.lines.length === 1 ? "рядок" : r.lines.length < 5 ? "рядки" : "рядків"} · ${formatDateShort(r.createdOn)}`}</span>
@@ -163,18 +180,20 @@ export function MyRequestsScreen({ selected }: { readonly selected: string | und
       <Dialog
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
-        title="Відкликати заявку?"
+        title={isDraft ? "Видалити чернетку?" : "Відкликати заявку?"}
         description={
-          request?.status === "in_list"
+          isDraft
+            ? "Чернетку ще ніхто не бачив; вона зникне зі списку."
+            : request?.status === "in_list"
             ? "Заявка входить у сформований перелік: його буде розформовано, а решта заявок повернеться в чергу рівня."
             : "Заявка закриється, а рівні, на яких вона була, отримають сповіщення. Скасувати відкликання не можна."
         }
         kind="confirm"
         actions={
           <>
-            <Button onClick={() => setConfirmOpen(false)}>Не відкликати</Button>
-            <Button variant="destructive" loading={withdraw.isPending} loadingLabel="Відкликання" onClick={doWithdraw}>
-              Відкликати
+            <Button onClick={() => setConfirmOpen(false)}>Скасувати</Button>
+            <Button variant="destructive" loading={withdraw.isPending} loadingLabel={isDraft ? "Видалення" : "Відкликання"} onClick={doWithdraw}>
+              {isDraft ? "Видалити" : "Відкликати"}
             </Button>
           </>
         }

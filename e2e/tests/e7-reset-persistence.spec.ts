@@ -25,7 +25,7 @@ test("E7: чернетка переживає перезавантаження, 
   await page.goto("/#/my");
   await expect(page.getByText("Заявок ще немає")).toBeVisible();
   await page.goto("/#/final");
-  await expect(page.getByText("Затверджених заявок ще немає")).toBeVisible();
+  await expect(page.getByText("Витягів ще немає")).toBeVisible();
 
   // «Заповнити прикладами» повертає демо-стан.
   await demoAction(page, "Заповнити прикладами");

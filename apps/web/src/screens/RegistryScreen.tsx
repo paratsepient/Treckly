@@ -19,16 +19,18 @@ type BudgetLine = ApiOutput<"kpi">["budgetByKekv"][number];
 const ALL = "all";
 
 /**
- * Загальний реєстр і зведення: де зараз кожна заявка й скільки днів вона там, статуси,
- * середні дні на рівнях, частка повернень і бюджет за КЕКВ. Для ролей рівнів і адміністратора.
+ * Два окремі екрани з одного компонента, щоб не перевантажувати сторінку:
+ *  - «Зведення» — плитки, діаграми (без порожніх стовпців) і бюджет за КЕКВ;
+ *  - «Реєстр заявок» — таблиця з фільтрами й карткою заявки.
+ * Обидва — у зоні відповідальності користувача.
  */
-export function RegistryScreen() {
+export function RegistryScreen({ view = "registry" }: { readonly view?: "summary" | "registry" }) {
   const session = useApiQuery("session");
   const narrow = useMedia(NARROW);
   const reference = useApiQuery("reference");
   const positions = useApiQuery("positions");
-  const registry = useApiQuery("registry");
-  const kpi = useApiQuery("kpi");
+  const registry = useApiQuery("registry", undefined, { enabled: view === "registry" });
+  const kpi = useApiQuery("kpi", undefined, { enabled: view === "summary" });
 
   const [status, setStatus] = useState(ALL);
   const [level, setLevel] = useState(ALL);
@@ -73,14 +75,57 @@ export function RegistryScreen() {
   ];
 
 
+  if (view === "summary") {
+    return (
+      <ScreenFrame title="Зведення" meta={kpi.data ? `заявок: ${total}` : undefined} surfaceLabel="Зведення">
+        <section aria-label="Зведення" className="summary">
+          {kpi.isPending ? (
+            <DataState kind="loading" title="Завантаження зведення…" />
+          ) : kpi.isError || !kpi.data ? (
+            <DataState kind="error" title="Не вдалося завантажити зведення" />
+          ) : (
+            <>
+              <div className="kpi-row">
+                <KpiTile label="Усього заявок" value={total} />
+                <KpiTile label="У роботі" value={inWork} />
+                <KpiTile label="Затверджено" value={approved} />
+                <KpiTile label="Частка повернень" value={Math.round(kpi.data.returnShare * 100)} unit="%" />
+              </div>
+              <div className="chart-row">
+                <BarChart
+                  title="Заявки за статусами"
+                  orientation="horizontal"
+                  valueLabel="Заявок"
+                  // Лише статуси, у яких є заявки: порожні рядки діаграми лише відволікають.
+                  data={(Object.keys(STATUS_LABELS) as (keyof typeof STATUS_LABELS)[]).filter((s) => kpi.data.byStatus[s] > 0).map((s) => ({ label: STATUS_LABELS[s], value: kpi.data.byStatus[s] }))}
+                />
+                <BarChart
+                  title="Середня кількість днів на рівні"
+                  valueLabel="Днів"
+                  data={levels.map((l) => ({ label: LEVEL_SHORT[l.level] ?? `${l.level}`, value: kpi.data.avgDaysByLevel[String(l.level)] ?? 0 }))}
+                />
+                <DonutChart
+                  title="Затверджено й куплено за КЕКВ"
+                  formatValue={(v) => `${formatMoneyShort(v * 100)} грн`}
+                  data={budgetLines.filter((l) => l.approvedMinor > 0).map((l) => ({ label: `КЕКВ ${l.scope}`, value: l.approvedMinor / 100 }))}
+                />
+              </div>
+              <DataTable label="Бюджет напрямку за КЕКВ" columns={BudgetStateColumns} rows={budgetLines} getRowId={(l) => l.scope} rowHeaderKey="scope" variant="well" />
+            </>
+          )}
+        </section>
+      </ScreenFrame>
+    );
+  }
+
   const state = registry.isPending ? "loading" : registry.isError ? "error" : rows.length === 0 ? "empty" : "ready";
   const request = detail.data?.request;
 
   return (
     <ScreenFrame
-      title="Реєстр і зведення"
+      title="Реєстр заявок"
       meta={registry.data ? `${rows.length} із ${all.length}` : undefined}
-      surfaceLabel="Реєстр заявок і зведення"
+      surfaceLabel="Реєстр заявок"
       inspector={
         <DetailPanel
           title={selected ? requestLabel(selected) : "Заявка"}
@@ -101,49 +146,8 @@ export function RegistryScreen() {
       }}
       {...(selected ? { inspectorKey: selected } : {})}
     >
-      <section aria-labelledby="summary-title" className="summary">
-        <h2 id="summary-title" className="lists__title">
-          Зведення
-        </h2>
-        {kpi.isPending ? (
-          <DataState kind="loading" title="Завантаження зведення…" />
-        ) : kpi.isError || !kpi.data ? (
-          <DataState kind="error" title="Не вдалося завантажити зведення" />
-        ) : (
-          <>
-            <div className="kpi-row">
-              <KpiTile label="Усього заявок" value={total} />
-              <KpiTile label="У роботі" value={inWork} />
-              <KpiTile label="Затверджено" value={approved} />
-              <KpiTile label="Частка повернень" value={Math.round(kpi.data.returnShare * 100)} unit="%" />
-            </div>
-            <div className="chart-row">
-              <BarChart
-                title="Заявки за статусами"
-                orientation="horizontal"
-                valueLabel="Заявок"
-                data={(Object.keys(STATUS_LABELS) as (keyof typeof STATUS_LABELS)[]).map((s) => ({ label: STATUS_LABELS[s], value: kpi.data.byStatus[s] }))}
-              />
-              <BarChart
-                title="Середня кількість днів на рівні"
-                valueLabel="Днів"
-                data={levels.map((l) => ({ label: LEVEL_SHORT[l.level] ?? `${l.level}`, value: kpi.data.avgDaysByLevel[String(l.level)] ?? 0 }))}
-              />
-              <DonutChart
-                title="Затверджено й куплено за КЕКВ"
-                formatValue={(v) => `${formatMoneyShort(v * 100)} грн`}
-                data={budgetLines.filter((l) => l.approvedMinor > 0).map((l) => ({ label: `КЕКВ ${l.scope}`, value: l.approvedMinor / 100 }))}
-              />
-            </div>
-            <DataTable label="Бюджет напрямку за КЕКВ" columns={BudgetStateColumns} rows={budgetLines} getRowId={(l) => l.scope} rowHeaderKey="scope" variant="well" />
-          </>
-        )}
-      </section>
 
-      <section aria-labelledby="registry-title" className="summary">
-        <h2 id="registry-title" className="lists__title">
-          Реєстр заявок
-        </h2>
+      <section aria-label="Реєстр заявок" className="summary">
         <div className="filters" role="group" aria-label="Фільтри реєстру">
           <Select label="Статус" value={status} onChange={(event) => setStatus(event.target.value)}>
             <option value={ALL}>Усі статуси</option>
@@ -172,7 +176,7 @@ export function RegistryScreen() {
         </div>
         <DataTable
           label="Таблиця реєстру заявок"
-          columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["where", "days", "total", "created"] : ["where", "created"])}
+          columns={visibleColumns(columns, narrow || selected !== undefined, narrow ? ["days", "total", "created"] : ["created"])}
           rows={rows}
           getRowId={(r) => r.id}
           rowHeaderKey="id"

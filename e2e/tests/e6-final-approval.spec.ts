@@ -6,7 +6,7 @@ import { AUTHOR_C, openAs, row, switchTo, toast } from "../support.ts";
  * Голова в системі лише стежить.
  */
 test("E6: затвердження Головою — резерв бюджету, витяг із «Заміна погоджена», оновлене зведення", async ({ page }) => {
-  await openAs(page, "appr-5-vor", "/registry");
+  await openAs(page, "appr-5-vor", "/summary");
   const budget = page.getByRole("table", { name: "Бюджет напрямку за КЕКВ" });
   await expect(budget.getByRole("row", { name: /^2210/ })).toContainText(/222[\s ]000,00/);
   await expect(page.locator(".kpi-row")).toContainText("Затверджено");
@@ -24,7 +24,7 @@ test("E6: затвердження Головою — резерв бюджет�
 
   // Голова в системі не погоджує: екрана затвердження в нього немає, лише моніторинг.
   await switchTo(page, "appr-5-vor", "/lists");
-  await expect(page).toHaveURL(/#\/registry$/);
+  await expect(page).toHaveURL(/#\/summary$/);
   await expect(page.getByRole("link", { name: "Денний перелік" })).toHaveCount(0);
 
   // Відділ друкує/завантажує перелік, несе на підпис і відмічає «Підписано Головою» з номером СЕДО.
@@ -67,7 +67,7 @@ test("E6: затвердження Головою — резерв бюджет�
   await page.keyboard.press("Escape");
 
   // Бюджет зарезервовано (+37 200 грн у КЕКВ 2210; заміна в межах КЕКВ ліміт не витрачає); зведення оновилось.
-  await page.goto("/#/registry");
+  await page.goto("/#/summary");
   await expect(budget.getByRole("row", { name: /^2210/ })).toContainText(/259[\s ]200,00/);
 
   // Автор в/ч А0003 бачить власний витяг, а чужих — ні.

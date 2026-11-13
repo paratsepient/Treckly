@@ -106,22 +106,25 @@ export function FinalScreen() {
         </Button>
       }
     >
-      <section className="lists" aria-labelledby="final-requests-title">
-        <h2 id="final-requests-title" className="lists__title">
-          Підписані Головою заявки
-        </h2>
-        <DataTable
-          label="Затверджені заявки"
-          columns={visibleColumns(columns, narrow, ["on", "lines", "status"])}
-          rows={requests}
-          getRowId={(r) => r.id}
-          rowHeaderKey="id"
-          variant="well"
-          state={state}
-          stateTitle={state === "error" ? "Не вдалося завантажити затверджені заявки" : "Затверджених заявок ще немає"}
-          {...(state === "empty" ? { stateDescription: "Заявка потрапляє сюди після затвердження Головою: тоді ж резервується бюджет і формується витяг." } : {})}
-        />
-      </section>
+      {/* Автору таблиця дублює картки витягів нижче: йому досить витягів своєї в/ч. */}
+      {isAuthor ? null : (
+        <section className="lists" aria-labelledby="final-requests-title">
+          <h2 id="final-requests-title" className="lists__title">
+            Підписані Головою заявки
+          </h2>
+          <DataTable
+            label="Затверджені заявки"
+            columns={visibleColumns(columns, narrow, ["on", "lines", "status"])}
+            rows={requests}
+            getRowId={(r) => r.id}
+            rowHeaderKey="id"
+            variant="well"
+            state={state}
+            stateTitle={state === "error" ? "Не вдалося завантажити затверджені заявки" : "Затверджених заявок ще немає"}
+            {...(state === "empty" ? { stateDescription: "Заявка потрапляє сюди після затвердження Головою: тоді ж резервується бюджет і формується витяг." } : {})}
+          />
+        </section>
+      )}
 
       {isAuthor ? null : (
         <section className="lists" aria-labelledby="annual-title">

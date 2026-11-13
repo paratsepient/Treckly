@@ -28,7 +28,8 @@ interface NavGroup {
 function groupsFor(role: Role, unread: number, level: number | null): NavGroup[] {
   const planned: NavItem = { id: "planned", label: "Запланований перелік", href: "#/planned", icon: <Icon name="registry" /> };
   const inbox: NavItem = { id: "notifications", label: "Сповіщення", href: "#/notifications", icon: <Icon name="info" />, ...(unread > 0 ? { badge: String(unread) } : {}) };
-  const registry: NavItem = { id: "registry", label: "Реєстр і зведення", href: "#/registry", icon: <Icon name="kpi" /> };
+  const summary: NavItem = { id: "summary", label: "Зведення", href: "#/summary", icon: <Icon name="kpi" /> };
+  const registry: NavItem = { id: "registry", label: "Реєстр заявок", href: "#/registry", icon: <Icon name="records" /> };
   const final = (label: string): NavItem => ({ id: "final", label, href: "#/final", icon: <Icon name="sheet" /> });
   switch (role) {
     case "author":
@@ -60,15 +61,15 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
             inbox,
           ],
         },
-        { id: "overview", label: "Зведення", items: [planned, registry] },
+        { id: "overview", label: "Огляд", items: [planned, summary, registry] },
       ];
     case "approver":
       // Голова підписує перелік на папері, а в системі лише стежить: одне меню моніторингу в порядку роботи —
       // що заплановано, як іде, що затверджено. Сповіщень Голові не треба: дій у системі він не виконує.
-      if (level === 5) return [{ id: "monitoring", label: "Моніторинг", items: [planned, registry, final("Затверджені закупівлі")] }];
+      if (level === 5) return [{ id: "monitoring", label: "Моніторинг", items: [planned, summary, registry, final("Затверджені закупівлі")] }];
       return [
         { id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] },
-        { id: "overview", label: "Зведення", items: [planned, registry] },
+        { id: "overview", label: "Огляд", items: [planned, summary, registry] },
       ];
     case "admin":
       return [
@@ -77,6 +78,7 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
           label: "Адміністрування",
           items: [
             { id: "users", label: "Користувачі", href: "#/users", icon: <Icon name="users" /> },
+            summary,
             registry,
             { id: "acting", label: "Заміщення (ТВО)", href: "#/acting", icon: <Icon name="refresh" /> },
             { id: "journal", label: "Журнал дій", href: "#/journal", icon: <Icon name="history" /> },
@@ -87,8 +89,8 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
 }
 
 /** Початковий екран ролі. */
-export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/registry" =>
-  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/registry" : "/lists") : "/registry";
+export const homePath = (role: Role, level: number | null = null): "/property" | "/queue" | "/lists" | "/summary" | "/users" =>
+  role === "author" ? "/property" : role === "preparer" ? "/queue" : role === "approver" ? (level === 5 ? "/summary" : "/lists") : "/users";
 
 const initials = (name: string): string =>
   name
@@ -216,7 +218,7 @@ export function Root() {
   const { user } = session.data;
   const unit = reference.data.units.find((u) => u.id === user.unitId);
   const unread = (notifications.data?.notifications ?? []).filter((n) => n.readAt === null).length;
-  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned", "procurement", "acting", "users"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
+  const active = ["property", "new", "my", "queue", "lists", "final", "registry", "notifications", "journal", "demo", "planned", "procurement", "acting", "users", "summary"].find((id) => pathname.startsWith(`/${id}`)) ?? "";
   const role = `${user.title}${unit ? ` · ${unit.name}` : ""}`;
   const demo = (
     <div className="sidebar__demo">

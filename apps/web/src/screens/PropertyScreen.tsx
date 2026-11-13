@@ -1,8 +1,10 @@
-import { useRef, useState } from "react";
-import { Badge, DataTable, Tab, TabList, TabPanel, Tabs, type DataTableColumn } from "@index/ui";
+import { useMemo, useRef, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { Badge, Button, DataTable, Icon, Tab, TabList, TabPanel, Tabs, type DataTableColumn } from "@index/ui";
 import type { ApiOutput } from "@dsp/contract";
 import { useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
+import { InfoHint } from "../components/InfoHint.tsx";
 import { NARROW, useMedia, visibleColumns } from "../lib/useMedia.ts";
 import { formatMoney, TAB_LABELS } from "../lib/format.ts";
 import { useFillRows } from "../lib/useFillRows.ts";
@@ -26,10 +28,44 @@ const columns: readonly DataTableColumn<Row>[] = [
   { key: "price", header: "Ціна", numeric: true, render: (row) => (isFiller(row) ? blank : formatMoney(row.item.priceMinor)), width: 150 },
 ];
 
-/** «Моє майно» в/ч: вкладки «Заплановано», «На базі», «Отримано». */
+/** Скільки вже замовлено й скільки лишилось за планом — лише на вкладці «Заплановано». */
+const planColumns = (orderedOf: (code: string) => number): readonly DataTableColumn<Row>[] => [
+  ...columns.slice(0, 4),
+  { key: "ordered", header: "Вже замовлено", numeric: true, render: (row) => (isFiller(row) ? blank : orderedOf(row.item.code) || "—"), width: 150 },
+  {
+    key: "left",
+    header: "Можна замовити",
+    numeric: true,
+    render: (row) => (isFiller(row) ? blank : `${Math.max(0, row.qty - orderedOf(row.item.code))} ${row.item.measure}`),
+    width: 160,
+  },
+  ...columns.slice(4),
+];
+
+/**
+ * «Моє майно» в/ч: вкладки «Заплановано», «На базі», «Отримано». На плані видно, скільки вже замовлено
+ * заявками в/ч і скільки ще можна замовити; кнопка веде одразу до нової заявки.
+ */
 export function PropertyScreen() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<TabKey>("planned");
   const query = useApiQuery("property");
+  const mine = useApiQuery("myRequests");
+  const positions = useApiQuery("positions");
+  // Замовлено = рядки заявок в/ч, що займають план (усі, крім чернеток, відкликаних і незакуплених).
+  const ordered = useMemo(() => {
+    const codeOf = new Map((positions.data?.positions ?? []).map((p) => [p.id, p.code]));
+    const map = new Map<string, number>();
+    for (const r of mine.data?.requests ?? []) {
+      if (r.status === "draft" || r.status === "withdrawn" || r.status === "not_procured") continue;
+      for (const line of r.lines) {
+        const code = codeOf.get(line.positionId);
+        if (code) map.set(code, (map.get(code) ?? 0) + line.qty);
+      }
+    }
+    return map;
+  }, [mine.data, positions.data]);
+  const orderedOf = (code: string) => ordered.get(code) ?? 0;
   const session = useApiQuery("session");
   const narrow = useMedia(NARROW);
   const reference = useApiQuery("reference");
@@ -46,7 +82,21 @@ export function PropertyScreen() {
   const state = query.isPending ? "loading" : query.isError ? "error" : "ready";
 
   return (
-    <ScreenFrame title="Моє майно" surfaceLabel="Майно підрозділу">
+    <ScreenFrame
+      title="Моє майно"
+      surfaceLabel="Майно підрозділу"
+      actions={
+        <InfoHint
+          label="Що на вкладках"
+          text="«Заплановано» — що ваша в/ч може замовити на 2027 рік: заявку подають лише за цим планом. «Вже замовлено» — у ваших поданих заявках, «Можна замовити» — що лишилось. «На базі» — закуплене й закріплене за в/ч на складі бази. «Отримано» — уже видане в/ч."
+        />
+      }
+      primaryAction={
+        <Button variant="primary" iconStart={<Icon name="add" />} onClick={() => void navigate({ to: "/new", search: { id: undefined } })}>
+          Створити заявку
+        </Button>
+      }
+    >
       <Tabs value={tab} onValueChange={(value) => setTab(value as TabKey)}>
         <TabList aria-label="Вкладки майна" variant="line">
           {TABS.map((t) => (
@@ -62,7 +112,7 @@ export function PropertyScreen() {
               <div ref={t === tab ? sheet : undefined}>
               <DataTable
                 label={`Майно: ${TAB_LABELS[t].toLowerCase()}`}
-                columns={visibleColumns(columns, narrow, ["code", "price"])}
+                columns={visibleColumns(t === "planned" ? planColumns(orderedOf) : columns, narrow, ["code", "price", "ordered", "kekv"])}
                 rows={rows.length > 0 ? withFillers(rows) : rows}
                 getRowId={(row) => row.id}
                 rowHeaderKey="name"

@@ -846,13 +846,23 @@
   font: var(--ix-font-caption);
 }
 
+/* Дії картки: другорядні — парою в один ряд, головна — на всю ширину знизу (без «драбинки»). */
 .procurement-card__actions {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--ix-space-2);
-  justify-content: flex-end;
+}
+
+.procurement-card__actions > * {
+  width: 100%;
+  min-width: 0;
+}
+
+.procurement-card__actions > :only-child,
+.procurement-card__actions > [data-variant="primary"] {
+  grid-column: 1 / -1;
 }
 
 .request-card__number {
