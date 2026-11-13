@@ -1103,13 +1103,24 @@
 }
 
 /* Головна: картки «що потрібно зробити»; головна дія — виділена рамкою акценту й стоїть першою. */
+/* Картки «що зробити» — по дві в ряд на всю ширину; непарна остання займає весь рядок (одна — теж). */
 .home-tasks {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--ix-space-4);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.home-task:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 720px) {
+  .home-tasks {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .home-task {
