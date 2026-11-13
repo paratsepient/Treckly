@@ -4,7 +4,7 @@ import { DomainError } from "./errors.ts";
 import { assertLevelRole } from "./permissions.ts";
 import { parseSedoNumber } from "./sedo.ts";
 import type { Audience, Budget, CatalogAddition, DailyList, Level, Meta, Notification, Outcome, Positions, PropertyChange, Request, RequestLine, UnitId } from "./types.ts";
-import { FINAL_LEVEL, signerKind } from "./types.ts";
+import { FINAL_LEVEL, kekvCheckedAt, signerKind } from "./types.ts";
 
 function invalid(message: string, details: Readonly<Record<string, unknown>> = {}): DomainError {
   return new DomainError("INVALID_TRANSITION", message, details);
@@ -37,6 +37,9 @@ export function formList(ctx: DomainContext, meta: Meta, input: FormListInput): 
     guardRevision(meta, request);
     if (request.status !== "at_level" || request.level !== level || request.route[level - 1] !== unitId) {
       throw invalid("Заявка не в черзі цього рівня й підрозділу.", { requestId: request.id, status: request.status, level: request.level });
+    }
+    if (!kekvCheckedAt(request, level)) {
+      throw invalid("Заявку із заміною спершу перевірте: «Відповідає вимогам».", { reason: "KEKV_NOT_CHECKED", requestId: request.id });
     }
   }
   const { today } = stamp(ctx);
@@ -153,6 +156,7 @@ export function markNotSigned(ctx: DomainContext, meta: Meta, input: NotSignedIn
       listId: null,
       levelEnteredOn: today,
       returnInfo: { level: FINAL_LEVEL, note, byUserId: meta.actor.userId, at, cascade, reason: "not_signed" as const },
+      kekvCheck: null,
     });
   });
   return {

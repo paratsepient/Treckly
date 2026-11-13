@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Checkbox, DataState, DataTable, Icon, IconButton, Textarea, type DataTableColumn } from "@index/ui";
 import { Dialog, useFeedback } from "@index/ui-patterns";
 import type { ApiOutput } from "@dsp/contract";
-import { daysAtLevel } from "@dsp/domain";
+import { daysAtLevel, kekvCheckedAt, needsKekvCheck } from "@dsp/domain";
 import { ApiClientError } from "../api/client.ts";
 import { useApiMutation, useApiQuery } from "../api/hooks.tsx";
 import { ScreenFrame } from "../app/ScreenFrame.tsx";
@@ -54,6 +54,22 @@ export function LevelQueueScreen() {
 
   const form = useApiMutation("formList");
   const giveBack = useApiMutation("returnRequest");
+  const kekvCheck = useApiMutation("kekvCheck");
+  /** «Відповідає вимогам» / скасування: позначка заміни на цьому рівні; без неї заявку не обрати. */
+  const setKekv = (r: Request, ok: boolean) =>
+    kekvCheck.mutate(
+      { params: { id: r.id }, body: { ok, expectedRevision: r.revision } },
+      {
+        onSuccess: () => {
+          if (!ok) setChecked((current) => {
+            const next = new Set(current);
+            next.delete(r.id);
+            return next;
+          });
+        },
+        onError: (error) => feedback.notify({ key: "kekv-error", tone: "error", title: "Не вдалося змінити позначку", description: errorText(error) }),
+      },
+    );
   const disband = useApiMutation("disbandList");
   const sign = useApiMutation("approveList");
   const notSigned = useApiMutation("notSignedList");
@@ -205,8 +221,14 @@ export function LevelQueueScreen() {
       width: narrow ? 56 : 80,
       // Клік по прапорцю лише обирає заявку, а не відкриває її картку (подія не спливає до рядка).
       render: (r) => (
-        <span onClick={(event) => event.stopPropagation()}>
-          <Checkbox label={`Обрати ${requestLabel(r.id)} до переліку`} hideLabel checked={checked.has(r.id)} onChange={(event) => toggle(r.id, event.target.checked)} />
+        <span onClick={(event) => event.stopPropagation()} title={kekvCheckedAt(r, level) ? undefined : "Спершу перевірте заміну: «Відповідає вимогам»"}>
+          <Checkbox
+            label={`Обрати ${requestLabel(r.id)} до переліку`}
+            hideLabel
+            disabled={!kekvCheckedAt(r, level)}
+            checked={checked.has(r.id)}
+            onChange={(event) => toggle(r.id, event.target.checked)}
+          />
         </span>
       ),
     },
@@ -215,6 +237,28 @@ export function LevelQueueScreen() {
     { key: "lines", header: "Рядків", numeric: true, render: (r) => r.lines.length, width: 90 },
     { key: "total", header: "Сума", numeric: true, render: (r) => formatMoney(requestTotal(r, priced)), width: 160 },
     { key: "days", header: "Днів на рівні", numeric: true, render: (r) => daysAtLevel(r, today), width: 130 },
+    {
+      key: "kekv",
+      header: "Заміна й КЕКВ",
+      width: narrow ? 150 : 210,
+      // Лише для заявок із заміною: уповноважена особа підтверджує, що нове відповідає вказаному КЕКВ.
+      render: (r) =>
+        needsKekvCheck(r) ? (
+          <span onClick={(event) => event.stopPropagation()}>
+            {r.kekvCheck?.level === level ? (
+              <Button iconStart={<Icon name="close" />} loading={kekvCheck.isPending && kekvCheck.variables?.params?.id === r.id} loadingLabel="Скасування" onClick={() => setKekv(r, false)}>
+                Не відповідає вимогам
+              </Button>
+            ) : (
+              <Button variant="primary" iconStart={<Icon name="success" />} loading={kekvCheck.isPending && kekvCheck.variables?.params?.id === r.id} loadingLabel="Позначення" onClick={() => setKekv(r, true)}>
+                Відповідає вимогам
+              </Button>
+            )}
+          </span>
+        ) : (
+          <span className="lines__muted" title="Заміни немає — перевіряти КЕКВ не потрібно">—</span>
+        ),
+    },
     {
       key: "act",
       header: "Дія",
@@ -249,7 +293,9 @@ export function LevelQueueScreen() {
         {rows.length > 0 ? (
           <div className="queue-card__bar">
             <p className="queue-card__hint" aria-live="polite">
-              {checked.size === 0 ? "Позначте заявки, які погоджуєте сьогодні, — з них сформується денний перелік." : `Обрано заявок: ${checked.size}. Необрані лишаться на розгляді.`}
+              {checked.size === 0
+                ? "Позначте заявки, які погоджуєте сьогодні, — з них сформується денний перелік. Заявку із заміною спершу перевірте: «Відповідає вимогам»."
+                : `Обрано заявок: ${checked.size}. Необрані лишаться на розгляді.`}
             </p>
             <Button variant="primary" iconStart={<Icon name="add" />} disabled={checked.size === 0} loading={form.isPending} loadingLabel="Формування переліку" onClick={doForm}>
               {`Сформувати перелік${checked.size > 0 ? ` (${checked.size})` : ""}`}

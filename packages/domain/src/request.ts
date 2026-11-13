@@ -3,7 +3,7 @@ import { assertChecksPass, checkRequest } from "./checks.ts";
 import { bumped, guardRevision, levelAudience, makeEvent, stamp, type DomainContext } from "./context.ts";
 import { DomainError } from "./errors.ts";
 import { assertAuthor, assertLevelRole } from "./permissions.ts";
-import { isApprovedStatus, type FundingSource } from "./types.ts";
+import { isApprovedStatus, type FundingSource, needsKekvCheck } from "./types.ts";
 import type {
   Audience,
   Budget,
@@ -76,6 +76,7 @@ export function createDraft(ctx: DomainContext, meta: Meta, input: CreateDraftIn
     funding: input.funding ?? "general",
     returnInfo: null,
     sedoNumber: null,
+    kekvCheck: null,
     procurement: null,
     levelEnteredOn: null,
     createdOn: today,
@@ -165,6 +166,7 @@ function enterFirstLevel(ctx: DomainContext, meta: Meta, input: SubmitInput, typ
     level: 1,
     listId: null,
     returnInfo: null,
+    kekvCheck: null,
     levelEnteredOn: today,
   });
   return {
@@ -234,6 +236,7 @@ export function returnRequest(ctx: DomainContext, meta: Meta, input: ReturnInput
     listId: null,
     levelEnteredOn: today,
     returnInfo: { level, note, byUserId: meta.actor.userId, at, cascade },
+    kekvCheck: null,
   });
   return {
     requests: [next],
@@ -322,4 +325,45 @@ export function lineStatus(request: Pick<Request, "status">, line: RequestLine):
   const approved = request.status === "approved" || request.status === "extract_issued";
   if (line.kind === "by_list") return approved ? "approved" : "awaits_approval";
   return request.status === "extract_issued" ? "replacement_agreed" : "awaits_replacement_approval";
+}
+
+export interface KekvCheckInput {
+  readonly request: Request;
+  /** true — «Відповідає вимогам», false — скасувати позначку. */
+  readonly ok: boolean;
+}
+
+/**
+ * Перевірка заміни на рівні (рішення користувача 2026-11-13): уповноважена особа рівня підтверджує, що те, що просять
+ * натомість, відповідає вказаному КЕКВ, або скасовує позначку. Лише для заявки із заміною, що зараз у черзі рівня.
+ */
+export function setKekvCheck(ctx: DomainContext, meta: Meta, input: KekvCheckInput): Outcome {
+  const { request } = input;
+  if (request.status !== "at_level" || request.level === null) {
+    throw invalid("Перевірити можна заявку з черги рівня (розформуйте перелік, якщо вона в ньому).", { status: request.status });
+  }
+  const level = request.level;
+  assertLevelRole(meta.actor, "preparer", level, request.route[level - 1] as string);
+  guardRevision(meta, request);
+  if (!needsKekvCheck(request)) {
+    throw invalid("У заявці немає заміни: перевіряти відповідність КЕКВ не потрібно.", { reason: "NO_REPLACEMENT" });
+  }
+  const { at } = stamp(ctx);
+  const next = bumped(request, { kekvCheck: input.ok ? { level, byUserId: meta.actor.userId, at } : null });
+  return {
+    requests: [next],
+    lists: [],
+    events: [
+      makeEvent(ctx, meta, {
+        type: input.ok ? "request.kekv_checked" : "request.kekv_unchecked",
+        requestId: next.id,
+        from: request.status,
+        to: next.status,
+        requestVersion: next.version,
+        revision: next.revision,
+        data: { level },
+      }),
+    ],
+    notifications: [],
+  };
 }

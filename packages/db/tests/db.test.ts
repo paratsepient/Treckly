@@ -11,6 +11,7 @@ import {
   formList,
   issueExtracts,
   returnRequest,
+  setKekvCheck,
   submit,
   type Actor,
   type DomainContext,
@@ -164,6 +165,8 @@ test("весь шлях заявки через базу: рівні 1–5, за
 
   for (const level of [1, 2, 3, 4, 5] as const) {
     s.clock.advanceDays(1);
+    // Заміну уповноважена особа рівня спершу позначає «Відповідає вимогам».
+    await run(s, (st) => setKekvCheck(s.ctx, meta(prep(level)), { request: st.requests.find((r) => r.id === id)!, ok: true }));
     const formed = await run(s, (st) =>
       formList(s.ctx, meta(prep(level)), { level, unitId: ROUTE[level - 1] as string, selected: [st.requests.find((r) => r.id === id)!], existingLists: [] }),
     );

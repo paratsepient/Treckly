@@ -1653,6 +1653,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-01"
@@ -1738,6 +1739,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -1834,6 +1836,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-01"
@@ -1912,6 +1915,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -1992,6 +1996,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-01"
@@ -2054,6 +2059,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310007,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2141,6 +2147,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-01"
@@ -2210,6 +2217,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310010,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2290,6 +2298,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-01"
@@ -2352,6 +2361,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310011,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2407,6 +2417,98 @@
      ],
      "version": 1,
      "revision": 3,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ зв'язку",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-a",
+      "at": "2027-02-01T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-a",
+     "idempotencyKey": "seed-0011",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
      "status": "in_list",
      "level": 1,
      "listId": "list-0001",
@@ -2455,6 +2557,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-a",
+      "at": "2027-02-01T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2481,7 +2588,7 @@
      "type": "list.formed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-a",
-     "idempotencyKey": "seed-0011",
+     "idempotencyKey": "seed-0012",
      "requestId": null,
      "listId": "list-0001",
      "from": null,
@@ -2501,13 +2608,13 @@
      "type": "request.listed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-a",
-     "idempotencyKey": "seed-0011",
+     "idempotencyKey": "seed-0012",
      "requestId": "req-0001",
      "listId": "list-0001",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 3,
+     "revision": 4,
      "data": {
       "level": 1
      }
@@ -2542,7 +2649,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 4,
+     "revision": 5,
      "status": "at_level",
      "level": 2,
      "listId": null,
@@ -2591,6 +2698,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-a",
+      "at": "2027-02-01T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2617,7 +2729,7 @@
      "type": "list.approved",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-a",
-     "idempotencyKey": "seed-0012",
+     "idempotencyKey": "seed-0013",
      "requestId": null,
      "listId": "list-0001",
      "from": null,
@@ -2633,13 +2745,13 @@
      "type": "request.advanced",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-a",
-     "idempotencyKey": "seed-0012",
+     "idempotencyKey": "seed-0013",
      "requestId": "req-0001",
      "listId": "list-0001",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 4,
+     "revision": 5,
      "data": {
       "fromLevel": 1,
       "level": 2,
@@ -2677,6 +2789,91 @@
      ],
      "version": 1,
      "revision": 3,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-009",
+       "qty": 5,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бронежилет модульний",
+        "kekv": "3110",
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-b",
+      "at": "2027-02-01T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-01T09:00:00.000Z",
+     "actorId": "prep-1-unit-b",
+     "idempotencyKey": "seed-0014",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 4,
      "status": "in_list",
      "level": 1,
      "listId": "list-0002",
@@ -2718,6 +2915,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-b",
+      "at": "2027-02-01T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2759,6 +2961,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310007,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2807,6 +3010,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310010,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -2835,7 +3039,7 @@
      "type": "list.formed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-b",
-     "idempotencyKey": "seed-0013",
+     "idempotencyKey": "seed-0015",
      "requestId": null,
      "listId": "list-0002",
      "from": null,
@@ -2857,13 +3061,13 @@
      "type": "request.listed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-b",
-     "idempotencyKey": "seed-0013",
+     "idempotencyKey": "seed-0015",
      "requestId": "req-0002",
      "listId": "list-0002",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 3,
+     "revision": 4,
      "data": {
       "level": 1
      }
@@ -2872,7 +3076,7 @@
      "type": "request.listed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-b",
-     "idempotencyKey": "seed-0013",
+     "idempotencyKey": "seed-0015",
      "requestId": "req-0003",
      "listId": "list-0002",
      "from": "at_level",
@@ -2887,7 +3091,7 @@
      "type": "request.listed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-b",
-     "idempotencyKey": "seed-0013",
+     "idempotencyKey": "seed-0015",
      "requestId": "req-0004",
      "listId": "list-0002",
      "from": "at_level",
@@ -2928,7 +3132,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 4,
+     "revision": 5,
      "status": "at_level",
      "level": 2,
      "listId": null,
@@ -2970,6 +3174,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-b",
+      "at": "2027-02-01T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3011,6 +3220,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310007,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3059,6 +3269,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310010,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3087,7 +3298,7 @@
      "type": "list.approved",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-b",
-     "idempotencyKey": "seed-0014",
+     "idempotencyKey": "seed-0016",
      "requestId": null,
      "listId": "list-0002",
      "from": null,
@@ -3103,13 +3314,13 @@
      "type": "request.advanced",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-b",
-     "idempotencyKey": "seed-0014",
+     "idempotencyKey": "seed-0016",
      "requestId": "req-0002",
      "listId": "list-0002",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 4,
+     "revision": 5,
      "data": {
       "fromLevel": 1,
       "level": 2,
@@ -3120,7 +3331,7 @@
      "type": "request.advanced",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-b",
-     "idempotencyKey": "seed-0014",
+     "idempotencyKey": "seed-0016",
      "requestId": "req-0003",
      "listId": "list-0002",
      "from": "in_list",
@@ -3137,7 +3348,7 @@
      "type": "request.advanced",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-b",
-     "idempotencyKey": "seed-0014",
+     "idempotencyKey": "seed-0016",
      "requestId": "req-0004",
      "listId": "list-0002",
      "from": "in_list",
@@ -3232,6 +3443,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310011,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3258,7 +3470,7 @@
      "type": "list.formed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-c",
-     "idempotencyKey": "seed-0015",
+     "idempotencyKey": "seed-0017",
      "requestId": null,
      "listId": "list-0003",
      "from": null,
@@ -3278,7 +3490,7 @@
      "type": "request.listed",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "prep-1-unit-c",
-     "idempotencyKey": "seed-0015",
+     "idempotencyKey": "seed-0017",
      "requestId": "req-0005",
      "listId": "list-0003",
      "from": "at_level",
@@ -3345,6 +3557,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310011,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3371,7 +3584,7 @@
      "type": "list.approved",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-c",
-     "idempotencyKey": "seed-0016",
+     "idempotencyKey": "seed-0018",
      "requestId": null,
      "listId": "list-0003",
      "from": null,
@@ -3387,7 +3600,7 @@
      "type": "request.advanced",
      "at": "2027-02-01T09:00:00.000Z",
      "actorId": "appr-1-unit-c",
-     "idempotencyKey": "seed-0016",
+     "idempotencyKey": "seed-0018",
      "requestId": "req-0005",
      "listId": "list-0003",
      "from": "in_list",
@@ -3430,7 +3643,184 @@
       "vor"
      ],
      "version": 1,
-     "revision": 5,
+     "revision": 6,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ зв'язку",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-1",
+      "at": "2027-02-02T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0019",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "level": 2
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-009",
+       "qty": 5,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бронежилет модульний",
+        "kekv": "3110",
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-1",
+      "at": "2027-02-02T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-01",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-02T09:00:00.000Z",
+     "actorId": "prep-2-brig-1",
+     "idempotencyKey": "seed-0020",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "level": 2
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 7,
      "status": "in_list",
      "level": 2,
      "listId": "list-0004",
@@ -3479,6 +3869,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-1",
+      "at": "2027-02-02T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3494,7 +3889,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 5,
+     "revision": 7,
      "status": "in_list",
      "level": 2,
      "listId": "list-0004",
@@ -3536,6 +3931,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-1",
+      "at": "2027-02-02T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3577,6 +3977,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310007,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3625,6 +4026,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310010,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-01",
      "createdOn": "2027-02-01"
@@ -3654,7 +4056,7 @@
      "type": "list.formed",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "prep-2-brig-1",
-     "idempotencyKey": "seed-0017",
+     "idempotencyKey": "seed-0021",
      "requestId": null,
      "listId": "list-0004",
      "from": null,
@@ -3677,13 +4079,13 @@
      "type": "request.listed",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "prep-2-brig-1",
-     "idempotencyKey": "seed-0017",
+     "idempotencyKey": "seed-0021",
      "requestId": "req-0001",
      "listId": "list-0004",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 5,
+     "revision": 7,
      "data": {
       "level": 2
      }
@@ -3692,13 +4094,13 @@
      "type": "request.listed",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "prep-2-brig-1",
-     "idempotencyKey": "seed-0017",
+     "idempotencyKey": "seed-0021",
      "requestId": "req-0002",
      "listId": "list-0004",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 5,
+     "revision": 7,
      "data": {
       "level": 2
      }
@@ -3707,7 +4109,7 @@
      "type": "request.listed",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "prep-2-brig-1",
-     "idempotencyKey": "seed-0017",
+     "idempotencyKey": "seed-0021",
      "requestId": "req-0003",
      "listId": "list-0004",
      "from": "at_level",
@@ -3722,7 +4124,7 @@
      "type": "request.listed",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "prep-2-brig-1",
-     "idempotencyKey": "seed-0017",
+     "idempotencyKey": "seed-0021",
      "requestId": "req-0004",
      "listId": "list-0004",
      "from": "at_level",
@@ -3763,7 +4165,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 6,
+     "revision": 8,
      "status": "at_level",
      "level": 3,
      "listId": null,
@@ -3812,6 +4214,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-1",
+      "at": "2027-02-02T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-02",
      "createdOn": "2027-02-01"
@@ -3827,7 +4234,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 6,
+     "revision": 8,
      "status": "at_level",
      "level": 3,
      "listId": null,
@@ -3869,6 +4276,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-1",
+      "at": "2027-02-02T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-02",
      "createdOn": "2027-02-01"
@@ -3910,6 +4322,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310007,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-02",
      "createdOn": "2027-02-01"
@@ -3958,6 +4371,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310010,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-02",
      "createdOn": "2027-02-01"
@@ -3987,7 +4401,7 @@
      "type": "list.approved",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "appr-2-brig-1",
-     "idempotencyKey": "seed-0018",
+     "idempotencyKey": "seed-0022",
      "requestId": null,
      "listId": "list-0004",
      "from": null,
@@ -4003,13 +4417,13 @@
      "type": "request.advanced",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "appr-2-brig-1",
-     "idempotencyKey": "seed-0018",
+     "idempotencyKey": "seed-0022",
      "requestId": "req-0001",
      "listId": "list-0004",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 6,
+     "revision": 8,
      "data": {
       "fromLevel": 2,
       "level": 3,
@@ -4020,13 +4434,13 @@
      "type": "request.advanced",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "appr-2-brig-1",
-     "idempotencyKey": "seed-0018",
+     "idempotencyKey": "seed-0022",
      "requestId": "req-0002",
      "listId": "list-0004",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 6,
+     "revision": 8,
      "data": {
       "fromLevel": 2,
       "level": 3,
@@ -4037,7 +4451,7 @@
      "type": "request.advanced",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "appr-2-brig-1",
-     "idempotencyKey": "seed-0018",
+     "idempotencyKey": "seed-0022",
      "requestId": "req-0003",
      "listId": "list-0004",
      "from": "in_list",
@@ -4054,7 +4468,7 @@
      "type": "request.advanced",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "appr-2-brig-1",
-     "idempotencyKey": "seed-0018",
+     "idempotencyKey": "seed-0022",
      "requestId": "req-0004",
      "listId": "list-0004",
      "from": "in_list",
@@ -4162,6 +4576,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310011,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-01"
@@ -4173,7 +4588,7 @@
      "type": "request.withdrawn",
      "at": "2027-02-02T09:00:00.000Z",
      "actorId": "author-unit-c",
-     "idempotencyKey": "seed-0019",
+     "idempotencyKey": "seed-0023",
      "requestId": "req-0005",
      "listId": null,
      "from": "at_level",
@@ -4254,6 +4669,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-03"
@@ -4265,7 +4681,7 @@
      "type": "request.created",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "author-unit-c",
-     "idempotencyKey": "seed-0020",
+     "idempotencyKey": "seed-0024",
      "requestId": "req-0006",
      "listId": null,
      "from": null,
@@ -4316,6 +4732,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310013,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -4327,7 +4744,7 @@
      "type": "request.submitted",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "author-unit-c",
-     "idempotencyKey": "seed-0021",
+     "idempotencyKey": "seed-0025",
      "requestId": "req-0006",
      "listId": null,
      "from": "draft",
@@ -4412,6 +4829,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-03"
@@ -4423,7 +4841,7 @@
      "type": "request.created",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "author-unit-c",
-     "idempotencyKey": "seed-0022",
+     "idempotencyKey": "seed-0026",
      "requestId": "req-0007",
      "listId": null,
      "from": null,
@@ -4490,6 +4908,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -4501,7 +4920,7 @@
      "type": "request.submitted",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "author-unit-c",
-     "idempotencyKey": "seed-0023",
+     "idempotencyKey": "seed-0027",
      "requestId": "req-0007",
      "listId": null,
      "from": "draft",
@@ -4570,6 +4989,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-03"
@@ -4581,7 +5001,7 @@
      "type": "request.created",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "author-unit-a",
-     "idempotencyKey": "seed-0024",
+     "idempotencyKey": "seed-0028",
      "requestId": "req-0008",
      "listId": null,
      "from": null,
@@ -4632,6 +5052,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310020,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -4643,7 +5064,7 @@
      "type": "request.submitted",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "author-unit-a",
-     "idempotencyKey": "seed-0025",
+     "idempotencyKey": "seed-0029",
      "requestId": "req-0008",
      "listId": null,
      "from": "draft",
@@ -4676,6 +5097,91 @@
   {
    "requests": [
     {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 3,
+     "status": "at_level",
+     "level": 1,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Запланована позиція переліку не відповідає умовам експлуатації в підрозділі, тому замість неї просимо схожий предмет. Решта позицій — планове поповнення.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-c",
+      "at": "2027-02-03T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-03T09:00:00.000Z",
+     "actorId": "prep-1-unit-c",
+     "idempotencyKey": "seed-0030",
+     "requestId": "req-0007",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 3,
+     "data": {
+      "level": 1
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
      "id": "req-0006",
      "authorId": "author-unit-c",
      "route": [
@@ -4712,6 +5218,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310013,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -4727,7 +5234,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 3,
+     "revision": 4,
      "status": "in_list",
      "level": 1,
      "listId": "list-0005",
@@ -4769,6 +5276,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-c",
+      "at": "2027-02-03T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -4796,7 +5308,7 @@
      "type": "list.formed",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "prep-1-unit-c",
-     "idempotencyKey": "seed-0026",
+     "idempotencyKey": "seed-0031",
      "requestId": null,
      "listId": "list-0005",
      "from": null,
@@ -4817,7 +5329,7 @@
      "type": "request.listed",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "prep-1-unit-c",
-     "idempotencyKey": "seed-0026",
+     "idempotencyKey": "seed-0031",
      "requestId": "req-0006",
      "listId": "list-0005",
      "from": "at_level",
@@ -4832,13 +5344,13 @@
      "type": "request.listed",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "prep-1-unit-c",
-     "idempotencyKey": "seed-0026",
+     "idempotencyKey": "seed-0031",
      "requestId": "req-0007",
      "listId": "list-0005",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 3,
+     "revision": 4,
      "data": {
       "level": 1
      }
@@ -4899,6 +5411,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310013,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -4914,7 +5427,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 4,
+     "revision": 5,
      "status": "at_level",
      "level": 2,
      "listId": null,
@@ -4956,6 +5469,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 1,
+      "byUserId": "prep-1-unit-c",
+      "at": "2027-02-03T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -4983,7 +5501,7 @@
      "type": "list.approved",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "appr-1-unit-c",
-     "idempotencyKey": "seed-0027",
+     "idempotencyKey": "seed-0032",
      "requestId": null,
      "listId": "list-0005",
      "from": null,
@@ -4999,7 +5517,7 @@
      "type": "request.advanced",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "appr-1-unit-c",
-     "idempotencyKey": "seed-0027",
+     "idempotencyKey": "seed-0032",
      "requestId": "req-0006",
      "listId": "list-0005",
      "from": "in_list",
@@ -5016,13 +5534,13 @@
      "type": "request.advanced",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "appr-1-unit-c",
-     "idempotencyKey": "seed-0027",
+     "idempotencyKey": "seed-0032",
      "requestId": "req-0007",
      "listId": "list-0005",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 4,
+     "revision": 5,
      "data": {
       "fromLevel": 1,
       "level": 2,
@@ -5098,6 +5616,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310020,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -5124,7 +5643,7 @@
      "type": "list.formed",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "prep-1-unit-a",
-     "idempotencyKey": "seed-0028",
+     "idempotencyKey": "seed-0033",
      "requestId": null,
      "listId": "list-0006",
      "from": null,
@@ -5144,7 +5663,7 @@
      "type": "request.listed",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "prep-1-unit-a",
-     "idempotencyKey": "seed-0028",
+     "idempotencyKey": "seed-0033",
      "requestId": "req-0008",
      "listId": "list-0006",
      "from": "at_level",
@@ -5211,6 +5730,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310020,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -5237,7 +5757,7 @@
      "type": "list.approved",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "appr-1-unit-a",
-     "idempotencyKey": "seed-0029",
+     "idempotencyKey": "seed-0034",
      "requestId": null,
      "listId": "list-0006",
      "from": null,
@@ -5253,7 +5773,7 @@
      "type": "request.advanced",
      "at": "2027-02-03T09:00:00.000Z",
      "actorId": "appr-1-unit-a",
-     "idempotencyKey": "seed-0029",
+     "idempotencyKey": "seed-0034",
      "requestId": "req-0008",
      "listId": "list-0006",
      "from": "in_list",
@@ -5296,7 +5816,184 @@
       "vor"
      ],
      "version": 1,
-     "revision": 7,
+     "revision": 9,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ зв'язку",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-04T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0035",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 3
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 9,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-009",
+       "qty": 5,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бронежилет модульний",
+        "kekv": "3110",
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-04T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-02",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-04T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0036",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 3
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 10,
      "status": "in_list",
      "level": 3,
      "listId": "list-0007",
@@ -5345,6 +6042,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-04T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-02",
      "createdOn": "2027-02-01"
@@ -5360,7 +6062,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 7,
+     "revision": 10,
      "status": "in_list",
      "level": 3,
      "listId": "list-0007",
@@ -5402,6 +6104,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-04T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-02",
      "createdOn": "2027-02-01"
@@ -5429,7 +6136,7 @@
      "type": "list.formed",
      "at": "2027-02-04T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0030",
+     "idempotencyKey": "seed-0037",
      "requestId": null,
      "listId": "list-0007",
      "from": null,
@@ -5450,13 +6157,13 @@
      "type": "request.listed",
      "at": "2027-02-04T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0030",
+     "idempotencyKey": "seed-0037",
      "requestId": "req-0001",
      "listId": "list-0007",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 7,
+     "revision": 10,
      "data": {
       "level": 3
      }
@@ -5465,13 +6172,13 @@
      "type": "request.listed",
      "at": "2027-02-04T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0030",
+     "idempotencyKey": "seed-0037",
      "requestId": "req-0002",
      "listId": "list-0007",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 7,
+     "revision": 10,
      "data": {
       "level": 3
      }
@@ -5506,7 +6213,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 8,
+     "revision": 11,
      "status": "at_level",
      "level": 4,
      "listId": null,
@@ -5555,6 +6262,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-04T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-04",
      "createdOn": "2027-02-01"
@@ -5570,7 +6282,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 8,
+     "revision": 11,
      "status": "at_level",
      "level": 4,
      "listId": null,
@@ -5612,6 +6324,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-04T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-04",
      "createdOn": "2027-02-01"
@@ -5639,7 +6356,7 @@
      "type": "list.approved",
      "at": "2027-02-04T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0031",
+     "idempotencyKey": "seed-0038",
      "requestId": null,
      "listId": "list-0007",
      "from": null,
@@ -5655,13 +6372,13 @@
      "type": "request.advanced",
      "at": "2027-02-04T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0031",
+     "idempotencyKey": "seed-0038",
      "requestId": "req-0001",
      "listId": "list-0007",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 8,
+     "revision": 11,
      "data": {
       "fromLevel": 3,
       "level": 4,
@@ -5672,13 +6389,13 @@
      "type": "request.advanced",
      "at": "2027-02-04T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0031",
+     "idempotencyKey": "seed-0038",
      "requestId": "req-0002",
      "listId": "list-0007",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 8,
+     "revision": 11,
      "data": {
       "fromLevel": 3,
       "level": 4,
@@ -5784,6 +6501,7 @@
       ]
      },
      "sedoNumber": 5310010,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-04",
      "createdOn": "2027-02-01"
@@ -5795,7 +6513,7 @@
      "type": "request.returned",
      "at": "2027-02-04T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0032",
+     "idempotencyKey": "seed-0039",
      "requestId": "req-0004",
      "listId": null,
      "from": "at_level",
@@ -5866,7 +6584,184 @@
       "vor"
      ],
      "version": 1,
-     "revision": 9,
+     "revision": 12,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ зв'язку",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-05T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-04",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0040",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 12,
+     "data": {
+      "level": 4
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 12,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-009",
+       "qty": 5,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бронежилет модульний",
+        "kekv": "3110",
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-05T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-04",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-05T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0041",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 12,
+     "data": {
+      "level": 4
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 13,
      "status": "in_list",
      "level": 4,
      "listId": "list-0008",
@@ -5915,6 +6810,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-05T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-04",
      "createdOn": "2027-02-01"
@@ -5930,7 +6830,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 9,
+     "revision": 13,
      "status": "in_list",
      "level": 4,
      "listId": "list-0008",
@@ -5972,6 +6872,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-05T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-04",
      "createdOn": "2027-02-01"
@@ -5999,7 +6904,7 @@
      "type": "list.formed",
      "at": "2027-02-05T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0033",
+     "idempotencyKey": "seed-0042",
      "requestId": null,
      "listId": "list-0008",
      "from": null,
@@ -6020,13 +6925,13 @@
      "type": "request.listed",
      "at": "2027-02-05T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0033",
+     "idempotencyKey": "seed-0042",
      "requestId": "req-0001",
      "listId": "list-0008",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 9,
+     "revision": 13,
      "data": {
       "level": 4
      }
@@ -6035,13 +6940,13 @@
      "type": "request.listed",
      "at": "2027-02-05T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0033",
+     "idempotencyKey": "seed-0042",
      "requestId": "req-0002",
      "listId": "list-0008",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 9,
+     "revision": 13,
      "data": {
       "level": 4
      }
@@ -6076,7 +6981,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 10,
+     "revision": 14,
      "status": "at_level",
      "level": 5,
      "listId": null,
@@ -6125,6 +7030,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-05T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-05",
      "createdOn": "2027-02-01"
@@ -6140,7 +7050,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 10,
+     "revision": 14,
      "status": "at_level",
      "level": 5,
      "listId": null,
@@ -6182,6 +7092,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-05T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-05",
      "createdOn": "2027-02-01"
@@ -6209,7 +7124,7 @@
      "type": "list.approved",
      "at": "2027-02-05T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0034",
+     "idempotencyKey": "seed-0043",
      "requestId": null,
      "listId": "list-0008",
      "from": null,
@@ -6225,13 +7140,13 @@
      "type": "request.advanced",
      "at": "2027-02-05T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0034",
+     "idempotencyKey": "seed-0043",
      "requestId": "req-0001",
      "listId": "list-0008",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 10,
+     "revision": 14,
      "data": {
       "fromLevel": 4,
       "level": 5,
@@ -6242,13 +7157,13 @@
      "type": "request.advanced",
      "at": "2027-02-05T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0034",
+     "idempotencyKey": "seed-0043",
      "requestId": "req-0002",
      "listId": "list-0008",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 10,
+     "revision": 14,
      "data": {
       "fromLevel": 4,
       "level": 5,
@@ -6298,7 +7213,184 @@
       "vor"
      ],
      "version": 1,
-     "revision": 11,
+     "revision": 15,
+     "status": "at_level",
+     "level": 5,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-1",
+       "positionId": "pos-001",
+       "qty": 10,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-2",
+       "positionId": "pos-009",
+       "qty": 20,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-3",
+       "positionId": "pos-033",
+       "qty": 2,
+       "kekv": "3110"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-4",
+       "positionId": "pos-020",
+       "qty": 3,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бінокль польовий 8×32",
+        "kekv": "2210",
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
+     "title": "",
+     "service": "Відділ зв'язку",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-05",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0044",
+     "requestId": "req-0001",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 15,
+     "data": {
+      "level": 5
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0002",
+     "authorId": "author-unit-b",
+     "route": [
+      "unit-b",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 15,
+     "status": "at_level",
+     "level": 5,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-5",
+       "positionId": "pos-022",
+       "qty": 40,
+       "kekv": "2220"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-6",
+       "positionId": "pos-023",
+       "qty": 50,
+       "kekv": "2220"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-7",
+       "positionId": "pos-009",
+       "qty": 5,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Бронежилет модульний",
+        "kekv": "3110",
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
+     "title": "",
+     "service": "Відділ матеріального забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-05",
+     "createdOn": "2027-02-01"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-5-vor",
+     "idempotencyKey": "seed-0045",
+     "requestId": "req-0002",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 15,
+     "data": {
+      "level": 5
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0001",
+     "authorId": "author-unit-a",
+     "route": [
+      "unit-a",
+      "brig-1",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 16,
      "status": "in_list",
      "level": 5,
      "listId": "list-0009",
@@ -6347,6 +7439,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-05",
      "createdOn": "2027-02-01"
@@ -6362,7 +7459,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 11,
+     "revision": 16,
      "status": "in_list",
      "level": 5,
      "listId": "list-0009",
@@ -6404,6 +7501,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-05",
      "createdOn": "2027-02-01"
@@ -6431,7 +7533,7 @@
      "type": "list.formed",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0035",
+     "idempotencyKey": "seed-0046",
      "requestId": null,
      "listId": "list-0009",
      "from": null,
@@ -6452,13 +7554,13 @@
      "type": "request.listed",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0035",
+     "idempotencyKey": "seed-0046",
      "requestId": "req-0001",
      "listId": "list-0009",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 11,
+     "revision": 16,
      "data": {
       "level": 5
      }
@@ -6467,13 +7569,13 @@
      "type": "request.listed",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0035",
+     "idempotencyKey": "seed-0046",
      "requestId": "req-0002",
      "listId": "list-0009",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 11,
+     "revision": 16,
      "data": {
       "level": 5
      }
@@ -6508,7 +7610,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 12,
+     "revision": 17,
      "status": "approved",
      "level": 5,
      "listId": "list-0009",
@@ -6558,6 +7660,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-01"
@@ -6573,7 +7680,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 12,
+     "revision": 17,
      "status": "approved",
      "level": 5,
      "listId": "list-0009",
@@ -6616,6 +7723,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-01"
@@ -6643,7 +7755,7 @@
      "type": "list.approved",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0036",
+     "idempotencyKey": "seed-0047",
      "requestId": null,
      "listId": "list-0009",
      "from": null,
@@ -6659,13 +7771,13 @@
      "type": "request.approved",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0036",
+     "idempotencyKey": "seed-0047",
      "requestId": "req-0001",
      "listId": "list-0009",
      "from": "in_list",
      "to": "approved",
      "requestVersion": 1,
-     "revision": 12,
+     "revision": 17,
      "data": {
       "sedoNumber": 7240042
      }
@@ -6674,13 +7786,13 @@
      "type": "request.approved",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0036",
+     "idempotencyKey": "seed-0047",
      "requestId": "req-0002",
      "listId": "list-0009",
      "from": "in_list",
      "to": "approved",
      "requestVersion": 1,
-     "revision": 12,
+     "revision": 17,
      "data": {
       "sedoNumber": 7240042
      }
@@ -6874,7 +7986,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 13,
+     "revision": 18,
      "status": "extract_issued",
      "level": 5,
      "listId": "list-0009",
@@ -6924,6 +8036,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310001,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-01"
@@ -6939,7 +8056,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 13,
+     "revision": 18,
      "status": "extract_issued",
      "level": 5,
      "listId": "list-0009",
@@ -6982,6 +8099,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310003,
+     "kekvCheck": {
+      "level": 5,
+      "byUserId": "prep-5-vor",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-01"
@@ -6993,26 +8115,26 @@
      "type": "request.extract_issued",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "system",
-     "idempotencyKey": "seed-0037",
+     "idempotencyKey": "seed-0048",
      "requestId": "req-0001",
      "listId": null,
      "from": "approved",
      "to": "extract_issued",
      "requestVersion": 1,
-     "revision": 13,
+     "revision": 18,
      "data": {}
     },
     {
      "type": "request.extract_issued",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "system",
-     "idempotencyKey": "seed-0037",
+     "idempotencyKey": "seed-0048",
      "requestId": "req-0002",
      "listId": null,
      "from": "approved",
      "to": "extract_issued",
      "requestVersion": 1,
-     "revision": 13,
+     "revision": 18,
      "data": {}
     }
    ],
@@ -7122,6 +8244,91 @@
   {
    "requests": [
     {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 6,
+     "status": "at_level",
+     "level": 2,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Запланована позиція переліку не відповідає умовам експлуатації в підрозділі, тому замість неї просимо схожий предмет. Решта позицій — планове поповнення.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-2",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-03",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-06T09:00:00.000Z",
+     "actorId": "prep-2-brig-2",
+     "idempotencyKey": "seed-0049",
+     "requestId": "req-0007",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 6,
+     "data": {
+      "level": 2
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
      "id": "req-0006",
      "authorId": "author-unit-c",
      "route": [
@@ -7158,6 +8365,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310013,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -7173,7 +8381,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 5,
+     "revision": 7,
      "status": "in_list",
      "level": 2,
      "listId": "list-0010",
@@ -7215,6 +8423,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-2",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-03",
      "createdOn": "2027-02-03"
@@ -7242,7 +8455,7 @@
      "type": "list.formed",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-2-brig-2",
-     "idempotencyKey": "seed-0038",
+     "idempotencyKey": "seed-0050",
      "requestId": null,
      "listId": "list-0010",
      "from": null,
@@ -7263,7 +8476,7 @@
      "type": "request.listed",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-2-brig-2",
-     "idempotencyKey": "seed-0038",
+     "idempotencyKey": "seed-0050",
      "requestId": "req-0006",
      "listId": "list-0010",
      "from": "at_level",
@@ -7278,13 +8491,13 @@
      "type": "request.listed",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "prep-2-brig-2",
-     "idempotencyKey": "seed-0038",
+     "idempotencyKey": "seed-0050",
      "requestId": "req-0007",
      "listId": "list-0010",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 5,
+     "revision": 7,
      "data": {
       "level": 2
      }
@@ -7345,6 +8558,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310013,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-03"
@@ -7360,7 +8574,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 6,
+     "revision": 8,
      "status": "at_level",
      "level": 3,
      "listId": null,
@@ -7402,6 +8616,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 2,
+      "byUserId": "prep-2-brig-2",
+      "at": "2027-02-06T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-03"
@@ -7429,7 +8648,7 @@
      "type": "list.approved",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "appr-2-brig-2",
-     "idempotencyKey": "seed-0039",
+     "idempotencyKey": "seed-0051",
      "requestId": null,
      "listId": "list-0010",
      "from": null,
@@ -7445,7 +8664,7 @@
      "type": "request.advanced",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "appr-2-brig-2",
-     "idempotencyKey": "seed-0039",
+     "idempotencyKey": "seed-0051",
      "requestId": "req-0006",
      "listId": "list-0010",
      "from": "in_list",
@@ -7462,13 +8681,13 @@
      "type": "request.advanced",
      "at": "2027-02-06T09:00:00.000Z",
      "actorId": "appr-2-brig-2",
-     "idempotencyKey": "seed-0039",
+     "idempotencyKey": "seed-0051",
      "requestId": "req-0007",
      "listId": "list-0010",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 6,
+     "revision": 8,
      "data": {
       "fromLevel": 2,
       "level": 3,
@@ -7504,6 +8723,91 @@
      "at": "2027-02-06T09:00:00.000Z"
     }
    ]
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 9,
+     "status": "at_level",
+     "level": 3,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Запланована позиція переліку не відповідає умовам експлуатації в підрозділі, тому замість неї просимо схожий предмет. Решта позицій — планове поповнення.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-07T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-06",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-07T09:00:00.000Z",
+     "actorId": "prep-3-ru-1",
+     "idempotencyKey": "seed-0052",
+     "requestId": "req-0007",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 9,
+     "data": {
+      "level": 3
+     }
+    }
+   ],
+   "notifications": []
   },
   {
    "requests": [
@@ -7544,6 +8848,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310013,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-03"
@@ -7559,7 +8864,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 7,
+     "revision": 10,
      "status": "in_list",
      "level": 3,
      "listId": "list-0011",
@@ -7601,6 +8906,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-07T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-06",
      "createdOn": "2027-02-03"
@@ -7628,7 +8938,7 @@
      "type": "list.formed",
      "at": "2027-02-07T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0040",
+     "idempotencyKey": "seed-0053",
      "requestId": null,
      "listId": "list-0011",
      "from": null,
@@ -7649,7 +8959,7 @@
      "type": "request.listed",
      "at": "2027-02-07T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0040",
+     "idempotencyKey": "seed-0053",
      "requestId": "req-0006",
      "listId": "list-0011",
      "from": "at_level",
@@ -7664,13 +8974,13 @@
      "type": "request.listed",
      "at": "2027-02-07T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0040",
+     "idempotencyKey": "seed-0053",
      "requestId": "req-0007",
      "listId": "list-0011",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 7,
+     "revision": 10,
      "data": {
       "level": 3
      }
@@ -7731,6 +9041,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310013,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-07",
      "createdOn": "2027-02-03"
@@ -7746,7 +9057,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 8,
+     "revision": 11,
      "status": "at_level",
      "level": 4,
      "listId": null,
@@ -7788,6 +9099,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 3,
+      "byUserId": "prep-3-ru-1",
+      "at": "2027-02-07T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-07",
      "createdOn": "2027-02-03"
@@ -7815,7 +9131,7 @@
      "type": "list.approved",
      "at": "2027-02-07T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0041",
+     "idempotencyKey": "seed-0054",
      "requestId": null,
      "listId": "list-0011",
      "from": null,
@@ -7831,7 +9147,7 @@
      "type": "request.advanced",
      "at": "2027-02-07T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0041",
+     "idempotencyKey": "seed-0054",
      "requestId": "req-0006",
      "listId": "list-0011",
      "from": "in_list",
@@ -7848,13 +9164,13 @@
      "type": "request.advanced",
      "at": "2027-02-07T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0041",
+     "idempotencyKey": "seed-0054",
      "requestId": "req-0007",
      "listId": "list-0011",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 8,
+     "revision": 11,
      "data": {
       "fromLevel": 3,
       "level": 4,
@@ -7904,7 +9220,92 @@
       "vor"
      ],
      "version": 1,
-     "revision": 9,
+     "revision": 12,
+     "status": "at_level",
+     "level": 4,
+     "listId": null,
+     "lines": [
+      {
+       "kind": "by_list",
+       "id": "ln-17",
+       "positionId": "pos-003",
+       "qty": 8,
+       "kekv": "2210"
+      },
+      {
+       "kind": "by_list",
+       "id": "ln-18",
+       "positionId": "pos-004",
+       "qty": 12,
+       "kekv": "2210"
+      },
+      {
+       "kind": "replacement",
+       "id": "ln-19",
+       "positionId": "pos-016",
+       "qty": 4,
+       "kekv": "2210",
+       "newItem": {
+        "code": "",
+        "name": "Ліхтар вуличний акумуляторний",
+        "kekv": "2210",
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
+       },
+       "condition": "needs_repair"
+      }
+     ],
+     "justification": "Запланована позиція переліку не відповідає умовам експлуатації в підрозділі, тому замість неї просимо схожий предмет. Решта позицій — планове поповнення.",
+     "title": "",
+     "service": "Відділ технічного забезпечення",
+     "funding": "general",
+     "returnInfo": null,
+     "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-08T09:00:00.000Z"
+     },
+     "procurement": null,
+     "levelEnteredOn": "2027-02-07",
+     "createdOn": "2027-02-03"
+    }
+   ],
+   "lists": [],
+   "events": [
+    {
+     "type": "request.kekv_checked",
+     "at": "2027-02-08T09:00:00.000Z",
+     "actorId": "prep-4-dir-1",
+     "idempotencyKey": "seed-0055",
+     "requestId": "req-0007",
+     "listId": null,
+     "from": "at_level",
+     "to": "at_level",
+     "requestVersion": 1,
+     "revision": 12,
+     "data": {
+      "level": 4
+     }
+    }
+   ],
+   "notifications": []
+  },
+  {
+   "requests": [
+    {
+     "id": "req-0007",
+     "authorId": "author-unit-c",
+     "route": [
+      "unit-c",
+      "brig-2",
+      "ru-1",
+      "dir-1",
+      "vor"
+     ],
+     "version": 1,
+     "revision": 13,
      "status": "in_list",
      "level": 4,
      "listId": "list-0012",
@@ -7946,6 +9347,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-08T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-07",
      "createdOn": "2027-02-03"
@@ -7972,7 +9378,7 @@
      "type": "list.formed",
      "at": "2027-02-08T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0042",
+     "idempotencyKey": "seed-0056",
      "requestId": null,
      "listId": "list-0012",
      "from": null,
@@ -7992,13 +9398,13 @@
      "type": "request.listed",
      "at": "2027-02-08T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0042",
+     "idempotencyKey": "seed-0056",
      "requestId": "req-0007",
      "listId": "list-0012",
      "from": "at_level",
      "to": "in_list",
      "requestVersion": 1,
-     "revision": 9,
+     "revision": 13,
      "data": {
       "level": 4
      }
@@ -8033,7 +9439,7 @@
       "vor"
      ],
      "version": 1,
-     "revision": 10,
+     "revision": 14,
      "status": "at_level",
      "level": 5,
      "listId": null,
@@ -8075,6 +9481,11 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310017,
+     "kekvCheck": {
+      "level": 4,
+      "byUserId": "prep-4-dir-1",
+      "at": "2027-02-08T09:00:00.000Z"
+     },
      "procurement": null,
      "levelEnteredOn": "2027-02-08",
      "createdOn": "2027-02-03"
@@ -8101,7 +9512,7 @@
      "type": "list.approved",
      "at": "2027-02-08T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0043",
+     "idempotencyKey": "seed-0057",
      "requestId": null,
      "listId": "list-0012",
      "from": null,
@@ -8117,13 +9528,13 @@
      "type": "request.advanced",
      "at": "2027-02-08T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0043",
+     "idempotencyKey": "seed-0057",
      "requestId": "req-0007",
      "listId": "list-0012",
      "from": "in_list",
      "to": "at_level",
      "requestVersion": 1,
-     "revision": 10,
+     "revision": 14,
      "data": {
       "fromLevel": 4,
       "level": 5,
@@ -8186,6 +9597,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-09"
@@ -8197,7 +9609,7 @@
      "type": "request.created",
      "at": "2027-02-09T09:00:00.000Z",
      "actorId": "author-unit-a",
-     "idempotencyKey": "seed-0044",
+     "idempotencyKey": "seed-0058",
      "requestId": "req-0009",
      "listId": null,
      "from": null,
@@ -8248,6 +9660,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310021,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-09",
      "createdOn": "2027-02-09"
@@ -8259,7 +9672,7 @@
      "type": "request.submitted",
      "at": "2027-02-09T09:00:00.000Z",
      "actorId": "author-unit-a",
-     "idempotencyKey": "seed-0045",
+     "idempotencyKey": "seed-0059",
      "requestId": "req-0009",
      "listId": null,
      "from": "draft",
@@ -8321,6 +9734,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-09"
@@ -8332,7 +9746,7 @@
      "type": "request.created",
      "at": "2027-02-09T09:00:00.000Z",
      "actorId": "author-unit-a",
-     "idempotencyKey": "seed-0046",
+     "idempotencyKey": "seed-0060",
      "requestId": "req-0010",
      "listId": null,
      "from": null,
@@ -8376,6 +9790,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310023,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-09",
      "createdOn": "2027-02-09"
@@ -8387,7 +9802,7 @@
      "type": "request.submitted",
      "at": "2027-02-09T09:00:00.000Z",
      "actorId": "author-unit-a",
-     "idempotencyKey": "seed-0047",
+     "idempotencyKey": "seed-0061",
      "requestId": "req-0010",
      "listId": null,
      "from": "draft",
@@ -8456,6 +9871,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310021,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-09",
      "createdOn": "2027-02-09"
@@ -8482,7 +9898,7 @@
      "type": "list.formed",
      "at": "2027-02-09T09:00:00.000Z",
      "actorId": "prep-1-unit-a",
-     "idempotencyKey": "seed-0048",
+     "idempotencyKey": "seed-0062",
      "requestId": null,
      "listId": "list-0013",
      "from": null,
@@ -8502,7 +9918,7 @@
      "type": "request.listed",
      "at": "2027-02-09T09:00:00.000Z",
      "actorId": "prep-1-unit-a",
-     "idempotencyKey": "seed-0048",
+     "idempotencyKey": "seed-0062",
      "requestId": "req-0009",
      "listId": "list-0013",
      "from": "at_level",
@@ -8569,6 +9985,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-10"
@@ -8580,7 +9997,7 @@
      "type": "request.created",
      "at": "2027-02-10T09:00:00.000Z",
      "actorId": "author-unit-a",
-     "idempotencyKey": "seed-0049",
+     "idempotencyKey": "seed-0063",
      "requestId": "req-0011",
      "listId": null,
      "from": null,
@@ -8631,6 +10048,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-11"
@@ -8642,7 +10060,7 @@
      "type": "request.created",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "author-unit-b",
-     "idempotencyKey": "seed-0050",
+     "idempotencyKey": "seed-0064",
      "requestId": "req-0012",
      "listId": null,
      "from": null,
@@ -8693,6 +10111,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -8704,7 +10123,7 @@
      "type": "request.submitted",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "author-unit-b",
-     "idempotencyKey": "seed-0051",
+     "idempotencyKey": "seed-0065",
      "requestId": "req-0012",
      "listId": null,
      "from": "draft",
@@ -8780,6 +10199,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": null,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": null,
      "createdOn": "2027-02-11"
@@ -8791,7 +10211,7 @@
      "type": "request.created",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "author-unit-c",
-     "idempotencyKey": "seed-0052",
+     "idempotencyKey": "seed-0066",
      "requestId": "req-0013",
      "listId": null,
      "from": null,
@@ -8849,6 +10269,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -8860,7 +10281,7 @@
      "type": "request.submitted",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "author-unit-c",
-     "idempotencyKey": "seed-0053",
+     "idempotencyKey": "seed-0067",
      "requestId": "req-0013",
      "listId": null,
      "from": "draft",
@@ -8929,6 +10350,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -8955,7 +10377,7 @@
      "type": "list.formed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-1-unit-b",
-     "idempotencyKey": "seed-0054",
+     "idempotencyKey": "seed-0068",
      "requestId": null,
      "listId": "list-0014",
      "from": null,
@@ -8975,7 +10397,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-1-unit-b",
-     "idempotencyKey": "seed-0054",
+     "idempotencyKey": "seed-0068",
      "requestId": "req-0012",
      "listId": "list-0014",
      "from": "at_level",
@@ -9042,6 +10464,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9068,7 +10491,7 @@
      "type": "list.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-1-unit-b",
-     "idempotencyKey": "seed-0055",
+     "idempotencyKey": "seed-0069",
      "requestId": null,
      "listId": "list-0014",
      "from": null,
@@ -9084,7 +10507,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-1-unit-b",
-     "idempotencyKey": "seed-0055",
+     "idempotencyKey": "seed-0069",
      "requestId": "req-0012",
      "listId": "list-0014",
      "from": "in_list",
@@ -9160,6 +10583,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9186,7 +10610,7 @@
      "type": "list.formed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-1-unit-c",
-     "idempotencyKey": "seed-0056",
+     "idempotencyKey": "seed-0070",
      "requestId": null,
      "listId": "list-0015",
      "from": null,
@@ -9206,7 +10630,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-1-unit-c",
-     "idempotencyKey": "seed-0056",
+     "idempotencyKey": "seed-0070",
      "requestId": "req-0013",
      "listId": "list-0015",
      "from": "at_level",
@@ -9280,6 +10704,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9306,7 +10731,7 @@
      "type": "list.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-1-unit-c",
-     "idempotencyKey": "seed-0057",
+     "idempotencyKey": "seed-0071",
      "requestId": null,
      "listId": "list-0015",
      "from": null,
@@ -9322,7 +10747,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-1-unit-c",
-     "idempotencyKey": "seed-0057",
+     "idempotencyKey": "seed-0071",
      "requestId": "req-0013",
      "listId": "list-0015",
      "from": "in_list",
@@ -9391,6 +10816,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9417,7 +10843,7 @@
      "type": "list.formed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-2-brig-1",
-     "idempotencyKey": "seed-0058",
+     "idempotencyKey": "seed-0072",
      "requestId": null,
      "listId": "list-0016",
      "from": null,
@@ -9437,7 +10863,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-2-brig-1",
-     "idempotencyKey": "seed-0058",
+     "idempotencyKey": "seed-0072",
      "requestId": "req-0012",
      "listId": "list-0016",
      "from": "at_level",
@@ -9504,6 +10930,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9530,7 +10957,7 @@
      "type": "list.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-2-brig-1",
-     "idempotencyKey": "seed-0059",
+     "idempotencyKey": "seed-0073",
      "requestId": null,
      "listId": "list-0016",
      "from": null,
@@ -9546,7 +10973,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-2-brig-1",
-     "idempotencyKey": "seed-0059",
+     "idempotencyKey": "seed-0073",
      "requestId": "req-0012",
      "listId": "list-0016",
      "from": "in_list",
@@ -9622,6 +11049,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9648,7 +11076,7 @@
      "type": "list.formed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-2-brig-2",
-     "idempotencyKey": "seed-0060",
+     "idempotencyKey": "seed-0074",
      "requestId": null,
      "listId": "list-0017",
      "from": null,
@@ -9668,7 +11096,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-2-brig-2",
-     "idempotencyKey": "seed-0060",
+     "idempotencyKey": "seed-0074",
      "requestId": "req-0013",
      "listId": "list-0017",
      "from": "at_level",
@@ -9742,6 +11170,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9768,7 +11197,7 @@
      "type": "list.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-2-brig-2",
-     "idempotencyKey": "seed-0061",
+     "idempotencyKey": "seed-0075",
      "requestId": null,
      "listId": "list-0017",
      "from": null,
@@ -9784,7 +11213,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-2-brig-2",
-     "idempotencyKey": "seed-0061",
+     "idempotencyKey": "seed-0075",
      "requestId": "req-0013",
      "listId": "list-0017",
      "from": "in_list",
@@ -9853,6 +11282,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9901,6 +11331,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -9928,7 +11359,7 @@
      "type": "list.formed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0062",
+     "idempotencyKey": "seed-0076",
      "requestId": null,
      "listId": "list-0018",
      "from": null,
@@ -9949,7 +11380,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0062",
+     "idempotencyKey": "seed-0076",
      "requestId": "req-0012",
      "listId": "list-0018",
      "from": "at_level",
@@ -9964,7 +11395,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-3-ru-1",
-     "idempotencyKey": "seed-0062",
+     "idempotencyKey": "seed-0076",
      "requestId": "req-0013",
      "listId": "list-0018",
      "from": "at_level",
@@ -10031,6 +11462,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10079,6 +11511,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10106,7 +11539,7 @@
      "type": "list.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0063",
+     "idempotencyKey": "seed-0077",
      "requestId": null,
      "listId": "list-0018",
      "from": null,
@@ -10122,7 +11555,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0063",
+     "idempotencyKey": "seed-0077",
      "requestId": "req-0012",
      "listId": "list-0018",
      "from": "in_list",
@@ -10139,7 +11572,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-3-ru-1",
-     "idempotencyKey": "seed-0063",
+     "idempotencyKey": "seed-0077",
      "requestId": "req-0013",
      "listId": "list-0018",
      "from": "in_list",
@@ -10221,6 +11654,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10269,6 +11703,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10296,7 +11731,7 @@
      "type": "list.formed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0064",
+     "idempotencyKey": "seed-0078",
      "requestId": null,
      "listId": "list-0019",
      "from": null,
@@ -10317,7 +11752,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0064",
+     "idempotencyKey": "seed-0078",
      "requestId": "req-0012",
      "listId": "list-0019",
      "from": "at_level",
@@ -10332,7 +11767,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-4-dir-1",
-     "idempotencyKey": "seed-0064",
+     "idempotencyKey": "seed-0078",
      "requestId": "req-0013",
      "listId": "list-0019",
      "from": "at_level",
@@ -10399,6 +11834,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10447,6 +11883,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10474,7 +11911,7 @@
      "type": "list.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0065",
+     "idempotencyKey": "seed-0079",
      "requestId": null,
      "listId": "list-0019",
      "from": null,
@@ -10490,7 +11927,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0065",
+     "idempotencyKey": "seed-0079",
      "requestId": "req-0012",
      "listId": "list-0019",
      "from": "in_list",
@@ -10507,7 +11944,7 @@
      "type": "request.advanced",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "appr-4-dir-1",
-     "idempotencyKey": "seed-0065",
+     "idempotencyKey": "seed-0079",
      "requestId": "req-0013",
      "listId": "list-0019",
      "from": "in_list",
@@ -10589,6 +12026,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10637,6 +12075,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10664,7 +12103,7 @@
      "type": "list.formed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0066",
+     "idempotencyKey": "seed-0080",
      "requestId": null,
      "listId": "list-0020",
      "from": null,
@@ -10685,7 +12124,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0066",
+     "idempotencyKey": "seed-0080",
      "requestId": "req-0012",
      "listId": "list-0020",
      "from": "at_level",
@@ -10700,7 +12139,7 @@
      "type": "request.listed",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0066",
+     "idempotencyKey": "seed-0080",
      "requestId": "req-0013",
      "listId": "list-0020",
      "from": "at_level",
@@ -10767,6 +12206,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10815,6 +12255,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -10842,7 +12283,7 @@
      "type": "list.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0067",
+     "idempotencyKey": "seed-0081",
      "requestId": null,
      "listId": "list-0020",
      "from": null,
@@ -10858,7 +12299,7 @@
      "type": "request.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0067",
+     "idempotencyKey": "seed-0081",
      "requestId": "req-0012",
      "listId": "list-0020",
      "from": "in_list",
@@ -10873,7 +12314,7 @@
      "type": "request.approved",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0067",
+     "idempotencyKey": "seed-0081",
      "requestId": "req-0013",
      "listId": "list-0020",
      "from": "in_list",
@@ -11055,6 +12496,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -11103,6 +12545,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": null,
      "levelEnteredOn": "2027-02-11",
      "createdOn": "2027-02-11"
@@ -11114,7 +12557,7 @@
      "type": "request.extract_issued",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "system",
-     "idempotencyKey": "seed-0068",
+     "idempotencyKey": "seed-0082",
      "requestId": "req-0012",
      "listId": null,
      "from": "approved",
@@ -11127,7 +12570,7 @@
      "type": "request.extract_issued",
      "at": "2027-02-11T09:00:00.000Z",
      "actorId": "system",
-     "idempotencyKey": "seed-0068",
+     "idempotencyKey": "seed-0082",
      "requestId": "req-0013",
      "listId": null,
      "from": "approved",
@@ -11263,6 +12706,7 @@
      "funding": "special",
      "returnInfo": null,
      "sedoNumber": 5310027,
+     "kekvCheck": null,
      "procurement": {
       "acceptanceDoc": "АП-2027-03",
       "recipient": "Склад бази",
@@ -11282,7 +12726,7 @@
      "type": "request.procured",
      "at": "2027-02-12T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0069",
+     "idempotencyKey": "seed-0083",
      "requestId": "req-0012",
      "listId": null,
      "from": "extract_issued",
@@ -11389,6 +12833,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": {
       "acceptanceDoc": "АП-2027-04",
       "recipient": "Склад бази",
@@ -11408,7 +12853,7 @@
      "type": "request.procured",
      "at": "2027-02-12T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0070",
+     "idempotencyKey": "seed-0084",
      "requestId": "req-0013",
      "listId": null,
      "from": "extract_issued",
@@ -11521,6 +12966,7 @@
      "funding": "general",
      "returnInfo": null,
      "sedoNumber": 5310030,
+     "kekvCheck": null,
      "procurement": {
       "acceptanceDoc": "АП-2027-04",
       "recipient": "Склад бази",
@@ -11540,7 +12986,7 @@
      "type": "request.issued",
      "at": "2027-02-13T09:00:00.000Z",
      "actorId": "prep-5-vor",
-     "idempotencyKey": "seed-0071",
+     "idempotencyKey": "seed-0085",
      "requestId": "req-0013",
      "listId": null,
      "from": "procured",

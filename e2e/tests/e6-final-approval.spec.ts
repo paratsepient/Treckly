@@ -18,7 +18,16 @@ test("E6: затвердження Головою — резерв бюджет�
   await expect(plan.getByRole("columnheader", { name: "На базі" })).toBeVisible();
   await expect(plan.getByRole("columnheader", { name: "Отримано" })).toBeVisible();
   await expect(plan.getByText(/Такого майна в в\/ч немає|В\/ч уже має таке майно/)).toBeVisible();
-  await page.getByRole("checkbox", { name: "Обрати ЗМ-0007 до переліку" }).check();
+  // У ЗМ-0007 є заміна: без позначки «Відповідає вимогам» її не обрати; позначку можна скасувати.
+  const pick = page.getByRole("checkbox", { name: "Обрати ЗМ-0007 до переліку" });
+  await expect(pick).toBeDisabled();
+  const row7 = page.getByRole("row", { name: /ЗМ-0007/ });
+  await row7.getByRole("button", { name: "Відповідає вимогам" }).click();
+  await expect(pick).toBeEnabled();
+  await row7.getByRole("button", { name: "Не відповідає вимогам" }).click();
+  await expect(pick).toBeDisabled();
+  await row7.getByRole("button", { name: "Відповідає вимогам" }).click();
+  await pick.check();
   await page.getByRole("button", { name: "Сформувати перелік (1)" }).click();
   await expect(toast(page, "Перелік сформовано: заявок 1")).toBeVisible();
 

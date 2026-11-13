@@ -20,6 +20,7 @@ const request = (id: string, patch: Partial<Request> = {}): Request => ({
   service: "Служба зв'язку",
   funding: "general",
   sedoNumber: null,
+  kekvCheck: null,
   procurement: null,
   levelEnteredOn: "2027-02-06",
   createdOn: "2027-02-01",

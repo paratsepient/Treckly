@@ -32,6 +32,7 @@ import {
   resubmit,
   returnRequest,
   submit,
+  setKekvCheck,
   withdraw,
   DomainError,
   type DomainContext,
@@ -151,6 +152,12 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   app.post("/api/requests/:id/return", async (c) => {
     const { note, expectedRevision } = await parseBody(c, API.returnRequest.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ ctx, meta, request }) => returnRequest(ctx, meta, { request, note }));
+  });
+
+  /** Перевірка заміни на рівні: «Відповідає вимогам» або скасування позначки. */
+  app.post("/api/requests/:id/kekv-check", async (c) => {
+    const { ok, expectedRevision } = await parseBody(c, API.kekvCheck.input);
+    return commandOn(c, c.req.param("id"), expectedRevision, async ({ ctx, meta, request }) => setKekvCheck(ctx, meta, { request, ok }));
   });
 
   app.post("/api/requests/:id/withdraw", async (c) => {

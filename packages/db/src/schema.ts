@@ -1,5 +1,5 @@
 import { bigint, index, integer, jsonb, pgTable, primaryKey, serial, text } from "drizzle-orm/pg-core";
-import type { Audience, JournalEvent, ReturnInfo, Procurement } from "@dsp/domain";
+import type { Audience, JournalEvent, KekvCheck, ReturnInfo, Procurement } from "@dsp/domain";
 
 /**
  * Схема прототипу. Та сама схема піде на PostgreSQL пілоту (міграції — у `migrations/`).
@@ -95,6 +95,7 @@ export const requests = pgTable(
     funding: text("funding").$type<"general" | "special">().notNull().default("general"),
     returnInfo: jsonb("return_info").$type<ReturnInfo>(),
     sedoNumber: bigint("sedo_number", { mode: "number" }),
+    kekvCheck: jsonb("kekv_check").$type<KekvCheck>(),
     procurement: jsonb("procurement").$type<Procurement>(),
     levelEnteredOn: text("level_entered_on"),
     createdOn: text("created_on").notNull(),

@@ -1,0 +1,1 @@
+ALTER TABLE "requests" ADD COLUMN "kekv_check" jsonb;

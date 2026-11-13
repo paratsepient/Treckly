@@ -165,6 +165,11 @@ export interface Request {
   /** Джерело фінансування. */
   readonly funding: FundingSource;
   readonly returnInfo: ReturnInfo | null;
+  /**
+   * Перевірка заміни на рівні: уповноважена особа підтвердила, що те, що просять натомість, відповідає вказаному КЕКВ.
+   * Діє лише на рівні `level`; без неї заявку із заміною не обрати до переліку (рішення користувача 2026-11-13).
+   */
+  readonly kekvCheck: KekvCheck | null;
   /** Реєстраційний номер рапорту в СЕДО: автор реєструє рапорт і вводить номер при поданні (кожна версія — новий номер). */
   readonly sedoNumber: number | null;
   /** Закупівля й видача після затвердження Головою (адміністрація); null — ще не було. */
@@ -173,6 +178,19 @@ export interface Request {
   readonly levelEnteredOn: IsoDate | null;
   readonly createdOn: IsoDate;
 }
+
+export interface KekvCheck {
+  readonly level: Level;
+  readonly byUserId: UserId;
+  readonly at: IsoTimestamp;
+}
+
+/** Заявці потрібна перевірка відповідності КЕКВ, якщо в ній є заміна. */
+export const needsKekvCheck = (request: Pick<Request, "lines">): boolean => request.lines.some((l) => l.kind === "replacement");
+
+/** Перевірено на цьому рівні (або перевірка не потрібна). */
+export const kekvCheckedAt = (request: Pick<Request, "lines" | "kekvCheck">, level: number): boolean =>
+  !needsKekvCheck(request) || request.kekvCheck?.level === level;
 
 /** Закупівля після затвердження: документ приймання, отримувач, видача одним актом або примітка про зрив. */
 export interface Procurement {
@@ -269,6 +287,8 @@ export type EventType =
   | "request.resubmitted"
   | "request.returned"
   | "request.withdrawn"
+  | "request.kekv_checked"
+  | "request.kekv_unchecked"
   | "request.listed"
   | "request.delisted"
   | "request.advanced"

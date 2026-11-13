@@ -54,6 +54,8 @@ export const CreateRequestInput = z.object({ lines: z.array(RequestLine), justif
 export const CheckRequestInput = z.object({ lines: z.array(RequestLine), requestId: Id.optional() });
 export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), ...Details, expectedRevision });
 export const RevisionInput = z.object({ expectedRevision });
+/** «Відповідає вимогам» (ok: true) або скасування позначки (ok: false). */
+export const KekvCheckInput = z.object({ ok: z.boolean(), expectedRevision });
 /** Подання: реєстраційний номер рапорту в СЕДО (автор реєструє рапорт і вводить номер). */
 export const SubmitInput = z.object({ expectedRevision, sedoNumber: z.union([z.string(), z.number()]) });
 export const ResetDemoInput = z.object({ withExamples: z.boolean().optional() });
@@ -141,6 +143,7 @@ export const API = {
   checkRequest: endpoint({ method: "POST", path: "/api/requests/check", input: CheckRequestInput, output: CheckResponse }),
   submitRequest: endpoint({ method: "POST", path: "/api/requests/:id/submit", input: SubmitInput, output: RequestResponse }),
   withdrawRequest: endpoint({ method: "POST", path: "/api/requests/:id/withdraw", input: RevisionInput, output: RequestResponse }),
+  kekvCheck: endpoint({ method: "POST", path: "/api/requests/:id/kekv-check", input: KekvCheckInput, output: RequestResponse }),
   newVersion: endpoint({ method: "POST", path: "/api/requests/:id/new-version", input: SubmitInput, output: RequestResponse }),
   // Закупівля й видача (адміністрація)
   procureRequest: endpoint({ method: "POST", path: "/api/requests/:id/procure", input: ProcureInput, output: RequestResponse }),

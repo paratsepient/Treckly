@@ -29,6 +29,7 @@ import {
   type RequestLine as DomainRequestLine,
   type RequestStatus as DomainRequestStatus,
   type Route as DomainRoute,
+  setKekvCheck,
 } from "@dsp/domain";
 import * as c from "../src/index.ts";
 
@@ -88,6 +89,10 @@ function allOutcomes() {
   let cur = submitted.requests[0]!;
   let b = budget;
   for (const level of [1, 2, 3, 4, 5] as const) {
+    // Заміну уповноважена особа рівня спершу позначає «Відповідає вимогам».
+    const checked = setKekvCheck(ctx, meta(prep(level)), { request: cur, ok: true });
+    outcomes.push(checked);
+    cur = checked.requests[0]!;
     const formed = formList(ctx, meta(prep(level)), { level, unitId: ROUTE[level - 1] as string, selected: [cur], existingLists: [] });
     const approved = approveList(ctx, meta(level === 5 ? prep(5) : appr(level)), { list: formed.lists[0]!, requests: formed.requests, sedoNumber: 100 + level, positions, budget: b });
     outcomes.push(formed, approved);

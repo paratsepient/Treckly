@@ -24,6 +24,8 @@ import {
   type RequestLine,
   commitmentsImpact,
   withCommitments,
+  needsKekvCheck,
+  setKekvCheck,
 } from "@dsp/domain";
 import { KEKV_INFO, LIST_ITEMS, REPLACEMENT_CANDIDATES, type CatalogEntry } from "./catalog.ts";
 import { DIRECTION_ID, generateUsers, routeOf, UNITS, UNIT_IDS, type SeedUnit, type SeedUser, type UnitKey } from "./structure.ts";
@@ -233,6 +235,11 @@ class Simulation {
   }
 
   form(level: Level, unitId: string, ids: string[]): string {
+    // Заявки із заміною уповноважена особа рівня спершу позначає «Відповідає вимогам».
+    for (const id of ids) {
+      const request = this.get(id);
+      if (needsKekvCheck(request)) this.record(setKekvCheck(this.ctx, this.meta(this.preparer(level, unitId)), { request, ok: true }));
+    }
     const out = this.record(
       formList(this.ctx, this.meta(this.preparer(level, unitId)), {
         level,

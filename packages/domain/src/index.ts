@@ -17,7 +17,7 @@ export {
   type CreateDraftInput,
   type SubmitInput,
   type ReturnInput,
-  type WithdrawInput,
+  type WithdrawInput, setKekvCheck, type KekvCheckInput
 } from "./request.ts";
 export { formList, disbandList, approveList, markNotSigned, type FormListInput, type ListInput, type ApproveListInput, type NotSignedInput } from "./lists.ts";
 export { issueExtracts } from "./extracts.ts";

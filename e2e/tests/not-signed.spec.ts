@@ -4,6 +4,7 @@ import { AUTHOR_C, openAs, requestCard, switchTo, toast } from "../support.ts";
 /** Голова не підписав остаточний перелік: Відділ відмічає це з приміткою, заявка повертається автору з першого рівня. */
 test("Голова не підписав: заявки переліку повертаються авторам із приміткою", async ({ page }) => {
   await openAs(page, "prep-5-vor", "/queue");
+  await page.getByRole("row", { name: /ЗМ-0007/ }).getByRole("button", { name: "Відповідає вимогам" }).click();
   await page.getByRole("checkbox", { name: "Обрати ЗМ-0007 до переліку" }).check();
   await page.getByRole("button", { name: "Сформувати перелік (1)" }).click();
   await expect(toast(page, "Перелік сформовано: заявок 1")).toBeVisible();

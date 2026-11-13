@@ -95,5 +95,11 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "-- Заміна тепер має кількість і суму нового предмета (рішення користувача 2026-11-13): старі рядки «ціна за штуку»\n-- перетворюються на суму за тією самою кількістю.\nUPDATE \"request_lines\"\nSET \"new_item\" = (\"new_item\" - 'priceMinor') || jsonb_build_object('qty', \"qty\", 'totalMinor', (\"new_item\"->>'priceMinor')::bigint * \"qty\", 'measure', 'шт.')\nWHERE \"kind\" = 'replacement' AND \"new_item\" ? 'priceMinor';"
     ]
+  },
+  {
+    "tag": "0012_wooden_luminals",
+    "statements": [
+      "ALTER TABLE \"requests\" ADD COLUMN \"kekv_check\" jsonb;"
+    ]
   }
 ];

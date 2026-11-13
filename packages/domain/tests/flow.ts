@@ -2,6 +2,8 @@ import {
   approveList,
   createDraft,
   formList,
+  needsKekvCheck,
+  setKekvCheck,
   submit,
   type Level,
   type RequestLine,
@@ -23,6 +25,11 @@ export function submitted(world: World, lines: readonly RequestLine[]): string {
 
 /** Формує перелік рівня з обраних заявок; повертає id переліку. */
 export function formAt(world: World, level: Level, ids: readonly string[], who = preparer(level)): string {
+  // Заявки із заміною уповноважена особа рівня спершу перевіряє: «Відповідає вимогам».
+  for (const id of ids) {
+    const request = get(world, id);
+    if (needsKekvCheck(request) && request.kekvCheck?.level !== level) apply(world, setKekvCheck(world.ctx, meta(who), { request, ok: true }));
+  }
   const outcome = apply(
     world,
     formList(world.ctx, meta(who), {

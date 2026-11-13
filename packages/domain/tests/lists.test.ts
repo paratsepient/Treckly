@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { approveList, createDraft, disbandList, formList, submit } from "../src/index.ts";
-import { all, apply, approver, byList, createWorld, get, getList, meta, POSITIONS, preparer, ROUTE, UNIT_PLAN } from "./fixtures.ts";
+import { approveList, createDraft, disbandList, formList, setKekvCheck, submit } from "../src/index.ts";
+import { all, apply, approver, byList, createWorld, get, getList, meta, POSITIONS, preparer, replacement, ROUTE, UNIT_PLAN } from "./fixtures.ts";
 import { approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
@@ -201,4 +201,23 @@ test("заявка іншої в/ч не потрапляє в перелік ц
 
   // На рівні 2 це один підрозділ (бригада): обидві заявки можна взяти в один перелік.
   assert.ok(formAt(world, 2, [own, draft!.id]));
+});
+
+test("заявку із заміною не обрати до переліку без позначки «Відповідає вимогам»; позначку можна скасувати", () => {
+  const world = createWorld();
+  const id = submitted(world, [replacement("l1", "p1", 2, "3110", 150_00, 1)]);
+  const form = () => formList(world.ctx, meta(preparer(1)), { level: 1, unitId: ROUTE[0], selected: [get(world, id)], existingLists: [...world.lists.values()] });
+  assert.equal(throwsCode(form, "INVALID_TRANSITION").details["reason"], "KEKV_NOT_CHECKED");
+  throwsCode(() => setKekvCheck(world.ctx, meta(preparer(2)), { request: get(world, id), ok: true }), "FORBIDDEN_ROLE");
+  apply(world, setKekvCheck(world.ctx, meta(preparer(1)), { request: get(world, id), ok: true }));
+  assert.equal(get(world, id).kekvCheck?.level, 1);
+  apply(world, setKekvCheck(world.ctx, meta(preparer(1)), { request: get(world, id), ok: false }));
+  assert.equal(get(world, id).kekvCheck, null, "«Не відповідає вимогам» скасовує позначку");
+  throwsCode(form, "INVALID_TRANSITION");
+  apply(world, setKekvCheck(world.ctx, meta(preparer(1)), { request: get(world, id), ok: true }));
+  apply(world, form());
+  assert.equal(get(world, id).status, "in_list");
+  // Без заміни перевірка не потрібна.
+  const plain = submitted(world, [byList("l1", "p2", 1)]);
+  throwsCode(() => setKekvCheck(world.ctx, meta(preparer(1)), { request: get(world, plain), ok: true }), "INVALID_TRANSITION");
 });

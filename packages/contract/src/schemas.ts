@@ -109,6 +109,8 @@ export const Request = z.object({
   funding: FundingSource,
   returnInfo: ReturnInfo.nullable(),
   sedoNumber: z.number().int().nullable(),
+  /** Перевірка заміни на рівні: «Відповідає вимогам» (діє лише на цьому рівні). */
+  kekvCheck: z.object({ level: Level, byUserId: Id, at: IsoTimestamp }).nullable(),
   procurement: Procurement.nullable(),
   levelEnteredOn: IsoDate.nullable(),
   createdOn: IsoDate,
