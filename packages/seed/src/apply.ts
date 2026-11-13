@@ -40,7 +40,7 @@ export async function applySeed(db: DspDb, seed: SeedData, options: ApplyOptions
   }
   await db.transaction(async (tx) => {
     await tx.insert(units).values([...seed.units]);
-    await tx.insert(users).values(seed.users.map((u) => ({ ...u })));
+    await tx.insert(users).values(seed.users.map((u) => ({ ...u, kekvs: [...u.kekvs] })));
     await tx.insert(kekvTable).values([...seed.kekv]);
     await tx.insert(nomenclature).values(seed.items.map((i) => ({ ...i })));
     await tx.insert(listPositions).values(seed.listPositions.map((p) => ({ ...p })));

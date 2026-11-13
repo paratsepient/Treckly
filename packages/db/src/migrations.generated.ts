@@ -70,5 +70,18 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "CREATE TABLE \"acting\" (\n\t\"id\" text PRIMARY KEY NOT NULL,\n\t\"deputy_id\" text NOT NULL,\n\t\"principal_id\" text NOT NULL,\n\t\"assigned_by\" text NOT NULL,\n\t\"assigned_at\" text NOT NULL,\n\t\"revoked_at\" text\n);"
     ]
+  },
+  {
+    "tag": "0008_mysterious_kid_colt",
+    "statements": [
+      "ALTER TABLE \"users\" ADD COLUMN \"department_id\" text;",
+      "ALTER TABLE \"users\" ADD COLUMN \"kekvs\" jsonb DEFAULT '[]'::jsonb NOT NULL;"
+    ]
+  },
+  {
+    "tag": "0009_backfill_author_departments",
+    "statements": [
+      "-- Автори без відділу отримують перший відділ своєї в/ч: служба заявки береться з профілю (рішення користувача 2026-11-13).\nUPDATE \"users\" SET \"department_id\" = (SELECT \"id\" FROM \"units\" WHERE \"units\".\"kind\" = 'department' AND \"units\".\"parent_id\" = \"users\".\"unit_id\" ORDER BY \"units\".\"id\" LIMIT 1) WHERE \"role_kind\" = 'author' AND \"department_id\" IS NULL;"
+    ]
   }
 ];

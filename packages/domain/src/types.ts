@@ -253,7 +253,8 @@ export type EventType =
   | "list.not_signed"
   | "list.approved"
   | "acting.assigned"
-  | "acting.revoked";
+  | "acting.revoked"
+  | "user.updated";
 
 /** Запис журналу (лише доповнюється). */
 export interface JournalEvent {

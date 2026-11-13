@@ -47,8 +47,8 @@ export const CONDITION_LABELS: Record<"unusable" | "needs_repair" | "lost", stri
   lost: "Втрачене (знищене)",
 };
 
-/** Підказки для поля «Служба (відділ)»: автор може вписати й іншу. */
-export const SERVICES = ["Служба зв'язку", "Служба тилу", "Інженерна служба", "Медична служба", "Служба РАО", "Відділ персоналу"] as const;
+/** «Відділ зв'язку в/ч А0001» → «Відділ зв'язку»: служба заявки — відділ автора без назви в/ч. */
+export const serviceName = (department: string): string => department.replace(/\s+в\/ч\s+\S+$/u, "").trim();
 
 export const STATUS_TONES: Record<RequestStatus, BadgeTone> = {
   draft: "neutral",

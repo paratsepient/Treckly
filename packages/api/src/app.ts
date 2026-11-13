@@ -1,4 +1,5 @@
 import { actingRoutes } from "./routes/acting.ts";
+import { userRoutes } from "./routes/users.ts";
 import { Hono } from "hono";
 import { API } from "@dsp/contract";
 import { loadNow, loadRequests, loadUser, loadUsers, saveNotifications, saveNow, type DspDb } from "@dsp/db";
@@ -55,6 +56,7 @@ export function createApp(options: AppOptions) {
 
   app.route("/", readRoutes(db));
   app.route("/", actingRoutes(db, run));
+  app.route("/", userRoutes(db, run));
   app.route("/", requestRoutes(db, run));
   app.route("/", levelRoutes(db, run));
   app.route("/", inboxRoutes(db));

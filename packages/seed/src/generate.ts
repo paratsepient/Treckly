@@ -73,8 +73,9 @@ const kopecks = (uah: number): number => uah * 100;
 const CORE_POSITIONS = [1, 2, 3, 4, 6, 30] as const;
 
 /** Типові обґрунтування рапортів (синтетичні). */
-/** Служби (відділи), для потреб яких замовляють: автор вказує одну в заявці. */
-export const SERVICES = ["Служба зв'язку", "Служба тилу", "Інженерна служба", "Медична служба", "Служба РАО", "Відділ персоналу"] as const;
+/** Служба заявки — відділ автора в його в/ч (як в API: назва відділу без «в/ч …»). */
+const serviceOfUnit = (unit: UnitKey): string =>
+  (UNITS.find((u) => u.kind === "department" && u.parentId === unit)?.name ?? "").replace(/\s+в\/ч\s+\S+$/u, "").trim();
 
 const JUSTIFICATIONS = [
   "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
@@ -114,7 +115,7 @@ class Simulation {
   budget: Budget;
   private keys = 0;
   private sedo = 7_240_000;
-  private serviceNo = 0;
+  private fundingNo = 0;
   /** Номери рапортів у СЕДО (реєструє автор при поданні) — окремий діапазон від номерів погоджень. */
   private raportSedo = 5_310_000;
   nextSedo(): number {
@@ -185,7 +186,7 @@ class Simulation {
   draft(unit: UnitKey, lines: RequestLine[]): string {
     // Обґрунтування — з короткого набору типових формулювань, по черзі: дані відтворювані.
     const justification = JUSTIFICATIONS[this.requests.size % JUSTIFICATIONS.length] as string;
-    const out = this.record(createDraft(this.ctx, this.meta(this.authorOf(unit)), { route: routeOf(unit), lines, justification, service: SERVICES[this.serviceNo++ % SERVICES.length] as string, funding: this.serviceNo % 6 === 0 ? "special" : "general" }));
+    const out = this.record(createDraft(this.ctx, this.meta(this.authorOf(unit)), { route: routeOf(unit), lines, justification, service: serviceOfUnit(unit), funding: (this.fundingNo += 1) % 6 === 0 ? "special" : "general" }));
     return (out.requests[0] as Request).id;
   }
 

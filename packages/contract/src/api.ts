@@ -19,6 +19,7 @@ import {
   Request,
   RequestDetail,
   RequestLine,
+  Kekv,
   ActingAssignment,
   FundingSource,
   Unit,
@@ -39,8 +40,16 @@ export const SwitchRoleInput = z.object({ userId: Id });
 const Justification = z.string().max(4000);
 /** Назва заявки: коротка, щоб уміщалась у заголовок і рядок таблиці. */
 const Title = z.string().max(120);
-const Service = z.string().max(120);
-const Details = { service: Service.optional(), funding: FundingSource.optional() };
+// Службу заявка бере з профілю автора (відділ), тому з клієнта приходить лише джерело фінансування.
+const Details = { funding: FundingSource.optional() };
+/** Базові налаштування користувача (адміністратор): ПІБ, посада, відділ у в/ч і доступні КЕКВ. */
+export const UpdateUserInput = z.object({
+  name: z.string().trim().min(1).max(120),
+  title: z.string().trim().min(1).max(120),
+  departmentId: Id.nullable(),
+  kekvs: z.array(Kekv),
+});
+export const UserResponse = z.object({ user: User });
 export const CreateRequestInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), ...Details });
 export const CheckRequestInput = z.object({ lines: z.array(RequestLine), requestId: Id.optional() });
 export const EditLinesInput = z.object({ lines: z.array(RequestLine), justification: Justification.optional(), title: Title.optional(), ...Details, expectedRevision });
@@ -111,6 +120,7 @@ const endpoint = <T extends Endpoint>(e: T): T => e;
 export const API = {
   // Сесія
   session: endpoint({ method: "GET", path: "/api/session", output: SessionResponse }),
+  updateUser: endpoint({ method: "PUT", path: "/api/users/:id", input: UpdateUserInput, output: UserResponse }),
   actingList: endpoint({ method: "GET", path: "/api/acting", output: ActingListResponse }),
   assignActing: endpoint({ method: "POST", path: "/api/acting", input: AssignActingInput, output: ActingResponse }),
   revokeActing: endpoint({ method: "POST", path: "/api/acting/:id/revoke", input: z.object({}), output: ActingResponse }),

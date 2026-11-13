@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { kekvAllowed } from "./users.ts";
 import { desc } from "drizzle-orm";
 import {
   directionOf,
@@ -71,7 +72,8 @@ export function readRoutes(db: DspDb) {
 
   app.get("/api/property", async (c) => {
     const user = c.get("user");
-    const rows = user.unitId ? await loadProperty(db, user.unitId) : [];
+    // Майно й план особи — лише за доступними їй КЕКВ (налаштування адміністратора).
+    const rows = (user.unitId ? await loadProperty(db, user.unitId) : []).filter((r) => kekvAllowed(user, r.item.kekv));
     return c.json({ items: rows.map((r) => ({ id: r.id, unitId: r.unitId, tab: r.tab, qty: r.qty, item: itemView(r.item) })) });
   });
 

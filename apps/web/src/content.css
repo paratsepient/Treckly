@@ -909,3 +909,66 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Служба в заявці — лише показ: її задає профіль автора. */
+.request-details__service {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-1);
+  min-width: 0;
+}
+
+.request-details__label {
+  font: var(--ix-font-body-strong);
+  color: var(--ix-foreground);
+}
+
+.request-details__value {
+  display: flex;
+  align-items: center;
+  min-height: var(--ix-space-10);
+  padding: 0 var(--ix-space-3);
+  border: 1px solid var(--ix-border);
+  border-radius: var(--ix-radius-control);
+  background: var(--ix-surface-inset);
+  color: var(--ix-foreground);
+}
+
+.request-details__missing {
+  color: var(--ix-warning);
+  font: var(--ix-font-caption);
+}
+
+/* Користувачі: форма картки й вибір КЕКВ. */
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-4);
+}
+
+.user-form__kekv {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ix-space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.user-form__kekv legend {
+  margin-bottom: var(--ix-space-1);
+  padding: 0;
+  font: var(--ix-font-body-strong);
+}
+
+.user-form__hint {
+  margin: 0;
+  color: var(--ix-foreground-secondary);
+  font: var(--ix-font-caption);
+}
+
+.user-kekvs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--ix-space-1);
+}

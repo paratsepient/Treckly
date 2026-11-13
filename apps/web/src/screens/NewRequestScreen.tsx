@@ -23,7 +23,7 @@ import {
   type CatalogItem,
   type CatalogPosition,
 } from "../lib/editor-state.ts";
-import { formatMoney, FUNDING_LABELS, requestLabel, SERVICES } from "../lib/format.ts";
+import { formatMoney, FUNDING_LABELS, requestLabel, serviceName } from "../lib/format.ts";
 import { requestTotal } from "../lib/totals.ts";
 import { useDebounced } from "../lib/useDebounced.ts";
 
@@ -46,8 +46,8 @@ interface ServerState {
 }
 
 /** Ключ збереження: рядки й обґрунтування разом — зміна будь-чого з них зберігається. */
-const draftKey = (linesKeyValue: string, justification: string, title = "", service = "", funding: Funding = "general"): string =>
-  JSON.stringify([linesKeyValue, justification, title, service, funding]);
+const draftKey = (linesKeyValue: string, justification: string, title = "", funding: Funding = "general"): string =>
+  JSON.stringify([linesKeyValue, justification, title, funding]);
 type Funding = "general" | "special";
 const EMPTY_KEY = draftKey(linesKey([]), "");
 
@@ -79,8 +79,10 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const [justification, setJustification] = useState("");
   /** Назва заявки від автора; порожня — показується номер. */
   const [name, setName] = useState("");
-  const [service, setService] = useState("");
   const [funding, setFunding] = useState<Funding>("general");
+  const session = useApiQuery("session");
+  const departmentName = reference.data?.units.find((u) => u.id === session.data?.user.departmentId)?.name;
+  const service = departmentName ? serviceName(departmentName) : "";
   const [renaming, setRenaming] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const server = useRef<ServerState>({ id: null, revision: 0, status: null, version: 1, savedKey: EMPTY_KEY });
@@ -118,7 +120,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   const positionMap = useMemo(() => new Map(allPositions.map((p) => [p.id, p])), [allPositions]);
   const itemMap = useMemo(() => new Map(items.map((i) => [i.id, i])), [items]);
   const converted = useMemo(() => toRequestLines(history.present, positionMap, itemMap), [history.present, positionMap, itemMap]);
-  const key = draftKey(linesKey(converted.lines), justification, name, service, funding);
+  const key = draftKey(linesKey(converted.lines), justification, name, funding);
 
   // Інша заявка в адресі (або «Нова заявка» після відкритої): редактор починається заново.
   // Адреса, яку ми самі щойно виставили після створення чернетки, збігається з server.id й пропускається.
@@ -128,7 +130,6 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
     dispatch({ type: "load", lines: [] });
     setJustification("");
     setName("");
-    setService("");
     setFunding("general");
     setLoaded(requestId === undefined);
     setSaveState("idle");
@@ -138,11 +139,10 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   useEffect(() => {
     const request = detail.data?.request;
     if (!request || reference.data === undefined || request.id === server.current.id) return;
-    server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: draftKey(linesKey(request.lines), request.justification, request.title, request.service, request.funding) };
+    server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: draftKey(linesKey(request.lines), request.justification, request.title, request.funding) };
     dispatch({ type: "load", lines: fromRequestLines(request.lines, items) });
     setJustification(request.justification);
     setName(request.title);
-    setService(request.service);
     setFunding(request.funding);
     setLoaded(true);
   }, [detail.data, reference.data, items]);
@@ -158,28 +158,28 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
   );
   const report = debouncedLines.length > 0 ? (check.data?.report ?? null) : null;
 
-  const latest = useRef({ lines: converted.lines, justification, name, service, funding });
-  latest.current = { lines: converted.lines, justification, name, service, funding };
+  const latest = useRef({ lines: converted.lines, justification, name, funding });
+  latest.current = { lines: converted.lines, justification, name, funding };
   const chain = useRef<Promise<void>>(Promise.resolve());
 
   const saveOnce = useCallback(async (): Promise<void> => {
-    const { lines, justification: text, name: label, service: serviceText, funding: source } = latest.current;
+    const { lines, justification: text, name: label, funding: source } = latest.current;
     const s = server.current;
-    const lineKey = draftKey(linesKey(lines), text, label, serviceText, source);
+    const lineKey = draftKey(linesKey(lines), text, label, source);
     if (lineKey === s.savedKey) {
       setSaveState((prev) => (prev === "dirty" ? "saved" : prev));
       return;
     }
-    if (s.id === null && lines.length === 0 && text.trim() === "" && label.trim() === "" && serviceText.trim() === "") return;
+    if (s.id === null && lines.length === 0 && text.trim() === "" && label.trim() === "") return;
     setSaveState("saving");
     try {
       if (s.id === null) {
-        const { request } = await create.mutateAsync({ body: { lines: [...lines], justification: text, title: label, service: serviceText, funding: source } });
+        const { request } = await create.mutateAsync({ body: { lines: [...lines], justification: text, title: label, funding: source } });
         server.current = { id: request.id, revision: request.revision, status: request.status, version: request.version, savedKey: lineKey };
         // Адреса запам'ятовує заявку: після перезавантаження сторінки чернетка знайдеться.
         void navigate({ to: "/new", search: { id: request.id }, replace: true });
       } else {
-        const { request } = await edit.mutateAsync({ params: { id: s.id }, body: { lines: [...lines], justification: text, title: label, service: serviceText, funding: source, expectedRevision: s.revision } });
+        const { request } = await edit.mutateAsync({ params: { id: s.id }, body: { lines: [...lines], justification: text, title: label, funding: source, expectedRevision: s.revision } });
         server.current = { ...s, revision: request.revision, savedKey: lineKey };
       }
       setSaveState("saved");
@@ -333,20 +333,17 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
             </p>
           ) : null}
           <section className="request-details" aria-label="Для кого і за який кошт">
-            <Input
-              label="Служба (відділ)"
-              description="Для потреб якої служби замовляєте; без неї заявку не подати."
-              required
-              maxLength={120}
-              list="services"
-              value={service}
-              onChange={(event) => setService(event.currentTarget.value)}
-            />
-            <datalist id="services">
-              {SERVICES.map((s) => (
-                <option key={s} value={s} />
-              ))}
-            </datalist>
+            {/* Служба — з профілю автора: відділ у в/ч задає адміністратор («Користувачі»). */}
+            <div className="request-details__service">
+              <span className="request-details__label">Служба (відділ)</span>
+              {service ? (
+                <span className="request-details__value">{service}</span>
+              ) : (
+                <span className="request-details__missing" role="note">
+                  Відділ у вашому профілі не вказано — зверніться до адміністратора; без нього заявку не подати.
+                </span>
+              )}
+            </div>
             <Select label="Джерело фінансування" value={funding} onChange={(event) => setFunding(event.target.value as Funding)}>
               {Object.entries(FUNDING_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>

@@ -20,6 +20,8 @@ export interface SeedUser {
   readonly level: Level | null;
   readonly unitId: string | null;
   readonly title: string;
+  readonly departmentId: string | null;
+  readonly kekvs: readonly string[];
 }
 
 /** 1 напрямок, 1 РУ, 2 бригади, 3 в/ч, по 1–2 відділи. Назви умовні. */
@@ -67,14 +69,15 @@ export function generateUsers(): SeedUser[] {
   let count = 0;
   const fullName = (): string => faker.person.fullName({ sex: (count += 1) % 2 === 0 ? "female" : "male" });
   for (const unit of UNIT_IDS) {
-    users.push({ id: `author-${unit}`, name: fullName(), roleKind: "author", level: null, unitId: unit, title: "Автор заявок" });
+    const department = UNITS.find((u) => u.kind === "department" && u.parentId === unit)?.id ?? null;
+    users.push({ id: `author-${unit}`, name: fullName(), roleKind: "author", level: null, unitId: unit, title: "Автор заявок", departmentId: department, kekvs: [] });
   }
   for (const config of DEFAULT_LEVELS) {
     for (const unitId of unitsAtLevel(config.level)) {
-      users.push({ id: `prep-${config.level}-${unitId}`, name: fullName(), roleKind: "preparer", level: config.level, unitId, title: config.preparerTitle });
-      users.push({ id: `appr-${config.level}-${unitId}`, name: fullName(), roleKind: "approver", level: config.level, unitId, title: config.approverTitle });
+      users.push({ id: `prep-${config.level}-${unitId}`, name: fullName(), roleKind: "preparer", level: config.level, unitId, title: config.preparerTitle, departmentId: null, kekvs: [] });
+      users.push({ id: `appr-${config.level}-${unitId}`, name: fullName(), roleKind: "approver", level: config.level, unitId, title: config.approverTitle, departmentId: null, kekvs: [] });
     }
   }
-  users.push({ id: "admin-demo", name: "Демо-адміністратор", roleKind: "admin", level: null, unitId: null, title: "Адміністратор демо" });
+  users.push({ id: "admin-demo", name: "Демо-адміністратор", roleKind: "admin", level: null, unitId: null, title: "Адміністратор демо", departmentId: null, kekvs: [] });
   return users;
 }

@@ -12,6 +12,7 @@ import { DemoScreen } from "../screens/DemoScreen.tsx";
 import { PlannedListScreen } from "../screens/PlannedListScreen.tsx";
 import { ProcurementScreen } from "../screens/ProcurementScreen.tsx";
 import { ActingScreen } from "../screens/ActingScreen.tsx";
+import { UsersScreen } from "../screens/UsersScreen.tsx";
 import { useApiQuery } from "../api/hooks.tsx";
 import { homePath, RoleOnly, Root } from "./Root.tsx";
 
@@ -135,6 +136,16 @@ const procurementRoute = createRoute({
   ),
 });
 
+const usersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/users",
+  component: () => (
+    <RoleOnly roles={["admin"]}>
+      <UsersScreen />
+    </RoleOnly>
+  ),
+});
+
 const actingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/acting",
@@ -158,7 +169,7 @@ const journalRoute = createRoute({
 /** Демо-середовище доступне з будь-якої ролі: тут її й обирають. */
 const demoRoute = createRoute({ getParentRoute: () => rootRoute, path: "/demo", component: DemoScreen });
 
-const routeTree = rootRoute.addChildren([indexRoute, demoRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, finalRoute, registryRoute, notificationsRoute, journalRoute, plannedRoute, procurementRoute, actingRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, demoRoute, propertyRoute, newRoute, myRoute, queueRoute, listsRoute, finalRoute, registryRoute, notificationsRoute, journalRoute, plannedRoute, procurementRoute, actingRoute, usersRoute]);
 
 /** Хеш-історія: застосунок відкривається зі статичних файлів на localhost без налаштування сервера. */
 export const router = createRouter({ routeTree, history: createHashHistory() });

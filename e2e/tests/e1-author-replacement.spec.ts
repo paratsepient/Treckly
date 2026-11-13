@@ -29,9 +29,9 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   const submit = page.getByRole("button", { name: "Подати", exact: true });
   await expect(submit).toBeDisabled();
   await page.getByLabel("Обґрунтування потреби").fill("Антена в підрозділі зношена, потрібна мобільна система зв'язку.");
-  // Ще потрібні служба і стан майна, яке замінюють; джерело фінансування — загальний фонд за замовчуванням.
+  // Ще потрібен стан майна, яке замінюють; служба — з профілю автора, джерело фінансування — загальний фонд за замовчуванням.
   await expect(submit).toBeDisabled();
-  await page.getByLabel("Служба (відділ)").fill("Служба зв'язку");
+  await expect(page.locator(".request-details__value")).toHaveText("Відділ зв'язку");
   await page.getByLabel("Стан замінюваного, рядок 1").selectOption("unusable");
 
   // Рапорт за шаблоном: адресат, назва, позиції й обґрунтування на аркуші; Word завантажується.
@@ -42,7 +42,7 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   await expect(sheet.getByText("Командиру військової частини А0001")).toBeVisible();
   await expect(sheet.getByText("Антенна система мобільна", { exact: false })).toBeVisible();
   await expect(sheet.getByText(/мобільна система зв'язку/)).toBeVisible();
-  await expect(sheet.getByText(/\(служба зв'язку\) за Попереднім переліком/)).toBeVisible();
+  await expect(sheet.getByText(/\(відділ зв'язку\) за Попереднім переліком/)).toBeVisible();
   await expect(sheet.getByText("Непридатне до використання")).toBeVisible();
   const download = page.waitForEvent("download");
   await dialog.getByRole("button", { name: "Завантажити рапорт (Word)" }).click();

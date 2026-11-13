@@ -200,6 +200,8 @@ export const User = z.object({
   level: Level.nullable(),
   unitId: Id.nullable(),
   title: z.string(),
+  departmentId: Id.nullable(),
+  kekvs: z.array(Kekv),
 });
 
 export const ActingAssignment = z.object({

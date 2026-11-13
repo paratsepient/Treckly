@@ -10,6 +10,8 @@ export const userView = (u: UserRow) => ({
   level: (u.level ?? null) as 1 | 2 | 3 | 4 | 5 | null,
   unitId: u.unitId,
   title: u.title,
+  departmentId: u.departmentId ?? null,
+  kekvs: [...(u.kekvs ?? [])],
 });
 
 /** Бюджет по КЕКВ: затверджено, у роботі, залишок. */

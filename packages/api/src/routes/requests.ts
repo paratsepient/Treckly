@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { kekvAllowed, serviceOf } from "./users.ts";
 import { API } from "@dsp/contract";
 import {
   directionOf,
@@ -13,6 +14,7 @@ import {
   loadUnits,
   routeFor,
   saveOutcome,
+  type UserRow,
   type Queryable,
   type DspDb,
   type DspTx,
@@ -50,8 +52,13 @@ async function requireRequest(q: Queryable, id: string): Promise<Request> {
 }
 
 /** Довідники напрямку, потрібні автоперевіркам. */
-async function checkState(q: Queryable, direction: string, unitId: string): Promise<Pick<SubmitInput, "positions" | "unitPlan" | "budget" | "requests">> {
-  const [positions, unitPlan, budget, requests] = await Promise.all([loadPositions(q, direction), loadUnitPlan(q, unitId, direction), loadBudget(q, direction), loadRequests(q)]);
+/**
+ * Стан для автоперевірок. План в/ч звужується до КЕКВ, доступних автору (налаштування адміністратора):
+ * позиції інших КЕКВ для нього «не в плані».
+ */
+async function checkState(q: Queryable, direction: string, unitId: string, author?: Pick<UserRow, "kekvs">): Promise<Pick<SubmitInput, "positions" | "unitPlan" | "budget" | "requests">> {
+  const [positions, plan, budget, requests] = await Promise.all([loadPositions(q, direction), loadUnitPlan(q, unitId, direction), loadBudget(q, direction), loadRequests(q)]);
+  const unitPlan = author ? Object.fromEntries(Object.entries(plan).filter(([id]) => kekvAllowed(author, positions[id]?.kekv ?? ""))) : plan;
   return { positions, unitPlan, budget, requests };
 }
 
@@ -77,19 +84,21 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   };
 
   app.post("/api/requests", async (c) => {
-    const { lines, justification, title, service, funding } = await parseBody(c, API.createRequest.input);
+    const { lines, justification, title, funding } = await parseBody(c, API.createRequest.input);
     const user = c.get("user");
     const meta = metaOf(c);
     // Маршрут будується від в/ч автора: інші ролі (зокрема адміністрація) заявок не створюють.
     if (meta.actor.role.kind !== "author") throw new DomainError("FORBIDDEN_ROLE", "Заявку створює автор у своїй в/ч.");
     const reply = await run(meta.idempotencyKey, async (tx, ctx) => {
-      const route = routeFor(await loadUnits(tx), user.unitId ?? "");
+      const units = await loadUnits(tx);
+      const route = routeFor(units, user.unitId ?? "");
       const outcome = createDraft(ctx, meta, {
         route,
         lines,
         ...(justification !== undefined ? { justification } : {}),
         ...(title !== undefined ? { title } : {}),
-        ...(service !== undefined ? { service } : {}),
+        // Служба — з профілю автора (відділ у в/ч), а не з форми.
+        service: serviceOf(units, user),
         ...(funding !== undefined ? { funding } : {}),
       });
       await saveOutcome(tx, outcome, route[3]);
@@ -99,14 +108,16 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   });
 
   app.put("/api/requests/:id/lines", async (c) => {
-    const { lines, justification, title, service, funding, expectedRevision } = await parseBody(c, API.editLines.input);
-    return commandOn(c, c.req.param("id"), expectedRevision, async ({ ctx, meta, request }) =>
+    const { lines, justification, title, funding, expectedRevision } = await parseBody(c, API.editLines.input);
+    const user = c.get("user");
+    return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
       editLines(ctx, meta, {
         request,
         lines,
         ...(justification !== undefined ? { justification } : {}),
         ...(title !== undefined ? { title } : {}),
-        ...(service !== undefined ? { service } : {}),
+        // Відділ автора міг змінитись: чернетка підхоплює актуальну службу з профілю.
+        service: serviceOf(await loadUnits(tx), user),
         ...(funding !== undefined ? { funding } : {}),
       }),
     );
@@ -117,21 +128,21 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
     const { lines, requestId } = await parseBody(c, API.checkRequest.input);
     const unitId = c.get("user").unitId ?? "";
     const direction = directionOf(await loadUnits(db), unitId);
-    const state = await checkState(db, direction, unitId);
+    const state = await checkState(db, direction, unitId, c.get("user"));
     return c.json({ report: checkRequest({ lines, ...state, unitId, ...(requestId ? { requestId } : {}) }) });
   });
 
   app.post("/api/requests/:id/submit", async (c) => {
     const { expectedRevision, sedoNumber } = await parseBody(c, API.submitRequest.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
-      submit(ctx, meta, { request, sedoNumber, ...(await checkState(tx, request.route[3], request.route[0])) }),
+      submit(ctx, meta, { request, sedoNumber, ...(await checkState(tx, request.route[3], request.route[0], c.get("user"))) }),
     );
   });
 
   app.post("/api/requests/:id/new-version", async (c) => {
     const { expectedRevision, sedoNumber } = await parseBody(c, API.newVersion.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
-      resubmit(ctx, meta, { request, sedoNumber, ...(await checkState(tx, request.route[3], request.route[0])) }),
+      resubmit(ctx, meta, { request, sedoNumber, ...(await checkState(tx, request.route[3], request.route[0], c.get("user"))) }),
     );
   });
 
