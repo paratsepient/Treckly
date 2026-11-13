@@ -24,7 +24,7 @@ test("запланований перелік: Відділ бачить уве�
   // Квадрокоптер: план напрямку, стани плану й розбивка по в/ч у картці.
   await row(page, /Квадрокоптер розвідувальний/).getByRole("button", { name: "Квадрокоптер розвідувальний" }).click();
   const card = page.getByRole("complementary", { name: "Розбивка позиції по в/ч" });
-  await expect(card.getByText("План за напрямком")).toBeVisible();
+  await expect(card.getByText("План напрямку (сума планів в/ч)")).toBeVisible();
   await expect(card.getByText("У заявках")).toBeVisible();
   await expect(card.getByRole("list", { name: /Заплановано по в\/ч/ }).getByText("в/ч А0001")).toBeVisible();
 

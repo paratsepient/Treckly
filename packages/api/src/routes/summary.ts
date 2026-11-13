@@ -92,7 +92,8 @@ export function summaryRoutes(db: DspDb) {
       .map((p) => {
         const scopedUnits = p.units.filter((u) => under.has(u.unitId));
         const { reservedQty: _reserved, ...rest } = p;
-        const plannedQty = wholeDirection ? p.plannedQty : scopedUnits.reduce((sum, u) => sum + u.qty, 0);
+        // План — сума планів в/ч зони (для напрямку — усіх його в/ч).
+        const plannedQty = scopedUnits.reduce((sum, u) => sum + u.qty, 0);
         const inRequestsQty = qty.in_requests.get(p.id) ?? 0;
         const approvedQty = qty.approved.get(p.id) ?? 0;
         const boughtQty = qty.bought.get(p.id) ?? 0;
@@ -107,8 +108,8 @@ export function summaryRoutes(db: DspDb) {
           freeQty: plannedQty - inRequestsQty - approvedQty - boughtQty,
         };
       })
-      // Нижче напрямку показуємо лише те, що заплановано в в/ч зони або вже в її заявках.
-      .filter((p) => wholeDirection || p.plannedQty > 0 || p.inRequestsQty + p.approvedQty + p.boughtQty > 0);
+      // Лише те, що заплановано в в/ч зони або вже в її заявках: план — це плани частин.
+      .filter((p) => p.plannedQty > 0 || p.inRequestsQty + p.approvedQty + p.boughtQty > 0);
     return c.json({ scope: { unitId: user.unitId, level: user.level, wholeDirection, unitIds: [...under].sort() }, positions });
   });
 

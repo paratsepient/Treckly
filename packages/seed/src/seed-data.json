@@ -852,151 +852,151 @@
    "id": "pos-005",
    "directionId": "dir-1",
    "itemId": "item-005",
-   "plannedQty": 80
+   "plannedQty": 0
   },
   {
    "id": "pos-006",
    "directionId": "dir-1",
    "itemId": "item-006",
-   "plannedQty": 100
+   "plannedQty": 99
   },
   {
    "id": "pos-007",
    "directionId": "dir-1",
    "itemId": "item-007",
-   "plannedQty": 70
+   "plannedQty": 0
   },
   {
    "id": "pos-008",
    "directionId": "dir-1",
    "itemId": "item-008",
-   "plannedQty": 40
+   "plannedQty": 0
   },
   {
    "id": "pos-009",
    "directionId": "dir-1",
    "itemId": "item-009",
-   "plannedQty": 200
+   "plannedQty": 25
   },
   {
    "id": "pos-010",
    "directionId": "dir-1",
    "itemId": "item-010",
-   "plannedQty": 250
+   "plannedQty": 25
   },
   {
    "id": "pos-011",
    "directionId": "dir-1",
    "itemId": "item-011",
-   "plannedQty": 110
+   "plannedQty": 7
   },
   {
    "id": "pos-012",
    "directionId": "dir-1",
    "itemId": "item-012",
-   "plannedQty": 180
+   "plannedQty": 32
   },
   {
    "id": "pos-013",
    "directionId": "dir-1",
    "itemId": "item-013",
-   "plannedQty": 300
+   "plannedQty": 49
   },
   {
    "id": "pos-014",
    "directionId": "dir-1",
    "itemId": "item-014",
-   "plannedQty": 140
+   "plannedQty": 9
   },
   {
    "id": "pos-015",
    "directionId": "dir-1",
    "itemId": "item-015",
-   "plannedQty": 160
+   "plannedQty": 13
   },
   {
    "id": "pos-016",
    "directionId": "dir-1",
    "itemId": "item-016",
-   "plannedQty": 120
+   "plannedQty": 9
   },
   {
    "id": "pos-017",
    "directionId": "dir-1",
    "itemId": "item-017",
-   "plannedQty": 50
+   "plannedQty": 0
   },
   {
    "id": "pos-018",
    "directionId": "dir-1",
    "itemId": "item-018",
-   "plannedQty": 30
+   "plannedQty": 0
   },
   {
    "id": "pos-019",
    "directionId": "dir-1",
    "itemId": "item-019",
-   "plannedQty": 45
+   "plannedQty": 0
   },
   {
    "id": "pos-020",
    "directionId": "dir-1",
    "itemId": "item-020",
-   "plannedQty": 55
+   "plannedQty": 5
   },
   {
    "id": "pos-021",
    "directionId": "dir-1",
    "itemId": "item-021",
-   "plannedQty": 35
+   "plannedQty": 0
   },
   {
    "id": "pos-022",
    "directionId": "dir-1",
    "itemId": "item-022",
-   "plannedQty": 400
+   "plannedQty": 49
   },
   {
    "id": "pos-023",
    "directionId": "dir-1",
    "itemId": "item-023",
-   "plannedQty": 500
+   "plannedQty": 61
   },
   {
    "id": "pos-024",
    "directionId": "dir-1",
    "itemId": "item-024",
-   "plannedQty": 900
+   "plannedQty": 61
   },
   {
    "id": "pos-025",
    "directionId": "dir-1",
    "itemId": "item-025",
-   "plannedQty": 600
+   "plannedQty": 0
   },
   {
    "id": "pos-026",
    "directionId": "dir-1",
    "itemId": "item-026",
-   "plannedQty": 350
+   "plannedQty": 37
   },
   {
    "id": "pos-027",
    "directionId": "dir-1",
    "itemId": "item-027",
-   "plannedQty": 120
+   "plannedQty": 9
   },
   {
    "id": "pos-028",
    "directionId": "dir-1",
    "itemId": "item-028",
-   "plannedQty": 800
+   "plannedQty": 49
   },
   {
    "id": "pos-029",
    "directionId": "dir-1",
    "itemId": "item-029",
-   "plannedQty": 260
+   "plannedQty": 0
   },
   {
    "id": "pos-030",
@@ -1008,67 +1008,67 @@
    "id": "pos-031",
    "directionId": "dir-1",
    "itemId": "item-031",
-   "plannedQty": 12
+   "plannedQty": 0
   },
   {
    "id": "pos-032",
    "directionId": "dir-1",
    "itemId": "item-032",
-   "plannedQty": 18
+   "plannedQty": 3
   },
   {
    "id": "pos-033",
    "directionId": "dir-1",
    "itemId": "item-033",
-   "plannedQty": 90
+   "plannedQty": 7
   },
   {
    "id": "pos-034",
    "directionId": "dir-1",
    "itemId": "item-034",
-   "plannedQty": 36
+   "plannedQty": 0
   },
   {
    "id": "pos-035",
    "directionId": "dir-1",
    "itemId": "item-035",
-   "plannedQty": 10
+   "plannedQty": 0
   },
   {
    "id": "pos-036",
    "directionId": "dir-1",
    "itemId": "item-036",
-   "plannedQty": 20
+   "plannedQty": 4
   },
   {
    "id": "pos-037",
    "directionId": "dir-1",
    "itemId": "item-037",
-   "plannedQty": 25
+   "plannedQty": 0
   },
   {
    "id": "pos-038",
    "directionId": "dir-1",
    "itemId": "item-038",
-   "plannedQty": 40
+   "plannedQty": 4
   },
   {
    "id": "pos-039",
    "directionId": "dir-1",
    "itemId": "item-039",
-   "plannedQty": 15
+   "plannedQty": 3
   },
   {
    "id": "pos-040",
    "directionId": "dir-1",
    "itemId": "item-040",
-   "plannedQty": 16
+   "plannedQty": 0
   },
   {
    "id": "pos-041",
    "directionId": "dir-1",
    "itemId": "item-041",
-   "plannedQty": 30
+   "plannedQty": 0
   }
  ],
  "budget": {

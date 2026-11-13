@@ -123,13 +123,15 @@ test("запланований перелік: кожен рівень бачи�
   for (const who of [AUTHOR_A, "admin-demo"]) {
     assert.equal((await h.fail("plannedList", who, 403)).code, "FORBIDDEN_ROLE", who);
   }
-  // Рівень 5: увесь напрямок, план — за переліком напрямку; Відділ і Голова бачать те саме.
+  // Рівень 5: увесь напрямок, план — сума планів усіх в/ч; Відділ і Голова бачать те саме.
   const top = await h.call("plannedList", "prep-5-vor");
   assert.equal(top.scope.wholeDirection, true);
   assert.deepEqual(top.scope.unitIds, ["unit-a", "unit-b", "unit-c"]);
   assert.deepEqual((await h.call("plannedList", "appr-5-vor")).positions, top.positions);
   const direction = (await h.call("positions", "prep-5-vor")).positions;
-  assert.equal(top.positions.length, direction.length);
+  // У переліку — лише те, що в/ч запланували (або вже замовили); незаплановане за переліком недоступне.
+  assert.ok(top.positions.length > 0 && top.positions.length <= direction.length);
+  for (const d of direction) if (!top.positions.some((p) => p.id === d.id)) assert.ok(d.availableQty <= 0, `${d.code}: ніхто не запланував`);
   for (const p of top.positions) {
     assert.equal(p.plannedQty - p.approvedQty - p.boughtQty, direction.find((d) => d.id === p.id)!.availableQty, `${p.code}: план − затверджено − куплено = доступно`);
     assert.equal(p.freeQty, p.plannedQty - p.inRequestsQty - p.approvedQty - p.boughtQty, `${p.code}: стани разом дають план`);

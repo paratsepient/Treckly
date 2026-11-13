@@ -15,8 +15,6 @@ type Position = ApiOutput<"plannedList">["positions"][number];
 const ALL = "all";
 const number = new Intl.NumberFormat("uk-UA");
 
-/** Скільки розподілено по в/ч (сума їхніх планів). */
-const distributedOf = (p: Position): number => p.units.reduce((sum, u) => sum + u.qty, 0);
 const grn = (value: number): string => formatMoneyShort(value * 100);
 
 /**
@@ -61,9 +59,7 @@ export function PlannedListScreen() {
       key: "state",
       header: "Увага",
       render: (p) =>
-        scope?.wholeDirection && distributedOf(p) > p.plannedQty ? (
-          <Badge tone="error">Розподілено по в/ч більше, ніж за напрямком</Badge>
-        ) : p.freeQty < 0 ? (
+        p.freeQty < 0 ? (
           <Badge tone="warning">Замовлено понад план</Badge>
         ) : (
           "—"
@@ -79,7 +75,7 @@ export function PlannedListScreen() {
       <PlanBar amounts={qtyOf(current)} format={qtyText(current)} label={current.name} />
       <dl className="planned__facts">
         <div>
-          <dt>{scope?.wholeDirection ? "План за напрямком" : "План ваших в/ч"}</dt>
+          <dt>{scope?.wholeDirection ? "План напрямку (сума планів в/ч)" : "План ваших в/ч"}</dt>
           <dd>{qtyText(current)(current.plannedQty)}</dd>
         </div>
         {PLAN_STATES.map((st) => (
@@ -106,10 +102,6 @@ export function PlannedListScreen() {
         <div>
           <dt>Виконано</dt>
           <dd>{percent.format(doneShare(qtyOf(current)))}</dd>
-        </div>
-        <div>
-          <dt>Розподілено по в/ч</dt>
-          <dd>{number.format(distributedOf(current))}</dd>
         </div>
       </dl>
       <h3 className="planned__title">Заплановано по в/ч</h3>

@@ -35,6 +35,8 @@ import {
   nomenclature,
   notifications,
   openDb,
+  propertyItems,
+  units,
   resetDb,
   runMigrations,
   saveNotifications,
@@ -66,6 +68,19 @@ async function setup() {
     { id: "p1", directionId: DIRECTION, itemId: "n1", plannedQty: 10 },
     { id: "p2", directionId: DIRECTION, itemId: "n2", plannedQty: 5 },
     { id: "p3", directionId: DIRECTION, itemId: "n3", plannedQty: 3 },
+  ]);
+  // План напрямку — сума планів в/ч: та сама кількість, що й у позиціях переліку, записана в план в/ч маршруту.
+  await db.insert(units).values([
+    { id: "u-vor", parentId: null, kind: "authority", name: "Відділ" },
+    { id: DIRECTION, parentId: "u-vor", kind: "direction", name: "Напрямок" },
+    { id: "u-ru", parentId: DIRECTION, kind: "ru", name: "РУ" },
+    { id: "u-brig", parentId: "u-ru", kind: "brigade", name: "Бригада" },
+    { id: "u-vch", parentId: "u-brig", kind: "unit", name: "в/ч" },
+  ]);
+  await db.insert(propertyItems).values([
+    { id: "pl-1", unitId: "u-vch", itemId: "n1", tab: "planned", qty: 10 },
+    { id: "pl-2", unitId: "u-vch", itemId: "n2", tab: "planned", qty: 5 },
+    { id: "pl-3", unitId: "u-vch", itemId: "n3", tab: "planned", qty: 3 },
   ]);
   await db.insert(budgets).values([
     { directionId: DIRECTION, scope: "TOTAL", limitMinor: 1_000_00, approvedMinor: 0 },

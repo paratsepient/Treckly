@@ -470,7 +470,11 @@ export function generateSeed(): SeedData {
     users,
     kekv: KEKV_INFO,
     items: catalog.items,
-    listPositions: catalog.positions,
+    // План напрямку — сума планів в/ч (Попередній перелік формують частини); у позиції — для довідки.
+    listPositions: catalog.positions.map((p) => ({
+      ...p,
+      plannedQty: property.filter((row) => row.tab === "planned" && row.itemId === p.itemId).reduce((sum, row) => sum + row.qty, 0),
+    })),
     budget,
     property,
     outcomes: sim.outcomes,

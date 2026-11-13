@@ -17,6 +17,7 @@ import {
   type Route,
 } from "@dsp/domain";
 import type { Queryable } from "./client.ts";
+import { directionOf } from "./reads.ts";
 import {
   budgets,
   dailyListRequests,
@@ -29,6 +30,7 @@ import {
   nomenclature,
   notifications,
   propertyItems,
+  units,
   requestLines,
   requests,
 } from "./schema.ts";
@@ -251,6 +253,23 @@ export async function loadBudget(q: Queryable, directionId: string): Promise<Bud
  * Попередній перелік напрямку з доступною кількістю: план мінус кількість у затверджених
  * заявках (за переліком і замінах).
  */
+/**
+ * План напрямку = сума планів його в/ч (вкладка «Заплановано» в майні кожної в/ч): Попередній перелік формують
+ * самі частини, окремого числа «план напрямку» немає (рішення користувача 2026-11-13). Предмет → кількість.
+ */
+async function directionPlanByItem(q: Queryable, directionId: string): Promise<Map<string, number>> {
+  const [allUnits, rows] = await Promise.all([
+    q.select().from(units),
+    q.select({ unitId: propertyItems.unitId, itemId: propertyItems.itemId, qty: propertyItems.qty }).from(propertyItems).where(eq(propertyItems.tab, "planned")),
+  ]);
+  const plan = new Map<string, number>();
+  for (const row of rows) {
+    if (directionOf(allUnits, row.unitId) !== directionId) continue;
+    plan.set(row.itemId, (plan.get(row.itemId) ?? 0) + row.qty);
+  }
+  return plan;
+}
+
 export async function loadPositions(q: Queryable, directionId: string): Promise<Positions> {
   const reserved = sql<number>`coalesce((
     select sum(rl.qty) from ${requestLines} rl join ${requests} r on r.id = rl.request_id
@@ -263,14 +282,15 @@ export async function loadPositions(q: Queryable, directionId: string): Promise<
       name: nomenclature.name,
       kekv: nomenclature.kekv,
       priceMinor: nomenclature.priceMinor,
-      planned: listPositions.plannedQty,
+      itemId: listPositions.itemId,
       reserved,
     })
     .from(listPositions)
     .innerJoin(nomenclature, eq(nomenclature.id, listPositions.itemId))
     .where(eq(listPositions.directionId, directionId));
+  const plan = await directionPlanByItem(q, directionId);
   return Object.fromEntries(
-    rows.map((r) => [r.id, { id: r.id, code: r.code, name: r.name, kekv: r.kekv, priceMinor: r.priceMinor, availableQty: r.planned - r.reserved }]),
+    rows.map((r) => [r.id, { id: r.id, code: r.code, name: r.name, kekv: r.kekv, priceMinor: r.priceMinor, availableQty: (plan.get(r.itemId) ?? 0) - r.reserved }]),
   );
 }
 
@@ -308,7 +328,7 @@ export async function loadPlannedList(q: Queryable, directionId: string) {
         kekv: nomenclature.kekv,
         priceMinor: nomenclature.priceMinor,
         measure: nomenclature.measure,
-        plannedQty: listPositions.plannedQty,
+
         reservedQty: reserved,
       })
       .from(listPositions)
@@ -319,6 +339,7 @@ export async function loadPlannedList(q: Queryable, directionId: string) {
   ]);
   return rows.map(({ itemId, ...row }) => ({
     ...row,
+    plannedQty: plans.filter((p) => p.itemId === itemId).reduce((sum, p) => sum + p.qty, 0),
     units: plans.filter((p) => p.itemId === itemId).map((p) => ({ unitId: p.unitId, qty: p.qty })).sort((a, b) => a.unitId.localeCompare(b.unitId)),
   }));
 }

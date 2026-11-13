@@ -22,7 +22,6 @@ import {
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { applySeed, generateSeed, resetDemo, type SeedData } from "../src/index.ts";
-import { allocationIssues } from "@dsp/domain";
 import { seedData } from "../src/browser.ts";
 
 const seed = generateSeed();
@@ -213,7 +212,8 @@ test("запис у базу: стан у базі збігається зі с�
     .filter((r) => r.status === "extract_issued" || r.status === "procured" || r.status === "issued")
     .flatMap((r) => r.lines)
     .reduce((sum, l) => sum + l.qty, 0);
-  const plannedQty = seed.listPositions.reduce((sum, p) => sum + p.plannedQty, 0);
+  // План напрямку — сума планів в/ч.
+  const plannedQty = seed.property.filter((p) => p.tab === "planned").reduce((sum, p) => sum + p.qty, 0);
   assert.equal(Object.values(positions).reduce((sum, p) => sum + p.availableQty, 0), plannedQty - approvedQty);
 });
 
@@ -282,18 +282,18 @@ test("браузерна збірка не тягне генератор: browse
   }
 });
 
-test("розподіл по в/ч: сума планів в/ч за кожною позицією не більша за план напрямку", () => {
-  const planOf = Object.fromEntries(seed.listPositions.map((p) => [p.id, p.plannedQty]));
-  const rows = seed.property.filter((p) => p.tab === "planned").map((p) => ({ positionId: seed.listPositions.find((l) => l.itemId === p.itemId)!.id, qty: p.qty }));
-  assert.deepEqual(allocationIssues(planOf, rows), []);
-});
-
-test("applySeed відхиляє план в/ч, що перевищує Попередній перелік напрямку", async () => {
-  const position = seed.listPositions[0]!;
-  const broken: SeedData = {
-    ...seed,
-    property: [...seed.property, { id: "prop-over", unitId: seed.property.find((p) => p.tab === "planned")!.unitId, itemId: position.itemId, tab: "planned", qty: position.plannedQty + 1 }],
-  };
+test("план напрямку — сума планів в/ч: доступне за переліком = сума планів мінус затверджене й куплене", async () => {
   const { db } = await openDb();
-  await assert.rejects(applySeed(db, broken), /перевищує Попередній перелік/);
+  await applySeed(db, seed);
+  const positions = await loadPositions(db, seed.directionId);
+  const planOfItem = new Map<string, number>();
+  for (const p of seed.property.filter((row) => row.tab === "planned")) planOfItem.set(p.itemId, (planOfItem.get(p.itemId) ?? 0) + p.qty);
+  const reserved = new Map<string, number>();
+  for (const r of final.requests.values()) {
+    if (!["approved", "extract_issued", "procured", "issued"].includes(r.status)) continue;
+    for (const l of r.lines) reserved.set(l.positionId, (reserved.get(l.positionId) ?? 0) + l.qty);
+  }
+  for (const lp of seed.listPositions) {
+    assert.equal(positions[lp.id]?.availableQty, (planOfItem.get(lp.itemId) ?? 0) - (reserved.get(lp.id) ?? 0), lp.id);
+  }
 });

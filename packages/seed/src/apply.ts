@@ -11,7 +11,6 @@ import {
   users,
   type DspDb,
 } from "@dsp/db";
-import { allocationIssues } from "@dsp/domain";
 import type { PGlite } from "@electric-sql/pglite";
 import type { SeedData } from "./generate.ts";
 
@@ -29,15 +28,6 @@ export interface ApplyOptions {
  */
 export async function applySeed(db: DspDb, seed: SeedData, options: ApplyOptions = {}): Promise<void> {
   const withExamples = options.withExamples ?? true;
-  // Розподіл по в/ч не може перевищувати Попередній перелік напрямку: інакше в/ч замовлять більше, ніж заплановано.
-  const positionOfItem = new Map(seed.listPositions.map((p) => [p.itemId, p.id]));
-  const issues = allocationIssues(
-    Object.fromEntries(seed.listPositions.map((p) => [p.id, p.plannedQty])),
-    seed.property.filter((p) => p.tab === "planned").map((p) => ({ positionId: positionOfItem.get(p.itemId) ?? p.itemId, qty: p.qty })),
-  );
-  if (issues.length > 0) {
-    throw new Error(`План в/ч перевищує Попередній перелік напрямку: ${issues.map((i) => `${i.positionId} (${i.allocated} > ${i.planned})`).join(", ")}`);
-  }
   await db.transaction(async (tx) => {
     await tx.insert(units).values([...seed.units]);
     await tx.insert(users).values(seed.users.map((u) => ({ ...u, kekvs: [...u.kekvs] })));
