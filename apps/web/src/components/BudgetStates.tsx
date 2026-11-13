@@ -8,7 +8,7 @@ type BudgetLine = ApiOutput<"budget">["lines"][number];
 export const budgetFree = (l: BudgetLine): number => l.limitMinor - l.approvedMinor - l.inRequestsMinor;
 
 /**
- * Бюджет за КЕКВ у тих самих станах, що й план: ліміт = куплено + затверджено (чекає закупівлі) + у заявках + вільно.
+ * Бюджет за КЕКВ у тих самих станах, що й план: ліміт = куплено + затверджено (чекає закупівлі) + у заявках + залишок ліміту.
  * Суми фактичні: для заміни — ціна нового предмета в його КЕКВ.
  */
 export const BudgetStateColumns: readonly DataTableColumn<BudgetLine>[] = [
@@ -19,7 +19,7 @@ export const BudgetStateColumns: readonly DataTableColumn<BudgetLine>[] = [
   { key: "inRequests", header: "У заявках", numeric: true, render: (l) => formatMoney(l.inRequestsMinor) },
   {
     key: "free",
-    header: "Вільно",
+    header: "Залишок ліміту",
     numeric: true,
     // Менше нуля — заявок більше, ніж лишилось ліміту: видно одразу, без окремого стовпця.
     render: (l) =>
