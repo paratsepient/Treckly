@@ -15,22 +15,28 @@ function withExtract(lines: Parameters<typeof submitted>[1]) {
   return { world, id };
 }
 
-const qtyOf = (world: ReturnType<typeof createWorld>, id: string) => Object.fromEntries(get(world, id).lines.map((l) => [l.id, l.qty]));
+/** Фактична кількість по рядках: для заміни — кількість нового предмета. */
+const qtyOf = (world: ReturnType<typeof createWorld>, id: string) =>
+  Object.fromEntries(get(world, id).lines.map((l) => [l.id, l.kind === "replacement" ? l.newItem.qty : l.qty]));
 
-test("закупівля: адміністрація підтверджує — «Виконано», нове на складі бази, рядки «Закуплено» / «Замінено»", () => {
-  const { world, id } = withExtract([byList("l1", "p1", 2), replacement("l2", "p2", 1, "2210", 60_00)]);
-  const outcome = apply(world, confirmProcurement(world.ctx, meta(preparer(5)), { request: get(world, id), acceptanceDoc: "АП-17", recipient: "Склад бази", quantities: qtyOf(world, id), positions: POSITIONS }));
+test("закупівля: Відділ підтверджує — «Виконано», нове на складі бази, рядки «Закуплено» / «Замінено»; бюджет списується лише тепер", () => {
+  const { world, id } = withExtract([byList("l1", "p1", 2), replacement("l2", "p2", 2, "3110", 90_00, 1)]);
+  assert.equal(world.budget.total.approvedMinor, 0, "після підпису Голови бюджет ще не списано");
+  const outcome = apply(world, confirmProcurement(world.ctx, meta(preparer(5)), { request: get(world, id), acceptanceDoc: "АП-17", recipient: "Склад бази", quantities: qtyOf(world, id), positions: POSITIONS, budget: world.budget }));
   const request = get(world, id);
   assert.equal(request.status, "procured");
   assert.equal(request.procurement?.acceptanceDoc, "АП-17");
   assert.deepEqual(request.lines.map((l) => lineStatus(request, l)), ["purchased", "replaced"]);
   assert.deepEqual(outcome.property?.map((p) => [p.tab, p.delta]), [["on_base", 2], ["on_base", 1]]);
+  // Списано: 2 × 100 грн у 2210 і заміна на інший КЕКВ — 90 грн у 3110.
+  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 200_00);
+  assert.equal(world.budget.perKekv["3110"]?.approvedMinor, 90_00);
   assert.equal(outcome.notifications[0]?.kind, "request_procured");
 });
 
 test("закупівля: лише Відділ оборонних ресурсів (рівень 5); документ і отримувач обов'язкові; кількість має збігатися", () => {
   const { world, id } = withExtract([byList("l1", "p1", 2)]);
-  const input = (patch = {}) => ({ request: get(world, id), acceptanceDoc: "АП-1", recipient: "Склад", quantities: qtyOf(world, id), positions: POSITIONS, ...patch });
+  const input = (patch = {}) => ({ request: get(world, id), acceptanceDoc: "АП-1", recipient: "Склад", quantities: qtyOf(world, id), positions: POSITIONS, budget: world.budget, ...patch });
   throwsCode(() => confirmProcurement(world.ctx, meta(admin), input()), "FORBIDDEN_ROLE");
   throwsCode(() => confirmProcurement(world.ctx, meta(preparer(4)), input()), "FORBIDDEN_ROLE");
   throwsCode(() => confirmProcurement(world.ctx, meta(author), input()), "FORBIDDEN_ROLE");
@@ -41,9 +47,9 @@ test("закупівля: лише Відділ оборонних ресурс�
 });
 
 test("видача: одним актом — нове в «Отримано», старе із заміни списується; лише після закупівлі", () => {
-  const { world, id } = withExtract([byList("l1", "p1", 2), replacement("l2", "p2", 1, "2210", 60_00)]);
+  const { world, id } = withExtract([byList("l1", "p1", 2), replacement("l2", "p2", 1, "2210", 50_00)]);
   throwsCode(() => issueProcured(world.ctx, meta(preparer(5)), { request: get(world, id), act: "А-1", positions: POSITIONS }), "INVALID_TRANSITION");
-  apply(world, confirmProcurement(world.ctx, meta(preparer(5)), { request: get(world, id), acceptanceDoc: "АП-1", recipient: "Склад", quantities: qtyOf(world, id), positions: POSITIONS }));
+  apply(world, confirmProcurement(world.ctx, meta(preparer(5)), { request: get(world, id), acceptanceDoc: "АП-1", recipient: "Склад", quantities: qtyOf(world, id), positions: POSITIONS, budget: world.budget }));
   const outcome = apply(world, issueProcured(world.ctx, meta(preparer(5)), { request: get(world, id), act: "А-1", positions: POSITIONS }));
   assert.equal(get(world, id).status, "issued");
   assert.equal(get(world, id).procurement?.issueAct, "А-1");
@@ -51,15 +57,16 @@ test("видача: одним актом — нове в «Отримано», 
   assert.deepEqual(moves, [["on_base", -2], ["received", 2], ["on_base", -1], ["received", 1], ["received", -1]]);
 });
 
-test("не виконано: примітка обов'язкова, резерв бюджету вивільняється, статус заміни знімається", () => {
-  const { world, id } = withExtract([byList("l1", "p1", 2)]);
-  const reserved = world.budget.total.approvedMinor;
-  assert.equal(reserved, 200_00);
-  throwsCode(() => closeNotProcured(world.ctx, meta(preparer(5)), { request: get(world, id), note: "", positions: POSITIONS, budget: world.budget }), "NOTE_REQUIRED");
-  apply(world, closeNotProcured(world.ctx, meta(preparer(5)), { request: get(world, id), note: "Постачальник не виконав договір", positions: POSITIONS, budget: world.budget }));
+test("не закуплено: примітка обов'язкова, план повертається як був, бюджет не змінюється", () => {
+  const { world, id } = withExtract([byList("l1", "p1", 2), replacement("l2", "p2", 2, "2210", 80_00, 1)]);
+  const code = (get(world, id).lines[1] as Extract<ReturnType<typeof replacement>, { kind: "replacement" }>).newItem.code;
+  throwsCode(() => closeNotProcured(world.ctx, meta(preparer(5)), { request: get(world, id), note: "", positions: POSITIONS }), "NOTE_REQUIRED");
+  const outcome = apply(world, closeNotProcured(world.ctx, meta(preparer(5)), { request: get(world, id), note: "Постачальник не виконав договір", positions: POSITIONS }));
   const request = get(world, id);
   assert.equal(request.status, "not_procured");
   assert.equal(lineStatus(request, request.lines[0]!), "not_procured");
+  // Стара позиція повертається в план, погоджена зміна зникає.
+  assert.deepEqual(outcome.property?.map((p) => [p.code, p.tab, p.delta]), [["A-002", "planned", 2], [code, "planned", -1]]);
+  assert.equal(outcome.budget, undefined);
   assert.equal(world.budget.total.approvedMinor, 0);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 0);
 });

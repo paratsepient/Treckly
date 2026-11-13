@@ -10,28 +10,33 @@ const itemNamed = async (h: Harness, name: string) => {
   return found;
 };
 
-async function replacementLine(h: Harness, positionName: string, candidateName: string, qty = 1) {
+/** Заміна `qty` позиції плану на `newQty` предмета `name` на суму `totalMinor` (не більшу за замінене). */
+async function replacementLine(h: Harness, positionName: string, name: string, kekv: string, qty: number, totalMinor: number, newQty = 1) {
   const position = await positionByName(h, positionName);
-  const candidate = await itemNamed(h, candidateName);
   return {
     kind: "replacement" as const,
     id: "ln-rep",
     positionId: position.id,
     qty,
     kekv: position.kekv,
-    newItem: { code: candidate.code, name: candidate.name, kekv: candidate.kekv, priceMinor: candidate.priceMinor },
+    newItem: { code: "", name, kekv, qty: newQty, totalMinor, measure: "компл." },
     condition: "unusable" as const,
   };
 }
 
 test("E1: заміна на інший КЕКВ — автоперевірка показує вплив на бюджет, заявка подається й видна в «Моїх заявках»", async () => {
   const h = await boot();
-  const line = await replacementLine(h, "Антена всеспрямована 2,4 ГГц", "Антенна система мобільна");
+  // 10 антен по 900 грн (9 000 грн) замінюють однією антенною системою за 8 000 грн у КЕКВ 3110.
+  const line = await replacementLine(h, "Антена всеспрямована 2,4 ГГц", "Антенна система мобільна", "3110", 10, 8_000_00);
+
+  // Дорожче за замінене — не можна.
+  const over = await h.call("checkRequest", AUTHOR_A, { body: { lines: [{ ...line, newItem: { ...line.newItem, totalMinor: 9_000_01 } }] } });
+  assert.ok(over.report.errors.some((e) => e.code === "REPLACEMENT_OVER_SUM"));
 
   const { report } = await h.call("checkRequest", AUTHOR_A, { body: { lines: [line] } });
   assert.equal(report.ok, true);
-  assert.deepEqual(report.impact.perKekv, { "3110": 48_000_00 }, "новий КЕКВ витрачається; старий не змінюється");
-  assert.equal(report.impact.total, 48_000_00);
+  assert.deepEqual(report.impact.perKekv, { "3110": 8_000_00 }, "новий КЕКВ витрачається; старий не змінюється");
+  assert.equal(report.impact.total, 8_000_00);
   assert.ok(report.warnings.some((w) => w.details["scope"] === "3110"), "разом із заявками «у роботі» перевищено залишок 3110");
 
   const { request } = await h.call("createRequest", AUTHOR_A, { body: { lines: [line], justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" } });

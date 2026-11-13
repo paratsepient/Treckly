@@ -84,8 +84,12 @@ export function summaryRoutes(db: DspDb) {
       const state = planStateOf(r.status);
       if (!state) continue;
       for (const line of r.lines) {
-        add(qty[state], line.positionId, line.qty);
-        if (r.status === "issued") add(issued, line.positionId, line.qty);
+        // Погоджена заміна вже змінила план: рахується за новою позицією й новою кількістю.
+        const moved = line.kind === "replacement" && line.newPositionId && state !== "in_requests";
+        const id = moved ? (line.newPositionId as string) : line.positionId;
+        const n = moved && line.kind === "replacement" ? line.newItem.qty : line.qty;
+        add(qty[state], id, n);
+        if (r.status === "issued") add(issued, id, n);
       }
     }
     const positions = (await loadPlannedList(db, direction))

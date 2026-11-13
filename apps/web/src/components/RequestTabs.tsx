@@ -58,7 +58,7 @@ export function requestTabs({ detail, positions, levels, journal = true }: Reque
                 </p>
                 {line.kind === "replacement" ? (
                   <p className="request-lines__meta">
-                    Заміна на: {line.newItem.name} · КЕКВ {line.newItem.kekv}
+                    {`Заміна на: ${line.newItem.name} × ${line.newItem.qty} · ${(line.newItem.totalMinor / 100).toLocaleString("uk-UA")} грн · КЕКВ ${line.newItem.kekv}`}
                     {line.condition ? ` · стан замінюваного: ${CONDITION_LABELS[line.condition].toLocaleLowerCase("uk-UA")}` : ""}
                   </p>
                 ) : null}

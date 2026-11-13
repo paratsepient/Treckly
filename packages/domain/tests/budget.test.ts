@@ -16,10 +16,10 @@ test("заміна в межах одного КЕКВ ліміт не витр�
 });
 
 test("заміна на інший КЕКВ списує суму нового предмета; старий КЕКВ не змінюється", () => {
-  assert.deepEqual(lineEffect(replacement("l", "p1", 2, "3110", 150_00), p1), { "3110": 300_00 });
-  const impact = requestImpact([replacement("l", "p1", 2, "3110", 150_00)], POSITIONS);
-  assert.deepEqual(impact.perKekv, { "3110": 300_00 });
-  assert.equal(impact.total, 300_00, "загальна витрата — вся сума нового предмета, без вирахування старого");
+  assert.deepEqual(lineEffect(replacement("l", "p1", 2, "3110", 150_00, 1), p1), { "3110": 150_00 });
+  const impact = requestImpact([replacement("l", "p1", 2, "3110", 150_00, 1)], POSITIONS);
+  assert.deepEqual(impact.perKekv, { "3110": 150_00 });
+  assert.equal(impact.total, 150_00, "загальна витрата — вся сума нового предмета, без вирахування старого");
 });
 
 test("жоден рядок не дає від'ємної зміни бюджету: вивільнення не передбачено", () => {
@@ -30,8 +30,9 @@ test("жоден рядок не дає від'ємної зміни бюдже�
 });
 
 test("заміна на інший КЕКВ перевіряється за лімітом нового КЕКВ", () => {
-  const impact = requestImpact([replacement("l", "p1", 4, "3110", 150_00)], POSITIONS); // 600 > 500 у 3110
-  const result = evaluateBudget(BUDGET, impact);
+  const impact = requestImpact([replacement("l", "p1", 4, "3110", 400_00, 2)], POSITIONS); // 400 > 300 у 3110
+  const tight = { ...BUDGET, perKekv: { ...BUDGET.perKekv, "3110": { limitMinor: 300_00, approvedMinor: 0 } } };
+  const result = evaluateBudget(tight, impact);
   assert.deepEqual(result.errors.map((e) => e.scope), ["3110"]);
 });
 

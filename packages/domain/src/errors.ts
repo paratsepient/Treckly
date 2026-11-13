@@ -13,7 +13,9 @@ export type DomainErrorCode =
   | "SEDO_NUMBER_INVALID"
   | "NOTE_REQUIRED"
   /** Позиція вже в іншій незавершеній заявці в/ч: її не можна обрати вдруге. */
-  | "POSITION_BUSY";
+  | "POSITION_BUSY"
+  /** Заміна дорожча за те, що замінюють: сума нового предмета більша за кількість × ціну позиції. */
+  | "REPLACEMENT_OVER_SUM";
 
 export class DomainError extends Error {
   readonly code: DomainErrorCode;

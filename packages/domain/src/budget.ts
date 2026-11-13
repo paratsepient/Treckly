@@ -19,7 +19,7 @@ export function lineEffect(line: RequestLine, position: Position): Record<Kekv, 
     return { [line.kekv]: line.qty * position.priceMinor };
   }
   if (position.kekv === line.newItem.kekv) return {};
-  return { [line.newItem.kekv]: line.qty * line.newItem.priceMinor };
+  return { [line.newItem.kekv]: line.newItem.totalMinor };
 }
 
 function addInto(target: Record<Kekv, Money>, delta: Readonly<Record<Kekv, Money>>): void {
@@ -52,6 +52,27 @@ export function inWorkImpact(requests: readonly Request[], positions: Positions,
     addInto(perKekv, requestImpact(request.lines, positions).perKekv);
   }
   return toImpact(perKekv);
+}
+
+/**
+ * Погоджені, ще не закуплені зміни (Голова підписав, закупівлі не було): бюджет за ними ще не списано,
+ * але погодити понад ліміт не можна — тож перевірки рахують їх разом зі списаним.
+ */
+export function commitmentsImpact(requests: readonly Request[], positions: Positions, exclude: ReadonlySet<string> = new Set()): BudgetImpact {
+  const perKekv: Record<Kekv, Money> = {};
+  for (const request of requests) {
+    if (exclude.has(request.id)) continue;
+    if (request.status !== "approved" && request.status !== "extract_issued") continue;
+    addInto(perKekv, requestImpact(request.lines, positions).perKekv);
+  }
+  return toImpact(perKekv);
+}
+
+/** Бюджет для перевірок: списане (після закупівель) плюс погоджені, ще не закуплені зміни. */
+export function withCommitments(budget: Budget, commitments: BudgetImpact): Budget {
+  const perKekv: Record<Kekv, BudgetLine> = {};
+  for (const [kekv, line] of Object.entries(budget.perKekv)) perKekv[kekv] = { ...line, approvedMinor: line.approvedMinor + (commitments.perKekv[kekv] ?? 0) };
+  return { total: { ...budget.total, approvedMinor: budget.total.approvedMinor + commitments.total }, perKekv };
 }
 
 const NO_LINE: BudgetLine = { limitMinor: 0, approvedMinor: 0 };

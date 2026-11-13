@@ -44,10 +44,11 @@ export function extractDocModel(input: ExtractDocInput): ExtractDocModel {
     const position = positionOf.get(line.positionId);
     const requestLine = requestOf.get(line.requestId)?.lines.find((l) => l.id === line.lineId);
     const replacement = requestLine?.kind === "replacement" ? requestLine.newItem : null;
-    const code = replacement?.code ?? position?.code ?? line.positionId;
-    const name = replacement ? `${replacement.name} (заміна: ${position?.name ?? line.positionId})` : (position?.name ?? line.positionId);
-    const price = replacement?.priceMinor ?? position?.priceMinor ?? 0;
-    const sum = price * line.qty;
+    const code = replacement?.code || position?.code || line.positionId;
+    const name = replacement ? `${replacement.name} (заміна: ${position?.name ?? line.positionId} × ${line.qty})` : (position?.name ?? line.positionId);
+    // Заміна: кількість і сума нового предмета, як їх погоджено.
+    const qty = replacement ? replacement.qty : line.qty;
+    const sum = replacement ? replacement.totalMinor : (position?.priceMinor ?? 0) * line.qty;
     total += sum;
     return [
       String(index + 1),
@@ -55,7 +56,7 @@ export function extractDocModel(input: ExtractDocInput): ExtractDocModel {
       code,
       name,
       measureOf.get(code) ?? "шт.",
-      String(line.qty),
+      String(qty),
       formatMoney(sum).replace(/\s?грн$/u, ""),
       LINE_STATUS_LABELS[line.status],
     ];

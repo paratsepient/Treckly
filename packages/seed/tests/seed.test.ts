@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as contract from "@dsp/contract";
 import {
+  commitmentsImpact,
   daysAtLevel,
   checkRequest,
   type Request,
@@ -152,7 +153,7 @@ test("кожна дія в журналі виконана існуючим ко
   for (const e of final.events) assert.ok(ids.has(e.actorId), `невідомий виконавець ${e.actorId}`);
 });
 
-test("бюджет: ліміти не менші за затверджене; ліміт 3110 впирається, «у роботі» перевищує залишок", () => {
+test("бюджет: ліміти не менші за списане; ліміт 3110 впирається, «у роботі» перевищує залишок", () => {
   const budget = seed.budget;
   assert.ok(budget.total.approvedMinor > 0);
   for (const [kekv, line] of Object.entries(budget.perKekv)) {
@@ -160,7 +161,16 @@ test("бюджет: ліміти не менші за затверджене; л
   }
   assert.equal(budget.total.limitMinor, Object.values(budget.perKekv).reduce((s, l) => s + l.limitMinor, 0));
   assert.equal(budget.total.approvedMinor, Object.values(budget.perKekv).reduce((s, l) => s + l.approvedMinor, 0), "затверджене по КЕКВ дає загальне");
-  const remaining3110 = budget.perKekv["3110"]!.limitMinor - budget.perKekv["3110"]!.approvedMinor;
+  // Збережене — лише списане (закупівлі); залишок рахується ще й за погодженими, не закупленими змінами.
+  const items = new Map(seed.items.map((i) => [i.id, i]));
+  const priced = Object.fromEntries(
+    seed.listPositions.map((p) => {
+      const item = items.get(p.itemId)!;
+      return [p.id, { id: p.id, code: item.code, name: item.name, kekv: item.kekv, priceMinor: item.priceMinor, availableQty: 0 }];
+    }),
+  );
+  const committed = commitmentsImpact([...final.requests.values()], priced);
+  const remaining3110 = budget.perKekv["3110"]!.limitMinor - budget.perKekv["3110"]!.approvedMinor - (committed.perKekv["3110"] ?? 0);
   assert.equal(remaining3110, 100_000_00);
 });
 

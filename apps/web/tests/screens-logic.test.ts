@@ -45,7 +45,7 @@ test("сума заявки: за переліком — ціна позиції
   const positions = [{ id: "p1", priceMinor: 100_00 }];
   const lines = [
     { kind: "by_list" as const, id: "a", positionId: "p1", qty: 3, kekv: "2210" },
-    { kind: "replacement" as const, id: "b", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", priceMinor: 900_00 } },
+    { kind: "replacement" as const, id: "b", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", qty: 2, totalMinor: 180000, measure: "шт." } },
     { kind: "by_list" as const, id: "c", positionId: "p-unknown", qty: 5, kekv: "2210" },
   ];
   assert.equal(requestTotal({ lines }, positions), 3 * 100_00 + 2 * 900_00);

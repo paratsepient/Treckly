@@ -46,14 +46,14 @@ test("звірка: кількість однієї позиції в кільк
 });
 
 test("звірка: рядок-заміна показує предмет, на який міняють, і звіряє заплановану позицію", () => {
-  const replacement = { kind: "replacement" as const, id: "l1", positionId: "p2", qty: 3, kekv: "2210", newItem: { code: "ПМ-900", name: "Інша радіостанція", kekv: "2210", priceMinor: 100 } };
+  const replacement = { kind: "replacement" as const, id: "l1", positionId: "p2", qty: 3, kekv: "2210", newItem: { code: "ПМ-900", name: "Інша радіостанція", kekv: "2210", qty: 3, totalMinor: 300, measure: "шт." } };
   const [line] = planCheck({ lines: [replacement] }, positions, property).lines;
   assert.equal(line?.replacement, "Інша радіостанція");
   assert.equal(line?.verdict, "ok");
 });
 
 test("звірка: залишки ініціатора — скільки того, що просять, уже на базі й отримано (для заміни — нового предмета)", () => {
-  const replacement = { kind: "replacement" as const, id: "r", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "ОБ-003", name: "Тепловізор", kekv: "3110", priceMinor: 100 } };
+  const replacement = { kind: "replacement" as const, id: "r", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "ОБ-003", name: "Тепловізор", kekv: "3110", qty: 1, totalMinor: 100, measure: "шт." } };
   const check = planCheck({ lines: [by("a", "p1", 2), replacement, by("c", "p2", 1)] }, positions, property);
   assert.deepEqual(
     check.lines.map((l) => [l.lineId, l.onBase, l.received]),

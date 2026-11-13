@@ -6,8 +6,11 @@ export interface EditorLine {
   readonly kind: "by_list" | "replacement";
   readonly positionId: string;
   readonly qty: string;
-  /** Предмет, на який міняють (лише для заміни). */
-  readonly replacementItemId: string;
+  /** Заміна: найменування, кількість, сума (грн, рядком — як вводить людина) і КЕКВ нового предмета. */
+  readonly newName: string;
+  readonly newQty: string;
+  readonly newTotal: string;
+  readonly newKekv: string;
   /** Стан майна, яке замінюють (лише для заміни); "" — ще не вказано. */
   readonly condition: OldCondition | "";
 }
@@ -50,10 +53,7 @@ export function editorReducer(history: History, action: EditorAction): History {
     case "update": {
       const next = history.present.map((l) => {
         if (l.id !== action.id) return l;
-        const merged = { ...l, ...action.patch };
-        // Зміна позиції чи типу робить обраний раніше предмет заміни недійсним.
-        const changesTarget = action.patch.positionId !== undefined || action.patch.kind === "by_list";
-        return changesTarget && action.patch.replacementItemId === undefined ? { ...merged, replacementItemId: "" } : merged;
+        return { ...l, ...action.patch };
       });
       return commit(history, next, action.group ?? null);
     }
@@ -94,8 +94,19 @@ export interface CatalogPosition {
 }
 
 export function newLine(id: string): EditorLine {
-  return { id, kind: "by_list", positionId: "", qty: "1", replacementItemId: "", condition: "" };
+  return { id, kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "", condition: "" };
 }
+
+/** Сума в гривнях, як її вводить людина («8 000», «8000,50») → копійки; інакше — null. */
+export function parseMoney(text: string): number | null {
+  const clean = text.replace(/\s/g, "").replace(",", ".");
+  if (!/^\d+(\.\d{1,2})?$/.test(clean)) return null;
+  const minor = Math.round(Number(clean) * 100);
+  return minor > 0 ? minor : null;
+}
+
+/** Копійки → «8000» або «8000,50» для поля вводу. */
+export const formatMoneyInput = (minor: number): string => (minor % 100 === 0 ? String(minor / 100) : (minor / 100).toFixed(2).replace(".", ","));
 
 /** Кількість, яку можна надіслати: додатне ціле. Інакше — null (рядок вважається незавершеним). */
 export function parseQty(text: string): number | null {
@@ -123,8 +134,9 @@ export function toRequestLines(lines: readonly EditorLine[], positions: Readonly
       complete.push({ kind: "by_list", id: line.id, positionId: position.id, qty, kekv: position.kekv });
       continue;
     }
-    const item = items.get(line.replacementItemId);
-    if (!item) {
+    const newQty = parseQty(line.newQty);
+    const totalMinor = parseMoney(line.newTotal);
+    if (line.newName.trim() === "" || newQty === null || totalMinor === null) {
       incomplete.push(line.id);
       continue;
     }
@@ -134,7 +146,7 @@ export function toRequestLines(lines: readonly EditorLine[], positions: Readonly
       positionId: position.id,
       qty,
       kekv: position.kekv,
-      newItem: { code: item.code, name: item.name, kekv: item.kekv, priceMinor: item.priceMinor },
+      newItem: { code: "", name: line.newName.trim(), kekv: line.newKekv || position.kekv, qty: newQty, totalMinor, measure: "шт." },
       ...(line.condition !== "" ? { condition: line.condition } : {}),
     });
   }
@@ -143,29 +155,20 @@ export function toRequestLines(lines: readonly EditorLine[], positions: Readonly
 
 /** Збережена заявка → рядки редактора. Предмет заміни знаходиться за кодом номенклатури. */
 export function fromRequestLines(lines: readonly RequestLine[], items: readonly CatalogItem[]): EditorLine[] {
-  const byCode = new Map(items.map((i) => [i.code, i.id]));
   return lines.map((line) => ({
     id: line.id,
     kind: line.kind,
     positionId: line.positionId,
     qty: String(line.qty),
-    replacementItemId: line.kind === "replacement" ? (byCode.get(line.newItem.code) ?? "") : "",
+    newName: line.kind === "replacement" ? line.newItem.name : "",
+    newQty: line.kind === "replacement" ? String(line.newItem.qty) : "1",
+    newTotal: line.kind === "replacement" ? formatMoneyInput(line.newItem.totalMinor) : "",
+    newKekv: line.kind === "replacement" ? line.newItem.kekv : "",
     condition: line.kind === "replacement" ? (line.condition ?? "") : "",
   }));
 }
 
-/** Кандидати для заміни: схожі предмети тієї ж групи, крім самого предмета позиції. */
-export function replacementCandidates(position: CatalogPosition | undefined, items: readonly CatalogItem[]): CatalogItem[] {
-  if (!position) return [];
-  const own = items.find((i) => i.code === position.code);
-  if (!own) return [];
-  return items.filter((i) => i.group === own.group && i.id !== own.id);
-}
 
-/** Пояснення правила бюджету для заміни (правило 9): однаковий КЕКВ — ліміт не витрачається. */
-export function replacementRule(position: CatalogPosition, item: CatalogItem): "same-kekv" | "other-kekv" {
-  return position.kekv === item.kekv ? "same-kekv" : "other-kekv";
-}
 
 /**
  * Канонічний ключ вмісту: однаковий для рядків із редактора й із відповіді сервера,
@@ -176,6 +179,6 @@ export const linesKey = (lines: readonly RequestLine[]): string =>
     lines.map((l) =>
       l.kind === "by_list"
         ? [l.kind, l.id, l.positionId, l.qty, l.kekv]
-        : [l.kind, l.id, l.positionId, l.qty, l.kekv, l.newItem.code, l.newItem.kekv, l.newItem.priceMinor, l.condition ?? ""],
+        : [l.kind, l.id, l.positionId, l.qty, l.kekv, l.newItem.name, l.newItem.kekv, l.newItem.qty, l.newItem.totalMinor, l.condition ?? ""],
     ),
   );

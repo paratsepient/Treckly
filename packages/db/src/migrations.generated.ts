@@ -83,5 +83,17 @@ export const MIGRATIONS: readonly { readonly tag: string; readonly statements: r
     "statements": [
       "-- Автори без відділу отримують перший відділ своєї в/ч: служба заявки береться з профілю (рішення користувача 2026-11-13).\nUPDATE \"users\" SET \"department_id\" = (SELECT \"id\" FROM \"units\" WHERE \"units\".\"kind\" = 'department' AND \"units\".\"parent_id\" = \"users\".\"unit_id\" ORDER BY \"units\".\"id\" LIMIT 1) WHERE \"role_kind\" = 'author' AND \"department_id\" IS NULL;"
     ]
+  },
+  {
+    "tag": "0010_yellow_hitman",
+    "statements": [
+      "ALTER TABLE \"request_lines\" ADD COLUMN \"new_position_id\" text;"
+    ]
+  },
+  {
+    "tag": "0011_replacement_total",
+    "statements": [
+      "-- Заміна тепер має кількість і суму нового предмета (рішення користувача 2026-11-13): старі рядки «ціна за штуку»\n-- перетворюються на суму за тією самою кількістю.\nUPDATE \"request_lines\"\nSET \"new_item\" = (\"new_item\" - 'priceMinor') || jsonb_build_object('qty', \"qty\", 'totalMinor', (\"new_item\"->>'priceMinor')::bigint * \"qty\", 'measure', 'шт.')\nWHERE \"kind\" = 'replacement' AND \"new_item\" ? 'priceMinor';"
+    ]
   }
 ];

@@ -57,7 +57,11 @@ export function byList(id: string, positionId: string, qty: number, kekv?: strin
   return { kind: "by_list", id, positionId, qty, kekv: kekv ?? position?.kekv ?? "?" };
 }
 
-export function replacement(id: string, positionId: string, qty: number, newKekv: string, newPriceMinor: number): RequestLine {
+/**
+ * Рядок заміни: `qty` позиції плану замінюють предметом на суму `totalMinor` (не більшу за qty × ціну позиції)
+ * у кількості `newQty` (за замовчуванням — та сама кількість).
+ */
+export function replacement(id: string, positionId: string, qty: number, newKekv: string, totalMinor: number, newQty = qty): RequestLine {
   const position = POSITIONS[positionId];
   return {
     kind: "replacement",
@@ -65,7 +69,7 @@ export function replacement(id: string, positionId: string, qty: number, newKekv
     positionId,
     qty,
     kekv: position?.kekv ?? "?",
-    newItem: { code: "N-1", name: "Новий предмет", kekv: newKekv, priceMinor: newPriceMinor },
+    newItem: { code: "", name: "Новий предмет", kekv: newKekv, qty: newQty, totalMinor, measure: "шт." },
     condition: "unusable",
   };
 }

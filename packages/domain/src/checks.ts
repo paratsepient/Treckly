@@ -1,4 +1,4 @@
-import { evaluateBudget, inWorkImpact, requestImpact, type BudgetImpact, type BudgetIssue } from "./budget.ts";
+import { commitmentsImpact, evaluateBudget, inWorkImpact, requestImpact, withCommitments, type BudgetImpact, type BudgetIssue } from "./budget.ts";
 import { DomainError, type DomainErrorCode } from "./errors.ts";
 import { isApprovedStatus, type Budget, type Positions, type Request, type RequestLine } from "./types.ts";
 
@@ -61,6 +61,11 @@ export function checkRequest(input: CheckInput): CheckReport {
     const unfinished = r.status === "at_level" || r.status === "in_list" || r.status === "returned";
     const purchasing = isApprovedStatus(r.status) && r.status !== "issued";
     for (const line of r.lines) {
+      // Погоджена заміна вже змінила план: стару позицію зменшено, новий предмет — окрема позиція.
+      if (counts && line.kind === "replacement" && line.newPositionId) {
+        ordered.set(line.newPositionId, (ordered.get(line.newPositionId) ?? 0) + line.newItem.qty);
+        continue;
+      }
       if (counts) ordered.set(line.positionId, (ordered.get(line.positionId) ?? 0) + line.qty);
       if (unfinished && !busy.has(line.positionId)) busy.set(line.positionId, r.id);
       if (purchasing && !started.has(line.positionId)) started.set(line.positionId, r.id);
@@ -126,6 +131,26 @@ export function checkRequest(input: CheckInput): CheckReport {
         });
       }
     }
+    if (line.kind === "replacement") {
+      // Заміна — лише в межах суми того, що замінюють: найменування, кількість і сума нового обов'язкові.
+      const replacedMinor = line.qty * position.priceMinor;
+      const item = line.newItem;
+      if (item.name.trim() === "" || !Number.isInteger(item.qty) || item.qty <= 0 || !Number.isInteger(item.totalMinor) || item.totalMinor <= 0) {
+        errors.push({
+          code: "REPLACEMENT_OVER_SUM",
+          lineId: line.id,
+          message: "Для заміни вкажіть найменування, кількість і суму нового предмета.",
+          details: { reason: "REPLACEMENT_INCOMPLETE" },
+        });
+      } else if (item.totalMinor > replacedMinor) {
+        errors.push({
+          code: "REPLACEMENT_OVER_SUM",
+          lineId: line.id,
+          message: "Сума заміни більша за суму позиції, яку замінюють.",
+          details: { totalMinor: item.totalMinor, replacedMinor },
+        });
+      }
+    }
     if (line.kekv !== position.kekv) {
       errors.push({
         code: "KEKV_MISMATCH",
@@ -138,7 +163,8 @@ export function checkRequest(input: CheckInput): CheckReport {
 
   const impact = requestImpact(input.lines, input.positions);
   const inWork = inWorkImpact(input.requests, input.positions, input.requestId);
-  const evaluation = evaluateBudget(input.budget, impact, inWork);
+  // Залишок — після списаного й погоджених, ще не закуплених змін.
+  const evaluation = evaluateBudget(withCommitments(input.budget, commitmentsImpact(input.requests, input.positions)), impact, inWork);
   for (const issue of evaluation.errors) {
     errors.push(budgetIssue("BUDGET_EXCEEDED", issue, "Сума перевищує залишок затвердженого бюджету."));
   }

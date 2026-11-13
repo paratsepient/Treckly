@@ -29,8 +29,23 @@ const columns: readonly DataTableColumn<Row>[] = [
 ];
 
 /** Скільки вже замовлено й скільки лишилось за планом — лише на вкладці «Заплановано». */
-const planColumns = (orderedOf: (code: string) => number): readonly DataTableColumn<Row>[] => [
-  ...columns.slice(0, 3),
+const planColumns = (orderedOf: (code: string) => number, agreed: ReadonlySet<string>): readonly DataTableColumn<Row>[] => [
+  columns[0] as DataTableColumn<Row>,
+  {
+    key: "name",
+    header: "Предмет",
+    render: (row) =>
+      isFiller(row) ? (
+        blank
+      ) : agreed.has(row.item.code) ? (
+        <span className="property-agreed">
+          {row.item.name} <Badge tone="info">Погоджені зміни</Badge>
+        </span>
+      ) : (
+        row.item.name
+      ),
+  },
+  columns[2] as DataTableColumn<Row>,
   { ...(columns[3] as DataTableColumn<Row>), header: "За планом" },
   { key: "ordered", header: "Вже замовлено", numeric: true, render: (row) => (isFiller(row) ? blank : orderedOf(row.item.code) || "—"), width: 150 },
   {
@@ -60,12 +75,26 @@ export function PropertyScreen() {
     for (const r of mine.data?.requests ?? []) {
       if (r.status === "draft" || r.status === "withdrawn" || r.status === "not_procured") continue;
       for (const line of r.lines) {
+        // Погоджена заміна вже в плані як новий предмет: рахується за ним.
+        if (line.kind === "replacement" && line.newItem.code !== "") {
+          map.set(line.newItem.code, (map.get(line.newItem.code) ?? 0) + line.newItem.qty);
+          continue;
+        }
         const code = codeOf.get(line.positionId);
         if (code) map.set(code, (map.get(code) ?? 0) + line.qty);
       }
     }
     return map;
   }, [mine.data, positions.data]);
+  // Позиції плану, що з'явились погодженими Головою замінами й ще не закуплені: «Погоджені зміни».
+  const agreed = useMemo(() => {
+    const codes = new Set<string>();
+    for (const r of mine.data?.requests ?? []) {
+      if (r.status !== "approved" && r.status !== "extract_issued") continue;
+      for (const line of r.lines) if (line.kind === "replacement" && line.newItem.code !== "") codes.add(line.newItem.code);
+    }
+    return codes;
+  }, [mine.data]);
   const orderedOf = (code: string) => ordered.get(code) ?? 0;
   const session = useApiQuery("session");
   const narrow = useMedia(NARROW);
@@ -113,7 +142,7 @@ export function PropertyScreen() {
               <div ref={t === tab ? sheet : undefined}>
               <DataTable
                 label={`Майно: ${TAB_LABELS[t].toLowerCase()}`}
-                columns={visibleColumns(t === "planned" ? planColumns(orderedOf) : columns, narrow, ["code", "price", "ordered", "kekv"])}
+                columns={visibleColumns(t === "planned" ? planColumns(orderedOf, agreed) : columns, narrow, ["code", "price", "ordered", "kekv"])}
                 rows={rows.length > 0 ? withFillers(rows) : rows}
                 getRowId={(row) => row.id}
                 rowHeaderKey="name"

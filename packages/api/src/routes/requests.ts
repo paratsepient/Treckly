@@ -170,7 +170,7 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   app.post("/api/requests/:id/procure", async (c) => {
     const { acceptanceDoc, recipient, quantities, expectedRevision } = await parseBody(c, API.procureRequest.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) =>
-      confirmProcurement(ctx, meta, { request, acceptanceDoc, recipient, quantities, positions: await loadPositions(tx, request.route[3]) }),
+      confirmProcurement(ctx, meta, { request, acceptanceDoc, recipient, quantities, positions: await loadPositions(tx, request.route[3]), budget: await loadBudget(tx, request.route[3]) }),
     );
   });
 
@@ -184,8 +184,7 @@ export function requestRoutes(db: DspDb, run: CommandRunner) {
   app.post("/api/requests/:id/not-procured", async (c) => {
     const { note, expectedRevision } = await parseBody(c, API.notProcuredRequest.input);
     return commandOn(c, c.req.param("id"), expectedRevision, async ({ tx, ctx, meta, request }) => {
-      const [positions, budget] = await Promise.all([loadPositions(tx, request.route[3]), loadBudget(tx, request.route[3])]);
-      return closeNotProcured(ctx, meta, { request, note, positions, budget });
+      return closeNotProcured(ctx, meta, { request, note, positions: await loadPositions(tx, request.route[3]) });
     });
   });
 

@@ -29,6 +29,7 @@ export const ErrorCode = z.enum([
   "SEDO_NUMBER_INVALID",
   "NOTE_REQUIRED",
   "POSITION_BUSY",
+  "REPLACEMENT_OVER_SUM",
   // Службові коди транспорту (не з домену):
   "VALIDATION",
   "NOT_FOUND",
@@ -43,11 +44,14 @@ export const ErrorResponse = z.object({
   }),
 });
 
+/** Предмет натомість: найменування, кількість і сума від автора; код — після погодження Головою (до того порожній). */
 export const NewItem = z.object({
-  code: z.string().min(1),
-  name: z.string().min(1),
+  code: z.string(),
+  name: z.string(),
   kekv: Kekv,
-  priceMinor: Money.nonnegative(),
+  qty: z.number().int().nonnegative(),
+  totalMinor: Money.nonnegative(),
+  measure: z.string(),
 });
 
 const lineBase = {
@@ -60,7 +64,7 @@ const lineBase = {
 export const ByListLine = z.object({ kind: z.literal("by_list"), ...lineBase });
 export const FundingSource = z.enum(["general", "special"]);
 export const OldCondition = z.enum(["unusable", "needs_repair", "lost"]);
-export const ReplacementLine = z.object({ kind: z.literal("replacement"), ...lineBase, newItem: NewItem, condition: OldCondition.optional() });
+export const ReplacementLine = z.object({ kind: z.literal("replacement"), ...lineBase, newItem: NewItem, condition: OldCondition.optional(), newPositionId: Id.optional() });
 export const RequestLine = z.discriminatedUnion("kind", [ByListLine, ReplacementLine]);
 
 export const Route = z.tuple([Id, Id, Id, Id, Id]);

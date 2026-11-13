@@ -107,6 +107,11 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
       const counts = r.status !== "draft" && r.status !== "withdrawn" && r.status !== "not_procured";
       const unfinished = r.status === "at_level" || r.status === "in_list" || r.status === "returned";
       for (const line of r.lines) {
+        // Погоджена заміна вже змінила план: рахується за новою позицією.
+        if (counts && line.kind === "replacement" && line.newPositionId) {
+          orderedMap.set(line.newPositionId, (orderedMap.get(line.newPositionId) ?? 0) + line.newItem.qty);
+          continue;
+        }
         if (counts) orderedMap.set(line.positionId, (orderedMap.get(line.positionId) ?? 0) + line.qty);
         if (unfinished) busySet.add(line.positionId);
       }

@@ -48,6 +48,7 @@ export function approveAt(world: World, listId: string, sedo: string | number = 
       sedoNumber: sedo,
       positions: POSITIONS,
       budget: world.budget,
+      allRequests: all(world),
     }),
   );
 }

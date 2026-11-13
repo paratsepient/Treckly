@@ -1,0 +1,1 @@
+ALTER TABLE "request_lines" ADD COLUMN "new_position_id" text;

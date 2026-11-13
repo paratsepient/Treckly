@@ -186,7 +186,7 @@ function editor(lines: EditorLine[], problems = new Map<string, string[]>()) {
   const ui = <LinesEditor lines={lines} positions={positions} items={items} dispatch={(a) => actions.push(a)} problems={problems} newLineId={() => "new-1"} />;
   return { ui, actions };
 }
-const line = (patch: Partial<EditorLine>): EditorLine => ({ id: "l1", kind: "by_list", positionId: "", qty: "1", replacementItemId: "", condition: "", ...patch });
+const line = (patch: Partial<EditorLine>): EditorLine => ({ id: "l1", kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "", condition: "", ...patch });
 
 test("таблиця рядків: сума рахується від ціни позиції й кількості; без позиції — прочерк", () => {
   const { ui } = editor([line({ id: "a", positionId: "p1", qty: "3" }), line({ id: "b" })]);
@@ -198,16 +198,18 @@ test("таблиця рядків: сума рахується від ціни �
   unmount();
 });
 
-test("таблиця рядків: для заміни показано кандидатів і правило КЕКВ", () => {
-  const same = editor([line({ kind: "replacement", positionId: "p1", replacementItemId: "i2" })]);
+test("таблиця рядків: заміна — найменування, кількість, сума в межах замінюваного, КЕКВ і правило ліміту", () => {
+  const same = editor([line({ kind: "replacement", positionId: "p1", newName: "Акумулятор LiFePO4", newTotal: "90", newKekv: "2210" })]);
   let view = render(same.ui);
   assert.match(text(view.container), /Той самий КЕКВ: ліміт не витрачається/);
-  const options = [...view.container.querySelector(".lines__replacement select")!.querySelectorAll("option")].map((o) => o.textContent ?? "");
-  assert.equal(options.length, 3, "підказка + 2 кандидати тієї ж групи");
-  assert.ok(options.every((o) => !o.includes("Акумулятор 6S")), "самого предмета позиції серед кандидатів немає");
+  const labels = [...view.container.querySelectorAll(".lines__replacement label")].map((l) => l.textContent ?? "");
+  for (const label of ["Що натомість", "Кількість нового", "Сума, грн", "КЕКВ нового", "Стан замінюваного"]) {
+    assert.ok(labels.some((l) => l.includes(label)), label);
+  }
+  assert.match(text(view.container), /Сума, грн \(до /);
   view.unmount();
 
-  const other = editor([line({ kind: "replacement", positionId: "p1", replacementItemId: "i3" })]);
+  const other = editor([line({ kind: "replacement", positionId: "p1", newName: "Зарядна станція", newTotal: "90", newKekv: "3110" })]);
   view = render(other.ui);
   assert.match(text(view.container), /Інший КЕКВ: списується з ліміту 3110/);
   view.unmount();
@@ -250,7 +252,7 @@ test("таблиця рядків: кожне поле має доступну �
 });
 
 test("axe: таблиця рядків зі звичайним і замінним рядком та проблемою", async () => {
-  const lines = [line({ id: "a", positionId: "p1", qty: "2" }), line({ id: "b", kind: "replacement", positionId: "p1", replacementItemId: "i3" })];
+  const lines = [line({ id: "a", positionId: "p1", qty: "2" }), line({ id: "b", kind: "replacement", positionId: "p1", newName: "Зарядна станція", newTotal: "90", newKekv: "3110" })];
   const { ui } = editor(lines, new Map([["a", ["Запитано 99, а доступно 10."]]]));
   const { unmount } = render(ui);
   assert.deepEqual(await axeViolations(document.body), []);

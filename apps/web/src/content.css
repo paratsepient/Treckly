@@ -1149,3 +1149,11 @@
   background: var(--ix-warning-surface);
   color: var(--ix-foreground);
 }
+
+/* «Моє майно»: позиція плану з погодженої заміни — назва й позначка в один ряд. */
+.property-agreed {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ix-space-2);
+}

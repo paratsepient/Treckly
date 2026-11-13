@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { approveList, issueExtracts, lineStatus, markNotSigned } from "../src/index.ts";
-import { apply, approver, author, byList, createWorld, get, getList, meta, POSITIONS, replacement, system, preparer } from "./fixtures.ts";
+import { all, apply, approver, author, byList, createWorld, get, getList, meta, POSITIONS, replacement, system, preparer } from "./fixtures.ts";
 import { advanceTo, approveAt, formAt, submitted } from "./flow.ts";
 import { throwsCode } from "./helpers.ts";
 
@@ -12,16 +12,16 @@ function atFinal(lines: Parameters<typeof submitted>[1][]) {
   return { world, ids };
 }
 
-test("Голова затверджує: заявка затверджена, бюджет зарезервовано лише зараз", () => {
+test("Голова затверджує: заявка затверджена, бюджет не списується (лише після закупівлі), план без замін не змінюється", () => {
   const { world, ids } = atFinal([[byList("l1", "p1", 2), byList("l2", "p3", 1)]]);
-  assert.equal(world.budget.total.approvedMinor, 0, "до затвердження резерву немає");
   const outcome = approveAt(world, formAt(world, 5, ids), 5001);
   const request = get(world, ids[0]!);
   assert.equal(request.status, "approved");
   assert.equal(request.level, 5);
-  assert.equal(world.budget.total.approvedMinor, 2 * 100_00 + 200_00);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 200_00);
-  assert.equal(world.budget.perKekv["3110"]?.approvedMinor, 200_00);
+  assert.equal(world.budget.total.approvedMinor, 0);
+  assert.equal(outcome.budget, undefined);
+  assert.deepEqual(outcome.catalog, []);
+  assert.deepEqual(outcome.property, []);
   assert.equal(outcome.events.some((e) => e.type === "request.approved"), true);
   assert.ok(outcome.notifications.some((n) => n.audience.kind === "author"));
 });
@@ -38,7 +38,7 @@ test("затвердження блокується, якщо сума пере�
   const listId = formAt(world, 5, ids);
   const list = getList(world, listId);
   const error = throwsCode(
-    () => approveList(world.ctx, meta(preparer(5)), { list, requests: ids.map((id) => get(world, id)), sedoNumber: 1, positions: POSITIONS, budget: world.budget }),
+    () => approveList(world.ctx, meta(preparer(5)), { list, requests: ids.map((id) => get(world, id)), sedoNumber: 1, positions: POSITIONS, budget: world.budget, allRequests: all(world) }),
     "BUDGET_EXCEEDED",
   );
   assert.equal(error.details["scope"], "2210");
@@ -46,32 +46,38 @@ test("затвердження блокується, якщо сума пере�
   assert.equal(world.budget.total.approvedMinor, 0);
 });
 
-test("залишок для наступного переліку враховує вже зарезервоване", () => {
+test("ліміт для наступного переліку враховує погоджені, ще не закуплені зміни", () => {
   const { world, ids } = atFinal([[byList("l1", "p1", 4)], [byList("l1", "p1", 3)]]); // 400 + 300 > 600
   const [first, second] = ids as [string, string];
   approveAt(world, formAt(world, 5, [first]), 1);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 400_00);
+  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 0, "бюджет ще не списано — закупівлі не було");
   world.clock.advanceDays(1);
   const listId = formAt(world, 5, [second]);
   throwsCode(
-    () => approveList(world.ctx, meta(preparer(5)), { list: getList(world, listId), requests: [get(world, second)], sedoNumber: 2, positions: POSITIONS, budget: world.budget }),
+    () =>
+      approveList(world.ctx, meta(preparer(5)), { list: getList(world, listId), requests: [get(world, second)], sedoNumber: 2, positions: POSITIONS, budget: world.budget, allRequests: all(world) }),
     "BUDGET_EXCEEDED",
   );
 });
 
-test("заміна в межах одного КЕКВ при затвердженні ліміт не витрачає", () => {
-  const { world, ids } = atFinal([[replacement("l1", "p1", 3, "2210", 140_00)]]);
-  approveAt(world, formAt(world, 5, ids), 7);
-  assert.equal(world.budget.total.approvedMinor, 0);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 0);
+test("підпис Голови змінює план в/ч: замінене зникає з плану, новий предмет додається («Погоджені зміни»)", () => {
+  const { world, ids } = atFinal([[replacement("l1", "p1", 3, "2210", 140_00, 2)]]);
+  const outcome = approveAt(world, formAt(world, 5, ids), 7);
+  const line = get(world, ids[0]!).lines[0]!;
+  assert.equal(line.kind, "replacement");
+  if (line.kind !== "replacement") return;
+  assert.ok(line.newItem.code !== "" && line.newPositionId, "новий предмет отримав код і позицію переліку");
+  assert.deepEqual(outcome.catalog?.map((c) => [c.code, c.name, c.kekv, c.priceMinor]), [[line.newItem.code, "Новий предмет", "2210", 70_00]]);
+  assert.deepEqual(outcome.property?.map((p) => [p.code, p.tab, p.delta]), [
+    ["A-001", "planned", -3],
+    [line.newItem.code, "planned", 2],
+  ]);
+  assert.equal(world.budget.total.approvedMinor, 0, "бюджет не списується при погодженні");
 });
 
-test("заміна на інший КЕКВ витрачає ліміт нового КЕКВ", () => {
-  const { world, ids } = atFinal([[replacement("l1", "p1", 2, "3110", 150_00)]]);
-  approveAt(world, formAt(world, 5, ids), 8);
-  assert.equal(world.budget.perKekv["3110"]?.approvedMinor, 300_00);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 0, "старий КЕКВ не змінюється: вивільнення немає");
-  assert.equal(world.budget.total.approvedMinor, 300_00);
+test("заміна дорожча за замінене не проходить автоперевірки", () => {
+  const world = createWorld();
+  assert.throws(() => submitted(world, [replacement("l1", "p1", 2, "3110", 250_00)]), (e: Error & { code?: string }) => e.code === "REPLACEMENT_OVER_SUM");
 });
 
 test("«Заміна погоджена» лише після витягу; до того рядок заміни очікує", () => {

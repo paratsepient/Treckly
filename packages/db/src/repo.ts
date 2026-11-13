@@ -92,6 +92,7 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
           kekv: line.kekv,
           newItem: line.kind === "replacement" ? { ...line.newItem } : null,
           condition: line.kind === "replacement" ? (line.condition ?? null) : null,
+          newPositionId: line.kind === "replacement" ? (line.newPositionId ?? null) : null,
         })),
       );
     }
@@ -130,6 +131,11 @@ export async function saveOutcome(tx: Queryable, outcome: Outcome, directionId: 
   }
 
   await saveNotifications(tx, outcome.notifications);
+  // Погоджені заміни: новий предмет — у довідник і перелік напрямку, потім зміни плану в/ч.
+  for (const c of outcome.catalog ?? []) {
+    await tx.insert(nomenclature).values({ id: c.itemId, code: c.code, name: c.name, kekv: c.kekv, priceMinor: c.priceMinor, measure: c.measure, groupKey: "погоджені зміни" }).onConflictDoNothing();
+    await tx.insert(listPositions).values({ id: c.positionId, directionId, itemId: c.itemId, plannedQty: 0 }).onConflictDoNothing();
+  }
   for (const change of outcome.property ?? []) await applyPropertyChange(tx, change);
 
   if (outcome.events.length > 0) {
@@ -272,8 +278,9 @@ async function directionPlanByItem(q: Queryable, directionId: string): Promise<M
 
 export async function loadPositions(q: Queryable, directionId: string): Promise<Positions> {
   const reserved = sql<number>`coalesce((
-    select sum(rl.qty) from ${requestLines} rl join ${requests} r on r.id = rl.request_id
-    where rl.position_id = ${listPositions.id} and r.status in ('approved', 'extract_issued', 'procured', 'issued')
+    select sum(case when rl.new_position_id is not null then (rl.new_item->>'qty')::int else rl.qty end)
+    from ${requestLines} rl join ${requests} r on r.id = rl.request_id
+    where coalesce(rl.new_position_id, rl.position_id) = ${listPositions.id} and r.status in ('approved', 'extract_issued', 'procured', 'issued')
   ), 0)::int`;
   const rows = await q
     .select({
@@ -315,8 +322,9 @@ export async function loadUnitPlan(q: Queryable, unitId: string, directionId: st
  */
 export async function loadPlannedList(q: Queryable, directionId: string) {
   const reserved = sql<number>`coalesce((
-    select sum(rl.qty) from ${requestLines} rl join ${requests} r on r.id = rl.request_id
-    where rl.position_id = ${listPositions.id} and r.status in ('approved', 'extract_issued', 'procured', 'issued')
+    select sum(case when rl.new_position_id is not null then (rl.new_item->>'qty')::int else rl.qty end)
+    from ${requestLines} rl join ${requests} r on r.id = rl.request_id
+    where coalesce(rl.new_position_id, rl.position_id) = ${listPositions.id} and r.status in ('approved', 'extract_issued', 'procured', 'issued')
   ), 0)::int`;
   const [rows, plans] = await Promise.all([
     q
@@ -351,7 +359,13 @@ function toLine(row: LineRow): RequestLine {
   const base = { id: row.id, positionId: row.positionId, qty: row.qty, kekv: row.kekv };
   if (row.kind === "replacement") {
     if (!row.newItem) throw new Error(`Рядок заміни ${row.id} без нового предмета`);
-    return { kind: "replacement", ...base, newItem: row.newItem, ...(row.condition ? { condition: row.condition } : {}) };
+    return {
+      kind: "replacement",
+      ...base,
+      newItem: row.newItem,
+      ...(row.condition ? { condition: row.condition } : {}),
+      ...(row.newPositionId ? { newPositionId: row.newPositionId } : {}),
+    };
   }
   return { kind: "by_list", ...base };
 }

@@ -10,7 +10,7 @@ const input = (patch: Partial<RaportInput["request"]> = {}): RaportInput => ({
     route: ["unit-a", "brig-1", "ru-1", "dir-1", "vor"],
     lines: [
       { kind: "by_list", id: "l1", positionId: "p1", qty: 2, kekv: "2210" },
-      { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "ОБ-009", name: "Генератор", kekv: "3110", priceMinor: 50_000_00 } },
+      { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "ОБ-009", name: "Генератор", kekv: "3110", qty: 1, totalMinor: 5000000, measure: "шт." } },
     ],
     justification: "  Майно зношене.\n\nПотрібне поповнення.  ",
     createdOn: "2027-02-01",
@@ -46,13 +46,12 @@ test("рапорт: заміни стоять на початку, далі по
   const m = raportModel(input());
   assert.deepEqual(m.tables.map((t) => t.heading), ["1. Заміна: замість запланованої позиції — інший предмет", "2. Закупівля за переліком (без заміни)"]);
   assert.match(m.request, /Розділ 1 — заміна запланованих позицій на схожі предмети, розділ 2 — закупівля запланованих позицій без заміни/u);
-  assert.deepEqual(m.tables[0]?.head.slice(1, 3), ["Замість (позиція переліку)", "Просимо натомість"]);
-  assert.equal(m.tables[0]?.rows[0]?.[6], "2210 → 3110", "зміна КЕКВ видна в рядку заміни");
-  assert.equal(m.tables[0]?.head[3], "Стан замінюваного");
+  // Заміна: замінене (позиція, кількість, сума), стан, нове (найменування, кількість), КЕКВ і сума нового.
+  assert.deepEqual(m.tables[0]?.head.slice(1, 9), ["Замість (позиція переліку)", "Кількість", "Сума, грн", "Стан замінюваного", "Просимо натомість", "Кількість", "КЕКВ", "Сума, грн"]);
+  assert.equal(m.tables[0]?.rows[0]?.[7], "2210 → 3110", "зміна КЕКВ видна в рядку заміни");
   const [replacement] = m.tables[0]?.rows ?? [];
   assert.equal(replacement?.[1], "ПМ-002 · Радіостанція");
-  assert.equal(replacement?.[2], "ОБ-009 · Генератор");
-  assert.equal(replacement?.[4], "компл.");
+  assert.equal(replacement?.[5], "ОБ-009 · Генератор");
   const [byList] = m.tables[1]?.rows ?? [];
   assert.deepEqual([byList?.[1], byList?.[3], byList?.[4]], ["ПМ-001", "шт.", "2"]);
   assert.match(m.total, /53\s000,00/u);
@@ -92,6 +91,6 @@ test("рапорт: служба й джерело фінансування в �
   });
   assert.match(m.request, /для потреб в\/ч А0001 \(служба зв'язку\) за/u);
   assert.match(m.request, /за рахунок спеціального фонду/u);
-  assert.equal(m.tables[0]?.rows[0]?.[3], "Потребує ремонту");
+  assert.equal(m.tables[0]?.rows[0]?.[4], "Потребує ремонту");
   assert.match(m.footnote, /Реєстраційний номер СЕДО 5310042/u);
 });

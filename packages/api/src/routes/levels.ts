@@ -127,8 +127,8 @@ export function levelRoutes(db: DspDb, run: CommandRunner) {
       if (!list) throw new ApiError(404, "NOT_FOUND", "Перелік не знайдено.", { id });
       const requests = await loadRequests(tx, list.requestIds);
       const direction = requests[0]?.route[3] ?? "";
-      const [positions, budget] = await Promise.all([loadPositions(tx, direction), loadBudget(tx, direction)]);
-      const approved = approveList(ctx, meta, { list, requests, sedoNumber, positions, budget });
+      const [positions, budget, allRequests] = await Promise.all([loadPositions(tx, direction), loadBudget(tx, direction), loadRequests(tx)]);
+      const approved = approveList(ctx, meta, { list, requests, sedoNumber, positions, budget, allRequests });
       await saveOutcome(tx, approved, direction);
       if (list.level < 5) return { status: 200, body: listResponse(approved, list) };
       const extracts = issueExtracts(ctx, systemMeta(meta), { requests: approved.requests });

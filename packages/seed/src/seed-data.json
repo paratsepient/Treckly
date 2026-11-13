@@ -876,7 +876,7 @@
    "id": "pos-009",
    "directionId": "dir-1",
    "itemId": "item-009",
-   "plannedQty": 25
+   "plannedQty": 32
   },
   {
    "id": "pos-010",
@@ -1073,21 +1073,21 @@
  ],
  "budget": {
   "total": {
-   "limitMinor": 148830000,
-   "approvedMinor": 53070000
+   "limitMinor": 148630000,
+   "approvedMinor": 10020000
   },
   "perKekv": {
    "2210": {
     "limitMinor": 66480000,
-    "approvedMinor": 30720000
+    "approvedMinor": 8520000
    },
    "2220": {
     "limitMinor": 59150000,
-    "approvedMinor": 9150000
+    "approvedMinor": 1500000
    },
    "3110": {
-    "limitMinor": 23200000,
-    "approvedMinor": 13200000
+    "limitMinor": 23000000,
+    "approvedMinor": 0
    }
   }
  },
@@ -1298,54 +1298,61 @@
   {
    "id": "prop-unit-b-planned-6",
    "unitId": "unit-b",
-   "itemId": "item-011",
+   "itemId": "item-009",
    "tab": "planned",
    "qty": 7
   },
   {
    "id": "prop-unit-b-planned-7",
    "unitId": "unit-b",
+   "itemId": "item-011",
+   "tab": "planned",
+   "qty": 7
+  },
+  {
+   "id": "prop-unit-b-planned-8",
+   "unitId": "unit-b",
    "itemId": "item-012",
    "tab": "planned",
    "qty": 13
   },
   {
-   "id": "prop-unit-b-planned-8",
+   "id": "prop-unit-b-planned-9",
    "unitId": "unit-b",
    "itemId": "item-014",
    "tab": "planned",
    "qty": 9
   },
   {
-   "id": "prop-unit-b-planned-9",
+   "id": "prop-unit-b-planned-10",
    "unitId": "unit-b",
    "itemId": "item-022",
    "tab": "planned",
    "qty": 49
   },
   {
-   "id": "prop-unit-b-planned-10",
+   "id": "prop-unit-b-planned-11",
    "unitId": "unit-b",
    "itemId": "item-023",
    "tab": "planned",
    "qty": 61
   },
   {
-   "id": "prop-unit-b-planned-11",
+   "id": "prop-unit-b-planned-12",
    "unitId": "unit-b",
    "itemId": "item-030",
    "tab": "planned",
    "qty": 8
   },
   {
-   "id": "prop-unit-b-planned-12",
+   "id": "prop-unit-b-planned-13",
    "unitId": "unit-b",
    "itemId": "item-032",
    "tab": "planned",
    "qty": 3
   },
   {
-   "id": "prop-unit-b-planned-13",
+   "id": "prop-unit-b-planned-14",
    "unitId": "unit-b",
    "itemId": "item-033",
    "tab": "planned",
@@ -1630,10 +1637,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -1713,10 +1722,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -1803,14 +1814,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -1879,14 +1892,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -2424,10 +2439,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -2558,10 +2575,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -2679,14 +2698,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -2929,14 +2950,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -3440,10 +3463,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -3491,14 +3516,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -3769,10 +3796,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -3820,14 +3849,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -4365,10 +4396,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -4441,10 +4474,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -4718,10 +4753,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -4903,10 +4940,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -5290,10 +5329,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -5341,14 +5382,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -5496,10 +5539,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -5547,14 +5592,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -5852,10 +5899,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -5903,14 +5952,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -6058,10 +6109,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -6109,14 +6162,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -6276,10 +6331,12 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -6327,14 +6384,16 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
        "condition": "needs_repair"
       }
@@ -6482,12 +6541,15 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "ПЗ-0001-4",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
-       "condition": "needs_repair"
+       "condition": "needs_repair",
+       "newPositionId": "pos-req-0001-ln-4"
       }
      ],
      "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
@@ -6533,16 +6595,19 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "ПЗ-0002-3",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
-       "condition": "needs_repair"
+       "condition": "needs_repair",
+       "newPositionId": "pos-req-0002-ln-7"
       }
      ],
      "justification": "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
@@ -6749,26 +6814,52 @@
      "at": "2027-02-06T09:00:00.000Z"
     }
    ],
-   "budget": {
-    "total": {
-     "limitMinor": 10000000000000,
-     "approvedMinor": 43050000
+   "catalog": [
+    {
+     "itemId": "item-req-0001-ln-4",
+     "positionId": "pos-req-0001-ln-4",
+     "code": "ПЗ-0001-4",
+     "name": "Бінокль польовий 8×32",
+     "kekv": "2210",
+     "priceMinor": 490000,
+     "measure": "шт."
     },
-    "perKekv": {
-     "2210": {
-      "limitMinor": 10000000000000,
-      "approvedMinor": 22200000
-     },
-     "2220": {
-      "limitMinor": 10000000000000,
-      "approvedMinor": 7650000
-     },
-     "3110": {
-      "limitMinor": 10000000000000,
-      "approvedMinor": 13200000
-     }
+    {
+     "itemId": "item-req-0002-ln-7",
+     "positionId": "pos-req-0002-ln-7",
+     "code": "ПЗ-0002-3",
+     "name": "Бронежилет модульний",
+     "kekv": "3110",
+     "priceMinor": 4600000,
+     "measure": "компл."
     }
-   }
+   ],
+   "property": [
+    {
+     "unitId": "unit-a",
+     "code": "ПМ-020",
+     "tab": "planned",
+     "delta": -3
+    },
+    {
+     "unitId": "unit-a",
+     "code": "ПЗ-0001-4",
+     "tab": "planned",
+     "delta": 3
+    },
+    {
+     "unitId": "unit-b",
+     "code": "ПМ-009",
+     "tab": "planned",
+     "delta": -5
+    },
+    {
+     "unitId": "unit-b",
+     "code": "ПЗ-0002-3",
+     "tab": "planned",
+     "delta": 1
+    }
+   ]
   },
   {
    "requests": [
@@ -6816,12 +6907,15 @@
        "qty": 3,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-909",
+        "code": "ПЗ-0001-4",
         "name": "Бінокль польовий 8×32",
         "kekv": "2210",
-        "priceMinor": 490000
+        "qty": 3,
+        "totalMinor": 1470000,
+        "measure": "шт."
        },
-       "condition": "needs_repair"
+       "condition": "needs_repair",
+       "newPositionId": "pos-req-0001-ln-4"
       }
      ],
      "justification": "Майно, що є в підрозділі, зношене під час виконання завдань і не підлягає ремонту. Для підтримання боєздатності потрібне поповнення в межах Попереднього переліку на 2027 рік.",
@@ -6867,16 +6961,19 @@
       {
        "kind": "replacement",
        "id": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kekv": "2210",
        "newItem": {
-        "code": "ОБ-904",
-        "name": "Антенна система мобільна",
+        "code": "ПЗ-0002-3",
+        "name": "Бронежилет модульний",
         "kekv": "3110",
-        "priceMinor": 4800000
+        "qty": 1,
+        "totalMinor": 4600000,
+        "measure": "компл."
        },
-       "condition": "needs_repair"
+       "condition": "needs_repair",
+       "newPositionId": "pos-req-0002-ln-7"
       }
      ],
      "justification": "У зв'язку з доукомплектуванням підрозділу особовим складом наявної кількості майна недостатньо. Потребу визначено за штатом і нормами забезпечення.",
@@ -7013,8 +7110,8 @@
       {
        "requestId": "req-0002",
        "lineId": "ln-7",
-       "positionId": "pos-006",
-       "qty": 1,
+       "positionId": "pos-009",
+       "qty": 5,
        "kind": "replacement",
        "status": "replacement_agreed"
       }
@@ -7102,10 +7199,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -7287,10 +7386,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -7484,10 +7585,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -7669,10 +7772,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -7825,10 +7930,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -7952,10 +8059,12 @@
        "qty": 4,
        "kekv": "2210",
        "newItem": {
-        "code": "ПМ-907",
+        "code": "",
         "name": "Ліхтар вуличний акумуляторний",
         "kekv": "2210",
-        "priceMinor": 260000
+        "qty": 2,
+        "totalMinor": 520000,
+        "measure": "шт."
        },
        "condition": "needs_repair"
       }
@@ -10904,26 +11013,8 @@
      "at": "2027-02-11T09:00:00.000Z"
     }
    ],
-   "budget": {
-    "total": {
-     "limitMinor": 10000000000000,
-     "approvedMinor": 53070000
-    },
-    "perKekv": {
-     "2210": {
-      "limitMinor": 10000000000000,
-      "approvedMinor": 30720000
-     },
-     "2220": {
-      "limitMinor": 10000000000000,
-      "approvedMinor": 9150000
-     },
-     "3110": {
-      "limitMinor": 10000000000000,
-      "approvedMinor": 13200000
-     }
-    }
-   }
+   "catalog": [],
+   "property": []
   },
   {
    "requests": [
@@ -11230,7 +11321,27 @@
      "tab": "on_base",
      "delta": 6
     }
-   ]
+   ],
+   "budget": {
+    "total": {
+     "limitMinor": 10000000000000,
+     "approvedMinor": 6120000
+    },
+    "perKekv": {
+     "2210": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 6120000
+     },
+     "2220": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 0
+     },
+     "3110": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 0
+     }
+    }
+   }
   },
   {
    "requests": [
@@ -11342,7 +11453,27 @@
      "tab": "on_base",
      "delta": 20
     }
-   ]
+   ],
+   "budget": {
+    "total": {
+     "limitMinor": 10000000000000,
+     "approvedMinor": 10020000
+    },
+    "perKekv": {
+     "2210": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 8520000
+     },
+     "2220": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 1500000
+     },
+     "3110": {
+      "limitMinor": 10000000000000,
+      "approvedMinor": 0
+     }
+    }
+   }
   },
   {
    "requests": [

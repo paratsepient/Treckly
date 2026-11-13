@@ -85,18 +85,20 @@ export function raportModel(input: RaportInput): RaportModel {
   const replacementRows = replacements.map((line, index) => {
     if (line.kind !== "replacement") return [];
     const planned = positionOf.get(line.positionId);
-    const sum = line.newItem.priceMinor * line.qty;
-    add(line.newItem.kekv, sum);
+    // Заміна — у межах суми того, що замінюють: видно і замінене (кількість, сума), і нове (найменування, кількість, сума).
+    const replacedSum = (planned?.priceMinor ?? 0) * line.qty;
+    add(line.newItem.kekv, line.newItem.totalMinor);
     return [
       String(index + 1),
       planned ? `${planned.code} · ${planned.name}` : line.positionId,
-      `${line.newItem.code} · ${line.newItem.name}`,
-      line.condition ? CONDITION_LABELS[line.condition] : "—",
-      measureOf.get(line.newItem.code) ?? "шт.",
       NUM(line.qty),
+      MONEY(replacedSum),
+      line.condition ? CONDITION_LABELS[line.condition] : "—",
+      line.newItem.code ? `${line.newItem.code} · ${line.newItem.name}` : line.newItem.name,
+      NUM(line.newItem.qty),
       // Зміна КЕКВ видна одразу: «2210 → 3110» означає, що сума списується з ліміту 3110.
       planned && planned.kekv !== line.newItem.kekv ? `${planned.kekv} → ${line.newItem.kekv}` : line.newItem.kekv,
-      MONEY(sum),
+      MONEY(line.newItem.totalMinor),
     ];
   });
 
@@ -121,10 +123,10 @@ export function raportModel(input: RaportInput): RaportModel {
   if (replacementRows.length > 0) {
     tables.push({
       heading: "1. Заміна: замість запланованої позиції — інший предмет",
-      note: "Ці позиції Попереднього переліку не закуповуються; замість кожної просимо схожий предмет. Кількість і сума — предмета, який просимо.",
-      head: ["№", "Замість (позиція переліку)", "Просимо натомість", "Стан замінюваного", "Од. виміру", "Кількість", "КЕКВ", "Сума, грн"],
+      note: "Ці позиції Попереднього переліку не закуповуються; замість них просимо інший предмет на суму, не більшу за суму замінюваного.",
+      head: ["№", "Замість (позиція переліку)", "Кількість", "Сума, грн", "Стан замінюваного", "Просимо натомість", "Кількість", "КЕКВ", "Сума, грн"],
       rows: replacementRows,
-      numeric: [5, 7],
+      numeric: [2, 3, 6, 8],
     });
   }
   if (listRows.length > 0) {

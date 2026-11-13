@@ -48,13 +48,12 @@ test("E5: відкликання на рівні 4 можливе, після з
   throwsCode(() => withdraw(world.ctx, meta(author), { request: get(world, kept) }), "INVALID_TRANSITION");
 });
 
-test("E6: Голова затверджує — резерв бюджету, витяги по в/ч, «Заміна погоджена»", () => {
+test("E6: Голова затверджує — бюджет ще не списано, витяги по в/ч, «Заміна погоджена»", () => {
   const world = createWorld();
-  const id = submitted(world, [byList("l1", "p2", 2), replacement("l2", "p1", 1, "3110", 120_00)]);
+  const id = submitted(world, [byList("l1", "p2", 2), replacement("l2", "p1", 1, "3110", 90_00)]);
   advanceTo(world, [id], 5);
   approveAt(world, formAt(world, 5, [id]), 9001);
-  assert.equal(world.budget.perKekv["2210"]?.approvedMinor, 2 * 50_00, "старий КЕКВ заміни не вивільняється");
-  assert.equal(world.budget.perKekv["3110"]?.approvedMinor, 120_00);
+  assert.equal(world.budget.total.approvedMinor, 0, "бюджет списується лише після закупівлі");
   apply(world, issueExtracts(world.ctx, meta(system), { requests: [get(world, id)] }));
   assert.equal(get(world, id).status, "extract_issued");
   throwsCode(() => withdraw(world.ctx, meta(author), { request: get(world, id) }), "INVALID_TRANSITION");

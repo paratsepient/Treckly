@@ -43,6 +43,10 @@ function describe(issue: Issue, rowOf: ReadonlyMap<string, number>, warning: boo
           ? `${where}запитано ${String(d["requested"])}, а в плані вашої в/ч лишилось ${String(d["available"])} (уже замовлено ${String(d["alreadyOrdered"])} з ${String(d["planned"])}).`
           : `${where}запитано ${String(d["requested"])}, а в плані вашої в/ч ${String(d["available"])}.`
         : `${where}запитано ${String(d["requested"])}, а доступно ${String(d["available"])}.`;
+    case "REPLACEMENT_OVER_SUM":
+      return d["reason"] === "REPLACEMENT_INCOMPLETE"
+        ? `${where}для заміни вкажіть найменування, кількість і суму нового предмета.`
+        : `${where}сума заміни ${formatMoney(Number(d["totalMinor"]))} більша за суму того, що замінюєте (${formatMoney(Number(d["replacedMinor"]))}).`;
     case "POSITION_BUSY":
       return d["reason"] === "PURCHASE_STARTED"
         ? `${where}закупівля цієї позиції за іншою заявкою вже почалась; заміну подати можна.`

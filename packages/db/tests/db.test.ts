@@ -152,7 +152,7 @@ test("журнал лише доповнюється: UPDATE і DELETE відх�
 
 test("заявка зберігається й читається без втрат (рядки за переліком і заміни)", async () => {
   const s = await setup();
-  const replacement: RequestLine = { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "N-9", name: "Інший", kekv: "3110", priceMinor: 150_00 }, condition: "needs_repair" };
+  const replacement: RequestLine = { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "", name: "Інший", kekv: "3110", qty: 1, totalMinor: 150_00, measure: "шт." }, condition: "needs_repair" };
   const outcome = await run(s, () => createDraft(s.ctx, meta(author), { route: ROUTE, lines: lines(byList("l1", "p2", 1), replacement), justification: "Потреба підрозділу на 2027 рік.", service: "Служба зв'язку" }));
   const saved = await loadRequest(s.db, outcome.requests[0]!.id);
   assert.deepEqual(saved, outcome.requests[0]);
@@ -160,7 +160,7 @@ test("заявка зберігається й читається без втр�
 
 test("весь шлях заявки через базу: рівні 1–5, затвердження, резерв, витяг; стан у базі = стан домену", async () => {
   const s = await setup();
-  const id = await newSubmitted(s, lines(byList("l1", "p1", 2), { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "N", name: "Н", kekv: "3110", priceMinor: 120_00 }, condition: "lost" }));
+  const id = await newSubmitted(s, lines(byList("l1", "p1", 2), { kind: "replacement", id: "l2", positionId: "p2", qty: 1, kekv: "2210", newItem: { code: "", name: "Н", kekv: "3110", qty: 1, totalMinor: 50_00, measure: "шт." }, condition: "lost" }));
 
   for (const level of [1, 2, 3, 4, 5] as const) {
     s.clock.advanceDays(1);
@@ -172,10 +172,20 @@ test("весь шлях заявки через базу: рівні 1–5, за
   }
   const approved = (await loadRequest(s.db, id))!;
   assert.equal(approved.status, "approved");
-  assert.equal((await loadBudget(s.db, DIRECTION)).perKekv["3110"]?.approvedMinor, 120_00);
+  assert.equal((await loadBudget(s.db, DIRECTION)).perKekv["3110"]?.approvedMinor, 0, "бюджет списується лише після закупівлі");
 
-  const reserved = (await loadPositions(s.db, DIRECTION))["p1"]!;
-  assert.equal(reserved.availableQty, 10 - 2, "доступна кількість зменшилась на затверджену");
+  const positions = await loadPositions(s.db, DIRECTION);
+  assert.equal(positions["p1"]!.availableQty, 10 - 2, "доступна кількість зменшилась на погоджену");
+  // Заміна змінила план в/ч: акумулятора (p2) поменшало на замінене (5 − 1), новий предмет — нова позиція з погодженою кількістю.
+  const line = approved.lines[1]!;
+  assert.ok(line.kind === "replacement" && line.newPositionId && line.newItem.code !== "");
+  if (line.kind !== "replacement" || !line.newPositionId) return;
+  assert.equal(positions["p2"]!.availableQty, 4, "замінене вийшло з плану");
+  assert.equal(positions[line.newPositionId]!.availableQty, 0, "новий предмет у плані, уже погоджений");
+  const plan = await s.pg.query<{ code: string; qty: number }>(
+    "SELECT n.code, p.qty FROM property_items p JOIN nomenclature n ON n.id = p.item_id WHERE p.tab = 'planned' ORDER BY n.code",
+  );
+  assert.deepEqual(plan.rows.map((r) => [r.code, r.qty]), [["A-1", 10], ["A-2", 4], ["B-1", 3], [line.newItem.code, 1]]);
 
   await run(s, (st) => issueExtracts(s.ctx, meta(system), { requests: st.requests.filter((r) => r.id === id) }));
   const issued = (await loadRequest(s.db, id))!;

@@ -23,7 +23,8 @@ test("довідники: структура, КЕКВ, номенклатура
   const ref = await h.call("reference", AUTHOR_A);
   assert.equal(ref.units.length, seed.units.length);
   assert.equal(ref.kekv.length, 3);
-  assert.equal(ref.items.length, seed.items.length);
+  // Погоджені Головою заміни (ЗМ-0001, ЗМ-0002) додали в довідник по новому предмету.
+  assert.equal(ref.items.length, seed.items.length + 2);
   assert.equal(ref.levels.length, 5);
   assert.ok(ref.items.every((i) => i.group.length > 0));
 });
@@ -31,7 +32,8 @@ test("довідники: структура, КЕКВ, номенклатура
 test("Попередній перелік з доступною кількістю: затверджені заявки її зменшують", async () => {
   const h = await boot();
   const { positions } = await h.call("positions", AUTHOR_A);
-  assert.equal(positions.length, seed.listPositions.length);
+  // …і по новій позиції в перелік напрямку («Погоджені зміни»).
+  assert.equal(positions.length, seed.listPositions.length + 2);
   const radio = await positionByName(h, "Радіостанція носима цифрова");
   const planned = seed.listPositions.find((p) => p.id === radio.id)!.plannedQty;
   assert.equal(radio.availableQty, planned - 2, "2 радіостанції затверджено в першій заявці");

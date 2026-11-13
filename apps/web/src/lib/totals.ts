@@ -9,7 +9,8 @@ interface Priced {
 export function requestTotal(request: Pick<Request, "lines">, positions: readonly Priced[]): number {
   const byId = new Map(positions.map((p) => [p.id, p]));
   return request.lines.reduce((sum, line) => {
-    const unit = line.kind === "replacement" ? line.newItem.priceMinor : (byId.get(line.positionId)?.priceMinor ?? 0);
-    return sum + unit * line.qty;
+    // Заміна — сума нового предмета, як її вказав автор; за переліком — ціна позиції × кількість.
+    if (line.kind === "replacement") return sum + line.newItem.totalMinor;
+    return sum + (byId.get(line.positionId)?.priceMinor ?? 0) * line.qty;
   }, 0);
 }

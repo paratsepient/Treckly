@@ -57,7 +57,7 @@ export function ProcurementScreen() {
     setError(undefined);
     setDoc("");
     setRecipient("Склад бази");
-    setQuantities(Object.fromEntries(r.lines.map((l) => [l.id, String(l.qty)])));
+    setQuantities(Object.fromEntries(r.lines.map((l) => [l.id, String(l.kind === "replacement" ? l.newItem.qty : l.qty)])));
     setProcuring(r);
   };
   const done = (title: string, description: string) => feedback.notify({ key: "procurement", tone: "success", title, description });
@@ -146,7 +146,7 @@ export function ProcurementScreen() {
                 <ul className="procurement-card__lines">
                   {r.lines.map((l) => (
                     <li key={l.id}>
-                      {l.kind === "replacement" ? `${l.newItem.name} (замість: ${nameOf(l.positionId)})` : nameOf(l.positionId)} × {l.qty}
+                      {l.kind === "replacement" ? `${l.newItem.name} × ${l.newItem.qty} (замість: ${nameOf(l.positionId)} × ${l.qty})` : `${nameOf(l.positionId)} × ${l.qty}`}
                     </li>
                   ))}
                 </ul>
@@ -219,7 +219,7 @@ export function ProcurementScreen() {
           {procuring?.lines.map((l) => (
             <Input
               key={l.id}
-              label={`Фактична кількість: ${l.kind === "replacement" ? l.newItem.name : nameOf(l.positionId)} (у заявці ${l.qty})`}
+              label={`Фактична кількість: ${l.kind === "replacement" ? l.newItem.name : nameOf(l.positionId)} (у заявці ${l.kind === "replacement" ? l.newItem.qty : l.qty})`}
               inputMode="numeric"
               value={quantities[l.id] ?? ""}
               onChange={(e) => setQuantities((q) => ({ ...q, [l.id]: e.currentTarget.value }))}

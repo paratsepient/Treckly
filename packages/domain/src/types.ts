@@ -57,11 +57,20 @@ export function planStateOf(status: RequestStatus): PlanState | null {
   return null;
 }
 
+/**
+ * Предмет натомість (заміна): автор вказує найменування, кількість і суму; сума — не більша за суму позиції,
+ * яку замінюють (кількість × ціна). Код з'являється, коли Голова погодить: тоді предмет додається в план в/ч.
+ */
 export interface NewItem {
+  /** Код у довіднику; порожній, доки заміну не погоджено Головою. */
   readonly code: string;
   readonly name: string;
   readonly kekv: Kekv;
-  readonly priceMinor: Money;
+  /** Скільки нового предмета. */
+  readonly qty: number;
+  /** Сума за весь новий предмет (копійки). */
+  readonly totalMinor: Money;
+  readonly measure: string;
 }
 
 interface LineBase {
@@ -85,10 +94,15 @@ export interface ByListLine extends LineBase {
   readonly kind: "by_list";
 }
 
-/** Заміна: позиція переліку замінюється на інший предмет тієї ж кількості. */
+/**
+ * Заміна: `qty` — скільки позиції плану замінюють; натомість — інший предмет на суму не більшу за замінене.
+ * Після погодження Головою стара позиція плану зменшується, нова з'являється (`newPositionId`).
+ */
 export interface ReplacementLine extends LineBase {
   readonly kind: "replacement";
   readonly newItem: NewItem;
+  /** Позиція переліку нового предмета — з'являється після погодження Головою. */
+  readonly newPositionId?: string;
   /** Стан майна, яке замінюють; обов'язковий при поданні. */
   readonly condition?: OldCondition;
 }
@@ -318,13 +332,26 @@ export interface Outcome {
   /** Новий стан бюджету (лише при затвердженні Головою). */
   readonly budget?: Budget;
   readonly extracts?: readonly Extract[];
-  /** Зміни в майні в/ч (вкладки «На базі» й «Отримано»): за кодом предмета, з плюсом або мінусом. */
+  /** Зміни в майні в/ч (план, «На базі», «Отримано»): за кодом предмета, з плюсом або мінусом. */
   readonly property?: readonly PropertyChange[];
+  /** Нові предмети в довіднику й переліку напрямку (погоджені заміни). Записуються перед змінами майна. */
+  readonly catalog?: readonly CatalogAddition[];
+}
+
+/** Новий предмет переліку: з'являється, коли Голова погоджує заміну. */
+export interface CatalogAddition {
+  readonly itemId: string;
+  readonly positionId: string;
+  readonly code: string;
+  readonly name: string;
+  readonly kekv: Kekv;
+  readonly priceMinor: Money;
+  readonly measure: string;
 }
 
 export interface PropertyChange {
   readonly unitId: UnitId;
   readonly code: string;
-  readonly tab: "on_base" | "received";
+  readonly tab: "planned" | "on_base" | "received";
   readonly delta: number;
 }

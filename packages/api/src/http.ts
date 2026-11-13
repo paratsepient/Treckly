@@ -23,6 +23,7 @@ export const STATUS: Record<DomainErrorCode, 403 | 409 | 422> = {
   SEDO_NUMBER_INVALID: 422,
   NOTE_REQUIRED: 422,
   POSITION_BUSY: 422,
+  REPLACEMENT_OVER_SUM: 422,
 };
 
 /** Помилка транспорту (не домену): некоректний запит або відсутній запис. */

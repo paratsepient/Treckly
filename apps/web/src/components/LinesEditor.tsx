@@ -2,8 +2,7 @@ import { Fragment, type Dispatch } from "react";
 import { Badge, Button, IconButton, Icon, Input, Select } from "@index/ui";
 import {
   parseQty,
-  replacementCandidates,
-  replacementRule,
+  parseMoney,
   type CatalogItem,
   type CatalogPosition,
   type EditorAction,
@@ -29,7 +28,8 @@ export interface LinesEditorProps {
  */
 export function LinesEditor({ lines, positions, items, dispatch, problems, newLineId, disabled = false }: LinesEditorProps) {
   const byId = new Map(positions.map((p) => [p.id, p]));
-  const itemsById = new Map(items.map((i) => [i.id, i]));
+  // КЕКВ, які можна обрати для нового предмета: ті, що є в довіднику.
+  const kekvs = [...new Set([...items.map((i) => i.kekv), ...positions.map((p) => p.kekv)])].sort();
 
   return (
     <div className="lines">
@@ -66,13 +66,15 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
           {lines.map((line, index) => {
             const position = byId.get(line.positionId);
             const qty = parseQty(line.qty);
-            const item = itemsById.get(line.replacementItemId);
             const row = index + 1;
             const issues = problems.get(line.id) ?? [];
-            const unit = line.kind === "replacement" ? item?.priceMinor : position?.priceMinor;
-            const sum = unit !== undefined && qty !== null ? unit * qty : null;
-            const candidates = line.kind === "replacement" ? replacementCandidates(position, items) : [];
-            const rule = position && item ? replacementRule(position, item) : null;
+            const replacing = line.kind === "replacement";
+            // Заміна: межа — сума того, що замінюють (кількість × ціна позиції); сума рядка — сума нового предмета.
+            const limit = position && qty !== null ? position.priceMinor * qty : null;
+            const newTotal = parseMoney(line.newTotal);
+            const newKekv = line.newKekv || position?.kekv || "";
+            const sum = replacing ? newTotal : position && qty !== null ? position.priceMinor * qty : null;
+            const over = replacing && newTotal !== null && limit !== null && newTotal > limit;
             return (
               <Fragment key={line.id}>
               <tr className="lines__row ix-table__row" data-invalid={issues.length > 0 ? "true" : undefined}>
@@ -111,7 +113,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                 </td>
                 <td className="ix-table__cell lines__qty">
                   <Input
-                    label={`Кількість, рядок ${row}`}
+                    label={replacing ? `Скільки замінюємо, рядок ${row}` : `Кількість, рядок ${row}`}
                     hideLabel
                     disabled={disabled}
                     inputMode="numeric"
@@ -123,7 +125,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                 <td className="ix-table__cell lines__cell-kekv">
                   <span className="lines__cell-label" aria-hidden="true">КЕКВ</span>
                   {/* Для заміни на предмет іншого КЕКВ видно, з якого ліміту списується: «2210 → 3110». */}
-                  {position ? <Badge>{line.kind === "replacement" && item && item.kekv !== position.kekv ? `${position.kekv} → ${item.kekv}` : position.kekv}</Badge> : <span className="lines__muted">—</span>}
+                  {position ? <Badge>{replacing && newKekv !== position.kekv ? `${position.kekv} → ${newKekv}` : position.kekv}</Badge> : <span className="lines__muted">—</span>}
                 </td>
                 <td className="ix-table__cell lines__money">
                   <span className="lines__cell-label" aria-hidden="true">Сума</span>
@@ -143,21 +145,55 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                   <td className="ix-table__cell lines__detail" colSpan={7}>
                     {line.kind === "replacement" ? (
                       <div className="lines__replacement">
+                        {/* Підписи — одним рядком над полями; самі поля мають повну назву для читача з екрана. */}
+                        <span className="lines__replacement-head" aria-hidden="true">Що натомість</span>
+                        <span className="lines__replacement-head" aria-hidden="true">Кількість</span>
+                        <span className="lines__replacement-head" aria-hidden="true">{limit !== null ? `Сума, грн (до ${formatMoney(limit)})` : "Сума, грн"}</span>
+                        <span className="lines__replacement-head" aria-hidden="true">КЕКВ</span>
+                        <span className="lines__replacement-head" aria-hidden="true">Стан замінюваного</span>
+                        <Input
+                          label={`Що натомість, рядок ${row}`}
+                          hideLabel
+                          disabled={disabled}
+                          placeholder="Найменування предмета"
+                          maxLength={160}
+                          value={line.newName}
+                          onChange={(event) => dispatch({ type: "update", id: line.id, patch: { newName: event.target.value }, group: `name:${line.id}` })}
+                        />
+                        <Input
+                          label={`Кількість нового, рядок ${row}`}
+                          hideLabel
+                          disabled={disabled}
+                          inputMode="numeric"
+                          value={line.newQty}
+                          error={line.newQty !== "" && parseQty(line.newQty) === null ? "Ціле число більше нуля" : undefined}
+                          onChange={(event) => dispatch({ type: "update", id: line.id, patch: { newQty: event.target.value }, group: `nqty:${line.id}` })}
+                        />
+                        <Input
+                          label={`Сума, грн, рядок ${row}`}
+                          hideLabel
+                          disabled={disabled}
+                          inputMode="decimal"
+                          value={line.newTotal}
+                          error={over ? "Більше за суму того, що замінюєте" : line.newTotal !== "" && newTotal === null ? "Сума в гривнях, напр. 8000 або 8000,50" : undefined}
+                          onChange={(event) => dispatch({ type: "update", id: line.id, patch: { newTotal: event.target.value }, group: `total:${line.id}` })}
+                        />
                         <Select
-                          label={`Замінити на, рядок ${row}`}
+                          label={`КЕКВ нового, рядок ${row}`}
+                          hideLabel
                           disabled={disabled || !position}
-                          placeholder={position ? "Оберіть предмет заміни" : "Спершу оберіть позицію"}
-                          value={line.replacementItemId}
-                          onChange={(event) => dispatch({ type: "update", id: line.id, patch: { replacementItemId: event.target.value } })}
+                          value={newKekv}
+                          onChange={(event) => dispatch({ type: "update", id: line.id, patch: { newKekv: event.target.value } })}
                         >
-                          {candidates.map((c) => (
-                            <option key={c.id} value={c.id}>
-                              {c.name} · КЕКВ {c.kekv} · {formatMoney(c.priceMinor)}
+                          {kekvs.map((k) => (
+                            <option key={k} value={k}>
+                              {k}
                             </option>
                           ))}
                         </Select>
                         <Select
                           label={`Стан замінюваного, рядок ${row}`}
+                          hideLabel
                           disabled={disabled}
                           placeholder="Оберіть стан"
                           value={line.condition}
@@ -169,8 +205,8 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
                             </option>
                           ))}
                         </Select>
-                        {rule === "same-kekv" ? <Badge tone="success">Той самий КЕКВ: ліміт не витрачається</Badge> : null}
-                        {rule === "other-kekv" && item ? <Badge tone="warning">{`Інший КЕКВ: списується з ліміту ${item.kekv}`}</Badge> : null}
+                        {position && newKekv === position.kekv ? <Badge tone="success">Той самий КЕКВ: ліміт не витрачається</Badge> : null}
+                        {position && newKekv !== position.kekv ? <Badge tone="warning">{`Інший КЕКВ: списується з ліміту ${newKekv}`}</Badge> : null}
                       </div>
                     ) : null}
                     {issues.length > 0 ? (
@@ -190,7 +226,7 @@ export function LinesEditor({ lines, positions, items, dispatch, problems, newLi
       </table>
       </div>
       <div className="lines__footer">
-        <Button iconStart={<Icon name="add" />} disabled={disabled} onClick={() => dispatch({ type: "add", line: { id: newLineId(), kind: "by_list", positionId: "", qty: "1", replacementItemId: "", condition: "" } })}>
+        <Button iconStart={<Icon name="add" />} disabled={disabled} onClick={() => dispatch({ type: "add", line: { id: newLineId(), kind: "by_list", positionId: "", qty: "1", newName: "", newQty: "1", newTotal: "", newKekv: "", condition: "" } })}>
           Додати рядок
         </Button>
       </div>

@@ -14,13 +14,21 @@ test("E1: заміна на інший КЕКВ — вплив на бюджет
   await expect(positionSelect.locator("option[value='pos-006']")).toHaveCount(1);
   await expect(positionSelect.locator("option[value='pos-005']")).toHaveCount(0);
   await page.getByLabel("Тип рядка 1").selectOption("replacement");
-  await page.getByLabel("Позиція, рядок 1").selectOption("pos-006") // Антена всеспрямована 2,4 ГГц, КЕКВ 2210;
-  await page.getByLabel("Замінити на, рядок 1").selectOption("item-104") // Антенна система мобільна, КЕКВ 3110;
+  await page.getByLabel("Позиція, рядок 1").selectOption("pos-006"); // Антена всеспрямована 2,4 ГГц, 900 грн, КЕКВ 2210
+  // Замінюємо 10 антен (9 000 грн) однією мобільною антенною системою — у межах суми замінюваного.
+  await page.getByLabel("Скільки замінюємо, рядок 1").fill("10");
+  await page.getByLabel("Що натомість, рядок 1").fill("Антенна система мобільна");
+  await page.getByLabel("Кількість нового, рядок 1").fill("1");
+  await page.getByLabel("КЕКВ нового, рядок 1").selectOption("3110");
+  // Дорожче за замінене — поле підсвічене, перевірка не проходить.
+  await page.getByLabel("Сума, грн, рядок 1").fill("9500");
+  await expect(page.getByText("Більше за суму того, що замінюєте")).toBeVisible();
+  await page.getByLabel("Сума, грн, рядок 1").fill("8000");
 
   // Автоперевірки й бюджет: новий КЕКВ витрачається, старий не змінюється (вивільнення немає).
   const budget = page.getByRole("table", { name: /Залишок бюджету за КЕКВ/ });
   const row3110 = budget.getByRole("row", { name: /^3110/ });
-  await expect(row3110).toContainText("−48 000");
+  await expect(row3110).toContainText("−8 000");
   await expect(budget.getByRole("row", { name: /^2210/ })).not.toContainText("−");
   await expect(page.getByText("Перевірки пройдено")).toBeVisible();
   await expect(page.getByText(/Інший КЕКВ: списується з ліміту 3110/)).toBeVisible();

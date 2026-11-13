@@ -1,5 +1,5 @@
 import type { Budget, Positions, Request } from "@dsp/domain";
-import { inWorkImpact, planStateOf, requestImpact, type BudgetImpact } from "@dsp/domain";
+import { commitmentsImpact, inWorkImpact, planStateOf, requestImpact, type BudgetImpact } from "@dsp/domain";
 import type { UserRow } from "@dsp/db";
 
 /** Користувач у формі контракту. */
@@ -31,15 +31,16 @@ function stateImpact(requests: readonly Request[], positions: Positions, state: 
 export function budgetSummary(budget: Budget, requests: readonly Request[], positions: Positions) {
   const inWork: BudgetImpact = inWorkImpact(requests, positions);
   const inRequests = stateImpact(requests, positions, "in_requests");
-  const bought = stateImpact(requests, positions, "bought");
-  const line = (scope: string, limit: number, approved: number, pick: (i: BudgetImpact) => number) => ({
+  // Списано — лише після закупівель (збережене в бюджеті); погоджені, ще не закуплені зміни — із заявок.
+  const committed = commitmentsImpact(requests, positions);
+  const line = (scope: string, limit: number, spent: number, pick: (i: BudgetImpact) => number) => ({
     scope,
     limitMinor: limit,
-    approvedMinor: approved,
-    boughtMinor: pick(bought),
+    approvedMinor: spent + pick(committed),
+    boughtMinor: spent,
     inWorkMinor: pick(inWork),
     inRequestsMinor: pick(inRequests),
-    remainingMinor: limit - approved,
+    remainingMinor: limit - spent - pick(committed),
   });
   return {
     lines: [

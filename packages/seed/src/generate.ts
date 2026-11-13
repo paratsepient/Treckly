@@ -22,6 +22,8 @@ import {
   type Positions,
   type Request,
   type RequestLine,
+  commitmentsImpact,
+  withCommitments,
 } from "@dsp/domain";
 import { KEKV_INFO, LIST_ITEMS, REPLACEMENT_CANDIDATES, type CatalogEntry } from "./catalog.ts";
 import { DIRECTION_ID, generateUsers, routeOf, UNITS, UNIT_IDS, type SeedUnit, type SeedUser, type UnitKey } from "./structure.ts";
@@ -276,8 +278,9 @@ class Simulation {
         request,
         acceptanceDoc,
         recipient: "Склад бази",
-        quantities: Object.fromEntries(request.lines.map((l) => [l.id, l.qty])),
+        quantities: Object.fromEntries(request.lines.map((l) => [l.id, l.kind === "replacement" ? l.newItem.qty : l.qty])),
         positions: this.positions(),
+        budget: this.budget,
       }),
     );
   }
@@ -312,10 +315,13 @@ export function generateSeed(): SeedData {
     lineNo += 1;
     return { kind: "by_list", id: `ln-${lineNo}`, positionId: positionId(listIndex), qty, kekv: entry.kekv };
   };
-  const rep = (listIndex: number, qty: number, candidate: string): RequestLine => {
+  /** Заміна `qty` позиції плану на `newQty` предмета-кандидата; сума — не більша за суму замінюваного. */
+  const rep = (listIndex: number, qty: number, candidate: string, newQty = qty): RequestLine => {
     const entry = LIST_ITEMS[listIndex - 1] as CatalogEntry;
     const item = itemByName.get(candidate);
     if (!item) throw new Error(`Немає кандидата для заміни: ${candidate}`);
+    const totalMinor = item.priceMinor * newQty;
+    if (totalMinor > kopecks(entry.priceUah) * qty) throw new Error(`Заміна дорожча за замінене: ${candidate}`);
     lineNo += 1;
     return {
       kind: "replacement",
@@ -323,7 +329,7 @@ export function generateSeed(): SeedData {
       positionId: positionId(listIndex),
       qty,
       kekv: entry.kekv,
-      newItem: { code: item.code, name: item.name, kekv: item.kekv, priceMinor: item.priceMinor },
+      newItem: { code: "", name: item.name, kekv: item.kekv, qty: newQty, totalMinor, measure: item.measure },
       condition: (["unusable", "needs_repair", "lost"] as const)[lineNo % 3],
     };
   };
@@ -331,7 +337,7 @@ export function generateSeed(): SeedData {
   // ── Сценарій: стани отримують проганянням подій домену ───────────────────────
   sim.day(0);
   const r1 = sim.newSubmitted("unit-a", [by(1, 10), by(9, 20), by(33, 2), rep(20, 3, "Бінокль польовий 8×32")]);
-  const r2 = sim.newSubmitted("unit-b", [by(22, 40), by(23, 50), rep(6, 1, "Антенна система мобільна")]);
+  const r2 = sim.newSubmitted("unit-b", [by(22, 40), by(23, 50), rep(9, 5, "Бронежилет модульний", 1)]);
   const r5 = sim.newSubmitted("unit-b", [by(30, 1), by(33, 1)]); // станція керування — лише в r9: одна позиція не може бути у двох незавершених заявках
   const r9 = sim.newSubmitted("unit-b", [by(2, 20), by(11, 5), by(32, 1)]); // станція керування — як у примітці повернення
   const r10 = sim.newSubmitted("unit-c", [by(15, 10), by(16, 6)]);
@@ -345,7 +351,7 @@ export function generateSeed(): SeedData {
 
   sim.day(2);
   const r6 = sim.newSubmitted("unit-c", [by(36, 2), by(38, 2)]);
-  const r4 = sim.newSubmitted("unit-c", [by(3, 8), by(4, 12), rep(16, 4, "Ліхтар вуличний акумуляторний")]);
+  const r4 = sim.newSubmitted("unit-c", [by(3, 8), by(4, 12), rep(16, 4, "Ліхтар вуличний акумуляторний", 2)]);
   const r3 = sim.newSubmitted("unit-a", [by(26, 30), by(27, 6)]);
   sim.pass(1, "unit-c", [r6, r4]);
   sim.pass(1, "unit-a", [r3]);
@@ -400,7 +406,8 @@ export function generateSeed(): SeedData {
   // ── Підсумкові ліміти: під стан заявок, щоб було що показати ────────────────
   const positions = sim.positions();
   const inWork = inWorkImpact([...sim.requests.values()], positions);
-  const approved = sim.budget;
+  // Ліміт = списане (закупівлі) + погоджені, ще не закуплені зміни + залишок: так залишок у демо той самий.
+  const approved = withCommitments(sim.budget, commitmentsImpact([...sim.requests.values()], positions));
   const remaining: Record<string, number> = {
     // Ліміт 3110 впирається: нова велика закупівля блокується, а сума «у роботі» вже перевищує залишок.
     "3110": kopecks(100_000),
@@ -410,11 +417,11 @@ export function generateSeed(): SeedData {
   const perKekv = Object.fromEntries(
     KEKV_INFO.map((k) => {
       const done = approved.perKekv[k.code]?.approvedMinor ?? 0;
-      return [k.code, { limitMinor: done + (remaining[k.code] as number), approvedMinor: done }];
+      return [k.code, { limitMinor: done + (remaining[k.code] as number), approvedMinor: sim.budget.perKekv[k.code]?.approvedMinor ?? 0 }];
     }),
   );
   const budget: Budget = {
-    total: { limitMinor: Object.values(perKekv).reduce((sum, l) => sum + l.limitMinor, 0), approvedMinor: approved.total.approvedMinor },
+    total: { limitMinor: Object.values(perKekv).reduce((sum, l) => sum + l.limitMinor, 0), approvedMinor: sim.budget.total.approvedMinor },
     perKekv,
   };
 

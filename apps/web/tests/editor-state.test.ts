@@ -9,9 +9,8 @@ import {
   fromRequestLines,
   linesKey,
   newLine,
+  parseMoney,
   parseQty,
-  replacementCandidates,
-  replacementRule,
   toRequestLines,
   type CatalogItem,
   type CatalogPosition,
@@ -81,11 +80,11 @@ test("зміна іншого рядка чи іншої групи почина
   assert.equal(run(h, { type: "undo" }).present[0]?.qty, "2");
 });
 
-test("зміна позиції або повернення до «за переліком» скидає обраний предмет заміни", () => {
-  const base = emptyHistory([line("a", { kind: "replacement", positionId: "p1", replacementItemId: "i2" })]);
-  assert.equal(run(base, { type: "update", id: "a", patch: { positionId: "p4" } }).present[0]?.replacementItemId, "");
-  assert.equal(run(base, { type: "update", id: "a", patch: { kind: "by_list" } }).present[0]?.replacementItemId, "");
-  assert.equal(run(base, { type: "update", id: "a", patch: { qty: "7" } }).present[0]?.replacementItemId, "i2", "інші поля предмет не чіпають");
+test("сума заміни: гривні з пробілами й комою → копійки; нуль і сміття — ні", () => {
+  assert.equal(parseMoney("8000"), 8_000_00);
+  assert.equal(parseMoney("8 000,50"), 8_000_50);
+  assert.equal(parseMoney("12.5"), 12_50);
+  for (const bad of ["", "0", "-5", "abc", "1,234"]) assert.equal(parseMoney(bad), null, bad);
 });
 
 test("завантаження збереженої заявки починає історію заново", () => {
@@ -111,20 +110,21 @@ test("перетворення в рядки API: повні рядки йдут
     line("noPos"),
     line("badQty", { positionId: "p1", qty: "0" }),
     line("noItem", { kind: "replacement", positionId: "p1", qty: "1" }),
-    line("rep", { kind: "replacement", positionId: "p1", qty: "2", replacementItemId: "i3" }),
+    line("rep", { kind: "replacement", positionId: "p1", qty: "2", newName: "Зарядна станція", newQty: "1", newTotal: "180", newKekv: "3110" }),
   ];
   const { lines, incomplete } = toRequestLines(editor, posMap, itemMap);
   assert.deepEqual(incomplete, ["noPos", "badQty", "noItem"]);
   assert.deepEqual(lines.map((l) => [l.id, l.kind]), [["ok1", "by_list"], ["rep", "replacement"]]);
   const rep = lines[1]!;
   assert.equal(rep.kind === "replacement" && rep.newItem.kekv, "3110");
+  assert.deepEqual(rep.kind === "replacement" && [rep.newItem.name, rep.newItem.qty, rep.newItem.totalMinor], ["Зарядна станція", 1, 180_00]);
   assert.equal(rep.kekv, "2210", "КЕКВ рядка — це КЕКВ позиції, а не нового предмета");
 });
 
 test("збережена заявка → редактор → рядки API без втрат; ключ вмісту збігається", () => {
   const saved: RequestLine[] = [
     { kind: "by_list", id: "l1", positionId: "p1", qty: 4, kekv: "2210" },
-    { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "B-1", name: "Зарядна станція", kekv: "3110", priceMinor: 900_00 } },
+    { kind: "replacement", id: "l2", positionId: "p1", qty: 2, kekv: "2210", newItem: { code: "B-1", name: "Зарядна станція", kekv: "3110", qty: 2, totalMinor: 180000, measure: "шт." } },
   ];
   const back = toRequestLines(fromRequestLines(saved, items), posMap, itemMap);
   assert.deepEqual(back.incomplete, []);
@@ -138,22 +138,8 @@ test("ключ вмісту не залежить від порядку полі
   assert.notEqual(linesKey([a]), linesKey([{ ...a, qty: 2 }]));
 });
 
-test("предмет заміни, якого немає в номенклатурі, робить рядок незавершеним, а не губить його мовчки", () => {
-  const saved: RequestLine[] = [{ kind: "replacement", id: "l", positionId: "p1", qty: 1, kekv: "2210", newItem: { code: "ZZZ", name: "?", kekv: "2210", priceMinor: 1 } }];
+test("заміна без найменування чи суми — незавершений рядок, а не мовчазна втрата", () => {
+  const saved: RequestLine[] = [{ kind: "replacement", id: "l", positionId: "p1", qty: 1, kekv: "2210", newItem: { code: "", name: " ", kekv: "2210", qty: 1, totalMinor: 1, measure: "шт." } }];
   const editor = fromRequestLines(saved, items);
-  assert.equal(editor[0]?.replacementItemId, "");
   assert.deepEqual(toRequestLines(editor, posMap, itemMap).incomplete, ["l"]);
-});
-
-test("кандидати для заміни: схожі предмети тієї ж групи, крім самого предмета", () => {
-  const names = replacementCandidates(posMap.get("p1"), items).map((i) => i.id);
-  assert.deepEqual(names, ["i2", "i3"]);
-  assert.deepEqual(replacementCandidates(posMap.get("p4"), items), [], "в оптики схожих немає");
-  assert.deepEqual(replacementCandidates(undefined, items), []);
-});
-
-test("правило КЕКВ при заміні: той самий — ліміт не витрачається, інший — списується", () => {
-  const p = posMap.get("p1")!;
-  assert.equal(replacementRule(p, itemMap.get("i2")!), "same-kekv");
-  assert.equal(replacementRule(p, itemMap.get("i3")!), "other-kekv");
 });

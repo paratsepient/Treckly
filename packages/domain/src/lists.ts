@@ -1,9 +1,9 @@
-import { evaluateBudget, requestImpact, reserve, type BudgetImpact } from "./budget.ts";
+import { commitmentsImpact, evaluateBudget, requestImpact, withCommitments, type BudgetImpact } from "./budget.ts";
 import { bumped, guardRevision, levelAudience, makeEvent, stamp, type DomainContext } from "./context.ts";
 import { DomainError } from "./errors.ts";
 import { assertLevelRole } from "./permissions.ts";
 import { parseSedoNumber } from "./sedo.ts";
-import type { Audience, Budget, DailyList, Level, Meta, Notification, Outcome, Positions, Request, UnitId } from "./types.ts";
+import type { Audience, Budget, CatalogAddition, DailyList, Level, Meta, Notification, Outcome, Positions, PropertyChange, Request, RequestLine, UnitId } from "./types.ts";
 import { FINAL_LEVEL, signerKind } from "./types.ts";
 
 function invalid(message: string, details: Readonly<Record<string, unknown>> = {}): DomainError {
@@ -179,9 +179,11 @@ export function markNotSigned(ctx: DomainContext, meta: Meta, input: NotSignedIn
 
 export interface ApproveListInput extends ListInput {
   readonly sedoNumber: string | number;
-  /** Потрібні на рівні 5: перевірка й резерв бюджету. */
+  /** Потрібні на рівні 5: перевірка ліміту й зміна плану. */
   readonly positions: Positions;
   readonly budget: Budget;
+  /** Усі заявки напрямку: погоджені, ще не закуплені зміни рахуються в ліміт. */
+  readonly allRequests?: readonly Request[];
 }
 
 /**
@@ -225,12 +227,41 @@ export function approveList(ctx: DomainContext, meta: Meta, input: ApproveListIn
     },
     { perKekv: {}, total: 0 },
   );
-  const evaluation = evaluateBudget(input.budget, total);
+  // Бюджет не списується при погодженні (лише після закупівлі), але погодити понад ліміт не можна:
+  // рахуємо списане разом з уже погодженими, ще не закупленими змінами.
+  const inList = new Set(input.requests.map((r) => r.id));
+  const evaluation = evaluateBudget(withCommitments(input.budget, commitmentsImpact(input.allRequests ?? [], input.positions, inList)), total);
   const exceeded = evaluation.errors[0];
   if (exceeded) {
     throw new DomainError("BUDGET_EXCEEDED", "Сума переліку перевищує залишок затвердженого бюджету.", { ...exceeded });
   }
-  const requests = input.requests.map((r) => bumped(r, { status: "approved" as const, level: FINAL_LEVEL, levelEnteredOn: today }));
+  // Перелік змінюється підписом Голови: стара позиція плану в/ч зменшується на замінене, новий предмет
+  // додається в план зі статусом «Погоджені зміни» (рішення користувача 2026-11-13).
+  const catalog: CatalogAddition[] = [];
+  const property: PropertyChange[] = [];
+  const requests = input.requests.map((r) => {
+    const lines = r.lines.map((line, index): RequestLine => {
+      if (line.kind !== "replacement") return line;
+      const tag = `${r.id.replace(/^req-/, "").toUpperCase()}-${index + 1}`;
+      // «ПЗ» — погоджена зміна: не плутати з номером заявки «ЗМ-…».
+      const code = `ПЗ-${tag}`;
+      const positionId = `pos-${r.id}-${line.id}`;
+      const old = input.positions[line.positionId];
+      catalog.push({
+        itemId: `item-${r.id}-${line.id}`,
+        positionId,
+        code,
+        name: line.newItem.name,
+        kekv: line.newItem.kekv,
+        priceMinor: Math.round(line.newItem.totalMinor / line.newItem.qty),
+        measure: line.newItem.measure,
+      });
+      if (old) property.push({ unitId: r.route[0], code: old.code, tab: "planned", delta: -line.qty });
+      property.push({ unitId: r.route[0], code, tab: "planned", delta: line.newItem.qty });
+      return { ...line, newItem: { ...line.newItem, code }, newPositionId: positionId };
+    });
+    return bumped(r, { status: "approved" as const, level: FINAL_LEVEL, levelEnteredOn: today, lines });
+  });
   return {
     requests,
     lists: [approvedList],
@@ -244,6 +275,7 @@ export function approveList(ctx: DomainContext, meta: Meta, input: ApproveListIn
       notification(ctx, "request_approved", r, { kind: "author", userId: r.authorId }, list.id),
       ...([1, 2, 3, 4] as const).map((l) => notification(ctx, "request_approved", r, levelAudience(r, l, "both"), list.id)),
     ]),
-    budget: reserve(input.budget, total),
+    catalog,
+    property,
   };
 }
