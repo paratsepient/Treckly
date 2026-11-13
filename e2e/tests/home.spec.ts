@@ -11,8 +11,8 @@ test("головна: що потрібно зробити — для автор
 
   // Уповноважений в/ч А0001: черга.
   await switchTo(page, "prep-1-unit-a", "/");
-  await expect(tasks.getByRole("listitem").first()).toContainText("У черзі");
-  await tasks.getByRole("button", { name: "До черги" }).first().click();
+  await expect(tasks.getByRole("listitem").first()).toContainText("На розгляд");
+  await tasks.getByRole("button", { name: "Розглянути" }).click();
   await expect(page).toHaveURL(/#\/queue$/);
 
   // Командир в/ч А0001: перелік на погодження.

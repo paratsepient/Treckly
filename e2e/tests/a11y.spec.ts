@@ -13,7 +13,7 @@ const SCREENS: readonly { role: string; hash: string; name: string; ready: (page
   { role: "author-unit-b", hash: "/", name: "Головна (автор)", ready: (p) => expect(p.getByRole("list", { name: "Що потрібно зробити" })).toBeVisible() },
   { role: "prep-5-vor", hash: "/", name: "Головна (Відділ)", ready: (p) => expect(p.getByRole("list", { name: "Що потрібно зробити" })).toBeVisible() },
   { role: "author-unit-b", hash: "/notifications", name: "Сповіщення", ready: (p) => expect(p.getByRole("list", { name: /Сповіщення/ })).toBeVisible() },
-  { role: "prep-1-unit-a", hash: "/queue", name: "Черга рівня", ready: (p) => expect(p.getByRole("checkbox", { name: /Обрати ЗМ-/ }).first()).toBeVisible() },
+  { role: "prep-1-unit-a", hash: "/queue", name: "Заявки на розгляд", ready: (p) => expect(p.getByRole("checkbox", { name: /Обрати ЗМ-/ }).first()).toBeVisible() },
   { role: "appr-1-unit-a", hash: "/lists", name: "Денний перелік", ready: (p) => expect(p.getByRole("button", { name: "Погодити", exact: true })).toBeEnabled() },
   { role: "appr-5-vor", hash: "/summary", name: "Зведення", ready: (p) => expect(p.getByRole("table", { name: "Бюджет напрямку за КЕКВ" })).toBeVisible() },
   { role: "appr-5-vor", hash: "/registry", name: "Реєстр заявок", ready: (p) => expect(p.getByRole("table", { name: "Таблиця реєстру заявок" })).toBeVisible() },

@@ -45,7 +45,7 @@ export function NotificationsScreen() {
       ) : query.isError ? (
         <DataState kind="error" title="Не вдалося завантажити сповіщення" />
       ) : items.length === 0 ? (
-        <DataState kind="empty" title="Сповіщень немає" description="Тут з'являться події за заявками вашої ролі: нові в черзі, повернення, затвердження й щоденні нагадування." />
+        <DataState kind="empty" title="Сповіщень немає" description="Тут з'являться події за заявками вашої ролі: нові на розгляд, повернення, затвердження й щоденні нагадування." />
       ) : (
         <ol className="inbox" aria-label="Сповіщення, нові згори">
           {items.map((n) => {

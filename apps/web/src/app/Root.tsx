@@ -63,7 +63,7 @@ function groupsForRole(role: Role, unread: number, level: number | null): NavGro
           id: "work",
           label: "Робота рівня",
           items: [
-            { id: "queue", label: "Черга рівня", href: "#/queue", icon: <Icon name="records" /> },
+            { id: "queue", label: "Заявки на розгляд", href: "#/queue", icon: <Icon name="records" /> },
             // Відділ оборонних ресурсів: після підпису Голови — затверджені закупівлі, далі закупівля й видача.
             ...(level === 5 ? [final("Затверджені закупівлі"), { id: "procurement", label: "Закупівлі й видача", href: "#/procurement", icon: <Icon name="success" /> }] : []),
             inbox,

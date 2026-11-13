@@ -84,7 +84,7 @@ function PreparerHome({ level }: { readonly level: number }) {
   const toIssue = all.filter((r) => r.status === "procured").length;
   const tasks: Task[] = [
     ...(inQueue > 0
-      ? [{ id: "queue", title: `У черзі: ${requests(inQueue)}`, text: "Перегляньте рапорти й звірку з планом, позначте ті, що погоджуєте сьогодні, і сформуйте денний перелік.", action: "До черги", to: "/queue" as To, primary: true }]
+      ? [{ id: "queue", title: `На розгляд: ${requests(inQueue)}`, text: "Перегляньте рапорти й звірку з планом, позначте ті, що погоджуєте сьогодні, і сформуйте денний перелік.", action: "Розглянути", to: "/queue" as To, primary: true }]
       : []),
     ...(formed > 0 && level === 5
       ? [{ id: "sign", title: `Переліків чекає підпису Голови: ${formed}`, text: "Роздрукуйте перелік, передайте Голові й після підпису відмітьте «Підписано Головою» (або «Голова не підписав»).", action: "До переліку", to: "/queue" as To, primary: inQueue === 0 }]
@@ -97,7 +97,7 @@ function PreparerHome({ level }: { readonly level: number }) {
   return (
     <Tasks
       tasks={tasks}
-      idle={<DataState kind="empty" title="Зараз від вас нічого не потрібно" description="Нові заявки з'являться в черзі, коли нижчий рівень погодить свій перелік. Ви отримаєте сповіщення." />}
+      idle={<DataState kind="empty" title="Зараз від вас нічого не потрібно" description="Нові заявки надійдуть на розгляд, коли нижчий рівень погодить свій перелік. Ви отримаєте сповіщення." />}
     />
   );
 }

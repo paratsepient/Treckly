@@ -24,7 +24,7 @@ type List = Queue["lists"][number];
 const errorText = (error: unknown): string => (error instanceof ApiClientError ? error.message : "Невідома помилка");
 
 /**
- * Черга рівня для уповноваженої особи: обирає заявки, формує з них денний перелік і повертає
+ * «Заявки на розгляд» (черга рівня) для уповноваженої особи: обирає заявки, формує з них денний перелік і повертає
  * заявки автору з приміткою. Необрані лишаються в черзі. Сформований, але непогоджений
  * перелік можна розформувати (правила 4–5).
  */
@@ -103,7 +103,7 @@ export function LevelQueueScreen() {
             title: `Перелік сформовано: заявок ${requests.length}`,
             description:
               rows.length > requests.length
-                ? `Керівник отримав сповіщення. Необрані заявки (${rows.length - requests.length}) лишились у черзі.`
+                ? `Керівник отримав сповіщення. Необрані заявки (${rows.length - requests.length}) лишились на розгляді.`
                 : "Керівник отримав сповіщення.",
           }),
         onError: (error) => feedback.notify({ key: "list-error", tone: "error", title: "Перелік не сформовано", description: errorText(error) }),
@@ -239,17 +239,17 @@ export function LevelQueueScreen() {
   return (
     <>
       <ScreenFrame
-        title={`Черга рівня ${level}`}
-        meta={queue.data ? `${rows.length} у черзі` : undefined}
-        surfaceLabel="Черга рівня"
-        actions={<InfoHint label="Як працює черга" text={"Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення, а під таблицею видно, чи відповідає заявка плану в/ч. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються в черзі."} />}
+        title="Заявки на розгляд"
+        meta={queue.data ? `Рівень ${level} · ${rows.length} ${rows.length === 1 ? "заявка" : rows.length > 1 && rows.length < 5 ? "заявки" : "заявок"}` : undefined}
+        surfaceLabel="Заявки на розгляд"
+        actions={<InfoHint label="Як розглядати заявки" text={"Кнопкою з оком біля заявки відкривається її рапорт для ознайомлення, а під таблицею видно, чи відповідає заявка плану в/ч. Оберіть заявки, які погоджуєте сьогодні, і сформуйте з них денний перелік: керівник погоджує його одним рішенням. Необрані заявки лишаються на розгляді."} />}
       >
-        <section className="queue-card" aria-label="Заявки в черзі та звірка з переліком">
+        <section className="queue-card" aria-label="Заявки на розгляд і звірка з переліком">
         {/* Вибір і дія поруч: що позначено — те й піде в перелік. */}
         {rows.length > 0 ? (
           <div className="queue-card__bar">
             <p className="queue-card__hint" aria-live="polite">
-              {checked.size === 0 ? "Позначте заявки, які погоджуєте сьогодні, — з них сформується денний перелік." : `Обрано заявок: ${checked.size}. Необрані лишаться в черзі.`}
+              {checked.size === 0 ? "Позначте заявки, які погоджуєте сьогодні, — з них сформується денний перелік." : `Обрано заявок: ${checked.size}. Необрані лишаться на розгляді.`}
             </p>
             <Button variant="primary" iconStart={<Icon name="add" />} disabled={checked.size === 0} loading={form.isPending} loadingLabel="Формування переліку" onClick={doForm}>
               {`Сформувати перелік${checked.size > 0 ? ` (${checked.size})` : ""}`}
@@ -257,7 +257,7 @@ export function LevelQueueScreen() {
           </div>
         ) : null}
         <DataTable
-          label="Заявки в черзі рівня"
+          label="Заявки на розгляд"
           columns={visibleColumns(columns, narrow, ["unit", "lines", "days", "total"])}
           rows={rows}
           getRowId={(r) => r.id}
@@ -266,7 +266,7 @@ export function LevelQueueScreen() {
           currentRowId={comparedRequest?.id ?? null}
           onRowSelect={setCompared}
           state={state}
-          stateTitle={state === "error" ? "Не вдалося завантажити чергу" : "Черга порожня"}
+          stateTitle={state === "error" ? "Не вдалося завантажити заявки" : "Заявок на розгляд немає"}
           {...(state === "empty" ? { stateDescription: "Нових заявок на вашому рівні немає. Заявки з'являться, коли нижчий рівень погодить свій перелік." } : {})}
         />
 

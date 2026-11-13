@@ -255,7 +255,7 @@ export function NewRequestScreen({ requestId }: { readonly requestId: string | u
         key: "submitted",
         tone: "success",
         title: isResubmit ? "Нову версію подано" : "Заявку подано",
-        description: `${requestLabel(s.id)} у черзі рівня 1.`,
+        description: `${requestLabel(s.id)} надійшла на розгляд у в/ч.`,
       });
       void navigate({ to: "/my", search: { selected: s.id } });
     } catch (error) {

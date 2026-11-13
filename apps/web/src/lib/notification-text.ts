@@ -22,7 +22,7 @@ export function notificationText(n: NotificationLike): NotificationView {
   const author = n.audience.kind === "author";
   switch (n.kind) {
     case "request_submitted":
-      return { title: `${label}: нова заявка в черзі вашого рівня`, detail: null };
+      return { title: `${label}: нова заявка вам на розгляд`, detail: null };
     case "request_advanced":
       return { title: `${label}: заявку погоджено нижчим рівнем і передано вам`, detail: null };
     case "list_formed":
