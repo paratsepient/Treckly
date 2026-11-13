@@ -64,8 +64,8 @@ function groupsFor(role: Role, unread: number, level: number | null): NavGroup[]
       ];
     case "approver":
       // Голова підписує перелік на папері, а в системі лише стежить: одне меню моніторингу в порядку роботи —
-      // що заплановано, як іде, що затверджено, сповіщення.
-      if (level === 5) return [{ id: "monitoring", label: "Моніторинг", items: [planned, registry, final("Затверджені закупівлі"), inbox] }];
+      // що заплановано, як іде, що затверджено. Сповіщень Голові не треба: дій у системі він не виконує.
+      if (level === 5) return [{ id: "monitoring", label: "Моніторинг", items: [planned, registry, final("Затверджені закупівлі")] }];
       return [
         { id: "work", label: "Робота рівня", items: [{ id: "lists", label: "Денний перелік", href: "#/lists", icon: <Icon name="document" /> }, inbox] },
         { id: "overview", label: "Зведення", items: [planned, registry] },
@@ -275,10 +275,22 @@ export function Root() {
 }
 
 /** Екран доступний лише вказаним ролям; інших повертає на початковий екран їхньої ролі. */
-export function RoleOnly({ roles, levels, children }: { readonly roles: readonly Role[]; readonly levels?: readonly number[]; readonly children: ReactNode }) {
+export function RoleOnly({
+  roles,
+  levels,
+  exclude = [],
+  children,
+}: {
+  readonly roles: readonly Role[];
+  readonly levels?: readonly number[];
+  /** Окремі ролі на рівні, яким екран не потрібен (напр. Голова — сповіщення). */
+  readonly exclude?: readonly { readonly role: Role; readonly level: number }[];
+  readonly children: ReactNode;
+}) {
   const session = useApiQuery("session");
   const role = session.data?.user.roleKind;
   const level = session.data?.user.level ?? null;
-  if (role && (!roles.includes(role) || (levels !== undefined && (level === null || !levels.includes(level))))) return <Navigate to={homePath(role, level)} />;
+  const excluded = exclude.some((e) => e.role === role && e.level === level);
+  if (role && (excluded || !roles.includes(role) || (levels !== undefined && (level === null || !levels.includes(level))))) return <Navigate to={homePath(role, level)} />;
   return <>{children}</>;
 }

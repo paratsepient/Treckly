@@ -110,7 +110,7 @@ const notificationsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/notifications",
   component: () => (
-    <RoleOnly roles={["author", "preparer", "approver"]}>
+    <RoleOnly roles={["author", "preparer", "approver"]} exclude={[{ role: "approver", level: 5 }]}>
       <NotificationsScreen />
     </RoleOnly>
   ),
