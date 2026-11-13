@@ -65,7 +65,7 @@ function AuthorHome() {
     ...(drafts > 0 ? [{ id: "drafts", title: `Незавершені чернетки: ${drafts}`, text: "Допишіть і подайте — інакше їх ніхто не побачить.", action: "До чернеток", to: "/my" as To }] : []),
     { id: "new", title: "Нова заявка", text: "Оберіть позиції з плану вашої в/ч і напишіть обґрунтування — рапорт система складе сама.", action: "Створити заявку", to: "/new", primary: returned.length === 0 },
     ...(onApproval + waiting > 0
-      ? [{ id: "progress", title: "Подані заявки", text: `На погодженні: ${onApproval}. Затверджено й чекає закупівлі або видачі: ${waiting}.`, action: "Мої заявки", to: "/my" as To }]
+      ? [{ id: "progress", title: "Подані заявки", text: `На погодженні: ${onApproval}. Погоджені зміни, чекають закупівлі або видачі: ${waiting}.`, action: "Мої заявки", to: "/my" as To }]
       : []),
   ];
   return <Tasks tasks={tasks} idle={null} />;
@@ -121,7 +121,7 @@ function HeadHome() {
   if (planned.isError) return <DataState kind="error" title="Не вдалося завантажити план" />;
   const sums = moneyOf(planned.data.positions);
   const tasks: Task[] = [
-    { id: "plan", title: `План виконано на ${percent.format(doneShare(sums))}`, text: `Куплено на ${formatMoney(sums.bought)} з ${formatMoney(sums.planned)}; затверджено й чекає закупівлі — на ${formatMoney(sums.approved)}.`, action: "Запланований перелік", to: "/planned", primary: true },
+    { id: "plan", title: `План виконано на ${percent.format(doneShare(sums))}`, text: `Куплено на ${formatMoney(sums.bought)} з ${formatMoney(sums.planned)}; погоджені зміни, що чекають закупівлі, — на ${formatMoney(sums.approved)}.`, action: "Запланований перелік", to: "/planned", primary: true },
     { id: "summary", title: "Як ідуть заявки", text: "Скільки заявок на кожному рівні, скільки днів вони там і бюджет за КЕКВ.", action: "Зведення", to: "/summary" },
     { id: "final", title: "Затверджені закупівлі", text: "Підписані переліки, витяги по в/ч і вплив на річний план.", action: "Відкрити", to: "/final" },
   ];

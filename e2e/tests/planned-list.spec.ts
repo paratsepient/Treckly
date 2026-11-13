@@ -12,7 +12,7 @@ test("запланований перелік: Відділ бачить уве�
   // Виконання плану: «Виконано» й ті самі стани в гривнях, що на смугах позицій.
   const summary = page.getByRole("region", { name: "Виконання плану в гривнях" });
   await expect(summary.getByText(/виконано · куплено на/)).toBeVisible();
-  for (const label of ["Куплено, грн", "Затверджено, грн", "У заявках, грн", "Згідно плану, грн"]) await expect(summary.getByText(label)).toBeVisible();
+  for (const label of ["Куплено, грн", "Погоджені зміни, грн", "У заявках, грн", "Згідно плану, грн"]) await expect(summary.getByText(label)).toBeVisible();
   await expect(row(page, /Рюкзак польовий/).getByRole("img", { name: /Куплено 10 шт\./ })).toBeVisible();
 
   // КЕКВ-фільтр звужує перелік.

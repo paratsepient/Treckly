@@ -36,7 +36,7 @@ export function AnnualPlanImpact() {
     { key: "plan", header: "План на рік", numeric: true, render: (p) => qtyText(p)(p.plannedQty), width: 130 },
     { key: "progress", header: "Стан плану", render: (p) => <PlanBar amounts={qtyOf(p)} format={qtyText(p)} label={p.name} />, width: 200 },
     { key: "bought", header: "Куплено", numeric: true, render: (p) => number.format(p.boughtQty), width: 100 },
-    { key: "approved", header: "Затверджено", numeric: true, render: (p) => number.format(p.approvedQty), width: 120 },
+    { key: "approved", header: "Погоджені зміни", numeric: true, render: (p) => number.format(p.approvedQty), width: 150 },
     { key: "done", header: "Виконано", numeric: true, render: (p) => percent.format(doneShare(qtyOf(p))), width: 110 },
   ];
 
@@ -51,7 +51,7 @@ export function AnnualPlanImpact() {
         <div className="kpi-row">
           <KpiTile label="План на рік, грн" value={Math.round(sums.planned / 100)} formatValue={grn} />
           <KpiTile label="Куплено, грн" value={Math.round(sums.bought / 100)} formatValue={grn} />
-          <KpiTile label="Затверджено, грн" value={Math.round(sums.approved / 100)} formatValue={grn} />
+          <KpiTile label="Погоджені зміни, грн" value={Math.round(sums.approved / 100)} formatValue={grn} />
           <KpiTile label="Згідно плану, грн" value={Math.round(sums.free / 100)} formatValue={grn} />
         </div>
         <PlanLegend />

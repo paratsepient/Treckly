@@ -15,7 +15,7 @@ export const BudgetStateColumns: readonly DataTableColumn<BudgetLine>[] = [
   { key: "scope", header: "КЕКВ", mono: true, render: (l) => (l.scope === "TOTAL" ? "Усього" : l.scope), width: 100 },
   { key: "limit", header: "Ліміт", numeric: true, render: (l) => formatMoney(l.limitMinor) },
   { key: "bought", header: "Куплено", numeric: true, render: (l) => formatMoney(l.boughtMinor) },
-  { key: "approved", header: "Затверджено", numeric: true, render: (l) => formatMoney(l.approvedMinor - l.boughtMinor) },
+  { key: "approved", header: "Погоджені зміни", numeric: true, render: (l) => formatMoney(l.approvedMinor - l.boughtMinor) },
   { key: "inRequests", header: "У заявках", numeric: true, render: (l) => formatMoney(l.inRequestsMinor) },
   {
     key: "free",
